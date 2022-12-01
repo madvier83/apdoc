@@ -23,6 +23,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'email', 'password',
     ];
 
+    // RELATIONSHIPS
+    
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     /**
      * The attributes excluded from the model's JSON form.
      *

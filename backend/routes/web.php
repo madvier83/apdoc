@@ -14,21 +14,18 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+	return $router->app->version();
 });
-
-// $router->post('/register','AuthController@register');
-// $router->post('/login','AuthController@login');
-// $router->post('/logout','AuthController@logout');
 
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
-  $router->post('/logout', 'AuthController@logout');
-      
-  // $router->get('/posts', 'PostController@index');
-  // $router->post('/posts', 'PostController@store');
-  // $router->put('/posts/{id}', 'PostController@update');
-  // $router->delete('/posts/{id}', 'PostController@destroy');
+	$router->post('/logout', 'AuthController@logout');
+
+	$router->get('/patient', 'PatientController@index');
+	$router->get('/patient/{id}', 'PatientController@show');
+	$router->post('/patient', 'PatientController@create');
+	$router->put('/patient/{id}', 'PatientController@update');
+	$router->delete('/patient/{id}', 'PatientController@destroy');
 });
