@@ -1,16 +1,45 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
+import axios from "../../pages/api/axios";
 
 export default function RegisterModal() {
+    const toLoginRef = useRef();
+
+    const [email, setEmail] = useState('')
+    const [pwd, setPwd] = useState('')
+
+    async function handleRegister(e) {
+        e.preventDefault()
+
+        const data = {
+            email: email,
+            password: pwd,
+        }
+
+        console.log(data)
+        try {
+            const response = await axios.post('register', data, {
+                'Content-Type' : 'application/json'
+            })
+            console.log(response.data)
+            setEmail('')
+            setPwd('')
+            toLoginRef.current.click()
+            
+        } catch(e) {
+            console.error(e.message)
+        }
+    }
     return (
         <>
             <div
-                className="modal fade"
+                className="modal fade show"
                 id="modal-register"
                 tabIndex={-1}
                 role="dialog"
                 aria-labelledby="modal-register"
                 aria-hidden="true"
+                // style={{ display: 'block' }}
             >
                 <div className="modal-dialog modal-sm modal-register">
                     <div className="modal-content dark-bg img-bg img-bg-softer no-modal-header no-modal-footer">
@@ -53,7 +82,7 @@ export default function RegisterModal() {
                                                 </h1>
                                             </Link>
                                             <form
-                                                // id=""
+                                                onSubmit={handleRegister}
                                                 className="form-inline newsletter"
                                                 role="form"
                                             >
@@ -88,6 +117,8 @@ export default function RegisterModal() {
                                                     Email address
                                                 </label>
                                                 <input
+                                                    value={email}
+                                                    onChange={e => setEmail(e.target.value)}
                                                     type="email"
                                                     className="form-control"
                                                     // id="exampleInputEmail"
@@ -100,6 +131,8 @@ export default function RegisterModal() {
                                                     Password
                                                 </label>
                                                 <input
+                                                    value={pwd}
+                                                    onChange={e => setPwd(e.target.value)}
                                                     type="password"
                                                     className="form-control"
                                                     // id="exampleInputEmail"
@@ -123,6 +156,7 @@ export default function RegisterModal() {
                                                 <h5 className="text-white w-100 text-center mt-1 mb-4">
                                                     Already have an account?
                                                     <a
+                                                        ref={toLoginRef}
                                                         href="#modal-login"
                                                         data-toggle="modal"
                                                         data-dismiss="modal"

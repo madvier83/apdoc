@@ -1,4 +1,43 @@
-html,
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input {
+    @apply border-0 px-3 py-3 border-none bg-white placeholder-slate-300 text-sm outline-none w-full;
+  }
+}
+
+.input {
+  border-radius: 4px !important;
+}
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #ff0000;
+}
+
+button,
+input[type="button"] {
+  outline: none;
+}
+button::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner {
+  border: 0;
+}
+button:focus {
+  outline: 0 !important;
+}
+
+/* html,
 body {
   padding: 0;
   margin: 0;
@@ -23,4 +62,4 @@ a {
     color: white;
     background: black;
   }
-}
+} */

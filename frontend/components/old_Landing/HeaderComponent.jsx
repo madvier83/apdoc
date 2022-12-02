@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "next/link";
+import React, { useState } from "react";
 import RegisterModal from "./RegisterModal";
 import LoginModal from "./LoginModal";
 import ForgotPassword from "./ForgotPassword";
+import { getCookie } from "cookies-next";
 
 export default function HeaderComponent() {
     return (
@@ -16,7 +16,7 @@ export default function HeaderComponent() {
                                 <li>
                                     <a href="#">
                                         <i className="icon-mail-1 contact" />{" "}
-                                        info@reen.com
+                                        cursor.id
                                     </a>
                                 </li>
                                 <li>
@@ -143,8 +143,9 @@ export default function HeaderComponent() {
 
                                     <li className="d-flex ml-auto mb-2 mr-2">
                                         <a
-                                            href="#modal-login"
+                                            // onClick={() => setLogin(p=>!p)}
                                             className=""
+                                            href="#modal-login"
                                             data-toggle="modal"
                                         >
                                             Login
@@ -169,7 +170,7 @@ export default function HeaderComponent() {
             {/* ============================================================= HEADER : END ============================================================= */}
 
             {/* modals */}
-            <LoginModal />
+            <LoginModal/>
             <RegisterModal />
             <ForgotPassword />
         </>

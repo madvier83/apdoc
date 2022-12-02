@@ -1,7 +1,39 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import axios from '../../pages/api/axios';
+import {setCookie} from 'cookies-next';
+import { useRouter } from "next/router";
 
 export default function LoginModal() {
+    const router = useRouter()
+
+    const [email, setEmail] = useState('')
+    const [pwd, setPwd] = useState('')
+
+    const closeRef = useRef()
+
+    async function handleLogin(e) {
+        e.preventDefault()
+        if (!email && !pwd) return;
+        const data = {
+            email: email,
+            password: pwd
+        }
+        try {
+            const response = await axios.post('/login', data ,{
+                'Content-Type' : 'application/json'
+            })
+            // console.log(response.data)
+            setCookie('token', response.data.access_token, {maxAge: 60 * 60 * 24})
+            setEmail('')
+            setPwd('')
+            closeRef.current.click()
+            router.push('/dashboard')
+        } catch (e) {
+            console.error(e.message)
+        }
+    }
+
     return (
         <>
             <div
@@ -16,6 +48,7 @@ export default function LoginModal() {
                     <div className="modal-content dark-bg img-bg img-bg-softer no-modal-header no-modal-footer">
                         <div className="modal-header">
                             <button
+                                ref={closeRef}
                                 type="button"
                                 className="close"
                                 data-dismiss="modal"
@@ -53,7 +86,7 @@ export default function LoginModal() {
                                                 </h1>
                                             </Link>
                                             <form
-                                                // id=""
+                                                onSubmit={handleLogin}
                                                 className="form-inline newsletter"
                                                 role="form"
                                             >
@@ -64,6 +97,8 @@ export default function LoginModal() {
                                                     Email address
                                                 </label>
                                                 <input
+                                                    value={email}
+                                                    onChange={e => setEmail(e.target.value)}
                                                     type="email"
                                                     className="form-control"
                                                     // id="exampleInputEmail"
@@ -76,7 +111,9 @@ export default function LoginModal() {
                                                     Password
                                                 </label>
                                                 <input
-                                                    type="email"
+                                                    value={pwd}
+                                                    onChange={e => setPwd(e.target.value)}
+                                                    type="password"
                                                     className="form-control"
                                                     // id="exampleInputEmail"
                                                     placeholder="Enter your password"

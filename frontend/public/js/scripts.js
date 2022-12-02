@@ -179,7 +179,7 @@ $(document).ready(function() {
 				if (!prop.animTriggered) prop.animTriggered = true;
 				prop.scrolled = scrolledFromTop - prop.delay;
 				if (prop.scrolled <= prop.distance) {
-					prop.currentChange = prop.start - prop.scrolled * prop.scrollRatio.toFixed(2);
+					prop.currentChange = prop.start - prop.scrolled * prop.scrollRatio?.toFixed(2);
 					$(prop.element).css(prop.style, prop.currentChange + 'px');
 					if (prop.animFinished) {
 						prop.animFinished = false;
