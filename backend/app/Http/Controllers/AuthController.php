@@ -68,9 +68,10 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'You must fill all the fields']);
         }
 
+        $user = User::where('email', $email)->with('role')->first();
         $credentials = request(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        if (!$token = auth()->claims(['id' => $user->id, 'email' => $user->email, 'role' => $user->role->name])->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
