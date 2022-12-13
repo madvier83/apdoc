@@ -1,56 +1,73 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-  public function register(Request $request)
-  {
-      $this->validate($request, [
-          'email' => 'required|unique:users|email',
-          'password' => 'required|min:8'
-      ]);
+    public function index()
+    {
+        $user = User::all();
+        return response()->json($user);
+    }
 
-      $email = $request->input('email');
-      $password = Hash::make($request->input('password'));
+    public function show($id)
+    {
+        $user = User::find($id);
+        return response()->json($user);
+    }
 
-      $user = User::create([
-          'email' => $email,
-          'password' => $password
-      ]);
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'name'      => 'required|string',
+            'phone'     => 'required|unique:users',
+            'email'     => 'required|email|unique:users',
+            'role_id'   => 'required|in:1,2,3',
+        ]);
 
-      return response()->json(['message' => 'Data added successfully'], 201);
-  }
+        $data = $request->all();
+        $data['password'] = app('hash')->make($request->password);
 
-  public function login(Request $request)
-  {
-      $this->validate($request, [
-          'email' => 'required|email',
-          'password' => 'required'
-      ]);
+        $user = User::create($data);
 
-      $email = $request->input('email');
-      $password = $request->input('password');
+        return response()->json($user);
+    }
 
-      $user = User::where('email', $email)->first();
-      if (!$user) {
-          return response()->json(['message' => 'Login failed'], 401);
-      }
+    public function update(Request $request, $id)
+    {
+        $user = User::find($id);
 
-      $isValidPassword = Hash::check($password, $user->password);
-      if (!$isValidPassword) {
-        return response()->json(['message' => 'Login failed'], 401);
-      }
+        if (!$user) {
+            return response()->json(['message' => 'User not found!'], 404);
+        }
 
-      $generateToken = bin2hex(random_bytes(40));
-      // $user->update([
-      //     'remember_token' => $generateToken
-      // ]);
-      User::where('email', $email)->update(['remember_token' => $generateToken]);
+        $this->validate($request, [
+            'name'      => 'required|string',
+            'phone'     => $request->phone == $user->phone ? 'required' : 'required|unique:users',
+            'email'     => $request->email == $user->email ? 'required|email' : 'required|email|unique:users',
+            'role_id'   => 'required|in:1,2,3',
+        ]);
 
-      return response()->json($user);
-  }
-} 
+        $data = $request->all();
+
+        $user->fill($data);
+
+        $user->save();
+        return response()->json($user);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found!'], 404);
+        }
+
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully!']);
+    }
+}

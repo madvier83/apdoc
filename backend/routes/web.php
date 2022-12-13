@@ -23,6 +23,18 @@ $router->post('/login', 'AuthController@login');
 $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/logout', 'AuthController@logout');
 
+	$router->get('/user', 'UserController@index');
+	$router->get('/user/{id}', 'UserController@show');
+	$router->post('/user', 'UserController@create');
+	$router->put('/user/{id}', 'UserController@update');
+	$router->delete('/user/{id}', 'UserController@destroy');
+
+	$router->get('/klinik', 'KlinikController@index');
+	$router->get('/klinik/{id}', 'KlinikController@show');
+	$router->post('/klinik', 'KlinikController@create');
+	$router->put('/klinik/{id}', 'KlinikController@update');
+	$router->delete('/klinik/{id}', 'KlinikController@destroy');
+
 	$router->get('/patient', 'PatientController@index');
 	$router->get('/patient/{id}', 'PatientController@show');
 	$router->post('/patient', 'PatientController@create');

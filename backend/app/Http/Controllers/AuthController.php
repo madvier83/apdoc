@@ -9,34 +9,20 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $email = $request->email;
-        $password = $request->password;
+        $this->validate($request, [
+            'name'      => 'required|string',
+            'phone'     => 'required|unique:users',
+            'email'     => 'required|email|unique:users',
+            'password'  => 'required|min:8',
+        ]);
 
-        // Check if field is empty
-        if (empty($email) or empty($password)) {
-            return response()->json(['status' => 'error', 'message' => 'You must fill all the fields']);
-        }
-
-        // Check if email is valid
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return response()->json(['status' => 'error', 'message' => 'You must enter a valid email']);
-        }
-
-        // Check if password is greater than 5 character
-        if (strlen($password) < 8) {
-            return response()->json(['status' => 'error', 'message' => 'Password should be min 8 character']);
-        }
-
-        // Check if user already exist
-        if (User::where('email', '=', $email)->exists()) {
-            return response()->json(['status' => 'error', 'message' => 'User already exists with this email']);
-        }
-
-        // Create new user
         try {
             $user = new User();
-            $user->email = $request->email;
+            $user->name     = $request->name;
+            $user->phone    = $request->phone;
+            $user->email    = $request->email;
             $user->password = app('hash')->make($request->password);
+            $user->role_id  = 2;
 
             if ($user->save()) {
                 return $this->login($request);
@@ -60,15 +46,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $email = $request->email;
-        $password = $request->password;
+        $this->validate($request, [
+            'email'             => 'required',
+            'password'          => 'required',
+        ]);
 
-        // Check if field is empty
-        if (empty($email) or empty($password)) {
-            return response()->json(['status' => 'error', 'message' => 'You must fill all the fields']);
+        $user = User::where('email', $request->email)->with('role')->first();
+
+        if ($user == null) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = User::where('email', $email)->with('role')->first();
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->claims(['id' => $user->id, 'email' => $user->email, 'role' => $user->role->name])->attempt($credentials)) {
