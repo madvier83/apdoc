@@ -9,7 +9,9 @@ export default function Register() {
   const toLoginRef = useRef();
   const router = useRouter()
 
-  const [email, setEmail] = useState("");
+  // const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [pwd, setPwd] = useState("");
   const [matchPwd, setMatchPwd] = useState("")
 
@@ -21,7 +23,9 @@ export default function Register() {
     e.preventDefault();
 
     const data = {
+      // name: name,
       email: email,
+      phone: phone,
       password: pwd,
     };
 
@@ -55,6 +59,23 @@ export default function Register() {
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                   <form>
+                    
+                  {/* <div className="relative w-full mb-3">
+                      <label
+                        className="block text-blueGray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Full Name
+                      </label>
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        type="text"
+                        className="input"
+                        placeholder="John Doe"
+                      />
+                    </div> */}
+
                     <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
@@ -67,9 +88,25 @@ export default function Register() {
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
                         className="input"
-                        placeholder="Email"
+                        placeholder="example@mail.com"
                       />
                     </div>
+                    
+                    {/* <div className="relative w-full mb-3">
+                      <label
+                        className="block text-blueGray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password"
+                      >
+                        Phone
+                      </label>
+                      <input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        type="text"
+                        className="input"
+                        placeholder="+62 xxx xxxx xxxx"
+                      />
+                    </div> */}
 
                     <div className="relative w-full mb-3">
                       <label
@@ -83,7 +120,7 @@ export default function Register() {
                         onChange={(e) => setPwd(e.target.value)}
                         type="password"
                         className="input"
-                        placeholder="Password"
+                        placeholder="min 8 characters"
                       />
                     </div>
 
@@ -99,7 +136,7 @@ export default function Register() {
                         onChange={(e) => setMatchPwd(e.target.value)}
                         type="password"
                         className="input"
-                        placeholder="Password"
+                        placeholder="min 8 characters"
                       />
                     </div>
 
