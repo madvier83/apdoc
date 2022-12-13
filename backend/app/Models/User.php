@@ -19,12 +19,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $fillable = [
-        'email', 'password',
-    ];
+    protected $guarded = ['id'];
 
     // RELATIONSHIPS
-    
+
     public function role()
     {
         return $this->belongsTo(Role::class);

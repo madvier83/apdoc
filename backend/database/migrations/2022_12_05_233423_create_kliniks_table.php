@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateKliniksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('kliniks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->foreignId('role_id');
-            $table->foreignId('outlet_id')->nullable();
+            $table->longText('address');
+            $table->string('province');
+            $table->string('city');
+            $table->string('district');
+            $table->string('postal_code');
+            $table->string('phone');
+            $table->string('appdoc_id')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('kliniks');
     }
-};
+}
