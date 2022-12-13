@@ -5,7 +5,7 @@ import { deleteCookie } from "cookies-next";
 
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
 
-export default function Sidebar() {
+export default function AdminSidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
   const [adminMenu, setAdminMenu] = useState(false);
@@ -432,7 +432,7 @@ export default function Sidebar() {
                   <button
                     onClick={() => {
                       deleteCookie("token");
-                      router.push("/auth/login");
+                      router.push("/auth/admin");
                     }}
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >

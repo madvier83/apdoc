@@ -28,7 +28,7 @@ export default function Login() {
       setCookie("token", response.data.access_token, { maxAge: 60 * 60 * 12 });
       setEmail("");
       setPwd("");
-      router.push("/dashboard");
+      router.push("/admin");
     } catch (e) {
       console.error(e.message);
     }
@@ -36,7 +36,7 @@ export default function Login() {
 
   return (
     <>
-      <AuthLayout title={"APPDOC | Login"}>
+      <AuthLayout title={"APPDOC | Admin"} isAdmin={true}>
         <div className="container mx-auto px-4 h-[60vh]">
           <div className="flex content-center items-center justify-center h-full">
             <div className="w-full lg:w-4/12 px-4">
@@ -99,7 +99,7 @@ export default function Login() {
                         className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                         onClick={handleLogin}
                       >
-                        Login
+                        Login As Administrator
                       </button>
                     </div>
                   </form>
@@ -108,18 +108,18 @@ export default function Login() {
               <div className="flex flex-wrap mt-6 relative">
                 <div className="w-1/2">
                   <Link
-                    href="/"
+                    href="/auth/login"
                     // onClick={(e) => e.preventDefault()}
                     className="text-blueGray-200"
                   >
                     <small>
-                      <i className="fas fa-arrow-left mr-2"></i> Back to landing page
+                      <i className="fas fa-arrow-left mr-2"></i> Login as user
                     </small>
                   </Link>
                 </div>
                 <div className="w-1/2 text-right">
                   <Link href="/auth/register" className="text-blueGray-200">
-                    <small>Create new account <i className="fas fa-arrow-right ml-2"></i></small>
+                    {/* <small>Create new account <i className="fas fa-arrow-right ml-2"></i></small> */}
                   </Link>
                 </div>
               </div>

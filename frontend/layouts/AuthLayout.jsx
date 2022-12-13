@@ -6,7 +6,7 @@ import Navbar from "../components/Navbars/AuthNavbar";
 import FooterSmall from "../components/Footers/FooterSmall";
 import Head from "next/head";
 
-export default function Auth({ children, title }) {
+export default function Auth({ children, title, isAdmin }) {
   return (
     <>
       <Head>
@@ -14,7 +14,7 @@ export default function Auth({ children, title }) {
       </Head>
       {/* <Navbar transparent /> */}
       <main>
-        <section className="relative w-full h-full py-40 min-h-screen bg-blueGray-800">
+        <section className={`relative w-full h-full py-40 min-h-screen ${isAdmin? "bg-black" : "bg-blueGray-800"}`}>
           <div
             className="absolute top-0 w-full h-full bg-no-repeat bg-full hidden md:block"
             // /login.svg

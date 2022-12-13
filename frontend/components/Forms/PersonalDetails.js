@@ -2,7 +2,7 @@ import React from "react";
 
 // components
 
-export default function CardSettings() {
+export default function PersonalDetails() {
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -44,12 +44,12 @@ export default function CardSettings() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Email address
+                    Email address <span className="bg-emerald-300 text-emerald-700 px-2 rounded-full ml-2 normal-case py-[2px]">Verified <i className="fas fa-check"></i></span>
                   </label>
                   <input
                     type="email"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    defaultValue="jesse@example.com"
+                    defaultValue="madvier83@example.com"
                   />
                 </div>
               </div>

@@ -3,28 +3,27 @@ import React from "react";
 // components
 
 import AdminNavbar from "../components/Navbars/AdminNavbar";
-import Sidebar from "../components/Sidebar/Sidebar";
-import HeaderStats from "../components/Headers/HeaderStats";
+import AdminSidebar from "../components/Sidebar/AdminSidebar";
+import AdminStats from "../components/Headers/AdminStats";
 import FooterAdmin from "../components/Footers/FooterAdmin";
 import Head from "next/head";
 
-export default function DashboardLayout({ title, children, headerStats }) {
+export default function AdminLayout({ title, children, headerStats }) {
     return (
         <>
         <Head>
             <title>{`APPDOC | ${title || ""}`}</title>
         </Head>
-        <Sidebar />
+        <AdminSidebar />
         <div className="relative md:ml-64 bg-slate-800 min-h-screen">
             <AdminNavbar title={title} />
             {/* Header */}
-            <HeaderStats headerStats={headerStats}/>
-            <div className="px-4 md:px-10 pb-32 mx-auto w-full -m-24">
-                {children}
-                <FooterAdmin />
+            <AdminStats headerStats={headerStats}/>
+            <div className="px-4 md:px-10 mx-auto w-full -m-24">
+            {children}
+            <FooterAdmin />
             </div>
         </div>
         </>
     );
 }
-

@@ -18,8 +18,8 @@ export default function Navbar(props) {
     <>
 
       {/* modals */}
-      <LoginModal showModal={loginModal} setShowModal={setLoginModal} />
-      <RegisterModal showModal={registerModal} setShowModal={setRegisterModal} />
+      {/* <LoginModal showModal={loginModal} setShowModal={setLoginModal} />
+      <RegisterModal showModal={registerModal} setShowModal={setRegisterModal} /> */}
 
       <nav className="top-0 absolute z-20 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">

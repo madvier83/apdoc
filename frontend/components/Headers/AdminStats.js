@@ -4,11 +4,11 @@ import React from "react";
 
 import CardStats from "../Cards/CardStats";
 
-export default function HeaderStats({ headerStats }) {
+export default function AdminStats({ headerStats }) {
   return (
     <>
       {/* Header */}
-      <div className="relative bg-emerald-400 md:pt-32 pb-16 pt-12">
+      <div className="relative bg-rose-500 md:pt-32 pb-16 pt-12">
         {headerStats && (
           <div className="px-4 md:px-10 mx-auto w-full">
             <div>
