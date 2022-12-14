@@ -11,6 +11,7 @@ function MyApp({ Component, pageProps }) {
         stopDelayMs={200}
         height={4}
         showOnShallow={true}
+        // options={{ easing: 'ease', speed: 500 }}
       />
       <Component {...pageProps} />
     </>
