@@ -40,4 +40,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/patient', 'PatientController@create');
 	$router->put('/patient/{id}', 'PatientController@update');
 	$router->delete('/patient/{id}', 'PatientController@destroy');
+
+	$router->get('/position', 'PositionController@index');
+	$router->get('/position/{id}', 'PositionController@show');
+	$router->post('/position', 'PositionController@create');
+	$router->put('/position/{id}', 'PositionController@update');
+	$router->delete('/position/{id}', 'PositionController@destroy');
 });

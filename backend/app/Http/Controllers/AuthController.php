@@ -10,8 +10,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'required|string',
-            'phone'     => 'required|unique:users',
+            'name'      => 'string',
+            'phone'     => 'unique:users',
             'email'     => 'required|email|unique:users',
             'password'  => 'required|min:8',
         ]);
