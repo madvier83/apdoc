@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @layer components {
-  .input {
+  /* .input {
     @apply border-0 px-3 py-3 border-none bg-white placeholder-slate-300 text-sm outline-none w-full;
-  }
+  } */
 }
 
 .modal-box {
