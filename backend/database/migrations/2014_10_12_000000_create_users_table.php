@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('role_id');
             $table->foreignId('outlet_id')->nullable();
+            $table->foreignId('employee_id')->nullable();
             $table->timestamps();
         });
     }

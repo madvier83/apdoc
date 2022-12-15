@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -14,7 +16,9 @@
 */
 
 $router->get('/', function () use ($router) {
-	return $router->app->version();
+	// return $router->app->version();
+	// return User::where('id', 1)->first();
+	return User::where('id', 1)->with(['employee', 'employees'])->first()->employees->count();
 });
 
 $router->post('/register', 'AuthController@register');

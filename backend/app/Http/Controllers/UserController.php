@@ -22,14 +22,14 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'required|string',
+            'name'      => 'string',
             'phone'     => 'required|unique:users',
             'email'     => 'required|email|unique:users',
-            'role_id'   => 'required|in:1,2,3',
         ]);
 
         $data = $request->all();
         $data['password'] = app('hash')->make($request->password);
+        $data['role'] = 3;
 
         $user = User::create($data);
 
@@ -48,7 +48,6 @@ class UserController extends Controller
             'name'      => 'required|string',
             'phone'     => $request->phone == $user->phone ? 'required' : 'required|unique:users',
             'email'     => $request->email == $user->email ? 'required|email' : 'required|email|unique:users',
-            'role_id'   => 'required|in:1,2,3',
         ]);
 
         $data = $request->all();

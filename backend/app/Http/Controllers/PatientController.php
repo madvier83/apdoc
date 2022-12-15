@@ -11,14 +11,12 @@ class PatientController extends Controller
     {
         $patient = Patient::all();
         return response()->json($patient);
-
     }
 
     public function show($id)
     {
         $patient = Patient::find($id);
         return response()->json($patient);
-
     }
 
     public function create(Request $request)
@@ -30,7 +28,7 @@ class PatientController extends Controller
             'birth_date'        => 'required|date|before:yesterday',
             'gender'            => 'required|in:laki-laki,perempuan',
             'address'           => 'required|string',
-            'telephone'         => 'required|string',
+            'phone'         => 'required|string',
         ]);
 
         $data = $request->all();
@@ -54,7 +52,7 @@ class PatientController extends Controller
             'birth_date'        => 'required|date|before:yesterday',
             'gender'            => 'required|in:laki-laki,perempuan',
             'address'           => 'required|string',
-            'telephone'         => 'required|string',
+            'phone'         => 'required|string',
         ]);
 
         $data = $request->all();
@@ -63,7 +61,6 @@ class PatientController extends Controller
 
         $patient->save();
         return response()->json($patient);
-
     }
 
     public function destroy($id)
@@ -76,6 +73,5 @@ class PatientController extends Controller
 
         $patient->delete();
         return response()->json(['message' => 'Patient deleted successfully!']);
-
     }
 }

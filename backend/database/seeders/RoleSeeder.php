@@ -5,19 +5,19 @@ namespace Database\Seeders;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
-class InitialSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
-    public function run()
-    {
-      
-		Role::create([
-			'name' => 'superadmin'
-		]);
-		Role::create([
-			'name' => 'useradmin'
-		]);
+	public function run()
+	{
+
 		Role::create([
 			'name' => 'admin'
 		]);
-    }
+		Role::create([
+			'name' => 'client'
+		]);
+		Role::create([
+			'name' => 'employee'
+		]);
+	}
 }
