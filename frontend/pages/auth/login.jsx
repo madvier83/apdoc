@@ -61,7 +61,7 @@ export default function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
-                        className="input"
+                        className="input w-full"
                         placeholder="Email"
                         id="email"
                       />
@@ -78,7 +78,7 @@ export default function Login() {
                         value={pwd}
                         onChange={(e) => setPwd(e.target.value)}
                         type="password"
-                        className="input"
+                        className="input w-full"
                         placeholder="Password"
                         id="password"
                       />

@@ -131,11 +131,11 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="/dashboard/position"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Jabatan
+                          Position
                         </Link>
                       </li>
                       <li className="items-center">

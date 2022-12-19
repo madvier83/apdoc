@@ -1,56 +1,150 @@
-// import { jwtVerify } from "jose";
+import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
-import { verify } from "./services/verifyToken";
-
-// verify token edge side
-// async function verify (token, secret) {
-//     const payload  = await jwtVerify(token, new TextEncoder().encode(secret));
-//     return payload
-// }
 
 export async function middleware(req) {
-    const secret = process.env.JWT_SECRET;
-    const jwt = req.cookies.get("token")?.value;
+    // console.log(req)
     const { pathname } = req.nextUrl;
+
+    const jwt = req.cookies.get("token")?.value;
+    const secret = process.env.JWT_SECRET;
+
+    if(pathname.startsWith("/auth")) {
+        if (jwt == undefined) {
+            return NextResponse.next()
+        } else {
+            const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+            if(verified) {
+                req.nextUrl.pathname = "/dashboard";
+                return NextResponse.redirect(req.nextUrl);
+            }
+        }
+    }
+
+    if(pathname.startsWith("/dashboard")) {
+        if (jwt == undefined) {
+            req.nextUrl.pathname = "/auth/login";
+            return NextResponse.redirect(req.nextUrl);
+        } else {
+            const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+            if(verified) {
+                return NextResponse.next()
+            }else{
+                req.cookies.set("token", "", { expires: new Date(Date.now()) });
+                req.nextUrl.pathname = "/auth/login";
+                return NextResponse.redirect(req.nextUrl);
+            }
+        }
+    }
+
+    // if(pathname.startsWith("/admin")) {
+    //     if (jwt == undefined) {
+    //         req.nextUrl.pathname = "/auth/login";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     } else {
+    //         const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+    //         if(verified) {
+    //             return NextResponse.next()
+    //         }
+    //     }
+    // }
+
+    // if(!verified) {
+    //     req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //     req.nextUrl.pathname = "/auth/login";
+    //     return NextResponse.redirect(req.nextUrl);
+    // }
+    
+    // if(!jwt) {
+    //     req.nextUrl.pathname = "/auth/login";
+    //     return NextResponse.redirect(req.nextUrl);
+    // }
+
+    // try {
+    //     jwtVerify(jwt, new TextEncoder().encode(secret));
+        
+    //     if(jwt && pathname.startsWith("/auth")) {
+    //         req.nextUrl.pathname = "/dashboard";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     }
+        
+    //     if (pathname.startsWith("/dashboard")) {
+
+    //     }
+
+    //     if (pathname.startsWith("/admin")) {
+            
+    //     }
+
+    // } catch(err) {
+    //     console.log(err)
+    //     req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //     req.nextUrl.pathname = "/auth/login";
+    //     return NextResponse.redirect(req.nextUrl);
+    // }
+
+    // verify jwt
+    // try {
+        
+    //     // if(pathname.startsWith("/auth")) {
+    //     //     req.nextUrl.pathname = "/dashboard";
+    //     //     return NextResponse.redirect(req.nextUrl);
+    //     // }
+        
+    //     if (pathname.startsWith("/dashboard")) {
+
+    //     }
+
+    //     if (pathname.startsWith("/admin")) {
+            
+    //     }
+
+    //     return NextResponse.next();
+
+    // } catch (error) {
+    //     req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //     req.nextUrl.pathname = "/auth/login";
+    //     return NextResponse.redirect(req.nextUrl);
+    // }
 
     // jwt = await verify(jwt).then(jwt => console.log(jwt))
     
-    if(jwt && pathname.startsWith("/auth")) {
-        req.nextUrl.pathname = "/dashboard";
-        return NextResponse.redirect(req.nextUrl);
-    }
+    // if(jwt && pathname.startsWith("/auth")) {
+    //     req.nextUrl.pathname = "/dashboard";
+    //     return NextResponse.redirect(req.nextUrl);
+    // }
     
-    if (pathname.startsWith("/dashboard")) {
-        if (jwt === undefined) {
-            req.nextUrl.pathname = "/auth/login";
-            return NextResponse.redirect(req.nextUrl);
-        }
-        // verify jwt
-        try {
-            await verify(jwt, secret);
-            return NextResponse.next();
-        } catch (error) {
-            response.cookies.set("token", "", { expires: new Date(Date.now()) });
-            req.nextUrl.pathname = "/auth/login";
-            return NextResponse.redirect(req.nextUrl);
-        }
-    }
-    if (pathname.startsWith("/admin")) {
-        if (jwt === undefined) {
-            req.nextUrl.pathname = "/auth/login";
-            return NextResponse.redirect(req.nextUrl);
-        }
-        // verify jwt
-        try {
-            await verify(jwt, secret);
-            return NextResponse.next();
-        } catch (error) {
-            response.cookies.set("token", "", { expires: new Date(Date.now()) });
-            req.nextUrl.pathname = "/auth/login";
-            return NextResponse.redirect(req.nextUrl);
-        }
-    }
+    // if (pathname.startsWith("/dashboard")) {
+    //     if (jwt === undefined) {
+    //         req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //         req.nextUrl.pathname = "/auth/login";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     }
+    //     // verify jwt
+    //     try {
+    //         await verify(jwt, secret);
+    //         return NextResponse.next();
+    //     } catch (error) {
+    //         req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //         req.nextUrl.pathname = "/auth/login";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     }
+    // }
+    // if (pathname.startsWith("/admin")) {
+    //     if (jwt === undefined) {
+    //         req.nextUrl.pathname = "/auth/login";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     }
+    //     // verify jwt
+    //     try {
+    //         await verify(jwt, secret);
+    //         return NextResponse.next();
+    //     } catch (error) {
+    //         req.cookies.set("token", "", { expires: new Date(Date.now()) });
+    //         req.nextUrl.pathname = "/auth/login";
+    //         return NextResponse.redirect(req.nextUrl);
+    //     }
+    // }
 
     // console.log(reponse)
-    return NextResponse.next()
+    // return NextResponse.next()
 }

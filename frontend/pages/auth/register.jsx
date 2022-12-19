@@ -9,9 +9,7 @@ export default function Register() {
   const toLoginRef = useRef();
   const router = useRouter()
 
-  // const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
   const [pwd, setPwd] = useState("");
   const [matchPwd, setMatchPwd] = useState("")
 
@@ -21,15 +19,12 @@ export default function Register() {
 
   async function handleRegister(e) {
     e.preventDefault();
-
+    if(pwd !== matchPwd) return;
+    
     const data = {
-      // name: name,
       email: email,
-      phone: phone,
       password: pwd,
     };
-
-    console.log(data);
     try {
       const response = await axios.post("register", data, {
         "Content-Type": "application/json",
