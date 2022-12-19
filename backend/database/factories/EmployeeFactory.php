@@ -22,14 +22,14 @@ class EmployeeFactory extends Factory
     public function definition()
     {
         return [
-            'user_id'     => 1,
             'nik'         => $this->faker->randomNumber(5, true),
             'name'        => $this->faker->name,
             'birth_place' => $this->faker->city(),
             'birth_date'  => $this->faker->date(),
             'gender'      => $this->faker->randomElement(['laki-laki', 'perempuan']),
             'address'     => $this->faker->address(),
-            'phone'       => $this->faker->phoneNumber,
+            'phone'       => $this->faker->unique()->phoneNumber,
+            'position_id' => mt_rand(1, 4),
         ];
     }
 }

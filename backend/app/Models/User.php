@@ -28,16 +28,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsTo(Role::class);
     }
 
-    // One to one user x employee
+    // one to one user with employee
     public function employee()
     {
         return $this->belongsTo(Employee::class);
-    }
-
-    // Many to one employee to user
-    public function employees()
-    {
-        return $this->hasMany(Employee::class);
     }
 
     /**

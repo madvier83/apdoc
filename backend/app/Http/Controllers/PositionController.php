@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,7 @@ class PositionController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name'              => 'required|string|unique:positions',
+            'name' => 'required|string|unique:positions',
         ]);
 
         $data = $request->all();
@@ -40,7 +41,7 @@ class PositionController extends Controller
         }
 
         $this->validate($request, [
-            'name' => $request->name == $position->name ? 'required|string' : 'required|string|unique:positions',
+            'name' => $request->name = $position->name ? 'required|string' : 'required|string|unique:positions',
         ]);
 
         $data = $request->all();
@@ -60,6 +61,7 @@ class PositionController extends Controller
         }
 
         $position->delete();
+        Employee::where('position_id', $id)->update(['position_id' => null]);
         return response()->json(['message' => 'Position deleted successfully!']);
     }
 }

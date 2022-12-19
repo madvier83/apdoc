@@ -11,8 +11,9 @@ class Employee extends Model
 
     protected $guarded = ['id'];
 
-    public function user()
+    // one to many employee with position
+    public function position()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Position::class);
     }
 }

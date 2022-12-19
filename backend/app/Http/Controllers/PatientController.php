@@ -28,7 +28,7 @@ class PatientController extends Controller
             'birth_date'        => 'required|date|before:yesterday',
             'gender'            => 'required|in:laki-laki,perempuan',
             'address'           => 'required|string',
-            'phone'         => 'required|string',
+            'phone'             => 'required|string',
         ]);
 
         $data = $request->all();
@@ -46,13 +46,13 @@ class PatientController extends Controller
         }
 
         $this->validate($request, [
-            'nik'               => $request->nik == $patient->nik ? 'required' : 'required|unique:patients',
+            'nik'               => $request->nik = $patient->nik ? 'required' : 'required|unique:patients',
             'name'              => 'required|string',
             'birth_place'       => 'required|string',
             'birth_date'        => 'required|date|before:yesterday',
             'gender'            => 'required|in:laki-laki,perempuan',
             'address'           => 'required|string',
-            'phone'         => 'required|string',
+            'phone'             => 'required|string',
         ]);
 
         $data = $request->all();

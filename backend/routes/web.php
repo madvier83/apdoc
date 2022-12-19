@@ -18,7 +18,7 @@ use App\Models\User;
 $router->get('/', function () use ($router) {
 	// return $router->app->version();
 	// return User::where('id', 1)->first();
-	return User::where('id', 1)->with(['employee', 'employees'])->first()->employees->count();
+	return User::where('id', 1)->with(['employee', 'employees'])->first();
 });
 
 $router->post('/register', 'AuthController@register');
@@ -50,4 +50,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/position', 'PositionController@create');
 	$router->put('/position/{id}', 'PositionController@update');
 	$router->delete('/position/{id}', 'PositionController@destroy');
+
+	$router->get('/employee', 'EmployeeController@index');
+	$router->get('/employee/{id}', 'EmployeeController@show');
+	$router->post('/employee', 'EmployeeController@create');
+	$router->put('/employee/{id}', 'EmployeeController@update');
+	$router->delete('/employee/{id}', 'EmployeeController@destroy');
 });

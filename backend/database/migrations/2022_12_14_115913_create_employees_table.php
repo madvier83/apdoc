@@ -15,14 +15,15 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->string('nik')->unique();
+            $table->string('nik');
             $table->string('name');
             $table->string('birth_place');
             $table->date('birth_date');
             $table->enum('gender', ['laki-laki', 'perempuan']);;
             $table->longText('address');
             $table->string('phone');
+            $table->foreignId('position_id')->nullable();
+            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });

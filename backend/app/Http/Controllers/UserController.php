@@ -22,8 +22,8 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'string',
-            'phone'     => 'required|unique:users',
+            // 'name'      => 'string',
+            // 'phone'     => 'required|unique:users',
             'email'     => 'required|email|unique:users',
         ]);
 
@@ -45,9 +45,9 @@ class UserController extends Controller
         }
 
         $this->validate($request, [
-            'name'      => 'required|string',
-            'phone'     => $request->phone == $user->phone ? 'required' : 'required|unique:users',
-            'email'     => $request->email == $user->email ? 'required|email' : 'required|email|unique:users',
+            // 'name'      => 'required|string',
+            // 'phone'     => $request->phone = $user->phone ? 'required' : 'required|unique:users',
+            'email'     => $request->email = $user->email ? 'required|email' : 'required|email|unique:users',
         ]);
 
         $data = $request->all();

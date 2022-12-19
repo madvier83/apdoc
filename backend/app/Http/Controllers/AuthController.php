@@ -18,8 +18,6 @@ class AuthController extends Controller
 
         try {
             $user = new User();
-            $user->name     = $request->name ?? null;
-            $user->phone    = $request->phone ?? null;
             $user->email    = $request->email;
             $user->password = app('hash')->make($request->password);
             $user->role_id  = 2;
