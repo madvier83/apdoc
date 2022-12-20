@@ -55,9 +55,6 @@ export default function Position() {
     setPutForm({ [name]: value });
   };
 
-  const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
-  const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
-
   async function getEmployee() {
     try {
       const response = await axios.get("/employee", {
@@ -66,6 +63,7 @@ export default function Position() {
         },
       });
       setEmployees(response.data);
+      setEmployeesLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -79,6 +77,7 @@ export default function Position() {
         },
       });
       setPositions(response.data);
+      setPositionsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -105,7 +104,7 @@ export default function Position() {
 
   async function putEmployee(e) {
     e.preventDefault();
-    console.log(putForm)
+    console.log(putForm);
     try {
       const response = await axios.put(`employee/${putForm.id}`, putForm, {
         headers: {
@@ -194,6 +193,15 @@ export default function Position() {
                 </tr>
               </thead>
               <tbody>
+                {employeesLoading && (
+                  <tr>
+                    <td colSpan={99}>
+                      <div className="flex w-full justify-center my-4">
+                        <img src="/loading.svg" alt="now loading" />
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {employees?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>

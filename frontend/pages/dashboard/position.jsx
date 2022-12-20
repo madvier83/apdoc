@@ -28,6 +28,7 @@ export default function Position() {
         },
       });
       setPosition(response.data);
+      setPostionsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -35,7 +36,6 @@ export default function Position() {
 
   async function addPosition(e) {
     e.preventDefault();
-    // if (!position) return;
     const data = {
       name: position,
     };
@@ -52,7 +52,6 @@ export default function Position() {
       setErrorPosition("");
       getPositions();
     } catch (err) {
-      // console.error(err.response.data.name[0]);
       setErrorPosition(err.response?.data.name[0]);
     }
   }
@@ -72,7 +71,6 @@ export default function Position() {
       updateModalRef.current.click();
       getPositions();
     } catch (err) {
-      // console.error(err.response.data.name[0]);
       setErrorUpdatePosition(err.response?.data.name[0]);
     }
   }
@@ -139,6 +137,15 @@ export default function Position() {
                 </tr>
               </thead>
               <tbody>
+                {positionsLoading && (
+                  <tr>
+                    <td colSpan={99}>
+                      <div className="flex w-full justify-center my-4">
+                        <img src="/loading.svg" alt="now loading" />
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {positions?.map((obj) => {
                   return (
                     <tr key={obj.id}>
@@ -167,7 +174,10 @@ export default function Position() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div className="tooltip tooltip-right" data-tip="Delete">
+                        <div
+                          className="tooltip tooltip-right"
+                          data-tip="Delete"
+                        >
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
