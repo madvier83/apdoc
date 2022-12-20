@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
-import axios from "../api/axios"
+import axios from "../api/axios";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -11,11 +11,14 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
     if (!email && !pwd) return;
-    
+
+    setLoading(true);
+
     const data = {
       email: email,
       password: pwd,
@@ -29,8 +32,10 @@ export default function Login() {
       setEmail("");
       setPwd("");
       router.push("/dashboard");
+      // setLoading(false)
     } catch (e) {
       console.error(e.message);
+      setLoading(false);
     }
   }
 
@@ -95,12 +100,21 @@ export default function Login() {
                     </div>
 
                     <div className="text-center mt-6">
-                      <button
-                        className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                        onClick={handleLogin}
-                      >
-                        Login
-                      </button>
+                      {loading ? (
+                        <button
+                          className="bg-blueGray-600 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                          disabled
+                        >
+                          Loading ...
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                          onClick={handleLogin}
+                        >
+                          Login
+                        </button>
+                      )}
                     </div>
                   </form>
                 </div>
@@ -113,13 +127,17 @@ export default function Login() {
                     className="text-blueGray-200"
                   >
                     <small>
-                      <i className="fas fa-arrow-left mr-2"></i> Back to landing page
+                      <i className="fas fa-arrow-left mr-2"></i> Back to landing
+                      page
                     </small>
                   </Link>
                 </div>
                 <div className="w-1/2 text-right">
                   <Link href="/auth/register" className="text-blueGray-200">
-                    <small>Create new account <i className="fas fa-arrow-right ml-2"></i></small>
+                    <small>
+                      Create new account{" "}
+                      <i className="fas fa-arrow-right ml-2"></i>
+                    </small>
                   </Link>
                 </div>
               </div>

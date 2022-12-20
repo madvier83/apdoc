@@ -6,6 +6,12 @@
   /* .input {
     @apply border-0 px-3 py-3 border-none bg-white placeholder-slate-300 text-sm outline-none w-full;
   } */
+  /* .btn {
+    @apply px-8 py-4
+  } */
+  .btn-success {
+    @apply border-none bg-green-300 !important
+  }
 }
 
 .modal-box {
@@ -28,13 +34,15 @@ html {
 }
 /* Optional: show position indicator in red */
 ::-webkit-scrollbar-thumb {
-  background: #ff0000;
+  background: #10bea7;
 }
 
+select,
 button,
 input[type="button"] {
   outline: none;
 }
+select::-moz-focus-inner,
 button::-moz-focus-inner,
 input[type="button"]::-moz-focus-inner {
   border: 0;

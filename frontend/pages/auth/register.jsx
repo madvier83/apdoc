@@ -34,7 +34,7 @@ export default function Register() {
       setPwd("");
       router.push('/auth/login')
     } catch (e) {
-      console.error(e.message);
+      console.error(e);
     }
   }
 
@@ -66,7 +66,7 @@ export default function Register() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         type="text"
-                        className="input"
+                        className="input w-full"
                         placeholder="John Doe"
                       />
                     </div> */}
@@ -82,7 +82,7 @@ export default function Register() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
-                        className="input"
+                        className="input w-full"
                         placeholder="example@mail.com"
                       />
                     </div>
@@ -98,7 +98,7 @@ export default function Register() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         type="text"
-                        className="input"
+                        className="input w-full"
                         placeholder="+62 xxx xxxx xxxx"
                       />
                     </div> */}
@@ -114,7 +114,7 @@ export default function Register() {
                         value={pwd}
                         onChange={(e) => setPwd(e.target.value)}
                         type="password"
-                        className="input"
+                        className="input w-full"
                         placeholder="min 8 characters"
                       />
                     </div>
@@ -130,7 +130,7 @@ export default function Register() {
                         value={matchPwd}
                         onChange={(e) => setMatchPwd(e.target.value)}
                         type="password"
-                        className="input"
+                        className="input w-full"
                         placeholder="min 8 characters"
                       />
                     </div>

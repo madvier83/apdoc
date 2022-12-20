@@ -12,10 +12,15 @@ export async function middleware(req) {
         if (jwt == undefined) {
             return NextResponse.next()
         } else {
-            const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
-            if(verified) {
-                req.nextUrl.pathname = "/dashboard";
-                return NextResponse.redirect(req.nextUrl);
+            try {
+                const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+                if(verified) {
+                    req.nextUrl.pathname = "/dashboard";
+                    return NextResponse.redirect(req.nextUrl);
+                }
+            } catch(e) {
+                req.cookies.set("token", "", { expires: new Date(Date.now()) });
+                return NextResponse.next();
             }
         }
     }
@@ -25,14 +30,17 @@ export async function middleware(req) {
             req.nextUrl.pathname = "/auth/login";
             return NextResponse.redirect(req.nextUrl);
         } else {
-            const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
-            if(verified) {
-                return NextResponse.next()
-            }else{
+            try {
+                const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+                if(verified) {
+                    return NextResponse.next()
+                }
+            } catch(e) {
                 req.cookies.set("token", "", { expires: new Date(Date.now()) });
                 req.nextUrl.pathname = "/auth/login";
                 return NextResponse.redirect(req.nextUrl);
             }
+            
         }
     }
 

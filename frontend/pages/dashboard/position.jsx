@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
+import { getCookies } from "cookies-next";
+import moment from "moment/moment";
+
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { getCookies } from "cookies-next";
 import ModalBox from "../../components/Modals/ModalBox";
 
 export default function Position() {
@@ -10,11 +12,13 @@ export default function Position() {
   const addModalRef = useRef();
   const updateModalRef = useRef();
 
-  const [positions, setPostions] = useState([]);
+  const [positions, setPosition] = useState([]);
   const [positionsLoading, setPostionsLoading] = useState(true);
 
   const [position, setPostion] = useState("");
-  const [updatePosition, setUpdatePosition] = useState({id: "", name: ""});
+  const [errorPosition, setErrorPosition] = useState("");
+  const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
+  const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
 
   async function getPositions() {
     try {
@@ -23,7 +27,7 @@ export default function Position() {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPostions(response.data);
+      setPosition(response.data);
     } catch (err) {
       console.error(err);
     }
@@ -31,42 +35,45 @@ export default function Position() {
 
   async function addPosition(e) {
     e.preventDefault();
-    if (!position) return;
+    // if (!position) return;
     const data = {
       name: position,
     };
     try {
       const response = await axios.post("/position", data, {
         headers: {
-          "Authorization": "Bearer" + token.token,
+          Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       console.log(response);
       addModalRef.current.click();
       setPostion("");
+      setErrorPosition("");
       getPositions();
     } catch (err) {
-      console.error(err);
+      // console.error(err.response.data.name[0]);
+      setErrorPosition(err.response?.data.name[0]);
     }
   }
 
   async function putPosition(e, id) {
-    e.preventDefault()
+    e.preventDefault();
     const data = {
-      name: updatePosition.name
-    }
+      name: updatePosition.name,
+    };
     try {
       const response = await axios.put(`position/${id}`, data, {
         headers: {
-          "Authorization": "Bearer" + token.token,
+          Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
-        }
-      })
+        },
+      });
       updateModalRef.current.click();
-      getPositions()
-    } catch(err) {
-      console.error(err)
+      getPositions();
+    } catch (err) {
+      // console.error(err.response.data.name[0]);
+      setErrorUpdatePosition(err.response?.data.name[0]);
     }
   }
 
@@ -79,7 +86,7 @@ export default function Position() {
       });
       getPositions();
     } catch (err) {
-      console.error(err);
+      // console.error(err.response.data.name[0]);
     }
   }
 
@@ -96,7 +103,7 @@ export default function Position() {
             "relative flex flex-col min-w-0 break-words w-full mb-32 mt-1 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
           }
         >
-          <div className="rounded-t mb-0 px-4 py-3 border-0">
+          <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>Postition Table</h3>
@@ -117,11 +124,14 @@ export default function Position() {
             <table className="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Acitons
@@ -136,26 +146,36 @@ export default function Position() {
                         <span className={"ml-3 font-bold "}>{obj.name}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {obj.created_at}
+                        {moment(obj.created_at).fromNow()}
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <label
-                          className="bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-update"
-                          onClick={() => setUpdatePosition(obj)}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </label>
-                        <button
-                          className="bg-rose-500 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          onClick={() => deletePosition(obj.id)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+                        <div className="tooltip tooltip-left" data-tip="Edit">
+                          <label
+                            className="bg-green-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-update"
+                            onClick={() => {
+                              setUpdatePosition(obj);
+                              setErrorUpdatePosition("");
+                            }}
+                          >
+                            <i className="fas fa-pen-to-square"></i>
+                          </label>
+                        </div>
+                        <div className="tooltip tooltip-right" data-tip="Delete">
+                          <button
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={() => deletePosition(obj.id)}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -184,9 +204,13 @@ export default function Position() {
                 value={position}
                 onChange={(e) => setPostion(e.target.value)}
               />
-              <label className="label">
-                {/* <span className="label-text-alt">Alt label</span> */}
-              </label>
+              {errorPosition && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {errorPosition}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -196,13 +220,13 @@ export default function Position() {
               >
                 Cancel
               </label>
-              <button className="btn btn-primary rounded-md">Save</button>
+              <button className="btn btn-primary rounded-md">Add</button>
             </div>
           </form>
         </ModalBox>
 
         <ModalBox id="modal-update">
-        <h3 className="font-bold text-lg mb-8">Update Position</h3>
+          <h3 className="font-bold text-lg mb-8">Update Position</h3>
           <form onSubmit={(e) => putPosition(e, updatePosition.id)}>
             <div className="form-control w-full">
               <label className="label">
@@ -213,16 +237,22 @@ export default function Position() {
                 placeholder="Type here"
                 className="input input-bordered input-primary border-slate-300 w-full"
                 value={updatePosition.name}
-                onChange={(e) => setUpdatePosition((prev) => {
-                  return {
-                    ...prev,
-                    name: e.target.value
-                  }
-                })}
+                onChange={(e) =>
+                  setUpdatePosition((prev) => {
+                    return {
+                      ...prev,
+                      name: e.target.value,
+                    };
+                  })
+                }
               />
-              <label className="label">
-                {/* <span className="label-text-alt">Alt label</span> */}
-              </label>
+              {errorUpdatePosition && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {errorUpdatePosition}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -232,7 +262,7 @@ export default function Position() {
               >
                 Cancel
               </label>
-              <button className="btn btn-primary rounded-md">Save</button>
+              <button className="btn btn-success rounded-md">Update</button>
             </div>
           </form>
         </ModalBox>

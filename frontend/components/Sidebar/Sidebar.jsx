@@ -57,7 +57,7 @@ export default function Sidebar() {
               <div className="flex flex-wrap">
                 <div className="w-6/12">
                   <Link
-                    href="#pablo"
+                    href="#"
                     className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
                   >
                     APPDOC
@@ -113,7 +113,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -122,7 +122,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="/dashboard/employee"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -140,7 +140,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -149,7 +149,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -158,7 +158,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -167,7 +167,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -176,7 +176,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -202,7 +202,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -211,7 +211,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -220,7 +220,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -246,7 +246,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -255,7 +255,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -281,7 +281,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -290,7 +290,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -299,7 +299,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -325,7 +325,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -351,7 +351,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -360,7 +360,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -385,7 +385,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -394,7 +394,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#pablo"
+                          href="#"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -411,7 +411,7 @@ export default function Sidebar() {
 
                 <li className="items-center">
                   <Link
-                    href="#pablo"
+                    href="#"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Change
@@ -421,7 +421,7 @@ export default function Sidebar() {
 
                 <li className="items-center">
                   <Link
-                    href="#pablo"
+                    href="#"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
