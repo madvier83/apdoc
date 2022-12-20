@@ -10,16 +10,15 @@ export default function Position() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
-  const updateModalRef = useRef();
+  const putModalRef = useRef();
 
   const [employees, setEmployees] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(true);
   const [positions, setPositions] = useState([]);
   const [positionsLoading, setPositionsLoading] = useState(true);
 
-  const [positionError, setPositionError] = useState("");
-
-  const initialAddForm = {
+  const initialEmployeeForm = {
+    id: "",
     nik: "",
     name: "",
     phone: "",
@@ -29,14 +28,31 @@ export default function Position() {
     birth_place: "",
     position_id: "",
   };
+
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialAddForm
+    initialEmployeeForm
+  );
+  const [addFormError, setAddFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialEmployeeForm
+  );
+  const [putForm, setPutForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialEmployeeForm
+  );
+  const [putFormError, setPutFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialEmployeeForm
   );
 
   const handleAddInput = (event) => {
     const { name, value } = event.target;
     setAddForm({ [name]: value });
+  };
+  const handlePutInput = (event) => {
+    const { name, value } = event.target;
+    setPutForm({ [name]: value });
   };
 
   const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
@@ -70,9 +86,6 @@ export default function Position() {
 
   async function addEmployee(e) {
     e.preventDefault();
-    // if (!position) return;
-    // console.log(addForm)
-    setAddForm(initialAddForm)
     try {
       const response = await axios.post("/employee", addForm, {
         headers: {
@@ -80,32 +93,33 @@ export default function Position() {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       addModalRef.current.click();
       getEmployee();
-      setAddForm(initialAddForm);
+      setAddForm(initialEmployeeForm);
+      setAddFormError(initialEmployeeForm);
     } catch (err) {
-      console.error(err.response.data);
+      setAddFormError(initialEmployeeForm);
+      setAddFormError(err.response?.data);
     }
   }
 
-  async function putEmployee(e, id) {
+  async function putEmployee(e) {
     e.preventDefault();
-    const data = {
-      name: updatePosition.name,
-    };
+    console.log(putForm)
     try {
-      const response = await axios.put(`employee/${id}`, data, {
+      const response = await axios.put(`/employee/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
-      updateModalRef.current.click();
+      putModalRef.current.click();
       getEmployee();
+      setPutForm(initialEmployeeForm);
+      setPutFormError(initialEmployeeForm);
     } catch (err) {
-      // console.error(err.response.data.name[0]);
-      setErrorUpdatePosition(err.response?.data.name[0]);
+      setPutFormError(initialEmployeeForm);
+      setPutFormError(err.response?.data);
     }
   }
 
@@ -215,10 +229,10 @@ export default function Position() {
                           <label
                             className="bg-green-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            htmlFor="modal-update"
+                            htmlFor="modal-put"
                             onClick={() => {
-                              setUpdatePosition(obj);
-                              setErrorUpdatePosition("");
+                              setPutForm(obj);
+                              setPutFormError(initialEmployeeForm);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -245,17 +259,12 @@ export default function Position() {
           </div>
         </div>
 
-        {/* The button to open modal */}
-        {/* <label htmlFor="modal-add" className="btn">
-          open modal
-        </label> */}
-
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4">Add Employee</h3>
           <form onSubmit={addEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label mt-3">
+              <label className="label">
                 <span className="label-text">NIK</span>
               </label>
               <input
@@ -266,14 +275,14 @@ export default function Position() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {positionError && (
-                <label className="label mt-3">
+              {addFormError.nik && (
+                <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {positionError}
+                    {addFormError.nik}
                   </span>
                 </label>
               )}
-              <label className="label mt-3">
+              <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -285,14 +294,14 @@ export default function Position() {
                 autoComplete="new-off"
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {positionError && (
-                <label className="label mt-3">
+              {addFormError.name && (
+                <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {positionError}
+                    {addFormError.name}
                   </span>
                 </label>
               )}
-              <label className="label mt-3">
+              <label className="label">
                 <span className="label-text">Phone</span>
               </label>
               <input
@@ -303,7 +312,14 @@ export default function Position() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              <label className="label mt-3">
+              {addFormError.phone && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.phone}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Address</span>
               </label>
               <textarea
@@ -315,17 +331,17 @@ export default function Position() {
                 rows={3}
                 className="input input-bordered input-primary border-slate-300 w-full h-16"
               ></textarea>
-              {positionError && (
-                <label className="label mt-3">
+              {addFormError.address && (
+                <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {positionError}
+                    {addFormError.address}
                   </span>
                 </label>
               )}
 
               <div className="flex gap-4 w-full">
                 <div className="w-full">
-                  <label className="label mt-3">
+                  <label className="label">
                     <span className="label-text">Birth Place</span>
                   </label>
                   <input
@@ -336,16 +352,16 @@ export default function Position() {
                     placeholder=""
                     className="input input-bordered input-primary border-slate-300 w-full"
                   />
-                  {positionError && (
-                    <label className="label mt-3">
+                  {addFormError.birth_place && (
+                    <label className="label">
                       <span className="label-text-alt text-rose-300">
-                        {positionError}
+                        {addFormError.birth_place}
                       </span>
                     </label>
                   )}
                 </div>
                 <div className="w-full">
-                  <label className="label mt-3">
+                  <label className="label">
                     <span className="label-text">Birth Date</span>
                   </label>
                   <input
@@ -356,49 +372,44 @@ export default function Position() {
                     placeholder=""
                     className="input input-bordered input-primary border-slate-300 w-full"
                   />
-                  {positionError && (
-                    <label className="label mt-3">
+                  {addFormError.birth_date && (
+                    <label className="label">
                       <span className="label-text-alt text-rose-300">
-                        {positionError}
+                        {addFormError.birth_date}
                       </span>
                     </label>
                   )}
                 </div>
                 <div className="w-full">
-                  <label className="label mt-3">
+                  <label className="label">
                     <span className="label-text">Gender</span>
                   </label>
                   <select
-                    type="text"
                     name="gender"
                     value={addForm.gender}
-                    defaultValue={addForm.gender}
                     onChange={(e) => handleAddInput(e)}
                     className="input input-bordered input-primary border-slate-300 w-full"
                   >
-                    <option disabled value="">
-                      Select
-                    </option>
-                    <option value="laki-laki">Male</option>
-                    <option value="perempuan">Female</option>
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
                   </select>
-                  {positionError && (
-                    <label className="label mt-3">
+                  {addFormError.gender && (
+                    <label className="label">
                       <span className="label-text-alt text-rose-300">
-                        {positionError}
+                        {addFormError.gender}
                       </span>
                     </label>
                   )}
                 </div>
               </div>
 
-              <label className="label mt-3">
+              <label className="label">
                 <span className="label-text">Position</span>
               </label>
               <select
                 name="position_id"
-                value={addForm.position}
-                // defaultValue={undefined}
+                value={addForm.position_id}
                 onChange={(e) => handleAddInput(e)}
                 className="input input-bordered input-primary border-slate-300 w-full"
               >
@@ -411,10 +422,10 @@ export default function Position() {
                   );
                 })}
               </select>
-              {positionError && (
-                <label className="label mt-3">
+              {addFormError.position_id && (
+                <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {positionError}
+                    {addFormError.position_id}
                   </span>
                 </label>
               )}
@@ -432,39 +443,181 @@ export default function Position() {
           </form>
         </ModalBox>
 
-        <ModalBox id="modal-update">
-          <h3 className="font-bold text-lg mb-8">Update Position</h3>
-          <form onSubmit={(e) => putEmployee(e, updatePosition.id)}>
+        <ModalBox id="modal-put">
+          <h3 className="font-bold text-lg mb-4">Update Employee</h3>
+          <form onSubmit={putEmployee} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label mt-3">
-                <span className="label-text">Position name</span>
+              <label className="label">
+                <span className="label-text">NIK</span>
               </label>
               <input
                 type="text"
+                name="nik"
+                value={putForm.nik}
+                onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-                value={updatePosition.name}
-                onChange={(e) =>
-                  setUpdatePosition((prev) => {
-                    return {
-                      ...prev,
-                      name: e.target.value,
-                    };
-                  })
-                }
               />
-              {errorUpdatePosition && (
-                <label className="label mt-3">
+              {putFormError.nik && (
+                <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {errorUpdatePosition}
+                    {putFormError.nik}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={putForm.name}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                autoComplete="new-off"
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.name && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.name}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Phone</span>
+              </label>
+              <input
+                type="text"
+                name="phone"
+                value={putForm.phone}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.phone && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.phone}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={putForm.address}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {putFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.address}
+                  </span>
+                </label>
+              )}
+
+              <div className="flex gap-4 w-full">
+                <div className="w-full">
+                  <label className="label">
+                    <span className="label-text">Birth Place</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="birth_place"
+                    value={putForm.birth_place}
+                    onChange={(e) => handlePutInput(e)}
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.birth_place && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.birth_place}
+                      </span>
+                    </label>
+                  )}
+                </div>
+                <div className="w-full">
+                  <label className="label">
+                    <span className="label-text">Birth Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="birth_date"
+                    value={putForm.birth_date}
+                    onChange={(e) => handlePutInput(e)}
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.birth_date && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.birth_date}
+                      </span>
+                    </label>
+                  )}
+                </div>
+                <div className="w-full">
+                  <label className="label">
+                    <span className="label-text">Gender</span>
+                  </label>
+                  <select
+                    name="gender"
+                    value={putForm.gender}
+                    onChange={(e) => handlePutInput(e)}
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                  {putFormError.gender && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.gender}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              <label className="label">
+                <span className="label-text">Position</span>
+              </label>
+              <select
+                name="position_id"
+                value={putForm.position_id}
+                onChange={(e) => handlePutInput(e)}
+                className="input input-bordered input-primary border-slate-300 w-full"
+              >
+                <option value="">Unasigned</option>
+                {positions.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {putFormError.position_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.position_id}
                   </span>
                 </label>
               )}
             </div>
             <div className="modal-action rounded-sm">
               <label
-                htmlFor="modal-update"
-                ref={updateModalRef}
+                htmlFor="modal-put"
+                ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel

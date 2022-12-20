@@ -10,8 +10,13 @@ export default function Register() {
   const router = useRouter()
 
   const [email, setEmail] = useState("")
-  const [pwd, setPwd] = useState("");
+  const [emailError, setEmailError] = useState("")
+
+  const [pwd, setPwd] = useState("")
+  const [pwdError, setPwdError] = useState("")
+
   const [matchPwd, setMatchPwd] = useState("")
+  const [matchPwdError, setMatchPwdError] = useState("")
 
   useEffect(() => {
 
@@ -19,22 +24,31 @@ export default function Register() {
 
   async function handleRegister(e) {
     e.preventDefault();
-    if(pwd !== matchPwd) return;
+    if(pwd !== matchPwd) {
+      setMatchPwdError("Password doesn't match")
+      console.log(matchPwdError)
+      setPwd("")
+      setMatchPwd("")
+    };
+    
+    setMatchPwdError("")
     
     const data = {
       email: email,
       password: pwd,
     };
+
     try {
       const response = await axios.post("register", data, {
         "Content-Type": "application/json",
       });
-      console.log(response.data);
       setEmail("");
       setPwd("");
       router.push('/auth/login')
     } catch (e) {
-      console.error(e);
+      // console.error(e.response.data);
+      e.response.data.email ? setEmailError(e.response.data.email[0]) : setEmailError("")
+      e.response.data.password ? setPwdError(e.response.data.password[0]) : setPwdError("")
     }
   }
 
@@ -58,7 +72,6 @@ export default function Register() {
                   {/* <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password"
                       >
                         Full Name
                       </label>
@@ -74,7 +87,6 @@ export default function Register() {
                     <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password"
                       >
                         Email
                       </label>
@@ -82,15 +94,19 @@ export default function Register() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
-                        className="input w-full"
+                        className={`input w-full ${pwdError ? "border-rose-500" : null}`}
                         placeholder="example@mail.com"
                       />
+                      <label
+                        className="block text-rose-500 text-xs mb-2 mt-2"
+                      >
+                        {emailError}
+                      </label>
                     </div>
                     
                     {/* <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password"
                       >
                         Phone
                       </label>
@@ -106,7 +122,6 @@ export default function Register() {
                     <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password"
                       >
                         Password
                       </label>
@@ -114,15 +129,19 @@ export default function Register() {
                         value={pwd}
                         onChange={(e) => setPwd(e.target.value)}
                         type="password"
-                        className="input w-full"
+                        className={`input w-full ${pwdError ? "border-rose-500" : null}`}
                         placeholder="min 8 characters"
                       />
+                      <label
+                        className="block text-rose-500 text-xs mb-2 mt-2"
+                      >
+                        {pwdError}
+                      </label>
                     </div>
 
                     <div className="relative w-full mb-3">
                       <label
                         className="block text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password"
                       >
                         Confirm Password
                       </label>
@@ -130,9 +149,14 @@ export default function Register() {
                         value={matchPwd}
                         onChange={(e) => setMatchPwd(e.target.value)}
                         type="password"
-                        className="input w-full"
+                        className={`input w-full ${matchPwdError ? "border-rose-500" : null}`}
                         placeholder="min 8 characters"
                       />
+                      <label
+                        className="block text-rose-500 text-xs mb-2 mt-2"
+                      >
+                        {matchPwdError}
+                      </label>
                     </div>
 
                     <div className="text-center mt-8">
