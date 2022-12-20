@@ -87,7 +87,7 @@ export default function Position() {
   async function addEmployee(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("/employee", addForm, {
+      const response = await axios.post("employee", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export default function Position() {
     e.preventDefault();
     console.log(putForm)
     try {
-      const response = await axios.put(`/employee/${putForm.id}`, putForm, {
+      const response = await axios.put(`employee/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -123,16 +123,16 @@ export default function Position() {
     }
   }
 
-  async function deletePosition(id) {
+  async function deleteEmployee(id) {
     try {
-      const response = await axios.delete(`position/${id}`, {
+      const response = await axios.delete(`employee/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
       getEmployee();
     } catch (err) {
-      // console.error(err.response.data.name[0]);
+      console.error(err);
     }
   }
 
@@ -245,7 +245,7 @@ export default function Position() {
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            onClick={() => deletePosition(obj.id)}
+                            onClick={() => deleteEmployee(obj.id)}
                           >
                             <i className="fas fa-trash"></i>
                           </button>
