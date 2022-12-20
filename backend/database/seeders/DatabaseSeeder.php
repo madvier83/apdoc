@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Clinic;
+use App\Models\Diagnose;
 use App\Models\Employee;
-use App\Models\Klinik;
 use App\Models\Position;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,9 +23,11 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
         ]);
 
-        User::factory(4)->create();
-        Klinik::factory(5)->create();
+        User::factory(5)->create();
+        Clinic::factory(5)->create();
         Position::factory(5)->create();
         Employee::factory(5)->create();
+        Diagnose::factory(5)->create();
+        Service::factory(5)->create();
     }
 }

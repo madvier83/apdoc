@@ -27,17 +27,19 @@ $router->post('/login', 'AuthController@login');
 $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/logout', 'AuthController@logout');
 
+	// ADMIN
+
 	$router->get('/user', 'UserController@index');
 	$router->get('/user/{id}', 'UserController@show');
 	$router->post('/user', 'UserController@create');
 	$router->put('/user/{id}', 'UserController@update');
 	$router->delete('/user/{id}', 'UserController@destroy');
 
-	$router->get('/klinik', 'KlinikController@index');
-	$router->get('/klinik/{id}', 'KlinikController@show');
-	$router->post('/klinik', 'KlinikController@create');
-	$router->put('/klinik/{id}', 'KlinikController@update');
-	$router->delete('/klinik/{id}', 'KlinikController@destroy');
+	$router->get('/clinic', 'ClinicController@index');
+	$router->get('/clinic/{id}', 'ClinicController@show');
+	$router->post('/clinic', 'ClinicController@create');
+	$router->put('/clinic/{id}', 'ClinicController@update');
+	$router->delete('/clinic/{id}', 'ClinicController@destroy');
 
 	$router->get('/patient', 'PatientController@index');
 	$router->get('/patient/{id}', 'PatientController@show');
@@ -56,4 +58,16 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/employee', 'EmployeeController@create');
 	$router->put('/employee/{id}', 'EmployeeController@update');
 	$router->delete('/employee/{id}', 'EmployeeController@destroy');
+
+	$router->get('/diagnose', 'DiagnoseController@index');
+	$router->get('/diagnose/{id}', 'DiagnoseController@show');
+	$router->post('/diagnose', 'DiagnoseController@create');
+	$router->put('/diagnose/{id}', 'DiagnoseController@update');
+	$router->delete('/diagnose/{id}', 'DiagnoseController@destroy');
+
+	$router->get('/service', 'ServiceController@index');
+	$router->get('/service/{id}', 'ServiceController@show');
+	$router->post('/service', 'ServiceController@create');
+	$router->put('/service/{id}', 'ServiceController@update');
+	$router->delete('/service/{id}', 'ServiceController@destroy');
 });

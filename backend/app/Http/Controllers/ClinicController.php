@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Klinik;
+use App\Models\Clinic;
 use Illuminate\Http\Request;
 
 class KlinikController extends Controller
 {
     public function index()
     {
-        $klinik = Klinik::all();
-        return response()->json($klinik);
+        $clinic = Clinic::all();
+        return response()->json($clinic);
     }
 
     public function show($id)
     {
-        $klinik = Klinik::find($id);
-        return response()->json($klinik);
+        $clinic = Clinic::find($id);
+        return response()->json($clinic);
     }
 
     public function create(Request $request)
@@ -32,17 +32,17 @@ class KlinikController extends Controller
         ]);
 
         $data = $request->all();
-        $klinik = Klinik::create($data);
+        $clinic = Clinic::create($data);
 
-        return response()->json($klinik);
+        return response()->json($clinic);
     }
 
     public function update(Request $request, $id)
     {
-        $klinik = Klinik::find($id);
+        $clinic = Clinic::find($id);
 
-        if (!$klinik) {
-            return response()->json(['message' => 'Klinik not found!'], 404);
+        if (!$clinic) {
+            return response()->json(['message' => 'Clinic not found!'], 404);
         }
 
         $this->validate($request, [
@@ -57,21 +57,21 @@ class KlinikController extends Controller
 
         $data = $request->all();
 
-        $klinik->fill($data);
+        $clinic->fill($data);
 
-        $klinik->save();
-        return response()->json($klinik);
+        $clinic->save();
+        return response()->json($clinic);
     }
 
     public function destroy($id)
     {
-        $klinik = Klinik::find($id);
+        $clinic = Clinic::find($id);
 
-        if (!$klinik) {
-            return response()->json(['message' => 'Klinik not found!'], 404);
+        if (!$clinic) {
+            return response()->json(['message' => 'Clinic not found!'], 404);
         }
 
-        $klinik->delete();
-        return response()->json(['message' => 'Klinik deleted successfully!']);
+        $clinic->delete();
+        return response()->json(['message' => 'Clinic deleted successfully!']);
     }
 }

@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Klinik;
+use App\Models\Clinic;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class KlinikFactory extends Factory
+class ClinicFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Klinik::class;
+    protected $model = Clinic::class;
 
     /**
      * Define the model's default state.

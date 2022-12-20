@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('outlet_id')->nullable();
             $table->foreignId('employee_id')->nullable();
             $table->string('appdoc_id')->nullable();
+            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }
