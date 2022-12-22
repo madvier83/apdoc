@@ -11,6 +11,7 @@ export default function Employee() {
 
   const addModalRef = useRef();
   const putModalRef = useRef();
+  const detailModalRef = useRef();
 
   const [employees, setEmployees] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(true);
@@ -169,7 +170,7 @@ export default function Employee() {
             <table className="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
-                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
@@ -205,7 +206,7 @@ export default function Employee() {
                 {employees?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>
-                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                         <span className={"ml-3 font-bold "}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
@@ -233,6 +234,22 @@ export default function Employee() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <div
+                          className="tooltip tooltip-left"
+                          data-tip="Details"
+                        >
+                          <label
+                            className="bg-cyan-500 text-white active:bg-cyan-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-details"
+                            onClick={() => {
+                              setPutForm(obj);
+                              setPutFormError(initialEmployeeForm);
+                            }}
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                        </div>
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-green-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -247,7 +264,7 @@ export default function Employee() {
                           </label>
                         </div>
                         <div
-                          className="tooltip tooltip-right"
+                          className="tooltip tooltip-left"
                           data-tip="Delete"
                         >
                           <button
@@ -452,7 +469,7 @@ export default function Employee() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Employee</h3>
+          <h3 className="font-bold text-lg mb-4">Edit Employee</h3>
           <form onSubmit={putEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -630,9 +647,133 @@ export default function Employee() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success rounded-md">Update</button>
+              <button className="btn btn-success rounded-md">Save</button>
             </div>
           </form>
+        </ModalBox>
+
+        <ModalBox id="modal-details">
+          <h3 className="font-bold text-lg mb-4">Detail Employee</h3>
+
+          <input type="hidden" autoComplete="off" />
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">NIK</span>
+            </label>
+            <input
+              type="text"
+              value={putForm.nik}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            />
+            <label className="label">
+              <span className="label-text">Name</span>
+            </label>
+            <input
+              type="text"
+              value={putForm.name}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            />
+            <label className="label">
+              <span className="label-text">Phone</span>
+            </label>
+            <input
+              type="text"
+              value={putForm.phone}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            />
+            <label className="label">
+              <span className="label-text">Address</span>
+            </label>
+            <textarea
+              type="text"
+              rows={3}
+              value={putForm.birth_place}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full h-16"
+            ></textarea>
+            <div className="flex gap-4 w-full">
+              <div className="w-full">
+                <label className="label">
+                  <span className="label-text">Birth Place</span>
+                </label>
+                <input
+                  type="text"
+                  value={putForm.birth_place}
+                  onChange={() => {}}
+                  disabled
+                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                />
+              </div>
+              <div className="w-full">
+                <label className="label">
+                  <span className="label-text">Birth Date</span>
+                </label>
+                <input
+                  type="date"
+                  value={putForm.birth_date}
+                  onChange={() => {}}
+                  disabled
+                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                />
+              </div>
+              <div className="w-full">
+                <label className="label">
+                  <span className="label-text">Gender</span>
+                </label>
+                <select
+                  name="gender"
+                  value={putForm.gender}
+                  onChange={() => {}}
+                  disabled
+                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+
+            <label className="label">
+              <span className="label-text">Position</span>
+            </label>
+            <select
+              name="position_id"
+              value={putForm.position_id}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            >
+              <option value="">Unasigned</option>
+              {positions.map((obj) => {
+                return (
+                  <option key={obj.id} value={obj.id}>
+                    {obj.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="modal-action rounded-sm">
+            <button className="btn btn-ghost rounded-md" onClick={() => {
+              detailModalRef.current.click()
+              setTimeout(() => putModalRef.current.click(), 120)
+            }}>Edit</button>
+            <label
+              htmlFor="modal-details"
+              ref={detailModalRef}
+              className="btn bg-slate-600 border-none text-white rounded-md"
+            >
+              Close
+            </label>
+          </div>
         </ModalBox>
       </DashboardLayout>
     </>

@@ -12,6 +12,9 @@
   .btn-success {
     @apply border-none bg-green-300 !important
   }
+  .tooltip {
+    @apply z-50 !important
+  }
 }
 
 .modal-box {
