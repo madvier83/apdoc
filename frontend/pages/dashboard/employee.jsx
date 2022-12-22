@@ -152,7 +152,8 @@ export default function Employee() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}>Employee Table</h3>
+                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i>  Employee Table</h3>
+                
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -239,7 +240,7 @@ export default function Employee() {
                           data-tip="Detail"
                         >
                           <label
-                            className="bg-cyan-500 text-white active:bg-cyan-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
                             htmlFor="modal-details"
                             onClick={() => {

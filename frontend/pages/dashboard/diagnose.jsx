@@ -129,7 +129,9 @@ export default function Diagnose() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}>Diagnose Table</h3>
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Diagnose Table
+                </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -184,14 +186,33 @@ export default function Diagnose() {
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-4 min-w-full">
-                        <span
-                          className={"font-bold ml-3 text-xl cursor-pointer"}
-                        >
+                        <span className={"font-bold ml-3 text-xl"}>
                           {obj.code}
                         </span>
                       </td>
                       <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>{obj.description.slice(0, 40)} ...</span>
+                        <label htmlFor={`detail-${obj.id}`}>
+                          <span>{obj.description.slice(0, 40)} ...</span>
+                        </label>
+                        <input
+                          type="checkbox"
+                          id={`detail-${obj.id}`}
+                          className="modal-toggle"
+                        />
+                        <label
+                          htmlFor={`detail-${obj.id}`}
+                          className="modal cursor-pointer"
+                        >
+                          <label
+                            className="modal-box px-16 py-8 bg-primary text-primary-content max-w-md relative"
+                            htmlFor=""
+                          >
+                            <h3 className="text-3xl font-bold">{obj.code}</h3>
+                            <p className="py-4 opacity-90 text-base whitespace-pre-wrap">
+                              {obj.description}
+                            </p>
+                          </label>
+                        </label>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).fromNow()}
@@ -200,10 +221,15 @@ export default function Diagnose() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Edit"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Detail">
+                          <label
+                            htmlFor={`detail-${obj.id}`}
+                            className="bg-violet-400 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                        </div>
+                        <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-green-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -216,10 +242,7 @@ export default function Diagnose() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
