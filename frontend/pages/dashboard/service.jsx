@@ -63,7 +63,7 @@ export default function Service() {
     }
   }
 
-  async function addEmployee(e) {
+  async function addService(e) {
     e.preventDefault();
     try {
       const response = await axios.post("service", addForm, {
@@ -82,7 +82,7 @@ export default function Service() {
     }
   }
 
-  async function putEmployee(e) {
+  async function putService(e) {
     e.preventDefault();
     console.log(putForm);
     try {
@@ -102,7 +102,7 @@ export default function Service() {
     }
   }
 
-  async function deleteEmployee(id) {
+  async function deleteService(id) {
     try {
       const response = await axios.delete(`service/${id}`, {
         headers: {
@@ -221,13 +221,13 @@ export default function Service() {
                           </label>
                         </div>
                         <div
-                          className="tooltip tooltip-right"
+                          className="tooltip tooltip-left"
                           data-tip="Delete"
                         >
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            onClick={() => deleteEmployee(obj.id)}
+                            onClick={() => deleteService(obj.id)}
                           >
                             <i className="fas fa-trash"></i>
                           </button>
@@ -243,7 +243,7 @@ export default function Service() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4">Add Service</h3>
-          <form onSubmit={addEmployee} autoComplete="off">
+          <form onSubmit={addService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -316,8 +316,8 @@ export default function Service() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Employee</h3>
-          <form onSubmit={putEmployee} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Service</h3>
+          <form onSubmit={putService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">

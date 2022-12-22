@@ -102,7 +102,7 @@ export default function Sidebar() {
 
                   {adminMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      {/* <li className="items-center">
                         <Link
                           href="/dashboard/user"
                           className={"text-xs py-3 font-bold block "}
@@ -119,6 +119,15 @@ export default function Sidebar() {
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
                           Access
                         </Link>
+                      </li> */}
+                      <li className="items-center">
+                        <Link
+                          href="/dashboard/position"
+                          className={"text-xs py-3 font-bold block "}
+                        >
+                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          Position
+                        </Link>
                       </li>
                       <li className="items-center">
                         <Link
@@ -127,15 +136,6 @@ export default function Sidebar() {
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
                           Employee
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="/dashboard/position"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Position
                         </Link>
                       </li>
                       <li className="items-center">
@@ -149,14 +149,14 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#"
+                          href="/dashboard/diagnose"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Diagnosa
+                          Diagnose
                         </Link>
                       </li>
-                      <li className="items-center">
+                      {/* <li className="items-center">
                         <Link
                           href="#"
                           className={"text-xs py-3 font-bold block "}
@@ -182,7 +182,7 @@ export default function Sidebar() {
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
                           Outcome
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   )}
 

@@ -1,101 +1,126 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
+import numeral from "numeral";
 
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 
-export default function Position() {
+export default function Diagnose() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
-  const updateModalRef = useRef();
+  const putModalRef = useRef();
 
-  const [positions, setPosition] = useState([]);
-  const [positionsLoading, setPostionsLoading] = useState(true);
+  const [diagnosis, setDiagnosis] = useState([]);
+  const [diagnosisLoading, setDiagnosisLoading] = useState(true);
 
-  const [position, setPostion] = useState("");
-  const [errorPosition, setErrorPosition] = useState("");
-  const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
-  const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
+  const initialDiagnosisForm = {
+    id: "",
+    code: "",
+    description: "",
+  };
 
-  async function getPositions() {
+  const [addForm, setAddForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialDiagnosisForm
+  );
+  const [addFormError, setAddFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialDiagnosisForm
+  );
+  const [putForm, setPutForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialDiagnosisForm
+  );
+  const [putFormError, setPutFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialDiagnosisForm
+  );
+
+  const handleAddInput = (event) => {
+    const { name, value } = event.target;
+    setAddForm({ [name]: value });
+  };
+  const handlePutInput = (event) => {
+    const { name, value } = event.target;
+    setPutForm({ [name]: value });
+  };
+
+  async function getDiagnosis() {
     try {
-      const response = await axios.get("/position", {
+      const response = await axios.get("diagnose", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPosition(response.data);
-      setPostionsLoading(false);
+      setDiagnosis(response.data);
+      setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addPosition(e) {
+  async function addDiagnosis(e) {
     e.preventDefault();
-    const data = {
-      name: position,
-    };
     try {
-      const response = await axios.post("/position", data, {
+      const response = await axios.post("diagnose", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       addModalRef.current.click();
-      setPostion("");
-      setErrorPosition("");
-      getPositions();
+      getDiagnosis();
+      setAddForm(initialDiagnosisForm);
+      setAddFormError(initialDiagnosisForm);
     } catch (err) {
-      setErrorPosition(err.response?.data.name[0]);
+      setAddFormError(initialDiagnosisForm);
+      setAddFormError(err.response?.data);
     }
   }
 
-  async function putPosition(e, id) {
+  async function putDiagnosis(e) {
     e.preventDefault();
-    const data = {
-      name: updatePosition.name,
-    };
+    console.log(putForm);
     try {
-      const response = await axios.put(`position/${id}`, data, {
+      const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
-      updateModalRef.current.click();
-      getPositions();
+      putModalRef.current.click();
+      getDiagnosis();
+      setPutForm(initialDiagnosisForm);
+      setPutFormError(initialDiagnosisForm);
     } catch (err) {
-      setErrorUpdatePosition(err.response?.data.name[0]);
+      setPutFormError(initialDiagnosisForm);
+      setPutFormError(err.response?.data);
     }
   }
 
-  async function deletePosition(id) {
+  async function deleteDiagnosis(id) {
     try {
-      const response = await axios.delete(`position/${id}`, {
+      const response = await axios.delete(`diagnose/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getPositions();
+      getDiagnosis();
     } catch (err) {
-      // console.error(err.response.data.name[0]);
+      console.error(err);
     }
   }
 
   useEffect(() => {
-    getPositions();
-    // console.log(positions);
+    getDiagnosis();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Position">
+      <DashboardLayout title="Diagnose">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mb-32 mt-1 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -104,7 +129,7 @@ export default function Position() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}>Postition Table</h3>
+                <h3 className={"font-semibold text-lg "}>Diagnose Table</h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -119,14 +144,17 @@ export default function Position() {
           </div>
           <div className="block w-full overflow-x-auto">
             {/* Projects table */}
-            <table className="items-center w-full bg-transparent border-collapse">
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead>
                 <tr>
-                  <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Code
+                  </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                    Description
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -140,7 +168,7 @@ export default function Position() {
                 </tr>
               </thead>
               <tbody>
-                {positionsLoading && (
+                {diagnosisLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -149,14 +177,21 @@ export default function Position() {
                     </td>
                   </tr>
                 )}
-                {positions?.map((obj, index) => {
+                {diagnosis?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                        <span className={"ml-3 font-bold"}>{obj.name}</span>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-4 min-w-full">
+                        <span
+                          className={"font-bold ml-3 text-xl cursor-pointer"}
+                        >
+                          {obj.code}
+                        </span>
+                      </td>
+                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <span>{obj.description.slice(0, 40)} ...</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).fromNow()}
@@ -165,16 +200,17 @@ export default function Position() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
-                        Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                        <div
+                          className="tooltip tooltip-left"
+                          data-tip="Edit"
+                        >
                           <label
                             className="bg-green-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            htmlFor="modal-update"
+                            htmlFor="modal-put"
                             onClick={() => {
-                              setUpdatePosition(obj);
-                              setErrorUpdatePosition("");
+                              setPutForm(obj);
+                              setPutFormError(initialDiagnosisForm);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -187,7 +223,7 @@ export default function Position() {
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            onClick={() => deletePosition(obj.id)}
+                            onClick={() => deleteDiagnosis(obj.id)}
                           >
                             <i className="fas fa-trash"></i>
                           </button>
@@ -201,29 +237,45 @@ export default function Position() {
           </div>
         </div>
 
-        {/* The button to open modal */}
-        {/* <label htmlFor="modal-add" className="btn">
-          open modal
-        </label> */}
-
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-8">Add Position</h3>
-          <form onSubmit={addPosition}>
+          <h3 className="font-bold text-lg mb-4">Add Diagnose</h3>
+          <form onSubmit={addDiagnosis} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Code</span>
               </label>
               <input
                 type="text"
-                placeholder="Type here"
+                name="code"
+                value={addForm.code}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-                value={position}
-                onChange={(e) => setPostion(e.target.value)}
               />
-              {errorPosition && (
+              {addFormError.code && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {errorPosition}
+                    {addFormError.code}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Description</span>
+              </label>
+              <textarea
+                type="text"
+                name="description"
+                value={addForm.description}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                rows={6}
+                className="input input-bordered input-primary border-slate-300 w-full h-32"
+              ></textarea>
+              {addFormError.description && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.description}
                   </span>
                 </label>
               )}
@@ -241,39 +293,53 @@ export default function Position() {
           </form>
         </ModalBox>
 
-        <ModalBox id="modal-update">
-          <h3 className="font-bold text-lg mb-8">Update Position</h3>
-          <form onSubmit={(e) => putPosition(e, updatePosition.id)}>
+        <ModalBox id="modal-put">
+          <h3 className="font-bold text-lg mb-4">Update Diagnose</h3>
+          <form onSubmit={putDiagnosis} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Code</span>
               </label>
               <input
                 type="text"
-                placeholder="Type here"
+                name="code"
+                value={putForm.code}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-                value={updatePosition.name}
-                onChange={(e) =>
-                  setUpdatePosition((prev) => {
-                    return {
-                      ...prev,
-                      name: e.target.value,
-                    };
-                  })
-                }
               />
-              {errorUpdatePosition && (
+              {putFormError.code && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {errorUpdatePosition}
+                    {putFormError.code}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Description</span>
+              </label>
+              <textarea
+                type="text"
+                name="description"
+                value={putForm.description}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={6}
+                className="input input-bordered input-primary border-slate-300 w-full h-32"
+              ></textarea>
+              {putFormError.description && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.description}
                   </span>
                 </label>
               )}
             </div>
             <div className="modal-action rounded-sm">
               <label
-                htmlFor="modal-update"
-                ref={updateModalRef}
+                htmlFor="modal-put"
+                ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel

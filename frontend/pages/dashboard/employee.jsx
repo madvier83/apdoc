@@ -236,7 +236,7 @@ export default function Employee() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         <div
                           className="tooltip tooltip-left"
-                          data-tip="Details"
+                          data-tip="Detail"
                         >
                           <label
                             className="bg-cyan-500 text-white active:bg-cyan-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -263,10 +263,7 @@ export default function Employee() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <button
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -762,10 +759,15 @@ export default function Employee() {
             </select>
           </div>
           <div className="modal-action rounded-sm">
-            <button className="btn btn-ghost rounded-md" onClick={() => {
-              detailModalRef.current.click()
-              setTimeout(() => putModalRef.current.click(), 120)
-            }}>Edit</button>
+            <button
+              className="btn btn-ghost rounded-md"
+              onClick={() => {
+                detailModalRef.current.click();
+                setTimeout(() => putModalRef.current.click(), 120);
+              }}
+            >
+              Edit
+            </button>
             <label
               htmlFor="modal-details"
               ref={detailModalRef}
