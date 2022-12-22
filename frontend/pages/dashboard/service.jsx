@@ -1,23 +1,22 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
+import numeral from "numeral";
 
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 
-export default function Employee() {
+export default function Service() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [employees, setEmployees] = useState([]);
-  const [employeesLoading, setEmployeesLoading] = useState(true);
-  const [positions, setPositions] = useState([]);
-  const [positionsLoading, setPositionsLoading] = useState(true);
+  const [services, setServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
 
-  const initialEmployeeForm = {
+  const initialServiceForm = {
     id: "",
     nik: "",
     name: "",
@@ -31,19 +30,19 @@ export default function Employee() {
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialServiceForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialServiceForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialServiceForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialServiceForm
   );
 
   const handleAddInput = (event) => {
@@ -55,29 +54,15 @@ export default function Employee() {
     setPutForm({ [name]: value });
   };
 
-  async function getEmployee() {
+  async function getServices() {
     try {
-      const response = await axios.get("/employee", {
+      const response = await axios.get("/service", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setEmployees(response.data);
-      setEmployeesLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function getPositions() {
-    try {
-      const response = await axios.get("/position", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      setPositions(response.data);
-      setPositionsLoading(false);
+      setServices(response.data);
+      setServicesLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -93,11 +78,11 @@ export default function Employee() {
         },
       });
       addModalRef.current.click();
-      getEmployee();
-      setAddForm(initialEmployeeForm);
-      setAddFormError(initialEmployeeForm);
+      getServices();
+      setAddForm(initialServiceForm);
+      setAddFormError(initialServiceForm);
     } catch (err) {
-      setAddFormError(initialEmployeeForm);
+      setAddFormError(initialServiceForm);
       setAddFormError(err.response?.data);
     }
   }
@@ -113,11 +98,11 @@ export default function Employee() {
         },
       });
       putModalRef.current.click();
-      getEmployee();
-      setPutForm(initialEmployeeForm);
-      setPutFormError(initialEmployeeForm);
+      getServices();
+      setPutForm(initialServiceForm);
+      setPutFormError(initialServiceForm);
     } catch (err) {
-      setPutFormError(initialEmployeeForm);
+      setPutFormError(initialServiceForm);
       setPutFormError(err.response?.data);
     }
   }
@@ -129,20 +114,19 @@ export default function Employee() {
           Authorization: "Bearer" + token.token,
         },
       });
-      getEmployee();
+      getServices();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getEmployee();
-    getPositions();
+    getServices();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Employee">
+      <DashboardLayout title="Service">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mb-32 mt-1 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -151,7 +135,7 @@ export default function Employee() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}>Employee Table</h3>
+                <h3 className={"font-semibold text-lg "}>Service Table</h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -173,13 +157,13 @@ export default function Employee() {
                     #
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                    Service
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Position
+                    Price
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Phone
+                    Commision
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -193,7 +177,7 @@ export default function Employee() {
                 </tr>
               </thead>
               <tbody>
-                {employeesLoading && (
+                {servicesLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -202,7 +186,7 @@ export default function Employee() {
                     </td>
                   </tr>
                 )}
-                {employees?.map((obj, index) => {
+                {services?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>
                       <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
@@ -213,18 +197,13 @@ export default function Employee() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         <span className={"font-bold capitalize"}>
-                          <i
-                            className={`fas fa-circle mr-2 ${
-                              obj.position?.name
-                                ? "text-emerald-400"
-                                : "text-orange-400"
-                            }`}
-                          ></i>{" "}
-                          {obj.position?.name ? obj.position.name : "unasigned"}
+                          Rp. {numeral(obj.price).format("0,0")}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span className={"font-bold"}>{obj.phone}</span>
+                        <span className={"font-bold"}>
+                          Rp. {numeral(obj.commission).format("0,0")}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).fromNow()}
@@ -240,7 +219,7 @@ export default function Employee() {
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialEmployeeForm);
+                              setPutFormError(initialServiceForm);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -422,21 +401,7 @@ export default function Employee() {
                 className="input input-bordered input-primary border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
               </select>
-              {addFormError.position_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.position_id}
-                  </span>
-                </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -606,13 +571,6 @@ export default function Employee() {
                 className="input input-bordered input-primary border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
               </select>
               {putFormError.position_id && (
                 <label className="label">

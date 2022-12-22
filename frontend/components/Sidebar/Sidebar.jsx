@@ -140,7 +140,7 @@ export default function Sidebar() {
                       </li>
                       <li className="items-center">
                         <Link
-                          href="#"
+                          href="/dashboard/service"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
