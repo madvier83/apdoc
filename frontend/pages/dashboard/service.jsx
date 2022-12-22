@@ -18,14 +18,9 @@ export default function Service() {
 
   const initialServiceForm = {
     id: "",
-    nik: "",
     name: "",
-    phone: "",
-    address: "",
-    gender: "",
-    birth_date: "",
-    birth_place: "",
-    position_id: "",
+    price: "",
+    commission: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -71,7 +66,7 @@ export default function Service() {
   async function addEmployee(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("employee", addForm, {
+      const response = await axios.post("service", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -91,7 +86,7 @@ export default function Service() {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`employee/${putForm.id}`, putForm, {
+      const response = await axios.put(`service/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -109,7 +104,7 @@ export default function Service() {
 
   async function deleteEmployee(id) {
     try {
-      const response = await axios.delete(`employee/${id}`, {
+      const response = await axios.delete(`service/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -247,28 +242,10 @@ export default function Service() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Employee</h3>
+          <h3 className="font-bold text-lg mb-4">Add Service</h3>
           <form onSubmit={addEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">NIK</span>
-              </label>
-              <input
-                type="text"
-                name="nik"
-                value={addForm.nik}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.nik && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.nik}
-                  </span>
-                </label>
-              )}
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
@@ -278,7 +255,6 @@ export default function Service() {
                 value={addForm.name}
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
-                autoComplete="new-off"
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.name && (
@@ -289,119 +265,42 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Price</span>
               </label>
               <input
                 type="text"
-                name="phone"
-                value={addForm.phone}
+                name="price"
+                value={addForm.price}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                autoComplete="new-off"
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.price}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Commission</span>
+              </label>
+              <input
+                type="text"
+                name="commission"
+                value={addForm.commission}
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.phone && (
+              {addFormError.commission && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.phone}
+                    {addFormError.commission}
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={addForm.address}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {addFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.address}
-                  </span>
-                </label>
-              )}
-
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Place</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="birth_place"
-                    value={addForm.birth_place}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.birth_place && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.birth_place}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Date</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    value={addForm.birth_date}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.birth_date && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.birth_date}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Gender</span>
-                  </label>
-                  <select
-                    name="gender"
-                    value={addForm.gender}
-                    onChange={(e) => handleAddInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  {addFormError.gender && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.gender}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div>
-
-              <label className="label">
-                <span className="label-text">Position</span>
-              </label>
-              <select
-                name="position_id"
-                value={addForm.position_id}
-                onChange={(e) => handleAddInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-              </select>
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -422,24 +321,6 @@ export default function Service() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">NIK</span>
-              </label>
-              <input
-                type="text"
-                name="nik"
-                value={putForm.nik}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.nik && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.nik}
-                  </span>
-                </label>
-              )}
-              <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -448,7 +329,6 @@ export default function Service() {
                 value={putForm.name}
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
-                autoComplete="new-off"
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.name && (
@@ -459,123 +339,39 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Price</span>
               </label>
               <input
                 type="text"
-                name="phone"
-                value={putForm.phone}
+                name="price"
+                value={putForm.price}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                autoComplete="new-off"
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.price}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Commission</span>
+              </label>
+              <input
+                type="text"
+                name="commission"
+                value={putForm.commission}
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.phone && (
+              {putFormError.commission && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.phone}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={putForm.address}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {putFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.address}
-                  </span>
-                </label>
-              )}
-
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Place</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="birth_place"
-                    value={putForm.birth_place}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.birth_place && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.birth_place}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Date</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    value={putForm.birth_date}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.birth_date && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.birth_date}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Gender</span>
-                  </label>
-                  <select
-                    name="gender"
-                    value={putForm.gender}
-                    onChange={(e) => handlePutInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  {putFormError.gender && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.gender}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div>
-
-              <label className="label">
-                <span className="label-text">Position</span>
-              </label>
-              <select
-                name="position_id"
-                value={putForm.position_id}
-                onChange={(e) => handlePutInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-              </select>
-              {putFormError.position_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.position_id}
+                    {putFormError.commission}
                   </span>
                 </label>
               )}
