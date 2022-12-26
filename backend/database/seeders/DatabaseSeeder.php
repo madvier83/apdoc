@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Clinic;
 use App\Models\Diagnose;
 use App\Models\Employee;
+use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Service;
 use App\Models\User;
@@ -29,5 +30,6 @@ class DatabaseSeeder extends Seeder
         Employee::factory(5)->create();
         Diagnose::factory(5)->create();
         Service::factory(5)->create();
+        Patient::factory(5)->create();
     }
 }
