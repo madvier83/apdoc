@@ -29,7 +29,7 @@ export default function Login() {
       password: pwd,
     };
     try {
-      const response = await axios.post("/login", data, {
+      const response = await axios.post("/auth/login", data, {
         "Content-Type": "application/json",
       });
       var payload = parseJwt(response.data.access_token);

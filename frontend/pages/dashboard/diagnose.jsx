@@ -50,7 +50,7 @@ export default function Diagnose() {
 
   async function getDiagnosis() {
     try {
-      const response = await axios.get("diagnose", {
+      const response = await axios.get("diagnoses", {
         headers: {
           Authorization: "Bearer" + token.token,
         },

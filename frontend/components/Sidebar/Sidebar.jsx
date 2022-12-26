@@ -9,7 +9,7 @@ export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
   const [adminMenu, setAdminMenu] = useState(true);
-  const [receptionistMenu, setReceptionistMenu] = useState(false);
+  const [receptionistMenu, setReceptionistMenu] = useState(true);
   const [doctorMenu, setDoctorMenu] = useState(false);
   const [pharmacyMenu, setPharmacyMenu] = useState(false);
   const [promotionMenu, setPromotionMenu] = useState(false);
@@ -202,7 +202,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#"
+                          href="/dashboard/patiens"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}

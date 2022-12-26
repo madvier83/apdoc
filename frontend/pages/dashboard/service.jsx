@@ -51,7 +51,7 @@ export default function Service() {
 
   async function getServices() {
     try {
-      const response = await axios.get("/service", {
+      const response = await axios.get("/services", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -121,7 +121,7 @@ export default function Service() {
 
   return (
     <>
-      <DashboardLayout title="Service">
+      <DashboardLayout title="Services">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mb-32 mt-1 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -130,7 +130,7 @@ export default function Service() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i> Service Table</h3>
+                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i> Services Table</h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label

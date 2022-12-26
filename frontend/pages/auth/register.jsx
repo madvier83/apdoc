@@ -39,7 +39,7 @@ export default function Register() {
     };
 
     try {
-      const response = await axios.post("register", data, {
+      const response = await axios.post("/auth/register", data, {
         "Content-Type": "application/json",
       });
       setEmail("");
