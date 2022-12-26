@@ -15,13 +15,14 @@ class CreatePatientsTable extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->unique();
+            $table->string('nik');
             $table->string('name');
             $table->string('birth_place');
             $table->date('birth_date');
             $table->enum('gender', ['male', 'female']);;
             $table->longText('address');
             $table->string('phone');
+            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });

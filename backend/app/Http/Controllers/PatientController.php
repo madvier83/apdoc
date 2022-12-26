@@ -22,13 +22,13 @@ class PatientController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'nik'               => 'required|unique:patients',
+            'nik'               => 'required',
             'name'              => 'required|string',
             'birth_place'       => 'required|string',
-            'birth_date'        => 'required|date|before:yesterday',
-            'gender'            => 'required|in:laki-laki,perempuan',
-            'address'           => 'required|string',
-            'phone'             => 'required|string',
+            'birth_date'        => 'required|date|before:now',
+            'gender'            => 'required|in:male,female',
+            'address'           => 'required',
+            'phone'             => 'required',
         ]);
 
         $data = $request->all();
@@ -46,13 +46,13 @@ class PatientController extends Controller
         }
 
         $this->validate($request, [
-            'nik'               => $request->nik = $patient->nik ? 'required' : 'required|unique:patients',
+            'nik'               => 'required',
             'name'              => 'required|string',
             'birth_place'       => 'required|string',
-            'birth_date'        => 'required|date|before:yesterday',
-            'gender'            => 'required|in:laki-laki,perempuan',
-            'address'           => 'required|string',
-            'phone'             => 'required|string',
+            'birth_date'        => 'required|date|before:now',
+            'gender'            => 'required|in:male,female',
+            'address'           => 'required',
+            'phone'             => 'required',
         ]);
 
         $data = $request->all();

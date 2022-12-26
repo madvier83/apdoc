@@ -16,58 +16,58 @@ use App\Models\User;
 */
 
 $router->get('/', function () use ($router) {
-	// return $router->app->version();
-	// return User::where('id', 1)->first();
-	return User::where('id', 1)->with(['employee', 'employees'])->first();
+	return $router->app->version();
 });
 
-$router->post('/register', 'AuthController@register');
-$router->post('/login', 'AuthController@login');
+$router->post('/v1/auth/register', 'AuthController@register');
+$router->post('/v1/auth/login', 'AuthController@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
-	$router->post('/logout', 'AuthController@logout');
+	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
 
-	$router->get('/user', 'UserController@index');
-	$router->get('/user/{id}', 'UserController@show');
-	$router->post('/user', 'UserController@create');
-	$router->put('/user/{id}', 'UserController@update');
-	$router->delete('/user/{id}', 'UserController@destroy');
+	$router->get('/v1/users', 'UserController@index');
+	$router->get('/v1/user/{id}', 'UserController@show');
+	$router->post('/v1/user', 'UserController@create');
+	$router->put('/v1/user/{id}', 'UserController@update');
+	$router->delete('/v1/user/{id}', 'UserController@destroy');
 
-	$router->get('/clinic', 'ClinicController@index');
-	$router->get('/clinic/{id}', 'ClinicController@show');
-	$router->post('/clinic', 'ClinicController@create');
-	$router->put('/clinic/{id}', 'ClinicController@update');
-	$router->delete('/clinic/{id}', 'ClinicController@destroy');
+	$router->get('/v1/clinics', 'ClinicController@index');
+	$router->get('/v1/clinic/{id}', 'ClinicController@show');
+	$router->post('/v1/clinic', 'ClinicController@create');
+	$router->put('/v1/clinic/{id}', 'ClinicController@update');
+	$router->delete('/v1/clinic/{id}', 'ClinicController@destroy');
 
-	$router->get('/patient', 'PatientController@index');
-	$router->get('/patient/{id}', 'PatientController@show');
-	$router->post('/patient', 'PatientController@create');
-	$router->put('/patient/{id}', 'PatientController@update');
-	$router->delete('/patient/{id}', 'PatientController@destroy');
+	$router->get('/v1/positions', 'PositionController@index');
+	$router->get('/v1/position/{id}', 'PositionController@show');
+	$router->post('/v1/position', 'PositionController@create');
+	$router->put('/v1/position/{id}', 'PositionController@update');
+	$router->delete('/v1/position/{id}', 'PositionController@destroy');
 
-	$router->get('/position', 'PositionController@index');
-	$router->get('/position/{id}', 'PositionController@show');
-	$router->post('/position', 'PositionController@create');
-	$router->put('/position/{id}', 'PositionController@update');
-	$router->delete('/position/{id}', 'PositionController@destroy');
+	$router->get('/v1/employees', 'EmployeeController@index');
+	$router->get('/v1/employee/{id}', 'EmployeeController@show');
+	$router->post('/v1/employee', 'EmployeeController@create');
+	$router->put('/v1/employee/{id}', 'EmployeeController@update');
+	$router->delete('/v1/employee/{id}', 'EmployeeController@destroy');
 
-	$router->get('/employee', 'EmployeeController@index');
-	$router->get('/employee/{id}', 'EmployeeController@show');
-	$router->post('/employee', 'EmployeeController@create');
-	$router->put('/employee/{id}', 'EmployeeController@update');
-	$router->delete('/employee/{id}', 'EmployeeController@destroy');
+	$router->get('/v1/diagnoses', 'DiagnoseController@index');
+	$router->get('/v1/diagnose/{id}', 'DiagnoseController@show');
+	$router->post('/v1/diagnose', 'DiagnoseController@create');
+	$router->put('/v1/diagnose/{id}', 'DiagnoseController@update');
+	$router->delete('/v1/diagnose/{id}', 'DiagnoseController@destroy');
 
-	$router->get('/diagnose', 'DiagnoseController@index');
-	$router->get('/diagnose/{id}', 'DiagnoseController@show');
-	$router->post('/diagnose', 'DiagnoseController@create');
-	$router->put('/diagnose/{id}', 'DiagnoseController@update');
-	$router->delete('/diagnose/{id}', 'DiagnoseController@destroy');
+	$router->get('/v1/services', 'ServiceController@index');
+	$router->get('/v1/service/{id}', 'ServiceController@show');
+	$router->post('/v1/service', 'ServiceController@create');
+	$router->put('/v1/service/{id}', 'ServiceController@update');
+	$router->delete('/v1/service/{id}', 'ServiceController@destroy');
 
-	$router->get('/service', 'ServiceController@index');
-	$router->get('/service/{id}', 'ServiceController@show');
-	$router->post('/service', 'ServiceController@create');
-	$router->put('/service/{id}', 'ServiceController@update');
-	$router->delete('/service/{id}', 'ServiceController@destroy');
+	// RECEPTIONIST
+
+	$router->get('/v1/patients', 'PatientController@index');
+	$router->get('/v1/patient/{id}', 'PatientController@show');
+	$router->post('/v1/patient', 'PatientController@create');
+	$router->put('/v1/patient/{id}', 'PatientController@update');
+	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
 });
