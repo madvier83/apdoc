@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import axios from "../api/axios";
+import jwt from "jsonwebtoken";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -12,6 +13,10 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [loading, setLoading] = useState(false);
+
+  function parseJwt(token) {
+    return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+  }
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -27,12 +32,18 @@ export default function Login() {
       const response = await axios.post("/login", data, {
         "Content-Type": "application/json",
       });
-      // console.log(response.data)
-      setCookie("token", response.data.access_token, { maxAge: 60 * 60 * 12 });
-      setEmail("");
-      setPwd("");
-      router.push("/dashboard");
-      // setLoading(false)
+      var payload = parseJwt(response.data.access_token);
+
+      if (payload.role == "client") {
+        setCookie("token", response.data.access_token, {
+          maxAge: 60 * 60 * 12,
+        });
+        setEmail("");
+        setPwd("");
+        router.push("/dashboard");
+      }
+
+      setLoading(false);
     } catch (e) {
       console.error(e.message);
       setLoading(false);

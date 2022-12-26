@@ -166,7 +166,7 @@ export default function Employee() {
               </div>
             </div>
           </div>
-          <div className="block w-full overflow-x-auto">
+          <div className="min-h-[80vh] block w-full overflow-x-auto">
             {/* Projects table */}
             <table className="items-center w-full bg-transparent border-collapse">
               <thead>

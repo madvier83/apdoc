@@ -6,14 +6,14 @@ export async function middleware(req) {
     const { pathname } = req.nextUrl;
 
     const jwt = req.cookies.get("token")?.value;
-    const secret = process.env.JWT_SECRET;
+    const secret =  new TextEncoder().encode(process.env.JWT_SECRET);
 
     if(pathname.startsWith("/auth")) {
         if (jwt == undefined) {
             return NextResponse.next()
         } else {
             try {
-                const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+                const verified = await jwtVerify(jwt, secret);
                 if(verified) {
                     req.nextUrl.pathname = "/dashboard";
                     return NextResponse.redirect(req.nextUrl);
@@ -30,20 +30,24 @@ export async function middleware(req) {
             req.nextUrl.pathname = "/auth/login";
             return NextResponse.redirect(req.nextUrl);
         } else {
+            const { payload, protectedHeader } = await jwtVerify(jwt, secret)
+            console.log(payload)
+            if(payload.role == "client") {
             try {
-                const verified = await jwtVerify(jwt, new TextEncoder().encode(secret));
+                const verified = await jwtVerify(jwt, secret);
                 if(verified) {
                     return NextResponse.next()
                 }
             } catch(e) {
-                req.cookies.set("token", "", { expires: new Date(Date.now()) });
-                req.nextUrl.pathname = "/auth/login";
-                return NextResponse.redirect(req.nextUrl);
+                    req.cookies.set("token", "", { expires: new Date(Date.now()) });
+                    req.nextUrl.pathname = "/auth/login";
+                    return NextResponse.redirect(req.nextUrl);
+                }
             }
             
         }
     }
-
+    
     // if(pathname.startsWith("/admin")) {
     //     if (jwt == undefined) {
     //         req.nextUrl.pathname = "/auth/login";

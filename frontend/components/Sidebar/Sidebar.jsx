@@ -8,7 +8,7 @@ import NotificationDropdown from "../Dropdowns/NotificationDropdown";
 export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
-  const [adminMenu, setAdminMenu] = useState(false);
+  const [adminMenu, setAdminMenu] = useState(true);
   const [receptionistMenu, setReceptionistMenu] = useState(false);
   const [doctorMenu, setDoctorMenu] = useState(false);
   const [pharmacyMenu, setPharmacyMenu] = useState(false);
