@@ -40,6 +40,8 @@ export default function Login() {
         setEmail("");
         setPwd("");
         router.push("/admin");
+      } else {
+        router.push("/auth/login")
       }
       setLoading(false);
     } catch (e) {

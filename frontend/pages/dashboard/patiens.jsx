@@ -195,7 +195,7 @@ export default function Patiens() {
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         <i
-                          className={`text-lg mr-2 ${
+                          className={`text-md mr-2 ${
                             obj.gender == "male"
                               ? "text-blue-400 fas fa-mars"
                               : "text-pink-400 fas fa-venus"
@@ -210,7 +210,7 @@ export default function Patiens() {
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span className={""}><i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> {obj.phone}</span>
+                        <a href={`https://wa.me/${obj.phone.replace(/\D/g,'')}`} target="_blank" className={""}><i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> {obj.phone}</a>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).fromNow()}

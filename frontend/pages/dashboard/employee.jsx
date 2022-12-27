@@ -152,8 +152,9 @@ export default function Employee() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i>  Employees Table</h3>
-                
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Employees Table
+                </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -225,8 +226,16 @@ export default function Employee() {
                           {obj.position?.name ? obj.position.name : "unasigned"}
                         </span>
                       </td>
+
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span className={"font-bold"}>{obj.phone}</span>
+                        <a
+                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
+                          target="_blank"
+                          className={""}
+                        >
+                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                          {obj.phone}
+                        </a>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).fromNow()}
@@ -235,10 +244,7 @@ export default function Employee() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Detail"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
