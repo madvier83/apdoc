@@ -56,7 +56,7 @@ export default function Login() {
       </Head>
       <main>
         <section
-          className={`relative w-full h-full py-40 min-h-screen bg-slate-900`}
+          className={`relative w-full h-full py-40 min-h-screen bg-zinc-900`}
         >
           <div
             className="absolute top-0 w-full h-full bg-no-repeat bg-full hidden md:block"
@@ -72,7 +72,7 @@ export default function Login() {
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-6 rounded-lg border-0">
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
-                      <h6 className="text-emerald-400 text-4xl mt-4 font-bold">
+                      <h6 className="text-white text-4xl mt-4 font-bold">
                         APPDOC
                       </h6>
                     </div>
@@ -125,7 +125,7 @@ export default function Login() {
 
                       <div className="text-center mt-6">
                         <button
-                          className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                          className="bg-rose-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           onClick={handleLogin}
                         >
                           Login As Administrator

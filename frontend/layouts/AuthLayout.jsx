@@ -14,7 +14,7 @@ export default function Auth({ children, title, isAdmin }) {
       </Head>
       {/* <Navbar transparent /> */}
       <main>
-        <section className={`relative w-full h-full py-40 min-h-screen ${isAdmin? "bg-black" : "bg-blueGray-800"}`}>
+        <section className={`relative w-full h-full py-40 min-h-screen bg-zinc-900`}>
           <div
             className="absolute top-0 w-full h-full bg-no-repeat bg-full hidden md:block"
             // /login.svg
