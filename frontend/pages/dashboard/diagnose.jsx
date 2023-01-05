@@ -224,7 +224,7 @@ export default function Diagnose() {
                         <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             htmlFor={`detail-${obj.id}`}
-                            className="bg-violet-400 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           >
                             <i className="fas fa-eye"></i>
                           </label>
