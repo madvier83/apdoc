@@ -23,7 +23,9 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-$app->withFacades();
+$app->withFacades(true, [
+    'Illuminate\Support\Facades\Notification' => 'Notification',
+]);
 
 $app->withEloquent();
 
@@ -98,6 +100,7 @@ $app->middleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
+$app->register(\Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
 /*
