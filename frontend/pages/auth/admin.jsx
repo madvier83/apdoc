@@ -81,7 +81,7 @@ export default function Login() {
                     <form>
                       <div className="relative w-full mb-3">
                         <label
-                          className="block text-white text-xs font-bold mb-2"
+                          className="block text-zinc-500 text-xs font-bold mb-2"
                           htmlFor="email"
                         >
                           Email
@@ -98,7 +98,7 @@ export default function Login() {
 
                       <div className="relative w-full mb-3">
                         <label
-                          className="block text-white text-xs font-bold mb-2"
+                          className="block text-zinc-500 text-xs font-bold mb-2"
                           htmlFor="password"
                         >
                           Password

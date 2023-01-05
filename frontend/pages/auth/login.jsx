@@ -43,7 +43,7 @@ export default function Login() {
         router.push("/dashboard");
       }
 
-      setLoading(false);
+      // setLoading(false);
     } catch (e) {
       console.error(e.message);
       setLoading(false);
@@ -68,7 +68,7 @@ export default function Login() {
                   <form>
                     <div className="relative w-full mb-3">
                       <label
-                        className="block text-zinc-300 text-xs font-bold mb-2"
+                        className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="email"
                       >
                         Email
@@ -85,7 +85,7 @@ export default function Login() {
 
                     <div className="relative w-full mb-3">
                       <label
-                        className="block text-zinc-300 text-xs font-bold mb-2"
+                        className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="password"
                       >
                         Password
@@ -112,12 +112,12 @@ export default function Login() {
 
                     <div className="text-center mt-6">
                       {loading ? (
-                        <button
-                          className="bg-emerald-600 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                        <div
+                          className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
                           disabled
                         >
                           Loading ...
-                        </button>
+                        </div>
                       ) : (
                         <button
                           className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"

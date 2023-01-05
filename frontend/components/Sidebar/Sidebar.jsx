@@ -95,7 +95,9 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setAdminMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-user mr-2 text-sm "}></i> Admin
                   </button>
@@ -192,7 +194,9 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setReceptionistMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-newspaper mr-2 text-sm"}></i>{" "}
                     Receptionist
@@ -236,7 +240,9 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setDoctorMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-user-doctor mr-2 text-sm "}></i>{" "}
                     Doctor
@@ -271,12 +277,14 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setPharmacyMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-mortar-pestle mr-2 text-sm "}></i>{" "}
                     Pharmacy
                   </button>
-                    
+
                   {pharmacyMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
@@ -315,12 +323,13 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setPromotionMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-tag mr-2 text-sm "}></i> Promotion
                   </button>
 
-                  
                   {promotionMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
@@ -341,12 +350,14 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setCashierMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-money-bill mr-2 text-sm "}></i>{" "}
                     Cashier
                   </button>
-                  
+
                   {cashierMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
@@ -376,7 +387,9 @@ export default function Sidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setReportsMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-file mr-2 text-sm "}></i> Reports
                   </button>
@@ -409,6 +422,25 @@ export default function Sidebar() {
 
                 <hr className="my-4 md:min-w-full" />
 
+
+                <li className="items-center">
+                  <Link
+                    href="/dashboard/account"
+                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                  >
+                    <i className={"fas fa-user mr-2 text-sm "}></i> Account
+                  </Link>
+                </li>
+
+                <li className="items-center">
+                  <Link
+                    href="/dashboard/account"
+                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                  >
+                    <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
+                  </Link>
+                </li>
+
                 <li className="items-center">
                   <Link
                     href="#"
@@ -418,16 +450,6 @@ export default function Sidebar() {
                     Password
                   </Link>
                 </li>
-
-                <li className="items-center">
-                  <Link
-                    href="#"
-                    className={"text-xs py-3 font-bold block  text-slate-500"}
-                  >
-                    <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
-                  </Link>
-                </li>
-
                 <li className="items-center">
                   <button
                     onClick={() => {
