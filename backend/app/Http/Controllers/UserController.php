@@ -22,7 +22,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'email'     => 'required|email|unique:users',
+            'email'     => 'required|email|unique:users'
         ]);
 
         $data = $request->all();
@@ -31,7 +31,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        return response()->json($user);
+        return response()->json(['status'=> 'OK' ,'data' => $user, 'message'=> 'Success created account!'], 201);
     }
 
     public function update(Request $request, $id)

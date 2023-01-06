@@ -17,11 +17,17 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('phone');
+            $table->integer('otp_verification')->nullable();
+            $table->datetime('created_at_otp')->nullable();
+            $table->datetime('expired_otp')->nullable();
             $table->foreignId('role_id');
             $table->foreignId('outlet_id')->nullable();
             $table->foreignId('employee_id')->nullable();
             $table->string('appdoc_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->boolean('is_verified')->default(0);
+            $table->datetime('verified_at')->nullable();
             $table->timestamps();
         });
     }

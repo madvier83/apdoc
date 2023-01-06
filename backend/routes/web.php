@@ -21,6 +21,8 @@ $router->get('/', function () use ($router) {
 
 $router->post('/v1/auth/register', 'AuthController@register');
 $router->post('/v1/auth/login', 'AuthController@login');
+$router->get('/v1/auth/send_otp','AuthController@send_otp');
+$router->get('/v1/auth/verification', 'AuthController@verification_otp');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
