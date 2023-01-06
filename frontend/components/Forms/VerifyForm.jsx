@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef, useReducer } from "react";
 import Router, { useRouter } from "next/router";
-import axios from "../api/axios";
+import axios from "../../pages/api/axios";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
 
-export default function Verify() {
+export default function VerifyForm() {
   const router = useRouter();
   const otp_Ref = useRef();
 
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState(true);
 
   const initialVerifyForm = {
     phone: "",
