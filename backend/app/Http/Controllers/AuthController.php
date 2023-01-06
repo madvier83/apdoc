@@ -41,7 +41,7 @@ class AuthController extends Controller
             'otp_verification' => 'required|min:6|max:6'
         ]);
         
-        $data = User::where('email',$request->email)->where('phone', $request->phone)->where('otp_verification', $request->otp_verification)->first();
+        $data = User::where('email',$request->email)->where('otp_verification', $request->otp_verification)->first();
         
         if (!$data) {
             return response()->json(['status' => 'failed', 'message' => 'Unathorized OTP Verification, Wrong Credentials OTP code!'], 401);
@@ -68,7 +68,7 @@ class AuthController extends Controller
     
     public function send_otp(Request $request)
     {
-        $data = User::where('email',$request->email)->where('phone', $request->phone)->first();
+        $data = User::where('email',$request->email)->first();
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'User Not Found'], 204);
         } else {
