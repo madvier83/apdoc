@@ -27,6 +27,8 @@ $app->withFacades(true, [
     'Illuminate\Support\Facades\Notification' => 'Notification',
 ]);
 
+$app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
+
 $app->withEloquent();
 
 /*
@@ -40,16 +42,18 @@ $app->withEloquent();
 |
 */
 
+$app->singleton('mailer', function ($app) {
+    $app->configure('services');
+    return $app->loadComponent('mail', 'Illuminate\Mail\MailServiceProvider', 'mailer');
+});
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
-
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -100,7 +104,8 @@ $app->middleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-$app->register(\Illuminate\Notifications\NotificationServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
 /*

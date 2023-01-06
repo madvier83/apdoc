@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Carbon;
+use \Illuminate\Support\Carbon;
+use App\Notifications\OTPWhatsapp;
 use Twilio\Rest\Client;
 
 class AuthController extends Controller
@@ -24,57 +25,76 @@ class AuthController extends Controller
             $user->password = app('hash')->make($request->password);
             $user->phone = $request->phone;
             $user->role_id  = 2;
-
-            if ($user->save()) {
-                return $this->send_otp($request->email);
-            }
+            $user->save();
+            // if ($user->save()) {
+            //     return $this->login($request);
+            // }
+            return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 
-    public function verification_otp($token_verification){
-        $user  = User::findOrFail($token_verification);
-        $expired = Carbon::parse($user->expired_token)->addMinutes(5);
-
+    public function verification_otp(Request $request){
+        
         $this->validate($request, [
-            'token_verification' => 'required|min:6|max:6'
+            'otp_verification' => 'required|min:6|max:6'
         ]);
-
-        try {
-            if(Carbon::parse($user->expired_token)->toString() < $expired)
-            {
-                return response()->json(['status' => 'failed' ,'message' => 'Token expired!'], 504);
+        
+        $data = User::where('email',$request->email)->where('phone', $request->phone)->where('otp_verification', $request->otp_verification)->first();
+        
+        if (!$data) {
+            return response()->json(['status' => 'failed', 'message' => 'Unathorized OTP Verification, Wrong Credentials OTP code!'], 401);
+        } else {
+            try {
+                $expired = Carbon::parse($data->expired_otp)->toString();
+                $now = Carbon::now()->toString();
+                if($data->is_verified == 1){
+                    return response()->json(['status' => 'error', 'message' => 'Account was verified'], 204);
+                }
+                if($expired < $now)
+                {
+                    return response()->json(['status' => 'failed', 'message' => 'Verification OTP expired!'], 410);
+                }
+                $data->is_verified = 1;
+                if ($data->save()) {
+                    return $this->login($request);
+                }
+            } catch (\Throwable $th) {
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
             }
-            $user->is_verified = 1;
-            $user->verified_at = Carbon::now('Jakarta/Indonesia');
-            $user->save();
-            return $this->login($request);
-        } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
     
-    public function send_otp($email){
-
-        $data = User::findOrFail($email);
-        $expired = Carbon::parse($data->expired_token)->addMinutes(5);
-
-        if(Carbon::parse($data->expired_token)->toString() < $expired){
-            return reponse()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your token is limit by '.$data->expired_token->diffForHumans().' minutes'], 403);
+    public function send_otp(Request $request)
+    {
+        $data = User::where('email',$request->email)->where('phone', $request->phone)->first();
+        if (!$data) {
+            return response()->json(['status' => 'error', 'message' => 'User Not Found'], 204);
         } else {
             try {
-                $data->token_verification = random_int(100000, 999999);
-                $data->expired_token = Carbon::now('Jakarta/Indonesia');
-                $data->save();
-                $this->whatsapp_otp($data->phone, $data->token_verification);
-                return reponse()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 203);
+                    if($data->is_verified == 1){
+                        return response()->json(['status' => 'error', 'message' => 'Account was verified'], 204);
+                    }
+                    if($data->created_at_otp){
+                        $limit_otp = Carbon::parse($data->created_at_otp)->addMinutes(5)->toString();
+                        $times_remaining = Carbon::parse($data->created_at_otp)->diffForHumans();
+                        $now = Carbon::now()->toString();
+                            if($now < $limit_otp){
+                                return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code '.$times_remaining.'.'], 403);    
+                            }
+                    }
+                    $data->otp_verification = random_int(100000, 999999);
+                    $data->created_at_otp = Carbon::now('Asia/Jakarta');
+                    $data->expired_otp = Carbon::now('Asia/Jakarta')->addMinutes(5);
+                    $data->save();
+                    // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
+                    return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200); 
             } catch (\Throwable $e) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
             }
         }
     }
-
     /**
      * Log the user out (Invalidate the token).
      *
@@ -96,7 +116,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->with('role')->first();
 
-        if ($user == null) {
+        if ($user == null || $user->is_verified == 0) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -123,18 +143,5 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60 * 12
         ]);
-    }
-
-    private function whatsapp_otp($phone, $token_verification)
-    {
-        $sid    = getenv("TWILIO_AUTH_SID");
-        $token  = getenv("TWILIO_AUTH_TOKEN");
-        $wa_from= getenv("TWILIO_WHATSAPP_FROM");
-        $test = 'Adam';
-        $twilio = new Client($sid, $token);
-        
-        $body = "Good Morning {$test},You have appointment on {$token_verification}.";
-
-        return $twilio->messages->create("whatsapp:$phone",["from" => "whatsapp:$wa_from", "body" => $body]);
     }
 }

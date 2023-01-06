@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
-            $table->integer('token_verification')->nullable();
-            $table->datetime('expired_token')->nullable();
+            $table->integer('otp_verification')->nullable();
+            $table->datetime('created_at_otp')->nullable();
+            $table->datetime('expired_otp')->nullable();
             $table->foreignId('role_id');
             $table->foreignId('outlet_id')->nullable();
             $table->foreignId('employee_id')->nullable();
