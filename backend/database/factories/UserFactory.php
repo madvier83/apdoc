@@ -24,7 +24,8 @@ class UserFactory extends Factory
         return [
             'email'    => $this->faker->unique()->safeEmail,
             'password' => app('hash')->make('12345678'),
-            'role_id'  => rand(2, 3)
+            'role_id'  => rand(2, 3),
+            'phone'  => '08'.rand(100000000, 999999999)
         ];
     }
 }
