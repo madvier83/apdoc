@@ -242,19 +242,19 @@ export default function Register() {
                   ) : (
                     <form onSubmit={verifyOTP}>
                       <div className="flex flex-col justify-center text-white">
-                        <h3>OTP Sent to {verifyForm.phone}</h3>
+                        <h3>OTP Sent to {otp.phone}</h3>
                         <small
                           className="text-zinc-500 cursor-pointer"
                           onClick={() => {
-                            setSent(false);
+                            getOTP()
                           }}
                         >
-                          Change number
+                          Resend otp
                         </small>
                       </div>
                       <div className="relative w-full mb-3 mt-3">
                         <label className="block text-zinc-300 text-xs font-bold mb-2"></label>
-                        <div ref={otp_Ref} className="otp_ flex gap-2">
+                        <div ref={otp_Ref} className="flex gap-2">
                           <input
                             name="otp_1"
                             value={verifyForm.otp_1}
