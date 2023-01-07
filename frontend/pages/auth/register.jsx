@@ -8,7 +8,9 @@ import AuthLayout from "../../layouts/AuthLayout";
 export default function Register() {
   const router = useRouter();
   const otp_Ref = useRef();
-  const [sent, setSent] = useState(true);
+
+  const [sent, setSent] = useState(false);
+  const [otp, setOtp] = useState({})
 
   const initialRegisterForm = {
     email: "",
@@ -49,6 +51,60 @@ export default function Register() {
     setRegisterForm({ [name]: value });
   };
 
+  async function handleRegister(e) {
+    e.preventDefault();
+    console.log(registerForm);
+
+    if (registerForm.password !== registerForm.matchPwd) {
+      setRegisterFormError({ matchPwd: "Password doesn't match" });
+      return;
+    }
+    setRegisterFormError({ matchPwd: "" });
+
+    try {
+      const response = await axios.post("auth/register", registerForm, {
+        "Content-Type": "application/json",
+      });
+      getOTP();
+      // console.log(response);
+      // setRegisterForm(initialRegisterForm);
+    } catch (err) {
+      setRegisterFormError(initialRegisterForm);
+      setRegisterFormError(err.response?.data);
+    }
+  }
+  
+  async function getOTP() {
+    try {
+      const response = await axios.post("auth/send_otp", registerForm, {
+        "Content-Type": "application/json",
+      })
+      console.log(response.data?.data?.otp_verification)
+      setOtp(response.data.data)
+      setSent(true);
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  async function verifyOTP(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post("auth/verification", {email: otp.email, otp_verification: combineOtp()}, {
+        "Content-Type": "application/json",
+      })
+      router.push('/auth/login')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  function combineOtp() {
+    const fullOTP = "" + verifyForm.otp_1 + verifyForm.otp_2 + verifyForm.otp_3 + verifyForm.otp_4 + verifyForm.otp_5 + verifyForm.otp_6
+    return fullOTP
+  }
+  combineOtp()
+
   const handleVerifyInput = (event) => {
     const { maxLength, value, name } = event.target;
     setVerifyForm({ [name]: value });
@@ -71,33 +127,6 @@ export default function Register() {
     }
   };
 
-  async function handleRegister(e) {
-    e.preventDefault();
-    console.log(registerForm);
-
-    if (registerForm.password !== registerForm.matchPwd) {
-      setRegisterFormError({ matchPwd: "Password doesn't match" });
-      return;
-    }
-    setRegisterFormError({ matchPwd: "" });
-
-    try {
-      const response = await axios.post("auth/register", registerForm, {
-        "Content-Type": "application/json",
-      });
-      console.log(response);
-      setRegisterForm(initialRegisterForm);
-      setSent(true);
-    } catch (err) {
-      setRegisterFormError(initialRegisterForm);
-      setRegisterFormError(err.response?.data);
-    }
-  }
-
-  async function sendOTP(e) {
-    e.preventDefault();
-    setSent(true);
-  }
 
   return (
     <>
@@ -210,7 +239,7 @@ export default function Register() {
                       </div>
                     </form>
                   ) : (
-                    <form>
+                    <form onSubmit={verifyOTP}>
                       <div className="flex flex-col justify-center text-white">
                         <h3>OTP Sent to {verifyForm.phone}</h3>
                         <small
@@ -294,7 +323,6 @@ export default function Register() {
                       <div className="text-center mt-4">
                         <button
                           className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                          onClick={() => {}}
                         >
                           Verify
                         </button>
