@@ -11,6 +11,7 @@ export default function Register() {
 
   const [sent, setSent] = useState(false);
   const [otp, setOtp] = useState({})
+  const [otpError, setOtpError] = useState("")
 
   const initialRegisterForm = {
     email: "",
@@ -53,7 +54,7 @@ export default function Register() {
 
   async function handleRegister(e) {
     e.preventDefault();
-    console.log(registerForm);
+    // console.log(registerForm);
 
     if (registerForm.password !== registerForm.matchPwd) {
       setRegisterFormError({ matchPwd: "Password doesn't match" });
@@ -66,6 +67,7 @@ export default function Register() {
         "Content-Type": "application/json",
       });
       getOTP();
+      setSent(true);
       // console.log(response);
       // setRegisterForm(initialRegisterForm);
     } catch (err) {
@@ -79,9 +81,8 @@ export default function Register() {
       const response = await axios.post("auth/send_otp", registerForm, {
         "Content-Type": "application/json",
       })
-      console.log(response.data?.data?.otp_verification)
+      // console.log(response.data?.data?.otp_verification)
       setOtp(response.data.data)
-      setSent(true);
     } catch (err) {
       console.error(err)
     }
@@ -95,7 +96,8 @@ export default function Register() {
       })
       router.push('/auth/login')
     } catch (err) {
-      console.error(err)
+      setOtpError(err.response?.data?.message)
+      setVerifyForm(initialVerifyForm)
     }
   }
 
@@ -103,7 +105,6 @@ export default function Register() {
     const fullOTP = "" + verifyForm.otp_1 + verifyForm.otp_2 + verifyForm.otp_3 + verifyForm.otp_4 + verifyForm.otp_5 + verifyForm.otp_6
     return fullOTP
   }
-  combineOtp()
 
   const handleVerifyInput = (event) => {
     const { maxLength, value, name } = event.target;
@@ -258,6 +259,7 @@ export default function Register() {
                             name="otp_1"
                             value={verifyForm.otp_1}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -268,6 +270,7 @@ export default function Register() {
                             name="otp_2"
                             value={verifyForm.otp_2}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -278,6 +281,7 @@ export default function Register() {
                             name="otp_3"
                             value={verifyForm.otp_3}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -288,6 +292,7 @@ export default function Register() {
                             name="otp_4"
                             value={verifyForm.otp_4}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -298,6 +303,7 @@ export default function Register() {
                             name="otp_5"
                             value={verifyForm.otp_5}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -308,6 +314,7 @@ export default function Register() {
                             name="otp_6"
                             value={verifyForm.otp_6}
                             onChange={(e) => handleVerifyInput(e)}
+                            required
                             type="text"
                             maxLength={1}
                             className={`input font-bold w-full text-center px-0 ${
@@ -319,7 +326,10 @@ export default function Register() {
                           {verifyFormError.otp_}
                         </label>
                       </div>
-
+                            
+                        <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {otpError}
+                        </label>
                       <div className="text-center mt-4">
                         <button
                           className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"

@@ -89,7 +89,7 @@ class AuthController extends Controller
                     $data->created_at_otp = Carbon::now();
                     $data->expired_otp = Carbon::now()->addMinutes(5);
                     $data->save();
-                    \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
+                    // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
                     return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200); 
             } catch (\Throwable $e) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
