@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->integer('otp_verification')->nullable();
             $table->datetime('created_at_otp')->nullable();
             $table->datetime('expired_otp')->nullable();

@@ -12,7 +12,7 @@ import CardBusiness from "../../components/Cards/CardBusiness";
 
 export default function Account() {
   const token = getCookie("token");
-  const [user, setUser] = useState({ email: "" });
+  const [user, setUser] = useState({ email: "", phone: "" });
   useEffect(() => {
     try {
       const payload = jwt_decode(token);
@@ -21,13 +21,12 @@ export default function Account() {
       console.log(err);
     }
   }, []);
-  console.log(user);
+  // console.log(user);
   return (
     <>
       <DashboardLayout title="Account" headerStats={false}>
         <div className="flex flex-wrap">
           <div className="w-full lg:w-8/12 mt-1">
-            
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               <div className="rounded-t bg-white mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
@@ -57,7 +56,7 @@ export default function Account() {
                           <input
                             type="email"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={user.email}
+                            value="-"
                             disabled
                           />
                         </div>
@@ -94,7 +93,7 @@ export default function Account() {
                           <input
                             type="email"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={user.email}
+                            value={user.phone}
                             disabled
                           />
                           <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer">
@@ -239,7 +238,6 @@ export default function Account() {
                 </form>
               </div>
             </div>
-
           </div>
         </div>
       </DashboardLayout>
