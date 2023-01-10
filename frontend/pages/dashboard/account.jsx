@@ -1,25 +1,41 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-import PersonalDetails from "../../components/Forms/PersonalDetails";
-import CardProfile from "../../components/Cards/CardProfile";
-import BusinessInformation from "../../components/Forms/BusinessInformation";
-import CardBusiness from "../../components/Cards/CardBusiness";
-
 export default function Account() {
   const token = getCookie("token");
-  const [user, setUser] = useState({ email: "", phone: "" });
-  useEffect(() => {
+  const userFormRef = useRef();
+  const [isEditUser, setIsEditUser] = useState(false);
+  const user = {
+    name: "",
+    email: "",
+    password: "",
+  };
+  const [initialUser, setInitialUser] = useState(user);
+  const [userForm, setUserForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialUser
+  );
+
+  const handleUserForm = (event) => {
+    const { name, value } = event.target;
+    setUserForm({ [name]: value });
+  };
+
+  function decodeUser() {
     try {
       const payload = jwt_decode(token);
-      setUser(payload);
+      setInitialUser(payload);
+      setUserForm(payload);
     } catch (err) {
       console.log(err);
     }
+  }
+  useEffect(() => {
+    decodeUser();
   }, []);
   // console.log(user);
   return (
@@ -33,12 +49,41 @@ export default function Account() {
                   <h6 className="text-blueGray-700 text-xl font-bold">
                     Personal Details
                   </h6>
-                  <button
-                    className="bg-blueGray-700 active:bg-blueGray-600 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button"
-                  >
-                    Settings
-                  </button>
+                  <div className="">
+                    <button
+                      className={`${
+                        isEditUser
+                          ? "bg-rose-500 active:bg-rose-400"
+                          : "bg-indigo-500 active:bg-indigo-400"
+                      } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
+                      onClick={() => {
+                        setIsEditUser((prev) => {
+                          return !prev;
+                        });
+                        setTimeout(() => userFormRef.current.focus(), 10);
+                        setUserForm({ ...initialUser, name: "" });
+                        console.log(userForm);
+                      }}
+                    >
+                      {isEditUser ? "Cancel" : "Edit"}{" "}
+                      <i
+                        className={`fas ${
+                          isEditUser ? "fa-x" : "fa-edit"
+                        } ml-2`}
+                      ></i>
+                    </button>
+                    {isEditUser ? (
+                      <button
+                        className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
+                        onClick={() => {}}
+                      >
+                        Save
+                        <i className={`fas fa-save ml-2`}></i>
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
@@ -50,14 +95,17 @@ export default function Account() {
                           className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between"
                           htmlFor="grid-password"
                         >
-                          <span>Username </span>
+                          <span>Full Name </span>
                         </label>
                         <div className="relative">
                           <input
                             type="email"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value="-"
-                            disabled
+                            value={userForm.name}
+                            disabled={!isEditUser}
+                            ref={userFormRef}
+                            name="name"
+                            onChange={(e) => handleUserForm(e)}
                           />
                         </div>
                       </div>
@@ -73,7 +121,7 @@ export default function Account() {
                           <input
                             type="email"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={user.email}
+                            value={userForm.email}
                             disabled
                           />
                           <span className="absolute top-[22%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer">
@@ -91,9 +139,9 @@ export default function Account() {
                         </label>
                         <div className="relative">
                           <input
-                            type="email"
+                            type="text"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={user.phone}
+                            value={userForm.phone}
                             disabled
                           />
                           <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer">
@@ -136,7 +184,7 @@ export default function Account() {
                           <input
                             type="email"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={user.email}
+                            value={userForm.email}
                             disabled
                           />
                         </div>
