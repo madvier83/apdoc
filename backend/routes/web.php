@@ -19,16 +19,22 @@ $router->get('/', function () use ($router) {
 	return $router->app->version();
 });
 
+// Email Verification
+$router->get('/v1/auth/email/verification', ['as' => 'email.verification', 'uses' => 'AuthController@verification_email']);
 $router->post('/v1/auth/register', 'AuthController@register');
 $router->post('/v1/auth/login', 'AuthController@login');
-$router->post('/v1/auth/send_otp','AuthController@send_otp');
-$router->post('/v1/auth/verification', 'AuthController@verification_otp');
+
+// Whatsapp Verification
+$router->post('/v1/auth/send/otp','AuthController@send_otp');
+$router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
+	// send email verification
+	$router->post('/v1/auth/send/email', 'AuthController@send_email');
+
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
-
 	$router->get('/v1/users', 'UserController@index');
 	$router->get('/v1/user/{id}', 'UserController@show');
 	$router->post('/v1/user', 'UserController@create');
