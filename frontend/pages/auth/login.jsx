@@ -45,7 +45,12 @@ export default function Login() {
 
       // setLoading(false);
     } catch (e) {
-      console.error(e.message);
+      if(e.response.status == 403){
+        router.push({
+          pathname: "/auth/verify",
+          query: {email: email}
+        }, "/auth/verify")
+      }
       setLoading(false);
     }
   }

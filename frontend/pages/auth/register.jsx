@@ -11,10 +11,11 @@ export default function Register() {
 
   const [sent, setSent] = useState(false);
   const [otp, setOtp] = useState({})
+  const [otpError, setOtpError] = useState("")
 
   const initialRegisterForm = {
     email: "",
-    phone: "",
+    // phone: "",
     password: "",
     matchPwd: "",
   };
@@ -53,7 +54,6 @@ export default function Register() {
 
   async function handleRegister(e) {
     e.preventDefault();
-    console.log(registerForm);
 
     if (registerForm.password !== registerForm.matchPwd) {
       setRegisterFormError({ matchPwd: "Password doesn't match" });
@@ -65,68 +65,15 @@ export default function Register() {
       const response = await axios.post("auth/register", registerForm, {
         "Content-Type": "application/json",
       });
-      getOTP();
-      // console.log(response);
-      // setRegisterForm(initialRegisterForm);
+      router.push({
+        pathname: "/auth/verify",
+        query: {email :response.data.data.email},
+      }, "/auth/verify")
     } catch (err) {
       setRegisterFormError(initialRegisterForm);
       setRegisterFormError(err.response?.data);
     }
   }
-  
-  async function getOTP() {
-    try {
-      const response = await axios.post("auth/send_otp", registerForm, {
-        "Content-Type": "application/json",
-      })
-      console.log(response.data?.data?.otp_verification)
-      setOtp(response.data.data)
-      setSent(true);
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  async function verifyOTP(e) {
-    e.preventDefault();
-    try {
-      const response = await axios.post("auth/verification", {email: otp.email, otp_verification: combineOtp()}, {
-        "Content-Type": "application/json",
-      })
-      router.push('/auth/login')
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  function combineOtp() {
-    const fullOTP = "" + verifyForm.otp_1 + verifyForm.otp_2 + verifyForm.otp_3 + verifyForm.otp_4 + verifyForm.otp_5 + verifyForm.otp_6
-    return fullOTP
-  }
-  combineOtp()
-
-  const handleVerifyInput = (event) => {
-    const { maxLength, value, name } = event.target;
-    setVerifyForm({ [name]: value });
-    const [fieldName, fieldIndex] = name.split("_");
-    let fieldIntIndex = parseInt(fieldIndex, 10);
-
-    // Check if no of char in field == maxlength
-    if (value.length >= maxLength) {
-      // It should not be last input field
-      if (fieldIntIndex < 6) {
-        // Get the next input field using it's name
-        const nextfield = document.querySelector(
-          `input[name=otp_${fieldIntIndex + 1}]`
-        );
-        // If found, focus the next field
-        if (nextfield !== null) {
-          nextfield.focus();
-        }
-      }
-    }
-  };
-
 
   return (
     <>
@@ -143,7 +90,6 @@ export default function Register() {
                   </div>
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                  {!sent ? (
                     <form>
                       <div className="relative w-full mb-3">
                         <label className="block text-zinc-500 text-xs font-bold mb-2">
@@ -165,7 +111,7 @@ export default function Register() {
                           {registerFormError.email}
                         </label>
                       </div>
-
+                      {/* 
                       <div className="relative w-full mb-3">
                         <label className="block text-zinc-500 text-xs font-bold mb-2">
                           Phone
@@ -185,7 +131,7 @@ export default function Register() {
                         <label className="block text-rose-500 text-xs mb-2 mt-2">
                           {registerFormError.phone}
                         </label>
-                      </div>
+                      </div> */}
 
                       <div className="relative w-full mb-3">
                         <label className="block text-zinc-500 text-xs font-bold mb-2">
@@ -238,97 +184,6 @@ export default function Register() {
                         </button>
                       </div>
                     </form>
-                  ) : (
-                    <form onSubmit={verifyOTP}>
-                      <div className="flex flex-col justify-center text-white">
-                        <h3>OTP Sent to {verifyForm.phone}</h3>
-                        <small
-                          className="text-zinc-500 cursor-pointer"
-                          onClick={() => {
-                            setSent(false);
-                          }}
-                        >
-                          Change number
-                        </small>
-                      </div>
-                      <div className="relative w-full mb-3 mt-3">
-                        <label className="block text-zinc-300 text-xs font-bold mb-2"></label>
-                        <div ref={otp_Ref} className="otp_ flex gap-2">
-                          <input
-                            name="otp_1"
-                            value={verifyForm.otp_1}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_1 ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_2"
-                            value={verifyForm.otp_2}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_2 ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_3"
-                            value={verifyForm.otp_3}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_3 ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_4"
-                            value={verifyForm.otp_4}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_4 ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_5"
-                            value={verifyForm.otp_5}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_5 ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_6"
-                            value={verifyForm.otp_6}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_6 ? "border-rose-500" : null
-                            }`}
-                          />
-                        </div>
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {verifyFormError.otp_}
-                        </label>
-                      </div>
-
-                      <div className="text-center mt-4">
-                        <button
-                          className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                        >
-                          Verify
-                        </button>
-                      </div>
-                    </form>
-                  )}
                 </div>
               </div>
               <div className="flex flex-wrap mt-6 relative justify-center">
