@@ -4,7 +4,7 @@ import { useState } from "react";
 // components
 
 import Link from "next/link";
-import LoginModal from "../landing/LoginModal";
+// import LoginModal from "../landing/LoginModal";
 import PagesDropdown from "../Dropdowns/PagesDropdown";
 import RegisterModal from "../Landing/RegisterModal";
 
