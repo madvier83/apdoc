@@ -72,95 +72,70 @@ class AuthController extends Controller
 
     public function send_otp(Request $request)
     {
-<<<<<<< HEAD
-        $data = User::where('email',$request->email)->first();
-        User::where('id', $data->id)->update(['phone' => $request->phone]);
-=======
         $data = User::where('email', $request->email)->first();
         User::where('id', $data->id)->update(['phone' => $request->phone]);
-
->>>>>>> 69d6584846c9caf082db26038f24a646df2885cf
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'User Not Found'], 404);
         } else {
             try {
-<<<<<<< HEAD
-                    if($data->is_verified == 1){
-                        return response()->json(['status' => 'error', 'message' => 'Account was verified']);
-                    }
-                    if($data->created_at_otp){
-                        $limit_otp = Carbon::parse($data->created_at_otp)->addMinutes(5)->toString();
-                        $times_remaining = Carbon::parse($data->created_at_otp)->diffForHumans();
-                        $now = Carbon::now()->toString();
-                            if($now < $limit_otp){
-                                return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code '.$times_remaining.'.'], 403);    
-                            }
-                    }
-                    $data->otp_verification = random_int(100000, 999999);
-                    $data->created_at_otp = Carbon::now();
-                    $data->expired_otp = Carbon::now()->addMinutes(5);
-                    $data->save();
-                    // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
-                    return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200); 
-=======
                 if ($data->is_verified == 1) {
-                    return response()->json(['status' => 'error', 'message' => 'Account was verified'], 204);
+                    return response()->json(['status' => 'error', 'message' => 'Account was verified']);
                 }
-                // if($data->created_at_otp){
-                //     $limit_otp = Carbon::parse($data->created_at_otp)->addMinutes(5)->toString();
-                //     $times_remaining = Carbon::parse($data->created_at_otp)->diffForHumans();
-                //     $now = Carbon::now()->toString();
-                //         if($now < $limit_otp){
-                //             return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code '.$times_remaining.'.'], 403);    
-                //         }
-                // }
+                if ($data->created_at_otp) {
+                    $limit_otp = Carbon::parse($data->created_at_otp)->addMinutes(5)->toString();
+                    $times_remaining = Carbon::parse($data->created_at_otp)->diffForHumans();
+                    $now = Carbon::now()->toString();
+                    if ($now < $limit_otp) {
+                        return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code ' . $times_remaining . '.'], 403);
+                    }
+                }
                 $data->otp_verification = random_int(100000, 999999);
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
                 $data->save();
-                // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($request->phone, $data->otp_verification));
+                // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200);
->>>>>>> 69d6584846c9caf082db26038f24a646df2885cf
             } catch (\Throwable $e) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
             }
         }
     }
 
-    public function send_email(Request $request){
+    public function send_email(Request $request)
+    {
         try {
             $data = User::where('email', $request->email)->first();
-            
-            if(!$data){
+
+            if (!$data) {
                 return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
             }
-            if($data->email_verified_at){
+            if ($data->email_verified_at) {
                 return response()->json(['status' => 'error', 'message' => 'Email was verified']);
             }
             Mail::to($data->email)->send(new VerifyEmail($data->email));
 
             return response()->json(['status' => 'success', 'message' => 'Success send email'], 200);
-        
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
     }
 
-    public function verification_email(Request $request){
+    public function verification_email(Request $request)
+    {
         try {
             $data = User::where('email', $request->email)->first();
-            
-            if(!$data){
+
+            if (!$data) {
                 return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
             }
-            if($data->email_verified_at){
+            if ($data->email_verified_at) {
                 return response()->json(['status' => 'error', 'message' => 'Email was verified']);
             }
 
             $data->email_verified_at = Carbon::now();
             $data->update();
 
-            return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success verification'], 200); 
+            return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success verification'], 200);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
@@ -186,13 +161,12 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->credential)->orWhere('phone', $request->credential)->with('role')->first();
-        
+
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-<<<<<<< HEAD
-        if($user->is_verified == 0){
+        if ($user->is_verified == 0) {
             return response()->json(['error' => 'Unauthorized', 'message' => 'User not verified'], 401);
         }
 
@@ -204,19 +178,13 @@ class AuthController extends Controller
         ];
 
         try {
-            if (!$token = auth()->claims(['id' => $user->id, 'phone'=> $user->phone, 'email' => $user->email, 'role' => $user->role->name])->attempt($credentials)) {
+            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role' => $user->role->name])->attempt($credentials)) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
-=======
-        $credentials = request(['email', 'password']);
-        
-        if (!$token = auth()->claims(['id' => $user->id, 'email' => $user->email,'phone' => $user->phone, 'role' => $user->role->name])->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
->>>>>>> 69d6584846c9caf082db26038f24a646df2885cf
         }
-        
+
         if ($user->is_verified == 0) {
             return response()->json(['error' => 'Unauthorized', 'message' => 'User not verified'], 403);
         }
