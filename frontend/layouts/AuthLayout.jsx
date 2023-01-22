@@ -16,7 +16,7 @@ export default function Auth({ children, title, isAdmin }) {
       <main>
         <section className={`relative w-full h-full py-40 min-h-screen bg-zinc-900`}>
           <div
-            className="absolute top-0 w-full h-full bg-no-repeat bg-full hidden md:block"
+            className="absolute top-0 -z-0 w-full h-full bg-no-repeat bg-full hidden md:block"
             // /login.svg
             style={{
               backgroundImage: "url('/img/register_bg_2.png')",

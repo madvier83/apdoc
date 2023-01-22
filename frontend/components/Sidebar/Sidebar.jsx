@@ -10,7 +10,7 @@ export default function Sidebar() {
 
   const [adminMenu, setAdminMenu] = useState(true);
   const [receptionistMenu, setReceptionistMenu] = useState(true);
-  const [doctorMenu, setDoctorMenu] = useState(false);
+  const [doctorMenu, setDoctorMenu] = useState(true);
   const [pharmacyMenu, setPharmacyMenu] = useState(false);
   const [promotionMenu, setPromotionMenu] = useState(false);
   const [cashierMenu, setCashierMenu] = useState(false);

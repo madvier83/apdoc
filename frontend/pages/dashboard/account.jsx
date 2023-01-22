@@ -4,20 +4,26 @@ import React, { useEffect, useReducer, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
+import axios from "../api/axios";
 
 export default function Account() {
-  const token = getCookie("token");
   const userFormRef = useRef();
   const [isEditUser, setIsEditUser] = useState(false);
-  const user = {
+  const [emailSent, setEmailSent] = useState(false);
+  const [sendEmailLoading, setSendEmailLoading] = useState(false);
+
+  const token = getCookie("token");
+  const [loginUser, setLoginUser] = useState(decodeUser);
+  const [user, setUser] = useState();
+  // console.log(loginUser)
+  const initialUserForm = {
     name: "",
     email: "",
-    password: "",
+    phone: "",
   };
-  const [initialUser, setInitialUser] = useState(user);
   const [userForm, setUserForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialUser
+    initialUserForm
   );
 
   const handleUserForm = (event) => {
@@ -25,69 +31,123 @@ export default function Account() {
     setUserForm({ [name]: value });
   };
 
-  function decodeUser() {
+  async function getUser() {
     try {
-      const payload = jwt_decode(token);
-      setInitialUser(payload);
-      setUserForm(payload);
+      const response = await axios.get(`/user/${loginUser?.id}`, {
+        "Content-Type": "application/json",
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      setUser(response.data);
+      setUserForm(response.data);
     } catch (err) {
       console.log(err);
     }
   }
+
+  function decodeUser() {
+    try {
+      const payload = jwt_decode(token);
+      // console.log(payload);
+      return payload;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
   useEffect(() => {
-    decodeUser();
+    getUser();
   }, []);
-  // console.log(user);
+
+  async function updateUser(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.put(`user/${user.id}`, userForm, {
+        "Content-Type": "application/json",
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      // console.log(response);
+      setIsEditUser(false);
+      getUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function sendVerifyEmail() {
+    setEmailSent(true);
+    setSendEmailLoading(true);
+    try {
+      const response = await axios.post(
+        "auth/send/email",
+        { email: user.email },
+        {
+          "Content-Type": "application/json",
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      setEmailSent(false);
+    }
+    setSendEmailLoading(false);
+  }
   return (
     <>
       <DashboardLayout title="Account" headerStats={false}>
         <div className="flex flex-wrap">
           <div className="w-full lg:w-8/12 mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
-              <div className="rounded-t bg-white mb-0 px-6 py-6">
-                <div className="text-center flex justify-between">
-                  <h6 className="text-blueGray-700 text-xl font-bold">
-                    Personal Details
-                  </h6>
-                  <div className="">
-                    <button
-                      className={`${
-                        isEditUser
-                          ? "bg-rose-500 active:bg-rose-400"
-                          : "bg-indigo-500 active:bg-indigo-400"
-                      } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
-                      onClick={() => {
-                        setIsEditUser((prev) => {
-                          return !prev;
-                        });
-                        setTimeout(() => userFormRef.current.focus(), 10);
-                        setUserForm({ ...initialUser, name: "" });
-                        console.log(userForm);
-                      }}
-                    >
-                      {isEditUser ? "Cancel" : "Edit"}{" "}
-                      <i
-                        className={`fas ${
-                          isEditUser ? "fa-x" : "fa-edit"
-                        } ml-2`}
-                      ></i>
-                    </button>
-                    {isEditUser ? (
-                      <button
-                        className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
-                        onClick={() => {}}
+              {/* Personal detail form */}
+              <form onSubmit={(e) => updateUser(e)}>
+                <div className="rounded-t bg-white mb-0 px-6 py-6">
+                  <div className="text-center flex justify-between">
+                    <h6 className="text-blueGray-700 text-xl font-bold">
+                      Personal Details
+                    </h6>
+                    <div className="flex">
+                      <div
+                        className={`${
+                          isEditUser
+                            ? "bg-rose-500 active:bg-rose-400"
+                            : "bg-indigo-500 active:bg-indigo-400"
+                        } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 cursor-pointer`}
+                        onClick={() => {
+                          setIsEditUser((prev) => {
+                            return !prev;
+                          });
+                          setTimeout(() => userFormRef.current.focus(), 10);
+                          getUser();
+                          // console.log(userForm);
+                        }}
                       >
-                        Save
-                        <i className={`fas fa-save ml-2`}></i>
-                      </button>
-                    ) : (
-                      ""
-                    )}
+                        {isEditUser ? "Cancel" : "Edit"}{" "}
+                        <i
+                          className={`fas ${
+                            isEditUser ? "fa-x" : "fa-edit"
+                          } ml-2`}
+                        ></i>
+                      </div>
+                      {isEditUser ? (
+                        <button
+                          className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
+                        >
+                          Save
+                          <i className={`fas fa-save ml-2`}></i>
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                <form>
+                <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                   <div className="flex flex-wrap">
                     <div className="w-full px-4 mt-8">
                       <div className="relative w-full mb-3">
@@ -99,13 +159,14 @@ export default function Account() {
                         </label>
                         <div className="relative">
                           <input
-                            type="email"
+                            type="text"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                             value={userForm.name}
                             disabled={!isEditUser}
                             ref={userFormRef}
                             name="name"
                             onChange={(e) => handleUserForm(e)}
+                            required
                           />
                         </div>
                       </div>
@@ -120,13 +181,42 @@ export default function Account() {
                         <div className="relative">
                           <input
                             type="email"
-                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed"
                             value={userForm.email}
                             disabled
                           />
-                          <span className="absolute top-[22%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer">
-                            Verify now <i className="fas fa-arrow-right"></i>
-                          </span>
+                          {!user?.email_verified_at ? (
+                            emailSent ? (
+                              sendEmailLoading ? (
+                                <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                  {/* <p>Loading</p> */}
+                                  <img
+                                    src="/loading.svg"
+                                    alt="now loading"
+                                    className="absolute"
+                                  />
+                                </span>
+                              ) : (
+                                <span
+                                  className="absolute top-[22%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none"
+                                >
+                                  Verification Email Sent
+                                </span>
+                              )
+                            ) : (
+                              <span
+                                onClick={sendVerifyEmail}
+                                className="absolute top-[22%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                              >
+                                Verify now{" "}
+                                <i className="fas fa-arrow-right"></i>
+                              </span>
+                            )
+                          ) : (
+                            <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                              Verified <i className="fas fa-check"></i>
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -140,19 +230,19 @@ export default function Account() {
                         <div className="relative">
                           <input
                             type="text"
-                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed"
                             value={userForm.phone}
                             disabled
                           />
-                          <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer">
+                          <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
                             Verified <i className="fas fa-check"></i>
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
 
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">

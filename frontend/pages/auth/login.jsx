@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import axios from "../api/axios";
-import jwt from "jsonwebtoken";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -10,9 +9,10 @@ import AuthLayout from "../../layouts/AuthLayout";
 export default function Login() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [credential, setCredential] = useState("");
   const [pwd, setPwd] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState("")
 
   function parseJwt(token) {
     return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
@@ -20,12 +20,12 @@ export default function Login() {
 
   async function handleLogin(e) {
     e.preventDefault();
-    if (!email && !pwd) return;
+    if (!credential && !pwd) return;
 
     setLoading(true);
 
     const data = {
-      email: email,
+      credential: credential,
       password: pwd,
     };
     try {
@@ -38,20 +38,20 @@ export default function Login() {
         setCookie("token", response.data.access_token, {
           maxAge: 60 * 60 * 12,
         });
-        setEmail("");
+        setCredential("");
         setPwd("");
         router.push("/dashboard");
       }
-
       // setLoading(false);
     } catch (e) {
-      if(e.response.status == 403){
+      setLoading(false);
+      setLoginError("Login failed")
+      if(e.response?.status == 403){
         router.push({
           pathname: "/auth/verify",
           query: {email: email}
         }, "/auth/verify")
       }
-      setLoading(false);
     }
   }
 
@@ -76,15 +76,15 @@ export default function Login() {
                         className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="email"
                       >
-                        Email
+                        Email or phone
                       </label>
                       <input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
+                        value={credential}
+                        onChange={(e) => setCredential(e.target.value)}
+                        type="text"
+                        name="email"
                         className="input w-full"
-                        placeholder="Email"
-                        id="email"
+                        id="credential"
                       />
                     </div>
 
@@ -100,9 +100,11 @@ export default function Login() {
                         onChange={(e) => setPwd(e.target.value)}
                         type="password"
                         className="input w-full"
-                        placeholder="Password"
                         id="password"
                       />
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {loginError}
+                        </label>
                     </div>
                     <div className="">
                       <Link

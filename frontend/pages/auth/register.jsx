@@ -7,26 +7,14 @@ import AuthLayout from "../../layouts/AuthLayout";
 
 export default function Register() {
   const router = useRouter();
-  const otp_Ref = useRef();
 
-  const [sent, setSent] = useState(false);
-  const [otp, setOtp] = useState({})
-  const [otpError, setOtpError] = useState("")
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   const initialRegisterForm = {
     email: "",
     // phone: "",
     password: "",
     matchPwd: "",
-  };
-
-  const initialVerifyForm = {
-    otp_1: "",
-    otp_2: "",
-    otp_3: "",
-    otp_4: "",
-    otp_5: "",
-    otp_6: "",
   };
 
   const [registerForm, setRegisterForm] = useReducer(
@@ -38,15 +26,6 @@ export default function Register() {
     initialRegisterForm
   );
 
-  const [verifyForm, setVerifyForm] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    initialVerifyForm
-  );
-  const [verifyFormError, setVerifyFormError] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    initialVerifyForm
-  );
-
   const handleRegisterInput = (event) => {
     const { name, value } = event.target;
     setRegisterForm({ [name]: value });
@@ -54,9 +33,11 @@ export default function Register() {
 
   async function handleRegister(e) {
     e.preventDefault();
+    setRegisterLoading(true);
 
     if (registerForm.password !== registerForm.matchPwd) {
-      setRegisterFormError({ matchPwd: "Password doesn't match" });
+      setRegisterFormError({ matchPwd: "Password doesn't match" })
+      setRegisterLoading(false)
       return;
     }
     setRegisterFormError({ matchPwd: "" });
@@ -65,13 +46,18 @@ export default function Register() {
       const response = await axios.post("auth/register", registerForm, {
         "Content-Type": "application/json",
       });
-      router.push({
-        pathname: "/auth/verify",
-        query: {email :response.data.data.email},
-      }, "/auth/verify")
+      router.push(
+        {
+          pathname: "/auth/verify",
+          query: { email: response.data.data.email },
+        },
+        "/auth/verify"
+      );
     } catch (err) {
+      console.log(err);
       setRegisterFormError(initialRegisterForm);
       setRegisterFormError(err.response?.data);
+      setRegisterLoading(false)
     }
   }
 
@@ -90,28 +76,26 @@ export default function Register() {
                   </div>
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                    <form>
-                      <div className="relative w-full mb-3">
-                        <label className="block text-zinc-500 text-xs font-bold mb-2">
-                          Email
-                        </label>
-                        <input
-                          name="email"
-                          value={registerForm.email}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="email"
-                          className={`input w-full ${
-                            registerFormError.email[0]
-                              ? "border-rose-500"
-                              : null
-                          }`}
-                          placeholder="example@mail.com"
-                        />
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.email}
-                        </label>
-                      </div>
-                      {/* 
+                  <form>
+                    <div className="relative w-full mb-3">
+                      <label className="block text-zinc-500 text-xs font-bold mb-2">
+                        Email
+                      </label>
+                      <input
+                        name="email"
+                        value={registerForm.email}
+                        onChange={(e) => handleRegisterInput(e)}
+                        type="email"
+                        className={`input w-full ${
+                          registerFormError.email[0] ? "border-rose-500" : null
+                        }`}
+                        placeholder="example@mail.com"
+                      />
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                        {registerFormError.email}
+                      </label>
+                    </div>
+                    {/* 
                       <div className="relative w-full mb-3">
                         <label className="block text-zinc-500 text-xs font-bold mb-2">
                           Phone
@@ -133,72 +117,79 @@ export default function Register() {
                         </label>
                       </div> */}
 
-                      <div className="relative w-full mb-3">
-                        <label className="block text-zinc-500 text-xs font-bold mb-2">
-                          Password
-                        </label>
-                        <input
-                          name="password"
-                          value={registerForm.password}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="password"
-                          className={`input w-full ${
-                            registerFormError.password[0]
-                              ? "border-rose-500"
-                              : null
-                          }`}
-                          placeholder="min 8 characters"
-                        />
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.password}
-                        </label>
-                      </div>
+                    <div className="relative w-full mb-3">
+                      <label className="block text-zinc-500 text-xs font-bold mb-2">
+                        Password
+                      </label>
+                      <input
+                        name="password"
+                        value={registerForm.password}
+                        onChange={(e) => handleRegisterInput(e)}
+                        type="password"
+                        className={`input w-full ${
+                          registerFormError.password[0]
+                            ? "border-rose-500"
+                            : null
+                        }`}
+                        placeholder="min 8 characters"
+                      />
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                        {registerFormError.password}
+                      </label>
+                    </div>
 
-                      <div className="relative w-full mb-3">
-                        <label className="block text-zinc-500 text-xs font-bold mb-2">
-                          Confirm Password
-                        </label>
-                        <input
-                          name="matchPwd"
-                          value={registerForm.matchPwd}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="password"
-                          className={`input w-full ${
-                            registerFormError.matchPwd[0]
-                              ? "border-rose-500"
-                              : null
-                          }`}
-                          placeholder="min 8 characters"
-                        />
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.matchPwd}
-                        </label>
-                      </div>
+                    <div className="relative w-full mb-3">
+                      <label className="block text-zinc-500 text-xs font-bold mb-2">
+                        Confirm Password
+                      </label>
+                      <input
+                        name="matchPwd"
+                        value={registerForm.matchPwd}
+                        onChange={(e) => handleRegisterInput(e)}
+                        type="password"
+                        className={`input w-full ${
+                          registerFormError.matchPwd[0]
+                            ? "border-rose-500"
+                            : null
+                        }`}
+                        placeholder="min 8 characters"
+                      />
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                        {registerFormError.matchPwd}
+                      </label>
+                    </div>
 
-                      <div className="text-center mt-10">
+                    <div className="text-center mt-10">
+                      {registerLoading ? (
+                        <div
+                          className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                          disabled
+                        >
+                          Loading ...
+                        </div>
+                      ) : (
                         <button
-                          className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                          className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           onClick={handleRegister}
                         >
                           Register
                         </button>
-                      </div>
-                    </form>
+                      )}
+                    </div>
+                  </form>
                 </div>
               </div>
               <div className="flex flex-wrap mt-6 relative justify-center">
-                {!sent && (
-                  <div className="text-right">
-                    {/* <Link href="/auth/register"> */}
-                    <Link href="/auth/login" className="text-blueGray-200">
-                      <small>
-                        Already Have An Account?{" "}
-                        <span className="text-emerald-200">Login</span>
-                      </small>
-                    </Link>
-                    {/* </Link> */}
-                  </div>
-                )}
+                <div className="text-right">
+                  {/* <Link href="/auth/register"> */}
+                  <Link href="/auth/login" className="text-blueGray-200">
+                    <small>
+                      Already Have An Account?{" "}
+                      <span className="text-emerald-200">Login</span>
+                    </small>
+                  </Link>
+                  {/* </Link> */}
+                </div>
               </div>
             </div>
           </div>

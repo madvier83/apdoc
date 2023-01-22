@@ -61,7 +61,7 @@ export default function Verify() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "auth/send_otp",
+        "auth/send/otp",
         { email: userdata.email, phone: verifyForm.phone },
         {
           "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export default function Verify() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "auth/verification",
+        "auth/phone/verification",
         { email: userdata.email, otp_verification: combineOtp() },
         {
           "Content-Type": "application/json",
