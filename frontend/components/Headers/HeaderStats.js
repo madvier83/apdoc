@@ -8,14 +8,14 @@ export default function HeaderStats({ headerStats }) {
   return (
     <>
       {/* Header */}
-      <div className="relative bg-emerald-400 md:pt-32 pb-16 pt-12">
+      <div className="relative bg-emerald-400 md:pt-24 pb-16 pt-12">
         {headerStats && (
           <div className="px-4 md:px-10 mx-auto w-full">
             <div>
               <div className="flex flex-wrap">
                 <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                   <CardStats
-                    statSubtitle="TRAFFIC"
+                    statSubtitle="Gross Sales"
                     statTitle="350,897"
                     statArrow="up"
                     statPercent="3.48"
@@ -27,7 +27,7 @@ export default function HeaderStats({ headerStats }) {
                 </div>
                 <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                   <CardStats
-                    statSubtitle="NEW USERS"
+                    statSubtitle="Net Sales"
                     statTitle="2,356"
                     statArrow="down"
                     statPercent="3.48"
@@ -39,19 +39,19 @@ export default function HeaderStats({ headerStats }) {
                 </div>
                 <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                   <CardStats
-                    statSubtitle="SALES"
+                    statSubtitle="Transaction"
                     statTitle="924"
                     statArrow="down"
                     statPercent="1.10"
                     statPercentColor="text-orange-500"
                     statDescripiron="Since yesterday"
-                    statIconName="fas fa-users"
+                    statIconName="fas fa-dollar"
                     statIconColor="bg-pink-500"
                   />
                 </div>
                 <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                   <CardStats
-                    statSubtitle="PERFORMANCE"
+                    statSubtitle="Average Sale"
                     statTitle="49,65%"
                     statArrow="up"
                     statPercent="12"

@@ -128,7 +128,7 @@ export default function Patiens() {
       <DashboardLayout title="Patients">
         <div
           className={
-            "relative flex flex-col min-w-0 break-words w-full mb-32 mt-1 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
+            "relative flex flex-col min-w-0 break-words w-full mb-32 mt-6 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
           }
         >
           <div className="rounded-t mb-0 px-4 py-4 border-0">
