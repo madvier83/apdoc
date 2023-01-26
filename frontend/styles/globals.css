@@ -10,10 +10,14 @@
     @apply px-8 py-4
   } */
   .btn-success {
-    @apply border-none bg-green-300 !important
+    @apply border-none bg-green-300 !important;
   }
   .tooltip {
-    @apply z-50 !important
+    @apply z-50 !important;
+  }
+
+  .tab::before {
+    @apply bg-gray-900 border-gray-900;
   }
 }
 
@@ -25,6 +29,11 @@
 }
 .input {
   border-radius: 4px !important;
+}
+.centered-axis-x {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 html {
