@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDraggable } from "react-use-draggable-scroll";
 
 import moment from "moment/moment";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function Queue() {
+  const ref = useRef(); // We will use React useRef hook to reference the wrapping div:
+  const { events } = useDraggable(ref, {
+    applyRubberBandEffect: true, // activate rubber band effect
+  }); // Now we pass the reference to the useDraggable hook:
+
   const [isRegular, setIsRegular] = useState(true);
+
   return (
     <>
       <DashboardLayout title="Queue List">
@@ -43,12 +50,16 @@ export default function Queue() {
             }`}
           >
             <div className="flex flex-col-reverse md:flex-row gap-4">
-              <div className="h-[73vh] overflow-y-scroll md:w-1/2">
+              <div className="h-[73vh] md:w-1/2">
                 {/* <div className="absolute bottom-8 z-50 flex">
                 </div> */}
-                <div className="h-full rounded-md overflow-y-scroll">
-                  <div className="card cursor-pointer hover:scale-95 transition bg-primary rounded-md shadow-md mb-4">
-                    <div className="card-body py-4">
+                <div
+                  className="h-full rounded-md overflow-y-scroll"
+                  {...events}
+                  ref={ref}
+                >
+                  <div className="card cursor-pointer bg-primary rounded-md shadow-md mb-4">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
@@ -68,8 +79,8 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer hover:scale-95 transition bg-slate-800 shadow-md mb-4">
-                    <div className="card-body py-4">
+                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
@@ -89,8 +100,8 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer hover:scale-95 transition bg-slate-800 shadow-md mb-4">
-                    <div className="card-body py-4">
+                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
@@ -110,8 +121,8 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer hover:scale-95 transition bg-slate-800 shadow-md mb-4">
-                    <div className="card-body py-4">
+                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
@@ -131,8 +142,8 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer hover:scale-95 transition bg-slate-800 shadow-md mb-4">
-                    <div className="card-body py-4">
+                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
@@ -152,8 +163,8 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer hover:scale-95 transition bg-slate-800 shadow-md">
-                    <div className="card-body py-4">
+                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md">
+                    <div className="card-body py-6">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
                           <div className="w-16 mask mask-squircle">
