@@ -13,39 +13,43 @@ export default function Queue() {
     applyRubberBandEffect: true, // activate rubber band effect
   }); // Now we pass the reference to the useDraggable hook:
   let serviceRef = useRef();
+  let serviceFormRef = useRef();
   let infoRef = useRef();
+
+  const [infoHeight, setInfoHeight] = useState(0)
 
   const [isAddService, setIsAddService] = useState(false);
   const [isRegular, setIsRegular] = useState(true);
 
   function animateService() {
     if (!isAddService) {
+      gsap.to(serviceFormRef, {
+        height: infoHeight,
+        duration: 0.3,
+      });
       gsap.to(infoRef, {
+        height: "0px",
         duration: 0.3,
         opacity: 0,
-        display: "none",
-      });
-      gsap.to(serviceRef, {
-        duration: 0.3,
-        opacity: 1,
-        display: "block",
       });
     } else {
+      gsap.to(serviceFormRef, {
+        height: "0px",
+        duration: 0.3,
+      });
       gsap.to(infoRef, {
+        height: infoHeight,
         duration: 0.3,
         opacity: 1,
-        display: "block",
-      });
-      gsap.to(serviceRef, {
-        duration: 0.3,
-        opacity: 0,
-        display: "none",
       });
     }
+    console.log(infoHeight)
     setIsAddService((prev) => !prev);
   }
-
-  useLayoutEffect(() => {}, []);
+  
+  useLayoutEffect(() => {
+    setInfoHeight(gsap.getProperty(infoRef, "height"))
+  }, []);
 
   return (
     <>
@@ -172,103 +176,84 @@ export default function Queue() {
                         </small>
                       </div>
                     </div>
-                    <div className="px-0" ref={(el) => (infoRef = el)}>
-                      <div className="relative">
-                        <div className="absolute">
-                          <div className="mt-4">
-                            <small className="text-zinc-400">
-                              Date of birth
-                            </small>{" "}
-                            <br />
-                            <span className="font-sm text-zinc-800">
-                              Bandung, 8 October 2023
-                            </span>
-                          </div>
-                          <div className="mt-4">
-                            <small className="text-zinc-400">Address</small>{" "}
-                            <br />
-                            <span className="font-sm text-zinc-800">
-                              Kab. Bandung, Jawa Barat, Desa Bojong Kunci, Kec.
-                              Pameungpeuk, Komp. Paledang Indah 2 blok E 1-3 no
-                              1 RT 2 RW 13
-                            </span>
-                          </div>
-                          <div className="mt-4">
-                            <small className="text-zinc-400">Services</small>{" "}
-                            <br />
-                          </div>
-                          <div className="flex gap-1 mt-2">
-                            <div
-                              className="px-8 py-4 text-sm w-full flex rounded-md text-gray-600 font-semibold normal-case bg-zinc-100 justify-center items-center cursor-pointer select-none"
-                              onClick={animateService}
+                    <div className="px-0">
+                      <div
+                        className="relative overflow-hidden"
+                        ref={(el) => (infoRef = el)}
+                      >
+                        <div className="mt-4">
+                          <small className="text-zinc-400">Date of birth</small>{" "}
+                          <br />
+                          <span className="font-sm text-zinc-800">
+                            Bandung, 8 October 2023
+                          </span>
+                        </div>
+                        <div className="mt-4">
+                          <small className="text-zinc-400">Address</small>{" "}
+                          <br />
+                          <span className="font-sm text-zinc-800">
+                            Kab. Bandung, Jawa Barat, Desa Bojong Kunci, Kec.
+                            Pameungpeuk, Komp. Paledang Indah 2 blok E 1-3 no 1
+                            RT 2 RW 13
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-4">
+                        <small className="text-zinc-400">Services</small> <br />
+                      </div>
+                      <div
+                        ref={(el) => (serviceRef = el)}
+                        className="text-zinc-600 flex flex-col"
+                      >
+                        <div
+                          className="w-full overflow-hidden"
+                          style={{ height: "0px" }}
+                          ref={(el) => (serviceFormRef = el)}
+                        >
+                          <div className="w-auto">
+                            <label className="label ml-0 pl-0">
+                              <span className="label-text">Service</span>
+                            </label>
+                            <select
+                              name="position_id"
+                              className="input input-bordered without-ring input-primary border-slate-300 w-full"
                             >
-                              <span className="">Add service</span>
-                              <i className="fas fa-add ml-2 font-thin"></i>
-                            </div>
+                              <option value="">Unasigned</option>
+                            </select>
+                          </div>
+                          <div className="w-auto">
+                            <label className="label ml-0 pl-0">
+                              <span className="label-text">Doctor</span>
+                            </label>
+                            <select
+                              name="position_id"
+                              className="input input-bordered without-ring input-primary border-slate-300 w-full"
+                            >
+                              <option value="">Unasigned</option>
+                            </select>
                           </div>
                         </div>
                       </div>
-                    </div>
-
-                    <div
-                      ref={(el) => (serviceRef = el)}
-                      className="text-zinc-600"
-                      style={{ display: "none" }}
-                    >
-                      <div className="w-auto">
-                        <label className="label ml-0 pl-0">
-                          <small className="label-text text-zinc-400 text-xs mt-4">
-                            Service
-                          </small>
-                        </label>
-                        <select
-                          name="position_id"
-                          className="input input-bordered without-ring input-primary border-slate-300 w-full"
+                      <div className="flex gap-1 mt-2">
+                        <div
+                          className="px-8 py-4 text-sm w-full flex rounded-md text-zinc-600 font-semibold normal-case bg-slate-100 justify-center items-center cursor-pointer select-none"
+                          onClick={animateService}
                         >
-                          <option value="">Unasigned</option>
-                        </select>
-                      </div>
-                      <div className="w-auto">
-                        <label className="label ml-0 pl-0">
-                          <small className="label-text text-gray-400 text-xs mt-2">
-                            Doctor
-                          </small>
-                        </label>
-                        <select
-                          name="position_id"
-                          className="input input-bordered without-ring input-primary border-slate-300 w-full"
-                        >
-                          <option value="">Unasigned</option>
-                        </select>
+                          <span className="">Add service</span>
+                          <i className="fas fa-add ml-2 font-thin"></i>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {!isAddService ? (
-                    <div className="flex gap-2 mt-6 items-end">
-                      <button className="btn btn-success bg-emerald-400 text-white w-1/2">
-                        Contact{" "}
-                        <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
-                      </button>
-                      <button className="btn btn-primary bg-indigo-500 w-1/2">
-                        Start <i className="fas fa-check ml-2"></i>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2 mt-6 items-end">
-                      <button
-                        onClick={animateService}
-                        className="btn btn-error text-white w-1/2"
-                      >
-                        Cancel <i className="fas fa-x ml-2 font-bold"></i>
-                      </button>
-                      <button
-                        onClick={animateService}
-                        className="btn btn-primary bg-indigo-500 w-1/2"
-                      >
-                        Add <i className="fas fa-plus ml-2"></i>
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex gap-2 mt-6 items-end">
+                    <button className="btn btn-success bg-emerald-400 text-white w-1/2">
+                      Contact{" "}
+                      <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
+                    </button>
+                    <button className="btn btn-primary bg-indigo-500 w-1/2">
+                      Start <i className="fas fa-check ml-2"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

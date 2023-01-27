@@ -19,6 +19,10 @@
   .tab::before {
     @apply bg-gray-900 border-gray-900;
   }
+
+  .without-ring {
+    @apply focus:ring-0 focus:ring-offset-0;
+  }
 }
 
 .modal-box {
