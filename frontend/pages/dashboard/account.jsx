@@ -101,7 +101,7 @@ export default function Account() {
   return (
     <>
       <DashboardLayout title="Account" headerStats={false}>
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap mt-6">
           <div className="w-full lg:w-8/12 mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               {/* Personal detail form */}
