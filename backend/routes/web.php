@@ -21,11 +21,13 @@ $router->get('/', function () use ($router) {
 
 // Email Verification
 $router->get('/v1/auth/email/verification', ['as' => 'email.verification', 'uses' => 'AuthController@verification_email']);
+$router->post('/v1/auth/email/send/forgot-password', ['as' => 'email.forgotpassword', 'uses' => 'AuthController@send_forgot_password']);
 $router->post('/v1/auth/register', 'AuthController@register');
 $router->post('/v1/auth/login', 'AuthController@login');
 
 // Whatsapp Verification
 $router->post('/v1/auth/send/otp','AuthController@send_otp');
+$router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {

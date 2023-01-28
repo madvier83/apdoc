@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use \Illuminate\Support\Carbon;
 use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
+use App\Events\ForgotPasswordMail;
 use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
 
@@ -107,7 +108,7 @@ class AuthController extends Controller
             $data = User::where('email', $request->email)->first();
 
             if (!$data) {
-                return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
+                return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
             if ($data->email_verified_at) {
                 return response()->json(['status' => 'error', 'message' => 'Email was verified']);
@@ -115,6 +116,53 @@ class AuthController extends Controller
             Mail::to($data->email)->send(new VerifyEmail($data->email));
 
             return response()->json(['status' => 'success', 'message' => 'Success send email'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        }
+    }
+
+    public function send_forgot_password(Request $request)
+    {
+        try {
+            $data = User::where('email', $request->email)->where('is_verified', 1)->first();
+
+            if(!$data){
+                return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
+            }
+
+            $data->updated_at = Carbon::now('Asia/Jakarta');
+            $data->update();
+
+            Mail::to($data->email)->send(new ForgotPasswordMail($data->email));
+            
+            return response()->json(['status' => 'success', 'message' => 'Success send email'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        }
+    }
+
+    public function change_password(Request $request, $email = null)
+    {
+        try {
+
+            $this->validate($request, [
+                'password' => 'required|min:8',
+                'confirmPassword' => 'required_with:password|same:password',
+            ]);
+
+            $data = User::where('email', $email)->where('is_verified', 1)->first();
+            
+            if(!$data){
+                return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
+            }
+
+            if($request->password){
+                $data->password = app('hash')->make($request->password);
+                $data->updated_at = Carbon::now('Asia/Jakarta');
+                $data->update();
+
+                return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success change password!'], 200);
+            }
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
