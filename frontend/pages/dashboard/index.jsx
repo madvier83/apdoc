@@ -133,7 +133,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="relative w-full h-[28vmax] py-4 px-4">
+          <div className="relative w-full h-[29vmax] py-4 px-4">
             <ResponsiveContainer className="text-xs text-white">
               <AreaChart
                 className="text-xs text-black"

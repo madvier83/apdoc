@@ -22,7 +22,7 @@ class CreateClinicsTable extends Migration
             $table->string('district');
             $table->string('postal_code');
             $table->string('phone');
-            $table->string('appdoc_id')->nullable();
+            $table->string('apdoc_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });

@@ -29,7 +29,7 @@ class ClinicFactory extends Factory
             'district'    => $this->faker->streetName,
             'postal_code' => $this->faker->postcode,
             'phone'       => $this->faker->phoneNumber,
-            'appdoc_id'   => $this->faker->unique()->postcode,
+            'apdoc_id'   => $this->faker->unique()->postcode,
         ];
     }
 }

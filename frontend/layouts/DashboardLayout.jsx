@@ -12,7 +12,7 @@ export default function DashboardLayout({ title, children, headerStats }) {
     return (
         <>
         <Head>
-            <title>{`APPDOC | ${title || ""}`}</title>
+            <title>{`APDOC | ${title || ""}`}</title>
         </Head>
         <Sidebar />
         <div className="relative md:ml-64 bg-slate-800 min-h-screen">

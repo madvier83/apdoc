@@ -26,7 +26,7 @@ export default function Login() {
     
     return (
         <>
-        <AuthLayout title={"APPDOC | Verified"}>
+        <AuthLayout title={"APDOC | Verified"}>
             <div className=" container mx-auto px-4 h-[60vh]">
             <div className="z-50 flex content-center flex-col items-center justify-center h-full">
                 <h1 className="text-white text-3xl font-bold mb-8 text-center">

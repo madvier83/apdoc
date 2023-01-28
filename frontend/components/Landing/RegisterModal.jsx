@@ -19,7 +19,7 @@ export default function RegisterModal({ showModal, setShowModal }) {
                     </div>
                     <div className="text-center mt-4">
                     <h6 className="text-emerald-500 text-4xl font-bold">
-                        APPDOC
+                        APDOC
                     </h6>
                     </div>
                     <div className="relative p-6 flex-auto px-8 lg:px-10 py-10 w-80 md:w-96">

@@ -52,7 +52,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>{`APPDOC | Login Admin`}</title>
+        <title>{`APDOC | Login Admin`}</title>
       </Head>
       <main>
         <section
@@ -73,7 +73,7 @@ export default function Login() {
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
                       <h6 className="text-white text-4xl mt-4 font-bold">
-                        APPDOC
+                        APDOC
                       </h6>
                     </div>
                   </div>

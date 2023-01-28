@@ -36,7 +36,7 @@ export default function AdminSidebar() {
             href="/"
             className="md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
-            APPDOC
+            APDOC
           </Link>
           {/* User */}
           <ul className="md:hidden items-center flex flex-wrap list-none">
@@ -60,7 +60,7 @@ export default function AdminSidebar() {
                     href="#pablo"
                     className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
                   >
-                    APPDOC
+                    APDOC
                   </Link>
                 </div>
                 <div className="w-6/12 flex justify-end">

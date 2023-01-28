@@ -10,7 +10,7 @@ export default function HeaderStats({ headerStats }) {
       {/* Header */}
       <div className="relative bg-emerald-400 md:pt-24 pb-16 pt-12">
         {headerStats && (
-          <div className="px-4 md:px-8 mx-auto w-full">
+          <div className="px-2 md:px-8 mx-auto w-full">
             <div>
               <div className="flex flex-wrap">
                 <div className="w-full lg:w-6/12 xl:w-3/12 px-2">

@@ -63,7 +63,7 @@ export default function Register() {
 
   return (
     <>
-      <AuthLayout title={"APPDOC | Register"}>
+      <AuthLayout title={"APDOC | Register"}>
         <div className="container mx-auto px-4 h-[60vh]">
           <div className="flex content-center items-center justify-center h-full">
             <div className="w-full lg:w-4/12 px-4">
@@ -71,7 +71,7 @@ export default function Register() {
                 <div className="rounded-t mb-0 px-6 py-6">
                   <div className="text-center mb-3">
                     <h6 className="text-white text-4xl mt-4 font-bold">
-                      APPDOC
+                      APDOC
                     </h6>
                   </div>
                 </div>

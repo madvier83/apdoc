@@ -54,7 +54,7 @@ export default function Navbar(props) {
                   href="/"
                 >
                   {/* <i className="far fa-file-alt text-lg leading-lg mr-2" />{" "} */}
-                  APPDOC
+                  APDOC
                 </Link>
               </li>
             </ul>
