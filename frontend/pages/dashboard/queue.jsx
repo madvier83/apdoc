@@ -84,7 +84,7 @@ export default function Queue() {
             }`}
           >
             <div className="flex flex-col-reverse md:flex-row gap-4">
-              <div className="h-[73vh] md:w-1/2">
+              <div className="h-[74vh] min-h-fit md:w-1/2">
                 {/* <div className="absolute bottom-8 z-50 flex">
                 </div> */}
                 <div

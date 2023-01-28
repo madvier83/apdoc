@@ -106,7 +106,7 @@ export default function Dashboard() {
   return (
     <>
       <DashboardLayout title="Dashboard" headerStats={true}>
-        <div className="mt-16 relative bg-gray-900 text-white mx-4 rounded-md px-4 py-8">
+        <div className="mt-12 relative bg-gray-900 text-white rounded-md px-4 py-8 mx-0">
           <div className="dropdown ml-4">
             <label tabIndex={0}>
               <h1 className="text-2xl font-bold">Overview</h1>
@@ -183,25 +183,6 @@ export default function Dashboard() {
                 />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="mt-8 relative bg-gray-900 text-white mx-4 rounded-md px-4 py-8">
-          <div className="ml-4">
-            <label>
-              <h1 className="text-2xl font-bold">Recent activity</h1>
-              <div className="mb-8 rounded-md text-md mt-2 text-gray-400">
-                Showing data from{" "}
-                <span className=" text-violet-500 opacity-95 font-semibold">
-                  {moment(selectionRange.startDate).format("MMMM Do YYYY")}
-                </span>{" "}
-                to{" "}
-                <span className=" text-violet-500 opacity-95 font-semibold">
-                  {moment(selectionRange.endDate).format("MMMM Do YYYY")}
-                </span>
-                <i className="fas fa-calendar ml-2 opacity-50"></i>
-              </div>
-            </label>
           </div>
         </div>
       </DashboardLayout>

@@ -36,10 +36,15 @@
             text-align: center;
         }
         h1 {
-            padding-bottom: 32px;
+            padding-bottom: 16px;
         }
         p {
             color: #71717a;
+        }
+        .msg {
+            padding: 0;
+            color: #7c7c86;
+            font-size: 16px;
         }
         .btn ,.btn a {
             text-decoration: none;
@@ -54,6 +59,7 @@
             flex-direction: column;
             width: 180px;
             padding: 10px 20px;
+            margin-top: 32px;
         }
         .btntext {
             font-size: 16px;
@@ -83,12 +89,14 @@
         <div class="bar"></div>
         <div class="container body">
             <h1 class="logo">APDOC</h1>
-            <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
-            <h1>Dont give this link to others!</h1>
+            <img src="https://i.postimg.cc/dtpBJNcV/lock-svgrepo-com.png" alt="email" width="128" class="mainsvg">
+            <h1>Password Reset</h1>
+            <p class="msg">If you've lost your password or wish to reset it,</p>
+            <p class="msg">use the link below to get started.</p>
             <div class="btn">
-                <a href="" class="btntext">Click To Change Password</a>
+                <a href="{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}" class="btntext">Change Password</a>
             </div>
-            <p class="link">If you have trouble clicking the "Change Password" button, copy and paste url below into your web browser: <a href="" target="_blank" class="linkverify"></a></p>
+            <p class="link">If you have trouble clicking the "Change Password" button, copy and paste url below into your web browser: <a href="{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}" target="_blank" class="linkverify">{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}</a></p>
         </div>
     </div>
 </body>

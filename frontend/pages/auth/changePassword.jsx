@@ -1,32 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthLayout from "../../layouts/AuthLayout";
 import Link from "next/link";
 import axios from "../api/axios";
+import { useRouter } from "next/router";
 
 export default function ForgotPassword() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  async function sendEmail(e) {
+
+  async function changePassword(e) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post("/auth/email/send/forgot-password", {
+      const data = {
         email,
-      });
-      console.log(res);
+        password,
+        confirmPassword,
+      };
+      console.log(data);
+      const res = await axios.post("/auth/change-password", data);
       setIsDone(true);
+      console.log(res);
     } catch (e) {
       console.log(e);
-      setEmailError(e.response?.data?.message);
     }
     setIsLoading(false);
   }
-  console.log(email);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    setEmail(router.query.email);
+  }, [router.isReady]);
   return (
     <>
-      <AuthLayout title={"APPDOC | Forgot Password"}>
+      <AuthLayout title={"APPDOC | Change Password"}>
         <div className="container mx-auto px-4 h-[60vh]">
           <div className="flex content-center items-center justify-center h-full">
             <div className="w-full lg:w-4/12 px-4">
@@ -40,36 +52,58 @@ export default function ForgotPassword() {
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                   {!isDone ? (
-                    <form onSubmit={(e) => sendEmail(e)}>
+                    <form onSubmit={(e) => changePassword(e)}>
                       <div className="relative w-full mb-3">
                         <label
                           className="block text-zinc-500 text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
-                          Email
+                          New Password
                         </label>
                         <input
-                          type="email"
-                          name="email"
-                          value={email}
+                          type="password"
+                          name="password"
+                          value={password}
                           onChange={(e) => {
-                            setEmail(e.target.value);
+                            setPassword(e.target.value);
                           }}
                           required
                           className="input w-full"
-                          placeholder="your@email.example"
+                          placeholder=""
+                        />
+                      </div>
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block text-zinc-500 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          Confirm Password
+                        </label>
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                          }}
+                          required
+                          className="input w-full"
+                          placeholder=""
                         />
 
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {emailError}
-                        </label>
+                        {/* <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {}
+                        </label> */}
                       </div>
                       {/* <p className="text-sm text-rose-500 text-justify"><i class="fa-solid fa-triangle-exclamation"></i> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi quo aspernatur voluptatum itaque in ea!</p> */}
 
                       <div className="text-center mt-8">
                         {!isLoading ? (
-                          <button className="bg-emerald-600 text-white active:bg-emerald-700 active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded  hover:-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
-                            Send Email
+                          <button
+                            className="bg-emerald-600 text-white active:bg-emerald-700 active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded  hover:-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                            onClick={changePassword}
+                          >
+                            Change Password
                           </button>
                         ) : (
                           <div
@@ -81,14 +115,14 @@ export default function ForgotPassword() {
                           </div>
                         )}
                       </div>
-                      <div className="text-center mt-4">
-                        <Link
-                          href="/auth/login"
-                          className=" text-white text-sm font-bold px-4 py-0 rounded w-full"
-                        >
-                          Cancel
-                        </Link>
-                      </div>
+                      {/* <div className="text-center mt-4">
+                      <Link
+                        href="/auth/login"
+                        className=" text-white text-sm font-bold px-4 py-0 rounded w-full"
+                      >
+                        Cancel
+                      </Link>
+                    </div> */}
                     </form>
                   ) : (
                     <div
@@ -96,12 +130,9 @@ export default function ForgotPassword() {
                       type="button"
                       disabled
                     >
-                      Please check your email,
+                      Your password has been updated,
                       <Link href={"/auth/login"}>
-                        <span className="text-emerald-200">
-                          {" "}
-                          Back to Login page
-                        </span>
+                        <span className="text-emerald-200"> Login</span>
                       </Link>
                     </div>
                   )}

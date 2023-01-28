@@ -124,10 +124,12 @@ class AuthController extends Controller
     public function send_forgot_password(Request $request)
     {
         try {
-            $data = User::where('email', $request->email)->where('is_verified', 1)->first();
+            // $data = User::where('email', $request->email)->where('is_verified', 1)->first();
+            $data = User::where('email', $request->email)->first();
 
             if(!$data){
-                return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
+                return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
+                // return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
 
             $data->updated_at = Carbon::now('Asia/Jakarta');
@@ -141,7 +143,8 @@ class AuthController extends Controller
         }
     }
 
-    public function change_password(Request $request, $email = null)
+    // public function change_password(Request $request, $email = null)
+    public function change_password(Request $request)
     {
         try {
 
@@ -150,10 +153,12 @@ class AuthController extends Controller
                 'confirmPassword' => 'required_with:password|same:password',
             ]);
 
-            $data = User::where('email', $email)->where('is_verified', 1)->first();
+            // $data = User::where('email', $email)->where('is_verified', 1)->first();
+            $data = User::where('email', $request->email)->first();
             
             if(!$data){
-                return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
+                return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
+                // return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
 
             if($request->password){
