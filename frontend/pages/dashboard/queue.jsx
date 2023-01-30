@@ -1,17 +1,23 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useDraggable } from "react-use-draggable-scroll";
 
 import moment from "moment/moment";
 import { gsap, Power3 } from "gsap";
+import { useDraggable } from "react-use-draggable-scroll";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 
 export default function Queue() {
-  const ref = useRef(); // We will use React useRef hook to reference the wrapping div:
-  const { events } = useDraggable(ref, {
-    applyRubberBandEffect: true, // activate rubber band effect
-  }); // Now we pass the reference to the useDraggable hook:
+  const servicesRef = useRef();
+  const { events: servicesEvents } = useDraggable(servicesRef, {
+    applyRubberBandEffect: true,
+  });
+  const queuesRef = useRef();
+  const { events: queuesEvents } = useDraggable(queuesRef, {
+    applyRubberBandEffect: true,
+  });
+
   let serviceRef = useRef();
   let infoRef = useRef();
 
@@ -21,31 +27,32 @@ export default function Queue() {
   function animateService() {
     if (!isAddService) {
       gsap.to(infoRef, {
-        duration: 0.3,
+        duration: 0.2,
         opacity: 0,
+        x: 50,
         display: "none",
       });
       gsap.to(serviceRef, {
-        duration: 0.3,
+        delay: 0.2,
+        duration: 0.2,
         opacity: 1,
         display: "block",
       });
     } else {
       gsap.to(infoRef, {
-        duration: 0.3,
+        duration: 0.2,
         opacity: 1,
+        x: 0,
         display: "block",
       });
       gsap.to(serviceRef, {
-        duration: 0.3,
+        duration: 0.2,
         opacity: 0,
         display: "none",
       });
     }
     setIsAddService((prev) => !prev);
   }
-
-  useLayoutEffect(() => {}, []);
 
   return (
     <>
@@ -88,11 +95,11 @@ export default function Queue() {
                 {/* <div className="absolute bottom-8 z-50 flex">
                 </div> */}
                 <div
+                  ref={servicesRef}
+                  {...servicesEvents}
                   className="h-full rounded-md overflow-y-scroll"
-                  {...events}
-                  ref={ref}
                 >
-                  <div className="card cursor-pointer bg-indigo-900 bg-opacity-70 rounded-md shadow-md mb-4">
+                  <div className="card cursor-pointer overflow-hidden bg-indigo-900 bg-opacity-70 rounded-md shadow-md mb-4">
                     <div className="card-body ">
                       <div className="flex items-center">
                         <div className="avatar mr-6">
@@ -150,7 +157,7 @@ export default function Queue() {
                   </div>
                 </div>
               </div>
-              <div className="card h- rounded-md md:w-1/2 bg-base-100 shadow-md">
+              <div className="card min-h-[74vh] rounded-md md:w-1/2 bg-base-100 shadow-md">
                 <div className="card-body justify-between">
                   <div className="">
                     <div className="flex items-center mb-4">
@@ -163,8 +170,8 @@ export default function Queue() {
                         {/* <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-rose-400 shadow-sm text-white p-1 rounded-full"></i> */}
                         <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-md font-bold text-blue-400 p-1 rounded-full"></i>
                       </div>
-                      <div className="">
-                        <h2 className="card-title text-lg text-zinc-600">
+                      <div className="w-full">
+                        <h2 className="card-title text-lg text-zinc-600 truncate">
                           Muhammad Advie Rifaldy
                         </h2>
                         <small className="text-zinc-400">
@@ -174,7 +181,7 @@ export default function Queue() {
                     </div>
                     <div className="px-0" ref={(el) => (infoRef = el)}>
                       <div className="relative">
-                        <div className="absolute">
+                        <div className="absolute w-full">
                           <div className="mt-4">
                             <small className="text-zinc-400">
                               Date of birth
@@ -197,12 +204,90 @@ export default function Queue() {
                             <small className="text-zinc-400">Services</small>{" "}
                             <br />
                           </div>
-                          <div className="flex gap-1 mt-2">
+                          <div
+                            ref={queuesRef}
+                            {...queuesEvents}
+                            className="flex flex-col gap-1 rounded-md overflow-y-scroll h-[21vh]"
+                          >
+                            <div className="flex justify-between overflow-hidden items-center px-1">
+                              <div className="text-sm breadcrumbs font-semibold text-zinc-800">
+                                <ul>
+                                  <li className="max-w-36 overflow-hidden">
+                                    <i className="fa-solid fa-kit-medical mr-2"></i>
+                                    <span className="truncate">Masker</span>
+                                  </li>
+                                  <li className="max-w-36 overflow-hidden text-zinc-400">
+                                    <i className="fas fa-user-doctor mr-2"></i>
+                                    <span className="text-sm normal-case truncate">
+                                      Dr. Reid Adams V
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div className="flex">
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-edit"></i>
+                                </div>
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-trash"></i>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex justify-between overflow-hidden items-center px-1">
+                              <div className="text-sm breadcrumbs font-semibold text-zinc-800">
+                                <ul>
+                                  <li className="max-w-36 overflow-hidden">
+                                    <i className="fa-solid fa-kit-medical mr-2"></i>
+                                    <span className="truncate">Botox</span>
+                                  </li>
+                                  <li className="max-w-36 overflow-hidden text-zinc-400">
+                                    <i className="fas fa-user-doctor mr-2"></i>
+                                    <span className="text-sm normal-case truncate">
+                                      Dr. Reid Adams V
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div className="flex">
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-edit"></i>
+                                </div>
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-trash"></i>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex justify-between overflow-hidden items-center px-1">
+                              <div className="text-sm breadcrumbs font-semibold text-zinc-800">
+                                <ul>
+                                  <li className="max-w-36 overflow-hidden">
+                                    <i className="fa-solid fa-kit-medical mr-2"></i>
+                                    <span className="truncate">
+                                      Laser resurfacing
+                                    </span>
+                                  </li>
+                                  <li className="max-w-36 overflow-hidden text-zinc-400">
+                                    <i className="fas fa-user-doctor mr-2"></i>
+                                    <span className="text-sm normal-case truncate">
+                                      Dr. Reid Adams V
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                              <div className="flex">
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-edit"></i>
+                                </div>
+                                <div className="btn btn-ghost btn-sm px-2">
+                                  <i className="fas fa-trash"></i>
+                                </div>
+                              </div>
+                            </div>
                             <div
-                              className="px-8 py-4 text-sm w-full flex rounded-md text-gray-600 font-semibold normal-case bg-zinc-100 justify-center items-center cursor-pointer select-none"
+                              className="py-2 mt-2 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
                               onClick={animateService}
                             >
-                              <span className="">Add service</span>
+                              <span>Add service</span>
                               <i className="fas fa-add ml-2 font-thin"></i>
                             </div>
                           </div>
@@ -245,12 +330,12 @@ export default function Queue() {
                   </div>
                   {!isAddService ? (
                     <div className="flex gap-2 mt-6 items-end">
-                      <button className="btn btn-success bg-emerald-400 text-white w-1/2">
+                      <button className="btn btn-success bg-success text-white w-1/2">
                         Contact{" "}
                         <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                       </button>
-                      <button className="btn btn-primary bg-indigo-500 w-1/2">
-                        Start <i className="fas fa-check ml-2"></i>
+                      <button className="btn btn-primary w-1/2">
+                        Checkout <i className="fas fa-check ml-2"></i>
                       </button>
                     </div>
                   ) : (
@@ -263,7 +348,7 @@ export default function Queue() {
                       </button>
                       <button
                         onClick={animateService}
-                        className="btn btn-primary bg-indigo-500 w-1/2"
+                        className="btn btn-primary w-1/2"
                       >
                         Add <i className="fas fa-plus ml-2"></i>
                       </button>

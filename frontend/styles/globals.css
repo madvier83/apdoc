@@ -10,7 +10,13 @@
     @apply px-8 py-4
   } */
   .btn-success {
-    @apply border-none bg-green-300 !important;
+    @apply border-none bg-green-300 text-white !important;
+  }
+  .btn-primary {
+    @apply border-none bg-indigo-500 text-white !important;
+  }
+  .btn-danger {
+    @apply border-none bg-rose-500 text-white !important;
   }
   .tooltip {
     @apply z-50 !important;
