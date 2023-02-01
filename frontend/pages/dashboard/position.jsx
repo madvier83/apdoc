@@ -278,7 +278,7 @@ export default function Position() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">Update</button>
             </div>
           </form>
         </ModalBox>

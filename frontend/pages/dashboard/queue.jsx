@@ -93,8 +93,8 @@ export default function Queue() {
               }`}
             >
               Regular <i className="fa-regular fa-user ml-2"></i>
-              <div className="badge badge-primary absolute z-10 -top-2 -right-2">
-                12
+              <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
+                2
               </div>
               <div
                 className={`bg-gray-900 rounded-b-md rounded-r-md w-8 h-8 absolute left-0`}
@@ -107,7 +107,7 @@ export default function Queue() {
               }`}
             >
               Appointment <i className="fa-regular fa-calendar-check ml-2"></i>
-              <div className="badge badge-primary absolute z-10 -top-2 -right-2">
+              <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
                 +99
               </div>
             </span>
@@ -240,7 +240,7 @@ export default function Queue() {
                             <small className="text-zinc-400">Services</small>{" "}
                             <br />
                           </div>
-                          <div className="flex flex-col mt-1 gap-1 rounded-md h-[21vh]">
+                          <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[24vh]">
                             <div
                               ref={queuesRef}
                               {...queuesEvents}

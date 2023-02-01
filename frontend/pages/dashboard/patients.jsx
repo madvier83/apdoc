@@ -6,7 +6,7 @@ import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 
-export default function Patiens() {
+export default function Patients() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -574,7 +574,7 @@ export default function Patiens() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success rounded-md">Save</button>
+              <button className="btn btn-success bg-success rounded-md">Save</button>
             </div>
           </form>
         </ModalBox>

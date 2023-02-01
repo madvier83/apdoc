@@ -651,7 +651,7 @@ export default function Employee() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success rounded-md">Save</button>
+              <button className="btn btn-success bg-success rounded-md">Save</button>
             </div>
           </form>
         </ModalBox>

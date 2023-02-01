@@ -206,7 +206,7 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="/dashboard/patiens"
+                          href="/dashboard/patients"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
@@ -252,11 +252,11 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="#"
+                          href="/dashboard/patients"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Patient
+                          Patients
                         </Link>
                       </li>
                       <li className="items-center">

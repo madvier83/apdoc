@@ -237,7 +237,7 @@ export default function Queue() {
                     </div>
                   </div>
                   <div className="flex gap-2 mt-6 items-end">
-                    <button className="btn btn-success bg-emerald-400 text-white w-1/2">
+                    <button className="btn btn-success bg-success text-white w-1/2">
                       Contact{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </button>
