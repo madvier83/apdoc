@@ -1,14 +1,13 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import moment from "moment/moment";
-import { gsap, Power3 } from "gsap";
+import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
-import ScrollContainer from "react-indiana-drag-scroll";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
 
 export default function Queue() {
+
+  // Drag to scroll ref
   const servicesRef = useRef();
   const { events: servicesEvents } = useDraggable(servicesRef, {
     applyRubberBandEffect: true,
@@ -18,41 +17,67 @@ export default function Queue() {
     applyRubberBandEffect: true,
   });
 
-  let serviceRef = useRef();
-  let infoRef = useRef();
-
+  // toggle state
   const [isAddService, setIsAddService] = useState(false);
   const [isRegular, setIsRegular] = useState(true);
+  const [isAddQueue, setIsAddQueue] = useState(false);
 
-  function animateService() {
-    if (!isAddService) {
-      gsap.to(infoRef, {
-        duration: 0.2,
-        opacity: 0,
-        x: 50,
-        display: "none",
-      });
-      gsap.to(serviceRef, {
-        delay: 0.2,
-        duration: 0.2,
-        opacity: 1,
-        display: "block",
-      });
-    } else {
-      gsap.to(infoRef, {
-        duration: 0.2,
-        opacity: 1,
-        x: 0,
-        display: "block",
-      });
-      gsap.to(serviceRef, {
-        duration: 0.2,
-        opacity: 0,
-        display: "none",
-      });
-    }
-    setIsAddService((prev) => !prev);
-  }
+  // open service form ref
+  let infoRef = useRef();
+  let serviceRef = useRef();
+  const addServiceTL = useRef();
+  useLayoutEffect(() => {
+    addServiceTL.current = gsap.timeline({ paused: true });
+    addServiceTL.current.to(infoRef.current, {
+      duration: 0.5,
+      opacity: 0,
+      x: -50,
+      display: "none",
+      ease: Expo.easeInOut,
+    });
+    addServiceTL.current.to(serviceRef.current, {
+      display: "block",
+      duration: 0.5,
+      opacity: 1,
+      ease: Expo.easeInOut,
+    });
+  }, []);
+
+  useEffect(() => {
+    isAddService ? addServiceTL.current.play() : addServiceTL.current.reverse();
+  }, [isAddService]);
+
+  // add queue ref
+  let listRef = useRef();
+  let addRef = useRef();
+  // const addQueueTL = useRef();
+  // useLayoutEffect(() => {
+  //   addQueueTL.current = gsap.timeline({ paused: true });
+  //   addQueueTL.current.to(addRef.current, {
+  //     duration: .2,
+  //     opacity: 1,
+  //     display: "block"
+  //   });
+  //   addQueueTL.current.to(listRef.current, {
+  //     duration: .2,
+  //     // opacity: 0,
+  //     display: "none"
+  //   });
+  // }, []);
+  
+  // useEffect(() => {
+  //   gsap.to(addRef.current, {
+  //     duration: 0,
+  //     // opacity: 0,
+  //     width: 0,
+  //     // display: "none"
+  //   });
+  // }, []);
+  // useEffect(() => {
+  //   isAddQueue ? addQueueTL.current.play() : addQueueTL.current.reverse();
+  //   console.log(isAddQueue);
+  // }, [isAddQueue]);
+  
 
   return (
     <>
@@ -90,14 +115,18 @@ export default function Queue() {
               !isRegular && "rounded-l-md"
             }`}
           >
-            <div className="flex flex-col-reverse md:flex-row gap-4">
+            <div
+              ref={listRef}
+              className="flex flex-col-reverse md:flex-row-reverse gap-4"
+              style={{ display: "block" }}
+            >
               <div className="h-[74vh] min-h-fit md:w-1/2">
                 {/* <div className="absolute bottom-8 z-50 flex">
                 </div> */}
                 <div
                   ref={servicesRef}
                   {...servicesEvents}
-                  className="h-full rounded-md overflow-y-scroll"
+                  className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                 >
                   <div className="card cursor-pointer overflow-hidden bg-indigo-900 bg-opacity-70 rounded-md shadow-md mb-4">
                     <div className="card-body ">
@@ -145,7 +174,10 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
-                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
+                  <div
+                    onClick={() => setIsAddQueue((prev) => !prev)}
+                    className="card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4"
+                  >
                     <div className="card-body ">
                       <div className="flex items-center text-zinc-400">
                         <div className="mx-auto">
@@ -179,7 +211,7 @@ export default function Queue() {
                         </small>
                       </div>
                     </div>
-                    <div className="px-0" ref={(el) => (infoRef = el)}>
+                    <div className="px-0" ref={infoRef}>
                       <div className="relative">
                         <div className="absolute w-full">
                           <div className="mt-4">
@@ -285,7 +317,7 @@ export default function Queue() {
                             </div>
                             <div
                               className="py-2 mt-2 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
-                              onClick={animateService}
+                              onClick={() => setIsAddService(true)}
                             >
                               <span>Add service</span>
                               <i className="fas fa-add ml-2 font-thin"></i>
@@ -296,7 +328,7 @@ export default function Queue() {
                     </div>
 
                     <div
-                      ref={(el) => (serviceRef = el)}
+                      ref={serviceRef}
                       className="text-zinc-600"
                       style={{ display: "none" }}
                     >
@@ -341,13 +373,13 @@ export default function Queue() {
                   ) : (
                     <div className="flex gap-2 mt-6 items-end">
                       <button
-                        onClick={animateService}
+                        onClick={() => setIsAddService(false)}
                         className="btn btn-error text-white w-1/2"
                       >
                         Cancel <i className="fas fa-x ml-2 font-bold"></i>
                       </button>
                       <button
-                        onClick={animateService}
+                        onClick={() => setIsAddService(false)}
                         className="btn btn-primary w-1/2"
                       >
                         Add <i className="fas fa-plus ml-2"></i>
@@ -357,6 +389,9 @@ export default function Queue() {
                 </div>
               </div>
             </div>
+            {/* <div ref={addRef} className="h-[74vh] bg-white rounded-md shadow absolute bottom-8" style={{ width: 100 }}>
+              <div className=""></div>
+            </div> */}
           </div>
         </div>
       </DashboardLayout>

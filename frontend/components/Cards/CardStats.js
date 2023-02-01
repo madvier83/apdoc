@@ -1,4 +1,5 @@
-import React from "react";
+import gsap from "gsap";
+import React, { useEffect, useRef } from "react";
 // import PropTypes from "prop-types";
 
 export default function CardStats({
@@ -11,6 +12,17 @@ export default function CardStats({
   statIconName,
   statIconColor,
 }) {
+  const grossRef = useRef();
+  useEffect(() => {
+    gsap.from(grossRef, {
+      textContent: 0,
+      duration: 4,
+      ease: "Power1.easeIn",
+      snap: { textContent: 1 },
+      stagger: 1,
+      // onUpdate: textContent.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+    });
+  }, []);
   return (
     <>
       <div className="relative flex flex-col h-20 min-w-0 break-words bg-gray-900 rounded mb-4 xl:mb-0 shadow-lg">
@@ -20,7 +32,7 @@ export default function CardStats({
               <h5 className="text-gray-400 font-semibold text-xs">
                 {statSubtitle}
               </h5>
-              <span className="font-semibold text-xl text-white">
+              <span ref={grossRef} className="font-semibold text-xl text-white">
                 {statTitle}
               </span>
             </div>
