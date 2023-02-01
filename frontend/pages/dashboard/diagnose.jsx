@@ -215,7 +215,7 @@ export default function Diagnose() {
                         </label>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {moment(obj.created_at).fromNow()}
+                        {moment(obj.created_at).format("MMM Do YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.updated_at).fromNow()}
