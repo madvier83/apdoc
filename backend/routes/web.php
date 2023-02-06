@@ -80,4 +80,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/patient', 'PatientController@create');
 	$router->put('/v1/patient/{id}', 'PatientController@update');
 	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
+
+	// QUEUE
+
+	$router->get('/v1/queue', 'QueueController@index');
+	$router->post('/v1/queue/{patient}', 'QueueController@create');
+	$router->put('/v1/queue/{patient}/{status}', 'QueueController@update');
 });

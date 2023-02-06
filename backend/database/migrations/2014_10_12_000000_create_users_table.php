@@ -22,14 +22,14 @@ return new class extends Migration
             $table->integer('otp_verification')->nullable();
             $table->timestamp('created_at_otp')->nullable();
             $table->timestamp('expired_otp')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->foreignId('role_id');
-            $table->foreignId('outlet_id')->nullable();
             $table->foreignId('employee_id')->nullable();
+            $table->foreignId('clinic_id')->nullable();
             $table->string('apdoc_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->boolean('is_verified')->default(0);
-            $table->timestamp('email_verified_at')->nullable();
-            $table->timestamp('phone_verified_at')->nullable();
             $table->timestamps();
         });
     }

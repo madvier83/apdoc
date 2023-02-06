@@ -18,6 +18,7 @@ class CreateServicesTable extends Migration
             $table->string('name');
             $table->integer('price');
             $table->integer('commission');
+            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
