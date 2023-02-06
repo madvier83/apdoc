@@ -1,4 +1,10 @@
-import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
 import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
@@ -108,7 +114,7 @@ export default function Queue() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       getQueues();
     } catch (err) {
       console.error(err);
@@ -125,9 +131,17 @@ export default function Queue() {
       });
       // console.log(response.data);
       setQueues(response.data);
-      response.data.length > 0
-        ? setSelectedQueue(response.data[0])
-        : setSelectedQueue({ dummy });
+      let isFound = false;
+      response.data.map((obj) => {
+        if (obj.id == selectedQueue.id) {
+          setSelectedQueue(obj);
+          isFound = true;
+        }
+      });
+      if (!isFound) {
+        setSelectedQueue(response.data[0]);
+      }
+      response.data.length <= 0 && setSelectedQueue({ dummy });
     } catch (err) {
       console.error(err);
     }
@@ -172,7 +186,7 @@ export default function Queue() {
   const initialServiceForm = {
     queue_id: "",
     service_id: "",
-    employee_id: ""
+    employee_id: "",
   };
   const [serviceForm, setServiceForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -195,9 +209,28 @@ export default function Queue() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       getQueues();
-      setIsAddService(false)
+      setIsAddService(false);
+      setServiceForm(initialServiceForm);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async function cancelService(id) {
+    try {
+      const response = await axios.put(
+        `queue-detail/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response);
+      getQueues();
     } catch (err) {
       console.error(err);
     }
@@ -225,8 +258,10 @@ export default function Queue() {
       created_at: "*",
       updated_at: "*",
     },
+    queue_details: [],
   };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
+  // console.log(selectedQueue)
 
   return (
     <>
@@ -321,7 +356,7 @@ export default function Queue() {
                               }`}
                             >
                               <div
-                                onClick={() => cancelQueue(obj.patient.id)}
+                                onClick={() => cancelQueue(obj.id)}
                                 className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
                               >
                                 Cancel <i className="fas fa-trash ml-2"></i>
@@ -415,6 +450,62 @@ export default function Queue() {
                               {...queuesEvents}
                               className="overflow-y-scroll"
                             >
+                              {selectedQueue?.queue_details.map((obj) => {
+                                return (
+                                  <div
+                                    key={obj.id}
+                                    className={`flex justify-between overflow-hidden items-center px-1 ${
+                                      obj.is_cancelled && "opacity-25"
+                                    }`}
+                                  >
+                                    <div
+                                      className={`text-sm breadcrumbs font-semibold text-zinc-800`}
+                                    >
+                                      <ul>
+                                        <li
+                                          className={`max-w-36 overflow-hidden ${
+                                            obj.is_cancelled &&
+                                            "line-through text-rose-600"
+                                          }`}
+                                        >
+                                          <i className="fa-solid fa-kit-medical mr-2"></i>
+                                          <span className="truncate">
+                                            {obj.service.name}
+                                          </span>
+                                        </li>
+                                        <li
+                                          className={`max-w-36 overflow-hidden text-zinc-400 ${
+                                            obj.is_cancelled &&
+                                            "line-through text-rose-600"
+                                          }`}
+                                        >
+                                          <i className="fas fa-user-doctor mr-2"></i>
+                                          <span className="text-sm normal-case truncate">
+                                            {obj.employee.name}
+                                          </span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div className="flex">
+                                      {/* {!obj.is_cancelled && (
+                                        <div className="btn btn-ghost btn-sm px-2">
+                                          <i className="fas fa-edit"></i>
+                                        </div>
+                                      )} */}
+                                      <div
+                                        onClick={() => cancelService(obj.id)}
+                                        className="btn btn-ghost btn-sm px-2"
+                                      >
+                                        {obj.is_cancelled ? (
+                                          <i className="fas fa-undo"></i>
+                                        ):(
+                                          <i className="fas fa-trash"></i>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
                               <div
                                 className="py-2 mt-1 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
                                 onClick={() => setIsAddService(true)}
@@ -443,8 +534,9 @@ export default function Queue() {
                           name="service_id"
                           onChange={(e) => handleServiceInput(e)}
                           value={serviceForm.service_id}
+                          required
                           className="input input-bordered without-ring input-primary border-slate-300 w-full"
-                          >
+                        >
                           <option value="">Unasigned</option>
                           {services?.map((obj) => {
                             return (
@@ -465,6 +557,7 @@ export default function Queue() {
                           name="employee_id"
                           onChange={(e) => handleServiceInput(e)}
                           value={serviceForm.employee_id}
+                          required
                           className="input input-bordered without-ring input-primary border-slate-300 w-full"
                         >
                           <option value="">Unasigned</option>

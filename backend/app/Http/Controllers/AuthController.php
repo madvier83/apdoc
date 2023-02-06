@@ -215,13 +215,13 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->credential)->orWhere('phone', $request->credential)->with('role')->first();
 
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        // if (!$user) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
-        if ($user->is_verified == 0) {
-            return response()->json(['error' => 'Unauthorized', 'message' => 'User not verified'], 401);
-        }
+        // if ($user->is_verified == 0) {
+        //     return response()->json(['error' => 'Unauthorized', 'message' => 'User not verified'], 403);
+        // }
 
         // $credentials = request(['email', 'password']);
         $credentials = [

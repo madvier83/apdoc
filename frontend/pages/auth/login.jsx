@@ -38,8 +38,8 @@ export default function Login() {
         setCookie("token", response.data.access_token, {
           maxAge: 60 * 60 * 12,
         });
-        setCredential("");
-        setPwd("");
+        // setCredential("");
+        // setPwd("");
         router.push("/dashboard");
       }
       // setLoading(false);
@@ -49,7 +49,7 @@ export default function Login() {
       if(e.response?.status == 403){
         router.push({
           pathname: "/auth/verify",
-          query: {email: email}
+          query: {email: credential}
         }, "/auth/verify")
       }
     }
