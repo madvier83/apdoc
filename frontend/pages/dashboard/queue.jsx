@@ -258,7 +258,7 @@ export default function Queue() {
       created_at: "*",
       updated_at: "*",
     },
-    queue_details: [],
+    queue_details: null,
   };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
   // console.log(selectedQueue)
@@ -450,7 +450,7 @@ export default function Queue() {
                               {...queuesEvents}
                               className="overflow-y-scroll"
                             >
-                              {selectedQueue?.queue_details.map((obj) => {
+                              {selectedQueue?.queue_details?.map((obj) => {
                                 return (
                                   <div
                                     key={obj.id}
