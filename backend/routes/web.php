@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+// $router->group(['middleware' => 'auth'], function () use ($router) {
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
 
@@ -83,7 +83,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// QUEUE
 
-	$router->get('/v1/queue', 'QueueController@index');
+	$router->get('/v1/queues', 'QueueController@index');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
-	$router->put('/v1/queue/{patient}/{status}', 'QueueController@update');
-});
+	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
+
+	// QUEUE Detail
+
+	$router->get('/v1/queue-details', 'QueueDetailController@index');
+	$router->post('/v1/queue-detail/{queue}/{employee}/{service}', 'QueueDetailController@create');
+	$router->put('/v1/queue-detail/{id}', 'QueueDetailController@update');
+// });

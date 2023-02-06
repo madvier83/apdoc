@@ -10,7 +10,7 @@ class QueueController extends Controller
 {
     public function index()
     {
-        $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with('patient')->get();
+        $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient', 'queueDetails'])->get();
         return response()->json($queue);
     }
 
@@ -19,7 +19,7 @@ class QueueController extends Controller
         //
     }
 
-    public function create(Request $request, $patient)
+    public function create($patient)
     {
         $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
 
@@ -40,9 +40,9 @@ class QueueController extends Controller
         return response()->json($queue);
     }
 
-    public function update(Request $request, $patient, $status)
+    public function update($id, $status)
     {
-        $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->orderBy('id', 'desc')->first();
+        $queue = Queue::find($id);
 
         if (!$queue) {
             return response()->json(['message' => 'Queue not found!'], 404);

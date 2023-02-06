@@ -16,4 +16,9 @@ class Employee extends Model
     {
         return $this->belongsTo(Position::class);
     }
+
+    public function queueDetails()
+    {
+        return $this->hasMany(QueueDetail::class);
+    }
 }
