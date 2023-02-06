@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 
 import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
@@ -118,21 +118,90 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   async function getQueues() {
     try {
-      const response = await axios.get(`queue`, {
+      const response = await axios.get(`queues`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       setQueues(response.data);
-      response.data.length > 0 ? setSelectedQueue(response.data[0]) : setSelectedQueue({dummy});
+      response.data.length > 0
+        ? setSelectedQueue(response.data[0])
+        : setSelectedQueue({ dummy });
     } catch (err) {
       console.error(err);
     }
   }
+
+  const [services, setServices] = useState();
+  async function getServices() {
+    try {
+      const response = await axios.get(`services`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      // console.log(response.data);
+      setServices(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const [employees, setEmployees] = useState();
+  async function getEmployees() {
+    try {
+      const response = await axios.get(`employees`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      // console.log(response.data);
+      setEmployees(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     getQueues();
+    getServices();
+    getEmployees();
   }, []);
+
+  const initialServiceForm = {
+    queue_id: "",
+    service_id: "",
+    employee_id: ""
+  };
+  const [serviceForm, setServiceForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialServiceForm
+  );
+  const handleServiceInput = (event) => {
+    const { name, value } = event.target;
+    setServiceForm({ [name]: value });
+  };
+  // console.log(serviceForm)
+  async function addService() {
+    try {
+      const response = await axios.post(
+        `queue-detail/${selectedQueue?.id}/${serviceForm.employee_id}/${serviceForm.service_id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      getQueues();
+      setIsAddService(false)
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const dummy = {
     id: 0,
@@ -156,7 +225,7 @@ export default function Queue() {
       created_at: "*",
       updated_at: "*",
     },
-  }
+  };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
 
   return (
@@ -371,23 +440,41 @@ export default function Queue() {
                           </small>
                         </label>
                         <select
-                          name="position_id"
+                          name="service_id"
+                          onChange={(e) => handleServiceInput(e)}
+                          value={serviceForm.service_id}
                           className="input input-bordered without-ring input-primary border-slate-300 w-full"
-                        >
+                          >
                           <option value="">Unasigned</option>
+                          {services?.map((obj) => {
+                            return (
+                              <option key={obj.id} value={obj.id}>
+                                {obj.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                       <div className="w-auto">
                         <label className="label ml-0 pl-0">
                           <small className="label-text text-gray-400 text-xs mt-2">
-                            Doctor
+                            Employee
                           </small>
                         </label>
                         <select
-                          name="position_id"
+                          name="employee_id"
+                          onChange={(e) => handleServiceInput(e)}
+                          value={serviceForm.employee_id}
                           className="input input-bordered without-ring input-primary border-slate-300 w-full"
                         >
                           <option value="">Unasigned</option>
+                          {employees?.map((obj) => {
+                            return (
+                              <option key={obj.id} value={obj.id}>
+                                {obj.name}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>
@@ -412,7 +499,7 @@ export default function Queue() {
                         Cancel <i className="fas fa-x ml-2 font-bold"></i>
                       </button>
                       <button
-                        onClick={() => setIsAddService(false)}
+                        onClick={addService}
                         className="btn btn-primary w-1/2"
                       >
                         Add <i className="fas fa-plus ml-2"></i>
