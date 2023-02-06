@@ -22,7 +22,6 @@ export default function Queue() {
   // toggle state
   const [isAddService, setIsAddService] = useState(false);
   const [isRegular, setIsRegular] = useState(true);
-  const [isAddQueue, setIsAddQueue] = useState(false);
 
   // open service form ref
   let infoRef = useRef();
@@ -57,7 +56,6 @@ export default function Queue() {
 
   // add queue ref
   let listRef = useRef();
-  let addRef = useRef();
 
   const token = getCookies("token");
   const [patients, setPatients] = useState([]);
@@ -65,7 +63,7 @@ export default function Queue() {
 
   async function getPatients() {
     try {
-      const response = await axios.get("/patients", {
+      const response = await axios.get("patients", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -77,9 +75,89 @@ export default function Queue() {
     }
   }
 
-  // useEffect(() => {
-  //   getPatients();
-  // }, []);
+  const queueAddedRef = useRef();
+  async function addToQueue(id) {
+    try {
+      const response = await axios.post(
+        `queue/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      getQueues();
+      queueAddedRef.current.click();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function cancelQueue(id) {
+    try {
+      const response = await axios.put(
+        `queue/${id}/3`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      getQueues();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const [queues, setQueues] = useState();
+  async function getQueues() {
+    try {
+      const response = await axios.get(`queue`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      console.log(response.data);
+      setQueues(response.data);
+      response.data.length > 0 ? setSelectedQueue(response.data[0]) : setSelectedQueue({dummy});
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  useEffect(() => {
+    getQueues();
+  }, []);
+
+  const dummy = {
+    id: 0,
+    patient_id: 0,
+    queue_number: "--",
+    status_id: 1,
+    clinic_id: null,
+    created_at: "-",
+    updated_at: "-",
+    patient: {
+      id: 0,
+      nik: "*",
+      name: "*",
+      birth_place: "*",
+      birth_date: "1970-01-06T08:00:03.000000Z",
+      gender: "*",
+      address: "*",
+      phone: "*",
+      clinic_id: null,
+      is_delete: 0,
+      created_at: "*",
+      updated_at: "*",
+    },
+  }
+  const [selectedQueue, setSelectedQueue] = useState(dummy);
 
   return (
     <>
@@ -93,9 +171,11 @@ export default function Queue() {
               }`}
             >
               Regular <i className="fa-regular fa-user ml-2"></i>
-              <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
-                2
-              </div>
+              {queues?.length > 0 && (
+                <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
+                  {queues.length}
+                </div>
+              )}
               <div
                 className={`bg-gray-900 rounded-b-md rounded-r-md w-8 h-8 absolute left-0`}
               ></div>
@@ -107,9 +187,11 @@ export default function Queue() {
               }`}
             >
               Appointment <i className="fa-regular fa-calendar-check ml-2"></i>
-              <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
-                +99
-              </div>
+              {queues?.length > 0 && (
+                <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
+                  {queues.length}
+                </div>
+              )}
             </span>
           </div>
           <div
@@ -123,66 +205,70 @@ export default function Queue() {
               style={{ display: "block" }}
             >
               <div className="h-[74vh] min-h-fit md:w-1/2">
-                {/* <div className="absolute bottom-8 z-50 flex">
-                </div> */}
                 <div
                   ref={servicesRef}
                   {...servicesEvents}
                   className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                 >
-                  <div className="card cursor-pointer overflow-hidden bg-indigo-900 bg-opacity-70 rounded-md shadow-md mb-4">
-                    <div className="card-body ">
-                      <div className="flex items-center">
-                        <div className="avatar mr-6">
-                          <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
-                            <h1 className="text-xl font-semibold text-white mb-1">
-                              A01
-                            </h1>
+                  {queues?.map((obj) => {
+                    return (
+                      <div
+                        key={obj.id}
+                        onClick={() => setSelectedQueue(obj)}
+                        className={`card cursor-pointer overflow-hidden ${
+                          obj.id == selectedQueue.id
+                            ? "bg-indigo-900 bg-opacity-50"
+                            : "bg-slate-800"
+                        } bg-opacity-70 rounded-md shadow-md mb-4`}
+                      >
+                        <div className="card-body">
+                          <div className="flex items-center">
+                            <div className="avatar mr-6">
+                              <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
+                                <h1 className="text-xl font-semibold text-white mb-1">
+                                  {obj.queue_number}
+                                </h1>
+                              </div>
+                              {obj.patient.gender == "male" ? (
+                                <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
+                              ) : (
+                                <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
+                              )}
+                            </div>
+                            <div className="">
+                              <h2 className="card-title text-base lg:text-lg text-primary-content">
+                                {obj.patient.name}
+                              </h2>
+                              <small className="text-zinc-400">
+                                NIK: {obj.patient.nik} |{" "}
+                                {obj.status_id == 1 && "Active"}
+                                {obj.status_id == 2 && "Done"}
+                                {obj.status_id == 3 && "Canceled"}
+                              </small>
+                            </div>
+                            <div
+                              className={`ml-auto ${
+                                obj.id == selectedQueue.id ? "block" : "hidden"
+                              }`}
+                            >
+                              <div
+                                onClick={() => cancelQueue(obj.patient.id)}
+                                className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
+                              >
+                                Cancel <i className="fas fa-trash ml-2"></i>
+                              </div>
+                            </div>
                           </div>
-                          {/* <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-rose-400 shadow-sm text-white p-1 rounded-full"></i> */}
-                          <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-md font-bold text-blue-400 p-1 rounded-full"></i>
-                        </div>
-                        <div className="">
-                          <h2 className="card-title text-base lg:text-lg text-primary-content">
-                            Muhammad Advie Rifaldy
-                          </h2>
-                          <small className="text-zinc-400">
-                            NIK: 9126565503190821
-                          </small>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="card rounded-md cursor-pointer bg-slate-800 shadow-md mb-4">
-                    <div className="card-body ">
-                      <div className="flex items-center">
-                        <div className="avatar mr-6">
-                          <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
-                            <h1 className="text-xl font-semibold text-white mb-1">
-                              A02
-                            </h1>
-                          </div>
-                          <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
-                          {/* <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-md font-bold text-blue-400 p-1 rounded-full"></i> */}
-                        </div>
-                        <div className="">
-                          <h2 className="card-title text-base lg:text-lg text-zinc-400">
-                            Ny. Linda Maelina
-                          </h2>
-                          <small className="text-zinc-400">
-                            NIK: 9126565503190821
-                          </small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })}
                   <label
                     htmlFor="addQueueModal"
-                    // onClick={() => setIsAddQueue((prev) => !prev)}
                     onClick={getPatients}
-                    className="card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4"
+                    className="card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4 animate-pulse"
                   >
-                    <div className="card-body ">
+                    <div className="card-body">
                       <div className="flex items-center text-zinc-400">
                         <div className="mx-auto">
                           <span className="font-semibold">Add to queue</span>
@@ -193,25 +279,37 @@ export default function Queue() {
                   </label>
                 </div>
               </div>
+
               <div className="card min-h-[74vh] rounded-md md:w-1/2 bg-base-100 shadow-md">
-                <div className="card-body justify-between">
+                <div
+                  className={`card-body justify-between ${
+                    selectedQueue.id ? "" : "hidden"
+                  }`}
+                >
                   <div className="">
                     <div className="flex items-center mb-4">
                       <div className="avatar mr-6">
                         <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
                           <h1 className="text-xl font-semibold text-white mb-1">
-                            A01
+                            {selectedQueue?.queue_number}
                           </h1>
                         </div>
-                        {/* <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-rose-400 shadow-sm text-white p-1 rounded-full"></i> */}
-                        <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-md font-bold text-blue-400 p-1 rounded-full"></i>
+
+                        {selectedQueue?.patient?.gender == "male" ? (
+                          <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
+                        ) : (
+                          <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
+                        )}
                       </div>
                       <div className="w-full">
                         <h2 className="card-title text-base lg:text-lg text-zinc-600 truncate">
-                          Muhammad Advie Rifaldy
+                          {selectedQueue?.patient?.name}
                         </h2>
                         <small className="text-zinc-400">
-                          NIK: 9126565503190821
+                          NIK: {selectedQueue?.patient?.nik} |{" "}
+                          {selectedQueue.status_id == 1 && "Active"}
+                          {selectedQueue.status_id == 2 && "Done"}
+                          {selectedQueue.status_id == 3 && "Canceled"}
                         </small>
                       </div>
                     </div>
@@ -224,16 +322,18 @@ export default function Queue() {
                             </small>{" "}
                             <br />
                             <span className="font-sm text-zinc-800">
-                              Bandung, 8 October 2023
+                              {selectedQueue?.patient?.birth_place +
+                                ", " +
+                                moment(
+                                  selectedQueue?.patient?.birth_date
+                                ).format("MMMM Do YYYY")}
                             </span>
                           </div>
                           <div className="mt-4">
                             <small className="text-zinc-400">Address</small>{" "}
                             <br />
                             <span className="font-sm text-zinc-800 line-clamp-2">
-                              Kab. Bandung, Jawa Barat, Desa Bojong Kunci, Kec.
-                              Pameungpeuk, Komp. Paledang Indah 2 blok E 1-3 no
-                              1 RT 2 RW 13
+                              {selectedQueue?.patient?.address}
                             </span>
                           </div>
                           <div className="mt-4">
@@ -246,132 +346,6 @@ export default function Queue() {
                               {...queuesEvents}
                               className="overflow-y-scroll"
                             >
-                              <div className="flex justify-between overflow-hidden items-center px-1">
-                                <div className="text-sm breadcrumbs font-semibold text-zinc-800">
-                                  <ul>
-                                    <li className="max-w-36 overflow-hidden">
-                                      <i className="fa-solid fa-kit-medical mr-2"></i>
-                                      <span className="truncate">Masker</span>
-                                    </li>
-                                    <li className="max-w-36 overflow-hidden text-zinc-400">
-                                      <i className="fas fa-user-doctor mr-2"></i>
-                                      <span className="text-sm normal-case truncate">
-                                        Dr. Reid Adams V
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="flex">
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-edit"></i>
-                                  </div>
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex justify-between overflow-hidden items-center px-1">
-                                <div className="text-sm breadcrumbs font-semibold text-zinc-800">
-                                  <ul>
-                                    <li className="max-w-36 overflow-hidden">
-                                      <i className="fa-solid fa-kit-medical mr-2"></i>
-                                      <span className="truncate">Botox</span>
-                                    </li>
-                                    <li className="max-w-36 overflow-hidden text-zinc-400">
-                                      <i className="fas fa-user-doctor mr-2"></i>
-                                      <span className="text-sm normal-case truncate">
-                                        Dr. Reid Adams V
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="flex">
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-edit"></i>
-                                  </div>
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex justify-between overflow-hidden items-center px-1">
-                                <div className="text-sm breadcrumbs font-semibold text-zinc-800">
-                                  <ul>
-                                    <li className="max-w-36 overflow-hidden">
-                                      <i className="fa-solid fa-kit-medical mr-2"></i>
-                                      <span className="truncate">
-                                        Laser resurfacing
-                                      </span>
-                                    </li>
-                                    <li className="max-w-36 overflow-hidden text-zinc-400">
-                                      <i className="fas fa-user-doctor mr-2"></i>
-                                      <span className="text-sm normal-case truncate">
-                                        Dr. Reid Adams V
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="flex">
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-edit"></i>
-                                  </div>
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex justify-between overflow-hidden items-center px-1">
-                                <div className="text-sm breadcrumbs font-semibold text-zinc-800">
-                                  <ul>
-                                    <li className="max-w-36 overflow-hidden">
-                                      <i className="fa-solid fa-kit-medical mr-2"></i>
-                                      <span className="truncate">
-                                        Laser resurfacing
-                                      </span>
-                                    </li>
-                                    <li className="max-w-36 overflow-hidden text-zinc-400">
-                                      <i className="fas fa-user-doctor mr-2"></i>
-                                      <span className="text-sm normal-case truncate">
-                                        Dr. Reid Adams V
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="flex">
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-edit"></i>
-                                  </div>
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex justify-between overflow-hidden items-center px-1">
-                                <div className="text-sm breadcrumbs font-semibold text-zinc-800">
-                                  <ul>
-                                    <li className="max-w-36 overflow-hidden">
-                                      <i className="fa-solid fa-kit-medical mr-2"></i>
-                                      <span className="truncate">
-                                        Laser resurfacing
-                                      </span>
-                                    </li>
-                                    <li className="max-w-36 overflow-hidden text-zinc-400">
-                                      <i className="fas fa-user-doctor mr-2"></i>
-                                      <span className="text-sm normal-case truncate">
-                                        Dr. Reid Adams V
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="flex">
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-edit"></i>
-                                  </div>
-                                  <div className="btn btn-ghost btn-sm px-2">
-                                    <i className="fas fa-trash"></i>
-                                  </div>
-                                </div>
-                              </div>
                               <div
                                 className="py-2 mt-1 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
                                 onClick={() => setIsAddService(true)}
@@ -418,6 +392,7 @@ export default function Queue() {
                       </div>
                     </div>
                   </div>
+
                   {!isAddService ? (
                     <div className="flex gap-2 mt-6 items-end">
                       <button className="btn btn-success bg-success text-white w-1/2">
@@ -445,20 +420,36 @@ export default function Queue() {
                     </div>
                   )}
                 </div>
+                <div
+                  className={`card-body justify-between ${
+                    selectedQueue.id ? "hidden" : ""
+                  }`}
+                >
+                  <div className="alert btn-primary rounded-md">
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="stroke-current flex-shrink-0 w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      <span>Empty</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            {/* <div ref={addRef} className="h-[74vh] bg-white rounded-md shadow absolute bottom-8" style={{ width: 100 }}>
-              <div className=""></div>
-            </div> */}
           </div>
         </div>
 
-        {/* The button to open modal */}
-        {/* <label htmlFor="addQueueModal" className="btn">
-          open modal
-        </label> */}
-
-        {/* Put this part before </body> tag */}
+        {/* Patients Modal */}
         <input type="checkbox" id="addQueueModal" className="modal-toggle" />
         <div className="modal">
           <div className="modal-box px-0 pt-1 w-11/12 max-w-7xl">
@@ -475,7 +466,11 @@ export default function Queue() {
                     </h3>
                   </div>
                   <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                    <label className="" htmlFor="addQueueModal">
+                    <label
+                      className=""
+                      ref={queueAddedRef}
+                      htmlFor="addQueueModal"
+                    >
                       <i className="fas fa-x font-bold"></i>
                     </label>
                   </div>
@@ -563,56 +558,13 @@ export default function Queue() {
                             {moment(obj.updated_at).fromNow()}
                           </td>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                            {/* <div
-                              className="tooltip tooltip-left"
-                              data-tip="Detail"
-                            >
-                              <label
-                                className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                type="button"
-                                htmlFor="modal-details"
-                                onClick={() => {
-                                  setPutForm(obj);
-                                  setPutFormError(initialPatientForm);
-                                }}
-                              >
-                                <i className="fas fa-eye"></i>
-                              </label>
-                            </div>
-                            <div
-                              className="tooltip tooltip-left"
-                              data-tip="Edit"
-                            >
-                              <label
-                                className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                type="button"
-                                htmlFor="modal-put"
-                                onClick={() => {
-                                  setPutForm(obj);
-                                  setPutFormError(initialPatientForm);
-                                }}
-                              >
-                                <i className="fas fa-pen-to-square"></i>
-                              </label>
-                            </div>
-                            <div
-                              className="tooltip tooltip-left"
-                              data-tip="Delete"
-                            >
-                              <button
-                                className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                type="button"
-                                onClick={() => deleteEmployee(obj.id)}
-                              >
-                                <i className="fas fa-trash"></i>
-                              </button>
-                            </div> */}
-                            <label
-                              htmlFor="addQueueModal"
+                            <button
+                              // htmlFor="addQueueModal"
+                              onClick={() => addToQueue(obj.id)}
                               className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             >
                               Add to queue <i className="fas fa-add ml-2"></i>
-                            </label>
+                            </button>
                           </td>
                         </tr>
                       );
