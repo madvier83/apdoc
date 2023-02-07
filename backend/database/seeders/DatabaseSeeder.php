@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\CategoryItem;
 use App\Models\Clinic;
 use App\Models\Diagnose;
 use App\Models\Employee;
+use App\Models\Item;
 use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Service;
@@ -31,5 +33,7 @@ class DatabaseSeeder extends Seeder
         Diagnose::factory(5)->create();
         Service::factory(5)->create();
         Patient::factory(5)->create();
+        CategoryItem::factory(5)->create();
+        Item::factory(5)->create();
     }
 }

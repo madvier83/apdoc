@@ -21,7 +21,7 @@ class QueueDetailController extends Controller
 
     public function create($queue, $employee, $service)
     {
-        $queueDetail = QueueDetail::whereDate('created_at', Carbon::today())->where('employee_id', $employee)->where('service_id', $service)->first();
+        $queueDetail = QueueDetail::whereDate('created_at', Carbon::today())->where('queue_id', $queue)->where('service_id', $service)->first();
 
         if ($queueDetail) {
             return response()->json(['message' => 'Service already in queue'], 400);

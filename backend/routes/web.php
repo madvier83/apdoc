@@ -33,7 +33,6 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 $router->group(['middleware' => 'auth'], function () use ($router) {
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
-
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
@@ -81,15 +80,25 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/patient/{id}', 'PatientController@update');
 	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
 
-	// QUEUE
-
 	$router->get('/v1/queues', 'QueueController@index');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
 
-	// QUEUE Detail
-
 	$router->get('/v1/queue-details', 'QueueDetailController@index');
 	$router->post('/v1/queue-detail/{queue}/{employee}/{service}', 'QueueDetailController@create');
 	$router->put('/v1/queue-detail/{id}', 'QueueDetailController@update');
+
+	// PHARMACY
+	
+	$router->get('/v1/category-items', 'CategoryItemController@index');
+	$router->get('/v1/category-item/{id}', 'CategoryItemController@show');
+	$router->post('/v1/category-item', 'CategoryItemController@create');
+	$router->put('/v1/category-item/{id}', 'CategoryItemController@update');
+	$router->delete('/v1/category-item/{id}', 'CategoryItemController@destroy');
+
+	$router->get('/v1/items', 'ItemController@index');
+	$router->get('/v1/item/{id}', 'ItemController@show');
+	$router->post('/v1/item', 'ItemController@create');
+	$router->put('/v1/item/{id}', 'ItemController@update');
+	$router->delete('/v1/item/{id}', 'ItemController@destroy');
 });

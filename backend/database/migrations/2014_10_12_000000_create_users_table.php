@@ -28,8 +28,8 @@ return new class extends Migration
             $table->foreignId('employee_id')->nullable();
             $table->foreignId('clinic_id')->nullable();
             $table->string('apdoc_id')->nullable();
-            $table->boolean('is_delete')->default(false);
             $table->boolean('is_verified')->default(0);
+            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }
