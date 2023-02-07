@@ -28,7 +28,9 @@ export default function Verify() {
   const [otpError, setOtpError] = useState("");
 
   const initialVerifyForm = {
+    code: "+62",
     phone: "",
+    fullPhone: "",
     otp_1: "",
     otp_2: "",
     otp_3: "",
@@ -48,32 +50,33 @@ export default function Verify() {
     });
   }
 
+  const [fullPhone, setFullPhone] = useState("");
   const [verifyForm, setVerifyForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     initialVerifyForm
   );
-  const [verifyFormError, setVerifyFormError] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    initialVerifyForm
-  );
+  const [verifyFormError, setVerifyFormError] = useState("");
 
+  console.log(verifyForm.fullPhone)
   async function getOTP(e) {
     e.preventDefault();
+    setOtpError("")
+    setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
+    const data = {
+      email: userdata.email,
+      phone: verifyForm.fullPhone,
+    };
     try {
-      const response = await axios.post(
-        "auth/send/otp",
-        { email: userdata.email, phone: verifyForm.phone },
-        {
-          "Content-Type": "application/json",
-        }
-      );
-      // console.log(response.data.data);
-      // setOtp(response.data.data);
+      const response = await axios.post("auth/send/otp", data, {
+        "Content-Type": "application/json",
+      });
       setSent(true);
-      resetOTP()
-      document.querySelector(`input[name=otp_1]`).focus();
+      resetOTP();
+      setVerifyFormError("")
+      // document.querySelector(`input[name=otp_1]`).focus();
     } catch (err) {
       console.error(err);
+      setVerifyFormError(err.response?.data?.message);
     }
   }
 
@@ -90,7 +93,7 @@ export default function Verify() {
       router.push("/auth/login");
     } catch (err) {
       setOtpError(err.response?.data?.message);
-      resetOTP()
+      resetOTP();
       document.querySelector(`input[name=otp_1]`).focus();
     }
   }
@@ -132,11 +135,11 @@ export default function Verify() {
     }
   };
 
-  const [timer, setTimer] = useState(60);
-  const timeOutCallback = useCallback(
-    () => setTimer((currTimer) => currTimer - 1),
-    []
-  );
+  // const [timer, setTimer] = useState(60);
+  // const timeOutCallback = useCallback(
+  //   () => setTimer((currTimer) => currTimer - 1),
+  //   []
+  // );
 
   return (
     <>
@@ -162,19 +165,31 @@ export default function Verify() {
                         <label className="block text-zinc-500 text-xs font-bold mb-2">
                           Phone
                         </label>
-                        <input
-                          name="phone"
-                          value={verifyForm.phone}
-                          onChange={(e) => handleVerifyInput(e)}
-                          required
-                          type="text"
-                          className={`input w-full ${
-                            verifyFormError.phone[0] ? "border-rose-500" : null
-                          }`}
-                          placeholder="+62 xxx xxxx xxxx"
-                        />
+                        <div className="flex">
+                          <select
+                            name="code"
+                            value={verifyForm.code}
+                            onChange={(e) => handleVerifyInput(e)}
+                            className="input mr-1 w-24 px-3"
+                          >
+                            {/* <option value="-">-</option> */}
+                            <option value="+62">+62</option>
+                          </select>
+                          <input
+                            name="phone"
+                            value={verifyForm.phone}
+                            onChange={(e) => handleVerifyInput(e)}
+                            required
+                            type="text"
+                            className={`input w-full ${
+                              verifyFormError.phone ? "border-rose-500" : null
+                            }`}
+                            placeholder="xxx xxxx xxxx"
+                          />
+                        </div>
                         <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {verifyFormError.phone}
+                          {verifyFormError}
+                          {verifyFormError && (<span className="text-emerald-500 cursor-pointer" onClick={()=>{setSent(true);setVerifyFormError("")}}><br/>Submit OTP</span>)}
                         </label>
                       </div>
 
@@ -188,7 +203,7 @@ export default function Verify() {
                   ) : (
                     <form onSubmit={verifyOTP}>
                       <div className="flex flex-col justify-center text-white">
-                        <h3>OTP Sent to {verifyForm.phone}</h3>
+                        <h3>OTP Sent to {verifyForm.fullPhone}</h3>
                         <small
                           className="text-zinc-500 cursor-pointer"
                           onClick={() => {
@@ -279,6 +294,9 @@ export default function Verify() {
 
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
                         {otpError}
+                      </label>
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                        {verifyFormError}
                       </label>
 
                       <div className="text-center mt-4">
