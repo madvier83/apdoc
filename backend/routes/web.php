@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+// $router->group(['middleware' => 'auth'], function () use ($router) {
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
 	$router->post('/v1/auth/logout', 'AuthController@logout');
@@ -101,10 +101,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
-
+	
 	$router->get('/v1/item-supplys', 'ItemSupplyController@index');
+	$router->get('/v1/item-supply/{item}', 'ItemSupplyController@show');
 	$router->post('/v1/item-supply', 'ItemSupplyController@create');
 
 	$router->get('/v1/stock-adjustments', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
-});
+// });

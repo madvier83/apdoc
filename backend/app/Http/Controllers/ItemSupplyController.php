@@ -13,19 +13,20 @@ class ItemSupplyController extends Controller
         return response()->json($itemSupply);
     }
 
-    public function show($id)
+    public function show($item)
     {
-        //
+        $itemSupply = ItemSupply::where('item_id', $item)->orderBy('created_at', 'desc')->get();
+        return response()->json($itemSupply);
     }
 
     public function create(Request $request)
     {
-        // $this->validate($request, [
-        //     'item_id'       => 'required',
-        //     'total'         => 'required|numeric|min:1',
-        //     'manufacturing' => 'required|date|before:now',
-        //     'expired'       => 'required|date|after:now',
-        // ]);
+        $this->validate($request, [
+            'item_id'       => 'required',
+            'total'         => 'required|numeric|min:1',
+            'manufacturing' => 'required|date|before:now',
+            'expired'       => 'required|date|after:now',
+        ]);
 
         $before = ItemSupply::where('item_id', $request->item_id)->get()->sum('stock');
 
