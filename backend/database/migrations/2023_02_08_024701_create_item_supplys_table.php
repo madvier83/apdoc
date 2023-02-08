@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiagnosesTable extends Migration
+class CreateItemSupplysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class CreateDiagnosesTable extends Migration
      */
     public function up()
     {
-        Schema::create('diagnoses', function (Blueprint $table) {
+        Schema::create('item_supplys', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->longText('description');
+            $table->foreignId('item_id')->nullable();
+            $table->integer('total');
+            $table->integer('before');
+            $table->integer('after');
+            $table->date('manufacturing');
+            $table->date('expired');
+            $table->integer('stock');
             $table->foreignId('clinic_id')->nullable();
-            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }
@@ -30,6 +34,6 @@ class CreateDiagnosesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diagnoses');
+        Schema::dropIfExists('item_supplys');
     }
 }

@@ -11,7 +11,7 @@ export default function Sidebar() {
   const [adminMenu, setAdminMenu] = useState(true);
   const [receptionistMenu, setReceptionistMenu] = useState(true);
   const [doctorMenu, setDoctorMenu] = useState(true);
-  const [pharmacyMenu, setPharmacyMenu] = useState(false);
+  const [pharmacyMenu, setPharmacyMenu] = useState(true);
   const [promotionMenu, setPromotionMenu] = useState(false);
   const [cashierMenu, setCashierMenu] = useState(false);
   const [reportsMenu, setReportsMenu] = useState(false);
@@ -19,6 +19,7 @@ export default function Sidebar() {
   // console.log(adminMenu);
 
   const router = useRouter();
+  // console.log(router)
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -58,7 +59,7 @@ export default function Sidebar() {
                 <div className="w-6/12">
                   <Link
                     href="#"
-                    className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
+                    className="md:block text-left md:pb-2 text-emerald-500 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
                   >
                     APDOC
                   </Link>
@@ -78,10 +79,18 @@ export default function Sidebar() {
             <div className="text-slate-400">
               <hr className="my-4 md:min-w-full hidden md:block" />
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/dashboard" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <Link
                     href="/dashboard"
-                    className={"text-xs py-3 font-bold block text-slate-500"}
+                    className={`text-xs py-3 font-bold block text-slate-500 ${
+                      router.pathname == "/dashboard" &&
+                      "text-emerald-500 animate-pulse"
+                    }`}
                   >
                     <i className={"fas fa-chart-line mr-2 text-sm "}></i>{" "}
                     Dashboard
@@ -92,7 +101,11 @@ export default function Sidebar() {
               <hr className="my-4 md:min-w-full" />
 
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "#" && "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setAdminMenu((p) => !p)}
                     className={
@@ -104,94 +117,97 @@ export default function Sidebar() {
 
                   {adminMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      {/* <li className="items-center">
-                        <Link
-                          href="/dashboard/user"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          User
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Access
-                        </Link>
-                      </li> */}
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/position" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/position"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/position"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Position
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/employee" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/employee"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/employee"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Employee
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/service" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/service"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/service"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Service
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/diagnose" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/diagnose"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/diagnose"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Diagnose
                         </Link>
                       </li>
-                      {/* <li className="items-center">
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Payment Method
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Kategori Outcome
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Outcome
-                        </Link>
-                      </li> */}
                     </ul>
                   )}
 
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "#" && "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setReceptionistMenu((p) => !p)}
                     className={
@@ -204,30 +220,63 @@ export default function Sidebar() {
 
                   {receptionistMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/patients" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/patients"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/patients"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Patients
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/appointment" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/appointment"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Appointment
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/queue" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/queue"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/queue"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Queue
                         </Link>
                       </li>
@@ -237,7 +286,11 @@ export default function Sidebar() {
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "#" && "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setDoctorMenu((p) => !p)}
                     className={
@@ -250,21 +303,43 @@ export default function Sidebar() {
 
                   {doctorMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/patients" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/patients"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/patients"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Patients
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/queue" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="/dashboard/queue"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/queue"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Queue
                         </Link>
                       </li>
@@ -274,7 +349,11 @@ export default function Sidebar() {
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "#" && "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setPharmacyMenu((p) => !p)}
                     className={
@@ -287,30 +366,63 @@ export default function Sidebar() {
 
                   {pharmacyMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/category-item" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          href="/dashboard/category-item"
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/category-item"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Category Item
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/item" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
-                          href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          href="/dashboard/item"
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/item"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Item
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "#" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Item Masuk
                         </Link>
                       </li>
@@ -320,7 +432,12 @@ export default function Sidebar() {
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/dashboard" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setPromotionMenu((p) => !p)}
                     className={
@@ -332,12 +449,23 @@ export default function Sidebar() {
 
                   {promotionMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Manage Data
                         </Link>
                       </li>
@@ -347,7 +475,12 @@ export default function Sidebar() {
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setCashierMenu((p) => !p)}
                     className={
@@ -360,21 +493,43 @@ export default function Sidebar() {
 
                   {cashierMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Transaction
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           History
                         </Link>
                       </li>
@@ -384,7 +539,12 @@ export default function Sidebar() {
                   {/* end submenu */}
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => setReportsMenu((p) => !p)}
                     className={
@@ -396,21 +556,43 @@ export default function Sidebar() {
 
                   {reportsMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Sales
                         </Link>
                       </li>
-                      <li className="items-center">
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
                         <Link
                           href="#"
-                          className={"text-xs py-3 font-bold block "}
+                          className={"text-xs py-3 font-semibold block "}
                         >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
                           Commision
                         </Link>
                       </li>
@@ -422,8 +604,12 @@ export default function Sidebar() {
 
                 <hr className="my-4 md:min-w-full" />
 
-
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <Link
                     href="/dashboard/account"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
@@ -432,7 +618,12 @@ export default function Sidebar() {
                   </Link>
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <Link
                     href="/dashboard/account"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
@@ -441,7 +632,12 @@ export default function Sidebar() {
                   </Link>
                 </li>
 
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <Link
                     href="#"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
@@ -450,7 +646,12 @@ export default function Sidebar() {
                     Password
                   </Link>
                 </li>
-                <li className="items-center">
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" &&
+                    "text-emerald-500 animate-pulse"
+                  }`}
+                >
                   <button
                     onClick={() => {
                       deleteCookie("token");

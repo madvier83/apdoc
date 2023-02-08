@@ -23,7 +23,7 @@ class PositionController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|unique:positions',
+            'name' => 'required|string',
         ]);
 
         $data = $request->all();
@@ -41,7 +41,7 @@ class PositionController extends Controller
         }
 
         $this->validate($request, [
-            'name' => $request->name = $position->name ? 'required|string' : 'required|string|unique:positions',
+            'name' => ($request->name == $position->name) ? 'required|string' : 'required|string',
         ]);
 
         $data = $request->all();

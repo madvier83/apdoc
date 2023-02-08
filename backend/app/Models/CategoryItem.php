@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patient extends Model
+class CategoryItem extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    // RELATIONSHIPS
-
-    public function queues()
+    public function items()
     {
-        return $this->hasMany(Queue::class);
+        return $this->hasMany(Item::class);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiagnosesTable extends Migration
+class CreateQueueDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateDiagnosesTable extends Migration
      */
     public function up()
     {
-        Schema::create('diagnoses', function (Blueprint $table) {
+        Schema::create('queue_details', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->longText('description');
+            $table->foreignId('queue_id');
+            $table->foreignId('employee_id');
+            $table->foreignId('service_id');
+            $table->boolean('is_cancelled')->default(false)->nullable();
             $table->foreignId('clinic_id')->nullable();
-            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateDiagnosesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('diagnoses');
+        Schema::dropIfExists('queue_details');
     }
 }
