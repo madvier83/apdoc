@@ -9,7 +9,7 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $item = Item::with('category')->get();
+        $item = Item::with(['category', 'itemSupplys'])->get();
         return response()->json($item);
     }
 

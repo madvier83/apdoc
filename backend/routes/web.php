@@ -101,4 +101,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
+
+	$router->get('/v1/item-supplys', 'ItemSupplyController@index');
+	$router->post('/v1/item-supply', 'ItemSupplyController@create');
+
+	$router->get('/v1/stock-adjustments', 'StockAdjustmentController@index');
+	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
 });
