@@ -208,13 +208,13 @@ export default function Employee() {
                 {employees?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                        <span className={"ml-3 font-bold "}>{index + 1}</span>
+                      <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
+                        <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <span className={"font-bold"}>{obj.name}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <span className={"font-bold capitalize"}>
                           <i
                             className={`fas fa-circle mr-2 ${
@@ -227,7 +227,7 @@ export default function Employee() {
                         </span>
                       </td>
 
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <a
                           href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
                           target="_blank"
@@ -237,13 +237,13 @@ export default function Employee() {
                           {obj.phone}
                         </a>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         {moment(obj.created_at).format("MMM Do YYYY")}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         {moment(obj.updated_at).fromNow()}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"

@@ -182,15 +182,15 @@ export default function Diagnose() {
                 {diagnosis?.map((obj, index) => {
                   return (
                     <tr key={obj.id}>
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-4 min-w-full">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
                         <span className={"font-bold ml-3 text-xl"}>
                           {obj.code}
                         </span>
                       </td>
-                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <label htmlFor={`detail-${obj.id}`}>
                           <span>{obj.description.slice(0, 40)} ...</span>
                         </label>
@@ -214,13 +214,13 @@ export default function Diagnose() {
                           </label>
                         </label>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("MMM Do YYYY")}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             htmlFor={`detail-${obj.id}`}

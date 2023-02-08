@@ -57,11 +57,11 @@ export default function Verify() {
   );
   const [verifyFormError, setVerifyFormError] = useState("");
 
-  console.log(verifyForm.fullPhone)
+  // console.log(verifyForm.fullPhone)
   async function getOTP(e) {
     e.preventDefault();
-    setOtpError("")
     setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
+    setOtpError("")
     const data = {
       email: userdata.email,
       phone: verifyForm.fullPhone,
@@ -79,6 +79,9 @@ export default function Verify() {
       setVerifyFormError(err.response?.data?.message);
     }
   }
+  useEffect(()=>{
+    setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
+  }, [verifyForm])
 
   async function verifyOTP(e) {
     e.preventDefault();
