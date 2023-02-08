@@ -8,7 +8,7 @@ import NotificationDropdown from "../Dropdowns/NotificationDropdown";
 export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
-  const [adminMenu, setAdminMenu] = useState(true);
+  const [adminMenu, setAdminMenu] = useState(false);
   const [receptionistMenu, setReceptionistMenu] = useState(true);
   const [doctorMenu, setDoctorMenu] = useState(true);
   const [pharmacyMenu, setPharmacyMenu] = useState(true);
@@ -195,6 +195,66 @@ export default function Sidebar() {
                             } mr-2 text-sm`}
                           ></i>{" "}
                           Diagnose
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/category-payment" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/category-payment"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/category-payment"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Category Payment
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/payment" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/payment"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/payment"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Payment
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/promotion" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/promotion"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/promotion"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Promotion
                         </Link>
                       </li>
                     </ul>
