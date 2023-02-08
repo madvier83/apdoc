@@ -7,7 +7,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import numeral from "numeral";
 
-export default function Item() {
+export default function ItemSupply() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -15,17 +15,14 @@ export default function Item() {
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
-  const [category, setCategory] = useState([]);
-  const [categoryLoading, setCategoryLoading] = useState(true);
+  const [itemDb, setItemDb] = useState([]);
+  const [itemDbLoading, setItemDbLoading] = useState(true);
 
   const initialItemForm = {
-    category_id: "",
-    name: "",
-    unit: "",
-    sell_price: "",
-    buy_price: "",
-    factory: "",
-    distributor: "",
+    item_id: "",
+    total: "",
+    manufacturing: "",
+    expired: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -54,9 +51,23 @@ export default function Item() {
     setPutForm({ [name]: value });
   };
 
-  async function getItem() {
+  async function getItemDb() {
     try {
       const response = await axios.get("items", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setItemDb(response.data);
+      setItemDbLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function getItem() {
+    try {
+      const response = await axios.get("item-supplys", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -68,24 +79,10 @@ export default function Item() {
     }
   }
 
-  async function getCategory() {
-    try {
-      const response = await axios.get("category-items", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      setCategory(response.data);
-      setCategoryLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("item", addForm, {
+      const response = await axios.post("item-supply", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -105,7 +102,7 @@ export default function Item() {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`item/${putForm.id}`, putForm, {
+      const response = await axios.put(`item-supply/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -123,7 +120,7 @@ export default function Item() {
 
   async function deleteItem(id) {
     try {
-      const response = await axios.delete(`item/${id}`, {
+      const response = await axios.delete(`item-supply/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -136,12 +133,12 @@ export default function Item() {
 
   useEffect(() => {
     getItem();
-    getCategory();
+    getItemDb();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Item">
+      <DashboardLayout title="Item Supply">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mb-32 mt-6 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -151,7 +148,7 @@ export default function Item() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Item Table
+                  <i className="fas fa-filter mr-3"></i> Item Supply Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -174,22 +171,16 @@ export default function Item() {
                     #
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                    Item
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Unit
+                    Stock
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Buy Price
+                    Manufacturing
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Sell Price
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Distributor
+                    Expired
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -197,9 +188,9 @@ export default function Item() {
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Updated At
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Acitons
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -219,22 +210,28 @@ export default function Item() {
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                        <span className={"ml-3 font-bold"}>{obj.name}</span>
+                        <span className={"ml-3 font-bold"}>
+                          {obj.item.name}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>{obj.unit}</span>
+                        {obj.stock}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>Rp. {numeral(obj.buy_price).format("0,0")}</span>
+                        {moment(obj.manufacturing).format("MMM Do YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>Rp. {numeral(obj.sell_price).format("0,0")}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>{obj.category?.name}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        <span>{obj.distributor}</span>
+                        {moment(obj.expired).format("MMM Do YYYY")}{" "}
+                        <span
+                          className={`font-semibold ${
+                            moment(obj.expired).format() <
+                              moment().subtract(-7, "d").format() &&
+                            "text-rose-400 animate-pulse"
+                          }`}
+                        >
+                          {" "}
+                          - Expired {moment(obj.expired).fromNow()}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.created_at).format("MMM Do YYYY")}
@@ -242,10 +239,9 @@ export default function Item() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         {moment(obj.updated_at).fromNow()}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
-                        Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        - */}
+                        {/* <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -266,8 +262,8 @@ export default function Item() {
                           >
                             <i className="fas fa-trash"></i>
                           </button>
-                        </div>
-                      </td>
+                        </div> */}
+                      {/* </td> */}
                     </tr>
                   );
                 })}
@@ -277,41 +273,22 @@ export default function Item() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Item</h3>
+          <h3 className="font-bold text-lg mb-4">Add Item Supply</h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={addForm.name}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Item</span>
               </label>
               <select
-                name="category_id"
+                name="item_id"
                 onChange={(e) => handleAddInput(e)}
                 required
-                value={addForm.category_id}
+                value={addForm.item_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
-                <option value="">Unasigned</option>
-                {category?.map((obj) => {
+                <option value="">Select</option>
+                {itemDb?.map((obj) => {
                   return (
                     <option key={obj.id} value={obj.id}>
                       {obj.name}
@@ -319,105 +296,67 @@ export default function Item() {
                   );
                 })}
               </select>
-              {addFormError.category_id && (
+              {addFormError.item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.category_id}
+                    {addFormError.item_id}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Unit</span>
+                <span className="label-text">Total</span>
               </label>
               <input
-                type="text"
-                name="unit"
-                value={addForm.unit}
+                type="number"
+                name="total"
+                value={addForm.total}
                 onChange={(e) => handleAddInput(e)}
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.unit && (
+              {addFormError.total && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.unit}
+                    {addFormError.total}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text">Manufacturing</span>
               </label>
               <input
-                type="text"
-                name="buy_price"
-                value={addForm.buy_price}
+                type="date"
+                name="manufacturing"
+                value={addForm.manufacturing}
                 onChange={(e) => handleAddInput(e)}
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.buy_price && (
+              {addFormError.manufacturing && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.buy_price}
+                    {addFormError.manufacturing}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Sell Price</span>
+                <span className="label-text">Expired</span>
               </label>
               <input
-                type="text"
-                name="sell_price"
-                value={addForm.sell_price}
+                type="date"
+                name="expired"
+                value={addForm.expired}
                 onChange={(e) => handleAddInput(e)}
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.sell_price && (
+              {addFormError.expired && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.sell_price}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Factory</span>
-              </label>
-              <input
-                type="text"
-                name="factory"
-                value={addForm.factory}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.factory && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.factory}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Distributor</span>
-              </label>
-              <input
-                type="text"
-                name="distributor"
-                value={addForm.distributor}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.distributor && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.distributor}
+                    {addFormError.expired}
                   </span>
                 </label>
               )}
@@ -438,149 +377,89 @@ export default function Item() {
         <ModalBox id="modal-put">
           <h3 className="font-bold text-lg mb-4">Update Item</h3>
           <form onSubmit={putItem} autoComplete="off">
-            <input type="hidden" autoComplete="off" />
-            <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Item</span>
+            </label>
+            <select
+              name="item_id"
+              onChange={(e) => handleAddInput(e)}
+              required
+              value={putForm.item_id}
+              className="input input-bordered without-ring input-primary border-slate-300 w-full"
+            >
+              <option value="">Select</option>
+              {itemDb?.map((obj) => {
+                return (
+                  <option key={obj.id} value={obj.id}>
+                    {obj.name}
+                  </option>
+                );
+              })}
+            </select>
+            {putFormError.item_id && (
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text-alt text-rose-300">
+                  {putFormError.item_id}
+                </span>
               </label>
-              <input
-                type="text"
-                name="name"
-                value={putForm.name}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
-                  </span>
-                </label>
-              )}
+            )}
+            <label className="label">
+              <span className="label-text">Total</span>
+            </label>
+            <input
+              type="number"
+              name="total"
+              value={putForm.total}
+              onChange={(e) => handleAddInput(e)}
+              required
+              placeholder=""
+              className="input input-bordered input-primary border-slate-300 w-full"
+            />
+            {putFormError.total && (
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text-alt text-rose-300">
+                  {putFormError.total}
+                </span>
               </label>
-              <select
-                name="category_id"
-                onChange={(e) => handlePutInput(e)}
-                required
-                value={putForm.category_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {category?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {putFormError.category_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.category_id}
-                  </span>
-                </label>
-              )}
+            )}
+            <label className="label">
+              <span className="label-text">Manufacturing</span>
+            </label>
+            <input
+              type="date"
+              name="manufacturing"
+              value={putForm.manufacturing}
+              onChange={(e) => handleAddInput(e)}
+              required
+              placeholder=""
+              className="input input-bordered input-primary border-slate-300 w-full"
+            />
+            {putFormError.manufacturing && (
               <label className="label">
-                <span className="label-text">Unit</span>
+                <span className="label-text-alt text-rose-300">
+                  {putFormError.manufacturing}
+                </span>
               </label>
-              <input
-                type="text"
-                name="unit"
-                value={putForm.unit}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.unit && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.unit}
-                  </span>
-                </label>
-              )}
+            )}
+            <label className="label">
+              <span className="label-text">Expired</span>
+            </label>
+            <input
+              type="date"
+              name="expired"
+              value={putForm.expired}
+              onChange={(e) => handleAddInput(e)}
+              required
+              placeholder=""
+              className="input input-bordered input-primary border-slate-300 w-full"
+            />
+            {putFormError.expired && (
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text-alt text-rose-300">
+                  {putFormError.expired}
+                </span>
               </label>
-              <input
-                type="text"
-                name="buy_price"
-                value={putForm.buy_price}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.buy_price && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.buy_price}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Sell Price</span>
-              </label>
-              <input
-                type="text"
-                name="sell_price"
-                value={putForm.sell_price}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.sell_price && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.sell_price}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Factory</span>
-              </label>
-              <input
-                type="text"
-                name="factory"
-                value={putForm.factory}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.factory && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.factory}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Distributor</span>
-              </label>
-              <input
-                type="text"
-                name="distributor"
-                value={putForm.distributor}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.distributor && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.distributor}
-                  </span>
-                </label>
-              )}
-            </div>
+            )}
             <div className="modal-action rounded-sm">
               <label
                 htmlFor="modal-put"

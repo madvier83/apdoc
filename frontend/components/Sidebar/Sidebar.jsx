@@ -408,22 +408,42 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
-                          router.pathname == "#" &&
+                          router.pathname == "/dashboard/item-supply" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/item-supply"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/"
+                              router.pathname == "/dashboard/item-supply"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}
                           ></i>{" "}
-                          Item Masuk
+                          Item Supply
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/stock-adjustment" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/stock-adjustment"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/stock-adjustment"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Stock Adjustment
                         </Link>
                       </li>
                     </ul>
@@ -434,7 +454,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/dashboard" &&
+                    router.pathname == "/" &&
                     "text-emerald-500 animate-pulse"
                   }`}
                 >
