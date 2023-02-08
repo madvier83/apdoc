@@ -74,7 +74,6 @@ class AuthController extends Controller
     public function send_otp(Request $request)
     {
         $data = User::where('email', $request->email)->first();
-        User::where('id', $data->id)->update(['phone' => $request->phone]);
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'User Not Found'], 404);
         } else {
@@ -90,10 +89,11 @@ class AuthController extends Controller
                         return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code ' . $times_remaining . '.'], 403);
                     }
                 }
+                $data->phone = $request->phone;
                 $data->otp_verification = random_int(100000, 999999);
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
-                $data->save();
+                $data->update();
                 \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200);
             } catch (\Throwable $e) {
