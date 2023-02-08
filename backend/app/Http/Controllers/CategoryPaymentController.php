@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoryItem;
-use App\Models\Item;
+use App\Models\CategoryPayment;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
-class CategoryItemController extends Controller
+class CategoryPaymentController extends Controller
 {
     public function index()
     {
-        $category = CategoryItem::all();
+        $category = CategoryPayment::all();
         return response()->json($category);
     }
 
     public function show($id)
     {
-        $category = CategoryItem::find($id);
+        $category = CategoryPayment::find($id);
         return response()->json($category);
     }
 
@@ -27,14 +27,14 @@ class CategoryItemController extends Controller
         ]);
 
         $data = $request->all();
-        $category = CategoryItem::create($data);
+        $category = CategoryPayment::create($data);
 
         return response()->json($category);
     }
 
     public function update(Request $request, $id)
     {
-        $category = CategoryItem::find($id);
+        $category = CategoryPayment::find($id);
 
         if (!$category) {
             return response()->json(['message' => 'Category not found!'], 404);
@@ -54,14 +54,14 @@ class CategoryItemController extends Controller
 
     public function destroy($id)
     {
-        $category = CategoryItem::find($id);
+        $category = CategoryPayment::find($id);
 
         if (!$category) {
             return response()->json(['message' => 'Category not found!'], 404);
         }
 
         $category->delete();
-        Item::where('category_id', $id)->update(['category_id' => null]);
+        Payment::where('category_id', $id)->update(['category_id' => null]);
         return response()->json(['message' => 'Category deleted successfully!']);
     }
 }

@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
 	$router->post('/v1/auth/logout', 'AuthController@logout');
@@ -72,6 +72,18 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->put('/v1/service/{id}', 'ServiceController@update');
 	$router->delete('/v1/service/{id}', 'ServiceController@destroy');
 
+	$router->get('/v1/category-payments', 'CategoryPaymentController@index');
+	$router->get('/v1/category-payment/{id}', 'CategoryPaymentController@show');
+	$router->post('/v1/category-payment', 'CategoryPaymentController@create');
+	$router->put('/v1/category-payment/{id}', 'CategoryPaymentController@update');
+	$router->delete('/v1/category-payment/{id}', 'CategoryPaymentController@destroy');
+
+	$router->get('/v1/payments', 'PaymentController@index');
+	$router->get('/v1/payment/{id}', 'PaymentController@show');
+	$router->post('/v1/payment', 'PaymentController@create');
+	$router->put('/v1/payment/{id}', 'PaymentController@update');
+	$router->delete('/v1/payment/{id}', 'PaymentController@destroy');
+
 	// RECEPTIONIST
 
 	$router->get('/v1/patients', 'PatientController@index');
@@ -108,4 +120,12 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
 	$router->get('/v1/stock-adjustments', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
-// });
+	
+	// PROMOTION
+	
+	$router->get('/v1/promotions', 'PromotionController@index');
+	$router->get('/v1/promotion/{id}', 'PromotionController@show');
+	$router->post('/v1/promotion', 'PromotionController@create');
+	$router->put('/v1/promotion/{id}', 'PromotionController@update');
+	$router->delete('/v1/promotion/{id}', 'PromotionController@destroy');
+});
