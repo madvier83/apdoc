@@ -31,6 +31,12 @@
   }
 }
 
+@layer utilities {
+  .collapse {
+  visibility: visible;
+  }
+  }
+
 .modal-box {
   border-radius: 4px !important;
 }

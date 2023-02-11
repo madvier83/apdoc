@@ -13,7 +13,7 @@ export default function Sidebar() {
   const [doctorMenu, setDoctorMenu] = useState(true);
   const [pharmacyMenu, setPharmacyMenu] = useState(true);
   const [promotionMenu, setPromotionMenu] = useState(false);
-  const [cashierMenu, setCashierMenu] = useState(false);
+  const [cashierMenu, setCashierMenu] = useState(true);
   const [reportsMenu, setReportsMenu] = useState(false);
 
   // console.log(adminMenu);
@@ -575,17 +575,17 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
-                          router.pathname == "/" &&
+                          router.pathname == "/dashboard/transaction" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/transaction"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/"
+                              router.pathname == "/dashboard/transaction"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}

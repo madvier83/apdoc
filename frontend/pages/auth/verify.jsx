@@ -81,7 +81,7 @@ export default function Verify() {
   }
   useEffect(()=>{
     setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
-  }, [verifyForm])
+  }, [verifyForm.phone])
 
   async function verifyOTP(e) {
     e.preventDefault();

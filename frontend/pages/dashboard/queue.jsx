@@ -94,8 +94,9 @@ export default function Queue() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       getQueues();
+      getPatients()
       queueAddedRef.current.click();
     } catch (err) {
       console.error(err);
@@ -116,6 +117,7 @@ export default function Queue() {
       );
       // console.log(response);
       getQueues();
+      getPatients()
     } catch (err) {
       console.error(err);
     }
@@ -262,6 +264,7 @@ export default function Queue() {
   };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
   // console.log(selectedQueue)
+  // console.log(patients);
 
   return (
     <>
@@ -305,7 +308,7 @@ export default function Queue() {
           >
             <div
               ref={listRef}
-              className="flex flex-col-reverse md:flex-row-reverse gap-4"
+              className="flex flex-col md:flex-row gap-4"
               style={{ display: "block" }}
             >
               <div className="h-[74vh] min-h-fit md:w-1/2">
@@ -498,7 +501,7 @@ export default function Queue() {
                                       >
                                         {obj.is_cancelled ? (
                                           <i className="fas fa-undo"></i>
-                                        ):(
+                                        ) : (
                                           <i className="fas fa-trash"></i>
                                         )}
                                       </div>
@@ -738,13 +741,21 @@ export default function Queue() {
                             {moment(obj.updated_at).fromNow()}
                           </td>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                            <button
-                              // htmlFor="addQueueModal"
-                              onClick={() => addToQueue(obj.id)}
-                              className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            >
-                              Add to queue <i className="fas fa-add ml-2"></i>
-                            </button>
+                            {obj.queues[0]?.status_id == 1 ? (
+                              <button
+                                className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              >
+                                Already In Queue
+                              </button>
+                            ) : (
+                              <button
+                                // htmlFor="addQueueModal"
+                                onClick={() => addToQueue(obj.id)}
+                                className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              >
+                                Add to queue <i className="fas fa-add ml-2"></i>
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );
