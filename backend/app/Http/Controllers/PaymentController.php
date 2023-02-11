@@ -9,21 +9,21 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payment = Payment::with('category')->get();
+        $payment = Payment::with('categoryPayment')->get();
         return response()->json($payment);
     }
 
     public function show($id)
     {
-        $payment = Payment::with('category')->find($id);
+        $payment = Payment::with('categoryPayment')->find($id);
         return response()->json($payment);
     }
 
     public function create(Request $request)
     {
         $this->validate($request, [
-            'category_id'       => 'required',
-            'name'              => 'required',
+            'category_payment_id' => 'required',
+            'name'                => 'required',
         ]);
 
         $data = $request->all();
@@ -41,8 +41,8 @@ class PaymentController extends Controller
         }
 
         $this->validate($request, [
-            'category_id'       => 'required',
-            'name'              => 'required',
+            'category_payment_id' => 'required',
+            'name'                => 'required',
         ]);
 
         $data = $request->all();

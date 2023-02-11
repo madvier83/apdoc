@@ -31,6 +31,7 @@ $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
+
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
 	$router->post('/v1/auth/logout', 'AuthController@logout');
@@ -128,4 +129,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/promotion', 'PromotionController@create');
 	$router->put('/v1/promotion/{id}', 'PromotionController@update');
 	$router->delete('/v1/promotion/{id}', 'PromotionController@destroy');
+	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
+	
+	// CASHIER
+	
+	$router->post('/v1/transaction', 'TransactionController@create');
+	
 });

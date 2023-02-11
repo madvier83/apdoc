@@ -9,20 +9,20 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $item = Item::with(['category', 'itemSupplys'])->get();
+        $item = Item::with(['categoryItem', 'itemSupplys'])->get();
         return response()->json($item);
     }
 
     public function show($id)
     {
-        $item = Item::with('category')->find($id);
+        $item = Item::with('categoryItem')->find($id);
         return response()->json($item);
     }
 
     public function create(Request $request)
     {
         $this->validate($request, [
-            'category_id'       => 'required',
+            'category_item_id'  => 'required',
             'name'              => 'required',
             'unit'              => 'required',
             'sell_price'        => 'required',
@@ -46,7 +46,7 @@ class ItemController extends Controller
         }
 
         $this->validate($request, [
-            'category_id'       => 'required',
+            'category_item_id'  => 'required',
             'name'              => 'required',
             'unit'              => 'required',
             'sell_price'        => 'required',

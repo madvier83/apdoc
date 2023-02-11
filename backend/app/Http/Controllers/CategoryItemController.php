@@ -10,7 +10,7 @@ class CategoryItemController extends Controller
 {
     public function index()
     {
-        $category = CategoryItem::all();
+        $category = CategoryItem::with('items')->get();
         return response()->json($category);
     }
 
@@ -61,7 +61,7 @@ class CategoryItemController extends Controller
         }
 
         $category->delete();
-        Item::where('category_id', $id)->update(['category_id' => null]);
+        Item::where('category_item_id', $id)->update(['category_item_id' => null]);
         return response()->json(['message' => 'Category deleted successfully!']);
     }
 }

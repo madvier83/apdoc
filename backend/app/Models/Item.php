@@ -11,7 +11,7 @@ class Item extends Model
 
     protected $guarded = ['id'];
 
-    public function category()
+    public function categoryItem()
     {
         return $this->belongsTo(CategoryItem::class);
     }

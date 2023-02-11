@@ -11,7 +11,7 @@ class Payment extends Model
 
     protected $guarded = ['id'];
 
-    public function category()
+    public function categoryPayment()
     {
         return $this->belongsTo(CategoryPayment::class);
     }

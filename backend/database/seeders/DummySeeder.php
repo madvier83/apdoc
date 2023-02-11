@@ -19,15 +19,15 @@ class DummySeeder extends Seeder
 		]);
 
         Payment::create([
-			'category_id' => 1,
+			'category_payment_id' => 1,
             'name'        => 'BCA'
 		]);
 		Payment::create([
-			'category_id' => 1,
+			'category_payment_id' => 1,
             'name'        => 'Permata'
 		]);
 		Payment::create([
-			'category_id' => 2,
+			'category_payment_id' => 2,
             'name'        => 'QRIS'
 		]);
 

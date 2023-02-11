@@ -10,7 +10,7 @@ class CategoryPaymentController extends Controller
 {
     public function index()
     {
-        $category = CategoryPayment::all();
+        $category = CategoryPayment::with('payment')->get();
         return response()->json($category);
     }
 
@@ -61,7 +61,7 @@ class CategoryPaymentController extends Controller
         }
 
         $category->delete();
-        Payment::where('category_id', $id)->update(['category_id' => null]);
+        Payment::where('category_payment_id', $id)->update(['category_payment_id' => null]);
         return response()->json(['message' => 'Category deleted successfully!']);
     }
 }

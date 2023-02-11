@@ -15,7 +15,7 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->nullable();
+            $table->foreignId('category_payment_id')->nullable();
             $table->string('name');
             $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);

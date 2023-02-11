@@ -9,7 +9,7 @@ class PatientController extends Controller
 {
     public function index()
     {
-        $patient = Patient::all();
+        $patient = Patient::with('queues')->get();
         return response()->json($patient);
     }
 

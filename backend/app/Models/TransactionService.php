@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patient extends Model
+class TransactionService extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    // RELATIONSHIPS
-
-    public function queues()
+    public function transaction()
     {
-        return $this->hasMany(Queue::class)->where('status_id', 1);
+        return $this->belongsTo(Transaction::class);
     }
 }
