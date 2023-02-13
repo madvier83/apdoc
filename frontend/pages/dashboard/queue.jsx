@@ -457,9 +457,7 @@ export default function Queue() {
                                 return (
                                   <div
                                     key={obj.id}
-                                    className={`flex justify-between overflow-hidden items-center px-1 ${
-                                      obj.is_cancelled && "opacity-25"
-                                    }`}
+                                    className={`flex justify-between overflow-hidden items-center px-1`}
                                   >
                                     <div
                                       className={`text-sm breadcrumbs font-semibold text-zinc-800`}
@@ -468,7 +466,7 @@ export default function Queue() {
                                         <li
                                           className={`max-w-36 overflow-hidden ${
                                             obj.is_cancelled &&
-                                            "line-through text-rose-600"
+                                            "line-through text-rose-400"
                                           }`}
                                         >
                                           <i className="fa-solid fa-kit-medical mr-2"></i>
@@ -479,7 +477,7 @@ export default function Queue() {
                                         <li
                                           className={`max-w-36 overflow-hidden text-zinc-400 ${
                                             obj.is_cancelled &&
-                                            "line-through text-rose-600"
+                                            "line-through text-rose-400"
                                           }`}
                                         >
                                           <i className="fas fa-user-doctor mr-2"></i>

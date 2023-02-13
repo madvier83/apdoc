@@ -19,7 +19,7 @@ export default function Item() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
-    category_id: "",
+    category_item_id: "",
     name: "",
     unit: "",
     sell_price: "",
@@ -304,10 +304,10 @@ export default function Item() {
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_id"
+                name="category_item_id"
                 onChange={(e) => handleAddInput(e)}
                 required
-                value={addForm.category_id}
+                value={addForm.category_item_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
@@ -319,10 +319,10 @@ export default function Item() {
                   );
                 })}
               </select>
-              {addFormError.category_id && (
+              {addFormError.category_item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.category_id}
+                    {addFormError.category_item_id}
                   </span>
                 </label>
               )}
@@ -463,10 +463,10 @@ export default function Item() {
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_id"
+                name="category_item_id"
                 onChange={(e) => handlePutInput(e)}
                 required
-                value={putForm.category_id}
+                value={putForm.category_item_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
@@ -478,10 +478,10 @@ export default function Item() {
                   );
                 })}
               </select>
-              {putFormError.category_id && (
+              {putFormError.category_item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.category_id}
+                    {putFormError.category_item_id}
                   </span>
                 </label>
               )}
