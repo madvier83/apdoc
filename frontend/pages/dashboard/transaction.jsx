@@ -60,6 +60,32 @@ export default function Transaction() {
     services: [],
   });
 
+  const dummyQueue = {
+    id: 0,
+    patient_id: 0,
+    queue_number: "--",
+    status_id: 1,
+    clinic_id: null,
+    created_at: "-",
+    updated_at: "-",
+    patient: {
+      id: 0,
+      nik: "*",
+      name: "*",
+      birth_place: "*",
+      birth_date: "1970-01-06T08:00:03.000000Z",
+      gender: "*",
+      address: "*",
+      phone: "*",
+      clinic_id: null,
+      is_delete: 0,
+      created_at: "*",
+      updated_at: "*",
+    },
+    queue_details: null,
+  };
+  const [selectedQueue, setSelectedQueue] = useState(dummyQueue);
+
   async function getQueues() {
     try {
       const response = await axios.get(`queues`, {
@@ -68,7 +94,7 @@ export default function Transaction() {
         },
       });
       setQueues(response.data);
-      response.data.length <= 0 && setSelectedQueue({ dummy });
+      response.data.length <= 0 && setSelectedQueue({ dummyQueue });
     } catch (err) {
       console.error(err);
     }
@@ -157,42 +183,6 @@ export default function Transaction() {
       console.error(err);
     }
   }
-
-  useEffect(() => {
-    getQueues();
-    getServices();
-    getEmployees();
-    getPromotions();
-    getItems();
-    getCategory();
-    getCategoryPayments();
-  }, []);
-
-  const dummy = {
-    id: 0,
-    patient_id: 0,
-    queue_number: "--",
-    status_id: 1,
-    clinic_id: null,
-    created_at: "-",
-    updated_at: "-",
-    patient: {
-      id: 0,
-      nik: "*",
-      name: "*",
-      birth_place: "*",
-      birth_date: "1970-01-06T08:00:03.000000Z",
-      gender: "*",
-      address: "*",
-      phone: "*",
-      clinic_id: null,
-      is_delete: 0,
-      created_at: "*",
-      updated_at: "*",
-    },
-    queue_details: null,
-  };
-  const [selectedQueue, setSelectedQueue] = useState(dummy);
 
   function addToCart(obj, remove) {
     let prevCart = cart.array;
@@ -327,6 +317,16 @@ export default function Transaction() {
   }
 
   useEffect(() => {
+    getQueues();
+    getServices();
+    getEmployees();
+    getPromotions();
+    getItems();
+    getCategory();
+    getCategoryPayments();
+  }, []);
+
+  useEffect(() => {
     countTotal();
   }, [selectedQueue, cart.array]);
 
@@ -387,7 +387,7 @@ export default function Transaction() {
                           }}
                           className="input py-4 h-full input-bordered without-ring input-primary border-slate-300 w-full"
                         >
-                          <option value={dummy.id}>Select</option>
+                          <option value={dummyQueue.id}>Select</option>
                           {queues?.map((obj) => {
                             return (
                               <option key={obj.id} value={obj.id}>
