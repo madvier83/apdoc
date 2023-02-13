@@ -10,13 +10,13 @@ class CategoryPaymentController extends Controller
 {
     public function index()
     {
-        $category = CategoryPayment::with('payment')->get();
+        $category = CategoryPayment::with('payments')->get();
         return response()->json($category);
     }
 
     public function show($id)
     {
-        $category = CategoryPayment::find($id);
+        $category = CategoryPayment::with('payments')->find($id);
         return response()->json($category);
     }
 

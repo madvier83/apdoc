@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\ItemSupply;
+use App\Models\Promotion;
 use App\Models\Queue;
+use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\TransactionService;
@@ -74,9 +77,7 @@ class TransactionController extends Controller
         $this->validate($request, [
             'patient_id'    => 'required',
             'payment_id'    => 'required',
-            'total'         => 'required',
             'payment'       => 'required',
-            'employee_id'   => 'required',
             'items'         => 'required',
             'services'      => 'required',
         ]);
@@ -85,7 +86,7 @@ class TransactionController extends Controller
             'code'          => $this->code(),
             'patient_id'    => $request->patient_id, 
             'payment_id'    => $request->payment_id,
-            'total'         => $request->total,
+            'total'         => 0,
             'payment'       => $request->payment,
             'employee_id'   => auth()->user()->employees->id ?? null
         ];
@@ -94,36 +95,53 @@ class TransactionController extends Controller
         
         $items = collect($request->items);
         $services = collect($request->services);
+        $totalPayment = 0;
         
         foreach ($items as $data) {
             $this->updateStock($data['id'], $data['qty']);
+
+            $item = Item::find($data['id']);
+            $promotion = Promotion::find($data['promotion_id']);
+
+            $qty = $data['qty'];
+            $discount = ($item->sell_price * $qty) * ($promotion->discount / 100);
+            $total = ($item->sell_price * $qty) - $discount;
 
             $dataItem = [
                 'transaction_id'    => $transaction->id,
                 'item_id'           => $data['id'],
                 'promotion_id'      => $data['promotion_id'],
-                'qty'               => $data['qty'],
-                'discount'          => $data['discount'],
-                'total'             => $data['total'],
+                'qty'               => $qty,
+                'discount'          => $discount,
+                'total'             => $total,
             ];
             
+            $totalPayment += $total;
             TransactionItem::create($dataItem);
         }
 
         foreach ($services as $data) {
+            $service = Service::find($data['id']);
+            $promotion = Promotion::find($data['promotion_id']);
+
+            $discount = $service->price * ($promotion->discount / 100);
+            $total =$service->price - $discount;
+
             $dataService = [
                 'transaction_id'    => $transaction->id,
                 'employee_id'       => $data['employee_id'],
-                'service_id'        => $data['service_id'],
+                'service_id'        => $data['id'],
                 'promotion_id'      => $data['promotion_id'],
-                'discount'          => $data['discount'],
-                'total'             => $data['total'],
-                'commission'        => $data['commission'],
+                'discount'          => $discount,
+                'total'             => $total,
+                'commission'        => $service->commission,
             ];
             
+            $totalPayment += $total;
             TransactionService::create($dataService);
         }
 
+        Transaction::where('id', $transaction->id)->update(['total' => $totalPayment]);
         Queue::where('patient_id', $request->patient_id)->update(['status_id' => 3]);
 
         return response()->json('Transaction successfully');
