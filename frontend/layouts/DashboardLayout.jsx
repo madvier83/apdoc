@@ -19,7 +19,7 @@ export default function DashboardLayout({ title, children, headerStats }) {
             <AdminNavbar title={title} />
             {/* Header */}
             <HeaderStats headerStats={headerStats}/>
-            <div className="px-4 md:px-10 pb-32 mx-auto w-full -m-24">
+            <div className="px-4 md:px-10 mx-auto w-full -m-24 overflow-hidden">
                 {children}
                 {/* <FooterAdmin /> */}
             </div>

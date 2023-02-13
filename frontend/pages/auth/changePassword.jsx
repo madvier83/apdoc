@@ -12,9 +12,15 @@ export default function ForgotPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
+  const [error, setError] = useState("")
 
   async function changePassword(e) {
     e.preventDefault();
+    setError("")
+    if(password != confirmPassword) {
+      setError("Password doesn't match")
+      return;
+    }
     setIsLoading(true);
     try {
       const data = {
@@ -22,11 +28,10 @@ export default function ForgotPassword() {
         password,
         confirmPassword,
       };
-      console.log(data);
       const res = await axios.post("/auth/change-password", data);
-      setIsDone(true);
       console.log(res);
-    } catch (e) {
+      setIsDone(true);
+    } catch(e) {
       console.log(e);
     }
     setIsLoading(false);
@@ -91,9 +96,9 @@ export default function ForgotPassword() {
                           placeholder=""
                         />
 
-                        {/* <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {}
-                        </label> */}
+                        <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {error}
+                        </label>
                       </div>
                       {/* <p className="text-sm text-rose-500 text-justify"><i class="fa-solid fa-triangle-exclamation"></i> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi quo aspernatur voluptatum itaque in ea!</p> */}
 
