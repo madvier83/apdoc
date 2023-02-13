@@ -19,7 +19,7 @@ export default function Payment() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
-    category_id: "",
+    category_payment_id: "",
     name: "",
   };
 
@@ -136,7 +136,7 @@ export default function Payment() {
 
   return (
     <>
-      <DashboardLayout title="Item">
+      <DashboardLayout title="Payment">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -146,7 +146,7 @@ export default function Payment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Item Table
+                  <i className="fas fa-filter mr-3"></i> Payment Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -205,7 +205,7 @@ export default function Payment() {
                         <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category?.name}</span>
+                        <span>{obj.category_payment?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("MMM Do YYYY")}
@@ -275,10 +275,10 @@ export default function Payment() {
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_id"
+                name="category_payment_id"
                 onChange={(e) => handleAddInput(e)}
                 required
-                value={addForm.category_id}
+                value={addForm.category_payment_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Select</option>
@@ -290,10 +290,10 @@ export default function Payment() {
                   );
                 })}
               </select>
-              {addFormError.category_id && (
+              {addFormError.category_payment_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.category_id}
+                    {addFormError.category_payment_id}
                   </span>
                 </label>
               )}
@@ -339,10 +339,10 @@ export default function Payment() {
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_id"
+                name="category_payment_id"
                 onChange={(e) => handlePutInput(e)}
                 required
-                value={putForm.category_id}
+                value={putForm.category_payment_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Select</option>
@@ -354,10 +354,10 @@ export default function Payment() {
                   );
                 })}
               </select>
-              {putFormError.category_id && (
+              {putFormError.category_payment_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.category_id}
+                    {putFormError.category_payment_id}
                   </span>
                 </label>
               )}

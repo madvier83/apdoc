@@ -331,7 +331,7 @@ export default function Queue() {
                         <div className="card-body">
                           <div className="flex items-center">
                             <div className="avatar mr-6">
-                              <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
+                              <div className="w-16 mask mask-hexagon shadow-md bg-indigo-500 flex items-center justify-center">
                                 <h1 className="text-xl font-semibold text-white mb-1">
                                   {obj.queue_number}
                                 </h1>
@@ -396,7 +396,7 @@ export default function Queue() {
                   <div className="">
                     <div className="flex items-center mb-4">
                       <div className="avatar mr-6">
-                        <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
+                        <div className="w-16 mask mask-hexagon shadow-md bg-indigo-500 flex items-center justify-center">
                           <h1 className="text-xl font-semibold text-white mb-1">
                             {selectedQueue?.queue_number}
                           </h1>

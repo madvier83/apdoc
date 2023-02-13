@@ -18,6 +18,8 @@ import axios from "../api/axios";
 import numeral from "numeral";
 
 export default function Transaction() {
+  const token = getCookies("token");
+
   // Drag to scroll ref
   const servicesRef = useRef();
   const { events: servicesEvents } = useDraggable(servicesRef, {
@@ -28,21 +30,36 @@ export default function Transaction() {
     applyRubberBandEffect: true,
   });
 
-  // toggle state
-  const [isAddService, setIsAddService] = useState(false);
-  const [isRegular, setIsRegular] = useState(true);
-
-  // open service form ref
   let infoRef = useRef();
-  let serviceRef = useRef();
-  const addServiceTL = useRef();
-
-  // add queue ref
   let listRef = useRef();
+  const promotionRef = useRef();
+  const transactionRef = useRef();
 
-  const token = getCookies("token");
+  const [total, setTotal] = useState(0);
 
   const [queues, setQueues] = useState();
+  const [services, setServices] = useState();
+  const [employees, setEmployees] = useState();
+  const [items, setItems] = useState();
+  const [promotions, setPromotions] = useState();
+
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
+  const [categoryPayments, setCategoryPayments] = useState([]);
+  const [categoryPaymentsLoading, setCategoryPaymentsLoading] = useState(true);
+
+  const [selectedCart, setSelectedCart] = useState({});
+  const [cart, setCart] = useState({ array: [] });
+  const [serviceCart, setServiceCart] = useState({ array: [] });
+
+  const [transaction, setTransaction] = useState({
+    patient_id: 0,
+    payment_id: null,
+    payment: 0,
+    items: [],
+    services: [],
+  });
+
   async function getQueues() {
     try {
       const response = await axios.get(`queues`, {
@@ -57,7 +74,6 @@ export default function Transaction() {
     }
   }
 
-  const [services, setServices] = useState();
   async function getServices() {
     try {
       const response = await axios.get(`services`, {
@@ -72,7 +88,6 @@ export default function Transaction() {
     }
   }
 
-  const [employees, setEmployees] = useState();
   async function getEmployees() {
     try {
       const response = await axios.get(`employees`, {
@@ -87,7 +102,6 @@ export default function Transaction() {
     }
   }
 
-  const [items, setItems] = useState();
   async function getItems() {
     try {
       const response = await axios.get(`items`, {
@@ -102,7 +116,6 @@ export default function Transaction() {
     }
   }
 
-  const [promotions, setPromotions] = useState();
   async function getPromotions() {
     try {
       const response = await axios.get(`promotions`, {
@@ -117,8 +130,6 @@ export default function Transaction() {
     }
   }
 
-  const [category, setCategory] = useState([]);
-  const [categoryLoading, setCategoryLoading] = useState(true);
   async function getCategory() {
     try {
       const response = await axios.get("category-items", {
@@ -133,6 +144,20 @@ export default function Transaction() {
     }
   }
 
+  async function getCategoryPayments() {
+    try {
+      const response = await axios.get("category-payments", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setCategoryPayments(response.data);
+      setCategoryPaymentsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     getQueues();
     getServices();
@@ -140,142 +165,8 @@ export default function Transaction() {
     getPromotions();
     getItems();
     getCategory();
+    getCategoryPayments();
   }, []);
-
-  const initialServiceForm = {
-    queue_id: "",
-    service_id: "",
-    employee_id: "",
-  };
-  const [serviceForm, setServiceForm] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
-  );
-  const handleServiceInput = (event) => {
-    const { name, value } = event.target;
-    setServiceForm({ [name]: value });
-  };
-  // console.log(serviceForm)
-  async function addService() {
-    try {
-      const response = await axios.post(
-        `queue-detail/${selectedQueue?.id}/${serviceForm.employee_id}/${serviceForm.service_id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer" + token.token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log(response);
-      getQueues();
-      setIsAddService(false);
-      setServiceForm(initialServiceForm);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const [cart, setCart] = useState({ array: [] });
-  function addToCart(obj, remove) {
-    let prevCart = cart.array;
-    let newCart = [];
-
-    let newItem = {
-      id: obj.id,
-      name: obj.name,
-      sell_price: obj.sell_price,
-      promotion_id: null,
-      promotion: 0,
-      promotion_name: "",
-      qty: 1,
-      total: obj.sell_price,
-      discount: 0,
-    };
-
-    let isNewItem = true;
-    prevCart.map((item) => {
-      if (item.id == obj.id) {
-        let oldItem;
-        if (remove == true) {
-          oldItem = {
-            ...item,
-            qty: item.qty - 1,
-            total: item.sell_price * (item.qty - 1),
-            discount: (item.sell_price * (item.qty - 1) * item.promotion) / 100,
-          };
-        } else {
-          oldItem = {
-            ...item,
-            qty: item.qty + 1,
-            total: item.sell_price * (item.qty + 1),
-            discount: (item.sell_price * (item.qty + 1) * item.promotion) / 100,
-          };
-        }
-        console.log(oldItem);
-        oldItem.qty > 0 && newCart.push(oldItem);
-        isNewItem = false;
-      } else {
-        newCart.push(item);
-      }
-    });
-    if (isNewItem) {
-      newCart.push(newItem);
-    }
-    setCart({ array: newCart });
-  }
-  function clearCart() {
-    setCart({array: []})
-  }
-
-  const promotionRef = useRef();
-  const [selectedCart, setSelectedCart] = useState({});
-  function addPromotion(obj) {
-    let newSelectedCart = {
-      ...selectedCart,
-      promotion_id: obj.id,
-      promotion: obj.discount,
-      promotion_name: obj.name,
-      discount: (selectedCart.total * obj.discount) / 100,
-    };
-
-    let prevCart = cart.array;
-    let newCart = [];
-
-    prevCart.map((item) => {
-      if (item.id == selectedCart.id) {
-        newCart.push(newSelectedCart);
-      } else {
-        newCart.push(item);
-      }
-    });
-
-    setCart({ array: newCart });
-    promotionRef.current.click();
-  }
-  function removePromotion(obj) {
-    let newSelectedCart = {
-      ...obj,
-      promotion_id: 0,
-      promotion: 0,
-      promotion_name: 0,
-      discount: 0,
-    };
-
-    let prevCart = cart.array;
-    let newCart = [];
-
-    prevCart.map((item) => {
-      if (item.id == obj.id) {
-        newCart.push(newSelectedCart);
-      } else {
-        newCart.push(item);
-      }
-    });
-
-    setCart({ array: newCart });
-  }
 
   const dummy = {
     id: 0,
@@ -302,11 +193,97 @@ export default function Transaction() {
     queue_details: null,
   };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
-  useEffect(() => {
-    clearCart()
-  }, [selectedQueue])
 
-  const [total, setTotal] = useState(0);
+  function addToCart(obj, remove) {
+    let prevCart = cart.array;
+    let newCart = [];
+    let newItem = {
+      id: obj.id,
+      name: obj.name,
+      sell_price: obj.sell_price,
+      promotion_id: null,
+      promotion: 0,
+      promotion_name: "",
+      qty: 1,
+      total: obj.sell_price,
+      discount: 0,
+    };
+    let isNewItem = true;
+    prevCart.map((item) => {
+      if (item.id == obj.id) {
+        let oldItem;
+        if (remove == true) {
+          oldItem = {
+            ...item,
+            qty: item.qty - 1,
+            total: item.sell_price * (item.qty - 1),
+            discount: (item.sell_price * (item.qty - 1) * item.promotion) / 100,
+          };
+        } else {
+          oldItem = {
+            ...item,
+            qty: item.qty + 1,
+            total: item.sell_price * (item.qty + 1),
+            discount: (item.sell_price * (item.qty + 1) * item.promotion) / 100,
+          };
+        }
+        oldItem.qty > 0 && newCart.push(oldItem);
+        isNewItem = false;
+      } else {
+        newCart.push(item);
+      }
+    });
+    if (isNewItem) {
+      newCart.push(newItem);
+    }
+    setCart({ array: newCart });
+  }
+
+  function addCartPromotion(obj) {
+    let newSelectedCart = {
+      ...selectedCart,
+      promotion_id: obj.id,
+      promotion: obj.discount,
+      promotion_name: obj.name,
+      discount: (selectedCart.total * obj.discount) / 100,
+    };
+    let prevCart = cart.array;
+    let newCart = [];
+    prevCart.map((item) => {
+      if (item.id == selectedCart.id) {
+        newCart.push(newSelectedCart);
+      } else {
+        newCart.push(item);
+      }
+    });
+    setCart({ array: newCart });
+    promotionRef.current.click();
+  }
+
+  function removeCartPromotion(obj) {
+    let prevCart = cart.array;
+    let newCart = [];
+    let newSelectedCart = {
+      ...obj,
+      promotion_id: 0,
+      promotion: 0,
+      promotion_name: 0,
+      discount: 0,
+    };
+    prevCart.map((item) => {
+      if (item.id == obj.id) {
+        newCart.push(newSelectedCart);
+      } else {
+        newCart.push(item);
+      }
+    });
+    setCart({ array: newCart });
+  }
+
+  function clearCart() {
+    setCart({ array: [] });
+  }
+
   function countTotal() {
     let currentTotal = 0;
     selectedQueue?.queue_details?.map((obj) => {
@@ -319,8 +296,54 @@ export default function Transaction() {
     );
     setTotal(currentTotal);
   }
+
+  function addServiceCart() {
+    // console.log(selectedQueue.queue_details)
+    let newCart = [];
+    selectedQueue?.queue_details?.map((obj) => {
+      newCart.push({
+        id: obj.service_id,
+        employee_id: obj.employee_id,
+        promotion_id: 0,
+      });
+    });
+    // console.log(newCart);
+    setServiceCart({ array: newCart });
+  }
+
+  async function createTransaction() {
+    console.log(transaction);
+    try {
+      const response = await axios.post(`transaction`, transaction, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "application/json",
+        },
+      });
+      transactionRef.current.click();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     countTotal();
+  }, [selectedQueue, cart.array]);
+
+  useEffect(() => {
+    clearCart();
+    addServiceCart();
+  }, [selectedQueue]);
+
+  useEffect(() => {
+    setTransaction((prev) => {
+      return {
+        ...prev,
+        patient_id: selectedQueue?.patient_id,
+        items: cart.array,
+        services: serviceCart.array,
+      };
+    });
   }, [selectedQueue, cart.array]);
 
   return (
@@ -328,13 +351,11 @@ export default function Transaction() {
       <DashboardLayout title="Transaction">
         <div className="mt-6">
           <div
-            className={`relative max-w-6xl min-w-0 md:min-w-[720px] bg-gray-900 p-8 rounded-b-md rounded-t-md ${
-              !isRegular && "rounded-l-md"
-            }`}
+            className={`relative max-w-6xl min-w-0 md:min-w-[720px] bg-gray-900 p-8 rounded-b-md rounded-t`}
           >
             <div
               ref={listRef}
-              className="flex flex-col md:flex-row gap-4"
+              className="flex flex-col-reverse md:flex-row gap-4"
               style={{ display: "block" }}
             >
               <div className="h-[80vh] min-h-fit md:w-1/2">
@@ -397,7 +418,7 @@ export default function Transaction() {
                         >
                           <div className="collapse-title font-semibold capitalize text-sm group-focus:text-emerald-500 text-zinc-500 flex items-center gap-4">
                             <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                            <p>Promotion</p>
+                            <p>Promotions</p>
                           </div>
                           <div className="collapse-content font-normal capitalize">
                             {promotions?.map((obj) => {
@@ -469,7 +490,7 @@ export default function Transaction() {
                 >
                   <div className="">
                     <div className="flex items-center mb-4">
-                      <div className="avatar mr-6">
+                      {/* <div className="avatar mr-6">
                         <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
                           <h1 className="text-xl font-semibold text-white mb-1">
                             {selectedQueue?.queue_number}
@@ -481,7 +502,7 @@ export default function Transaction() {
                         ) : (
                           <i className="fas fa-venus z-10 absolute -right-2 text-sm group-focus:text-emerald-500 w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
                         )}
-                      </div>
+                      </div> */}
                       <div className="w-full">
                         <h2 className="card-title text-base lg:text-lg text-zinc-600 truncate">
                           {selectedQueue?.patient?.name}
@@ -548,7 +569,14 @@ export default function Transaction() {
                             </div>
                             <div className="mt-4 flex justify-between">
                               <small className="text-zinc-400">Items</small>{" "}
-                              {cart.array?.length > 0 && (<small className="animate-pulse btn btn-ghost btn-xs normal-case text-zinc-400" onClick={clearCart}>Clear X</small>)}
+                              {cart.array?.length > 0 && (
+                                <small
+                                  className="animate-pulse btn btn-ghost btn-xs normal-case text-zinc-400"
+                                  onClick={clearCart}
+                                >
+                                  Clear X
+                                </small>
+                              )}
                             </div>
                             <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden">
                               <div className="">
@@ -564,13 +592,16 @@ export default function Transaction() {
                                           <React.Fragment key={obj.id}>
                                             <tr className="rounded-md transition-all duration-300">
                                               <td
-                                                className={`w-56 py-2 overflow-hidden`}
+                                                className={`w-2/3 py-2 overflow-hidden`}
                                               >
                                                 <span
                                                   className="truncate cursor-pointer"
                                                   onClick={() => {
                                                     promotionRef.current.click();
-                                                    setSelectedCart(obj, promotionRef.current.click());
+                                                    setSelectedCart(
+                                                      obj,
+                                                      promotionRef.current.click()
+                                                    );
                                                   }}
                                                 >
                                                   {obj.name}
@@ -579,12 +610,14 @@ export default function Transaction() {
                                               <td
                                                 className={`text-center w-16 overflow-hidden`}
                                               >
-                                                <div className="grid grid-flow-col items-center">
+                                                <div
+                                                  className={`grid grid-flow-col items-center group-[${obj.id}]:`}
+                                                >
                                                   <button
                                                     onClick={() =>
                                                       addToCart(obj, true)
                                                     }
-                                                    className="btn btn-sm btn-ghost opacity-0 group-hover:opacity-100 pr-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
+                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pr-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
                                                   >
                                                     <i className="fas fa-caret-left"></i>
                                                   </button>
@@ -593,7 +626,7 @@ export default function Transaction() {
                                                     onClick={() =>
                                                       addToCart(obj)
                                                     }
-                                                    className="btn btn-sm btn-ghost opacity-0 group-hover:opacity-100 pl-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
+                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pl-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
                                                   >
                                                     <i className="fas fa-caret-right"></i>
                                                   </button>
@@ -605,15 +638,17 @@ export default function Transaction() {
                                                     className="tooltip tooltip-left"
                                                     data-tip="Add Discount"
                                                   >
-                                                    <label
-                                                      htmlFor="addPromotionModal"
-                                                      className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-blue-500 hover:bg-zinc-100"
-                                                      onClick={() =>
-                                                        setSelectedCart(obj)
-                                                      }
-                                                    >
-                                                      <i className="fas fa-tag"></i>
-                                                    </label>
+                                                    {obj.discount <= 0 && (
+                                                      <label
+                                                        htmlFor="addPromotionModal"
+                                                        className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-blue-500 hover:bg-zinc-100"
+                                                        onClick={() =>
+                                                          setSelectedCart(obj)
+                                                        }
+                                                      >
+                                                        <i className="fas fa-tag"></i>
+                                                      </label>
+                                                    )}
                                                   </div>
                                                   <label
                                                     htmlFor="addPromotionModal"
@@ -635,7 +670,7 @@ export default function Transaction() {
                                             {obj.discount > 0 && (
                                               <tr className="text-emerald-400 py-2 text-sm">
                                                 <td
-                                                  className={`w-56 overflow-hidden`}
+                                                  className={`w-2/3 overflow-hidden`}
                                                 >
                                                   <span className="truncate">
                                                     {/* <i className=""></i> */}
@@ -657,7 +692,9 @@ export default function Transaction() {
                                                     <button
                                                       className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-rose-400 hover:bg-zinc-100"
                                                       onClick={async () => {
-                                                        removePromotion(obj)
+                                                        removeCartPromotion(
+                                                          obj
+                                                        );
                                                       }}
                                                     >
                                                       <i className="fas fa-trash"></i>
@@ -686,7 +723,7 @@ export default function Transaction() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between border-t-zinc-600 border-t py-2 w-full">
+                  <div className="flex justify-between border-t-zinc-300 border-dashed border-t py-2 w-full text-xl">
                     <p className="font-semibold ml-1">Total</p>
                     <p className="font-semibold ml-1 text-right">
                       {numeral(total).format("0,0")}
@@ -698,7 +735,10 @@ export default function Transaction() {
                       Contact{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </button> */}
-                    <label for="checkoutModal" className="btn btn-primary w-full">
+                    <label
+                      htmlFor="checkoutModal"
+                      className="btn btn-primary w-full"
+                    >
                       Checkout <i className="fas fa-check ml-2"></i>
                     </label>
                   </div>
@@ -753,7 +793,7 @@ export default function Transaction() {
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
                       key={obj.id}
-                      onClick={() => addPromotion(obj)}
+                      onClick={() => addCartPromotion(obj)}
                     >
                       <span>{obj.name}</span>
                       <span>{obj.discount}%</span>
@@ -781,50 +821,88 @@ export default function Transaction() {
         </div>
         {/* </form> */}
       </ModalBox>
+
       <ModalBox id="checkoutModal">
         <h3 className="font-bold text-lg mb-4">Payment Method</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
-        <input type="hidden" autoComplete="off" />
-        <div className="form-control w-full">
-          <div className="bg-white rounded-md mt-4">
-            <div
-              tabIndex={0}
-              className="collapse collapse-open p-0 m-0 rounded-md bg-emerald-50 group"
-            >
-              <div className="collapse-title font-semibold capitalize text-sm text-emerald-500 flex items-center gap-4">
-                <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                <p>Promotion</p>
-              </div>
-              <div className="collapse-content font-normal capitalize">
-                {promotions?.map((obj) => {
-                  return (
-                    <div
-                      className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                      key={obj.id}
-                      onClick={() => addPromotion(obj)}
-                    >
-                      <span>{obj.name}</span>
-                      <span>{obj.discount}%</span>
-                    </div>
-                  );
-                })}
-                {promotions?.length <= 0 && (
-                  <div className="btn btn-disabled bg-zinc-200 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
-                    No Promotion
-                  </div>
-                )}
-              </div>
-            </div>
+        <div className="card">
+          <div className="card-body py-2">
+            <p className="font-semibold">Cash</p>
+            <input
+              type="number"
+              name="payment"
+              // value={addForm}
+              onChange={(e) =>
+                setTransaction((prev) => {
+                  return {
+                    ...prev,
+                    payment: e.target.value,
+                  };
+                })
+              }
+              onClick={(e) => {
+                setTransaction((prev) => {
+                  return {
+                    ...prev,
+                    payment_id: 0,
+                    payment: e.target.value,
+                  };
+                });
+              }}
+              className="input input-bordered input-primary border-slate-300 w-full"
+            />
           </div>
         </div>
+        {categoryPayments.map((obj) => {
+          return (
+            <div className="card" key={obj.id}>
+              <div className="card-body py-2">
+                <p className="font-semibold">{obj.name}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {obj.payments.map((obj) => {
+                    return (
+                      <div
+                        key={obj.id}
+                        className={`btn text-left ${
+                          obj.id == transaction.payment_id
+                            ? "btn-success text-zinc-800"
+                            : "btn-ghost bg-slate-100"
+                        }  rounded-md cursor-pointer`}
+                        onClick={() => {
+                          setTransaction((prev) => {
+                            return {
+                              ...prev,
+                              payment_id: obj.id,
+                              payment: total,
+                            };
+                          });
+                        }}
+                      >
+                        <div className="card-body px-4 py-2">
+                          <p>{obj.name}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })}
         <div className="modal-action rounded-sm">
           <label
             htmlFor="checkoutModal"
             className="btn btn-ghost rounded-md"
+            ref={transactionRef}
           >
             Cancel
           </label>
-          <button className="btn btn-primary rounded-md">Checkout</button>
+          <button
+            className="btn btn-primary rounded-md"
+            onClick={createTransaction}
+          >
+            Checkout
+          </button>
         </div>
         {/* </form> */}
       </ModalBox>
