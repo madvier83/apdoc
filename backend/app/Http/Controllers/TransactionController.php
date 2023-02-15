@@ -78,8 +78,6 @@ class TransactionController extends Controller
             'patient_id'    => 'required',
             'payment_id'    => 'required',
             'payment'       => 'required',
-            'items'         => 'required',
-            'services'      => 'required',
         ]);
 
         $dataTransaction = [

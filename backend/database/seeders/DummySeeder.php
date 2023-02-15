@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CategoryPayment;
+use App\Models\ItemSupply;
 use App\Models\Payment;
 use App\Models\Promotion;
 use Illuminate\Database\Seeder;
@@ -42,6 +43,57 @@ class DummySeeder extends Seeder
 		Promotion::create([
             'name'     => 'Sebelas Sebelas',
 			'discount' => 11.11,
+		]);
+
+		ItemSupply::create([
+			'item_id' 		=> 1,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 2,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 3,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 4,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 5,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
 		]);
 	}
 }
