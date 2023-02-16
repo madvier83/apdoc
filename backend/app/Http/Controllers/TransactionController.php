@@ -76,14 +76,13 @@ class TransactionController extends Controller
     {
         $this->validate($request, [
             'patient_id'    => 'required',
-            'payment_id'    => 'required',
             'payment'       => 'required',
         ]);
 
         $dataTransaction = [
             'code'          => $this->code(),
             'patient_id'    => $request->patient_id, 
-            'payment_id'    => $request->payment_id,
+            'payment_id'    => $request->payment_id ?? null,
             'total'         => 0,
             'payment'       => $request->payment,
             'employee_id'   => auth()->user()->employees->id ?? null
@@ -102,13 +101,13 @@ class TransactionController extends Controller
             $promotion = Promotion::find($data['promotion_id']);
 
             $qty = $data['qty'];
-            $discount = ($item->sell_price * $qty) * ($promotion->discount / 100);
+            $discount = ($promotion == null) ? 0 : ($item->sell_price * $qty) * ($promotion->discount / 100);
             $total = ($item->sell_price * $qty) - $discount;
 
             $dataItem = [
                 'transaction_id'    => $transaction->id,
                 'item_id'           => $data['id'],
-                'promotion_id'      => $data['promotion_id'],
+                'promotion_id'      => $data['promotion_id'] ?? null,
                 'qty'               => $qty,
                 'discount'          => $discount,
                 'total'             => $total,
@@ -122,14 +121,14 @@ class TransactionController extends Controller
             $service = Service::find($data['id']);
             $promotion = Promotion::find($data['promotion_id']);
 
-            $discount = $service->price * ($promotion->discount / 100);
+            $discount = ($promotion == null) ? 0 : $service->price * ($promotion->discount / 100);
             $total =$service->price - $discount;
 
             $dataService = [
                 'transaction_id'    => $transaction->id,
                 'employee_id'       => $data['employee_id'],
                 'service_id'        => $data['id'],
-                'promotion_id'      => $data['promotion_id'],
+                'promotion_id'      => $data['promotion_id'] ?? null,
                 'discount'          => $discount,
                 'total'             => $total,
                 'commission'        => $service->commission,
