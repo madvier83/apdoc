@@ -118,7 +118,7 @@ export default function Promotion() {
 
   return (
     <>
-      <DashboardLayout title="Category Payment">
+      <DashboardLayout title="Promotion">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
@@ -128,7 +128,7 @@ export default function Promotion() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Payment Table
+                  <i className="fas fa-filter mr-3"></i> Promotion Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">

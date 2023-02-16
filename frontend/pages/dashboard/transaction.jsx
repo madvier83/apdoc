@@ -33,11 +33,13 @@ export default function Transaction() {
   let infoRef = useRef();
   let listRef = useRef();
   const promotionRef = useRef();
+  const servicePromotionRef = useRef();
   const transactionRef = useRef();
 
   const [total, setTotal] = useState(0);
 
   const [queues, setQueues] = useState();
+  const [queuesLoading, setQueuesLoading] = useState(true);
   const [services, setServices] = useState();
   const [employees, setEmployees] = useState();
   const [items, setItems] = useState();
@@ -48,17 +50,21 @@ export default function Transaction() {
   const [categoryPayments, setCategoryPayments] = useState([]);
   const [categoryPaymentsLoading, setCategoryPaymentsLoading] = useState(true);
 
-  const [selectedCart, setSelectedCart] = useState({});
   const [cart, setCart] = useState({ array: [] });
   const [serviceCart, setServiceCart] = useState({ array: [] });
 
-  const [transaction, setTransaction] = useState({
+  const [selectedCart, setSelectedCart] = useState({});
+  const [selectedServiceCart, setSelectedServiceCart] = useState({});
+
+  const dummyTransaction = {
     patient_id: 0,
     payment_id: null,
     payment: 0,
     items: [],
     services: [],
-  });
+  };
+  const [transaction, setTransaction] = useState(dummyTransaction);
+  const [paymentAmount, setPaymentAmount] = useState("");
 
   const dummyQueue = {
     id: 0,
@@ -87,6 +93,7 @@ export default function Transaction() {
   const [selectedQueue, setSelectedQueue] = useState(dummyQueue);
 
   async function getQueues() {
+    setQueuesLoading(true);
     try {
       const response = await axios.get(`queues`, {
         headers: {
@@ -94,7 +101,13 @@ export default function Transaction() {
         },
       });
       setQueues(response.data);
+      setQueuesLoading(false);
       response.data.length <= 0 && setSelectedQueue({ dummyQueue });
+      response.data.map((obj) => {
+        if (obj.id == selectedQueue.id) {
+          setSelectedQueue(obj);
+        }
+      });
     } catch (err) {
       console.error(err);
     }
@@ -189,14 +202,15 @@ export default function Transaction() {
     let newCart = [];
     let newItem = {
       id: obj.id,
+      qty: 1,
+      promotion_id: null,
+
       name: obj.name,
       sell_price: obj.sell_price,
-      promotion_id: null,
       promotion: 0,
       promotion_name: "",
-      qty: 1,
-      total: obj.sell_price,
       discount: 0,
+      total: obj.sell_price,
     };
     let isNewItem = true;
     prevCart.map((item) => {
@@ -233,6 +247,7 @@ export default function Transaction() {
     let newSelectedCart = {
       ...selectedCart,
       promotion_id: obj.id,
+
       promotion: obj.discount,
       promotion_name: obj.name,
       discount: (selectedCart.total * obj.discount) / 100,
@@ -274,31 +289,105 @@ export default function Transaction() {
     setCart({ array: [] });
   }
 
-  function countTotal() {
-    let currentTotal = 0;
+  function addServiceCart() {
+    let newCart = [];
     selectedQueue?.queue_details?.map((obj) => {
       if (obj.is_cancelled == 0) {
-        currentTotal += obj.service.price;
+        newCart.push({
+          id: obj.service_id,
+          employee_id: obj.employee_id,
+          promotion_id: 0,
+
+          name: obj.service.name,
+          price: obj.service.price,
+          promotion: 0,
+          promotion_name: "",
+          discount: 0,
+        });
       }
     });
+    setServiceCart({ array: newCart });
+  }
+
+  function addServiceCartPromotion(promotion, item) {
+    let newItem = {
+      ...item,
+      promotion_id: promotion.id,
+
+      promotion: promotion.discount,
+      promotion_name: promotion.name,
+      discount: (item.price * promotion.discount) / 100,
+    };
+    let prevCart = serviceCart.array;
+    let newCart = [];
+    prevCart.map((obj) => {
+      if (obj.id == item.id) {
+        newCart.push(newItem);
+      } else {
+        newCart.push(obj);
+      }
+    });
+    setServiceCart({ array: newCart });
+    servicePromotionRef.current.click();
+  }
+
+  function removeServiceCartPromotion(obj) {
+    let prevCart = serviceCart.array;
+    let newCart = [];
+    let newSelectedCart = {
+      ...obj,
+      promotion_id: 0,
+      promotion: 0,
+      promotion_name: 0,
+      discount: 0,
+    };
+    prevCart.map((item) => {
+      if (item.id == obj.id) {
+        newCart.push(newSelectedCart);
+      } else {
+        newCart.push(item);
+      }
+    });
+    setServiceCart({ array: newCart });
+  }
+
+  function setAllCartPromotion(promotion) {
+    let newServiceCart = serviceCart.array?.map((item) => {
+      let newItem = {
+        ...item,
+        promotion_id: promotion.id,
+
+        promotion: promotion.discount,
+        promotion_name: promotion.name,
+        discount: (item.price * promotion.discount) / 100,
+      };
+      return newItem;
+    });
+    setServiceCart({ array: newServiceCart });
+
+    let newCart = cart.array?.map((item) => {
+      let newItem = {
+        ...item,
+        promotion_id: promotion.id,
+
+        promotion: promotion.discount,
+        promotion_name: promotion.name,
+        discount: (item.total * promotion.discount) / 100,
+      };
+      return newItem;
+    });
+    setCart({ array: newCart });
+  }
+
+  function countTotal() {
+    let currentTotal = 0;
+    serviceCart.array?.map(
+      (obj) => (currentTotal = currentTotal + obj.price - obj.discount)
+    );
     cart.array?.map(
       (obj) => (currentTotal = currentTotal + obj.total - obj.discount)
     );
     setTotal(currentTotal);
-  }
-
-  function addServiceCart() {
-    // console.log(selectedQueue.queue_details)
-    let newCart = [];
-    selectedQueue?.queue_details?.map((obj) => {
-      newCart.push({
-        id: obj.service_id,
-        employee_id: obj.employee_id,
-        promotion_id: 0,
-      });
-    });
-    // console.log(newCart);
-    setServiceCart({ array: newCart });
   }
 
   async function createTransaction() {
@@ -310,6 +399,11 @@ export default function Transaction() {
           "Content-Type": "application/json",
         },
       });
+      console.log(response);
+      getQueues();
+      setSelectedQueue(dummyQueue);
+      setTransaction(dummyTransaction);
+      setPaymentAmount(0);
       transactionRef.current.click();
     } catch (err) {
       console.error(err);
@@ -328,7 +422,7 @@ export default function Transaction() {
 
   useEffect(() => {
     countTotal();
-  }, [selectedQueue, cart.array]);
+  }, [selectedQueue, cart.array, serviceCart.array]);
 
   useEffect(() => {
     clearCart();
@@ -340,11 +434,12 @@ export default function Transaction() {
       return {
         ...prev,
         patient_id: selectedQueue?.patient_id,
+        payment: paymentAmount,
         items: cart.array,
         services: serviceCart.array,
       };
     });
-  }, [selectedQueue, cart.array]);
+  }, [selectedQueue, cart.array, serviceCart.array, paymentAmount]);
 
   return (
     <>
@@ -365,7 +460,7 @@ export default function Transaction() {
                   className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                 >
                   <div
-                    className={`overflow-hidden bg-opacity-70 rounded-md shadow-md mb-4`}
+                    className={`overflow-hidden bg-opacity-70 rounded-md shadow-md mb-0`}
                   >
                     <div className="px-0 flex flex-col">
                       <div className="">
@@ -374,7 +469,13 @@ export default function Transaction() {
                             Patients
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
-                            {queues?.length} in queue
+                            {queues?.length} in queue{" "}
+                            <i
+                              className={`fas fa-refresh ml-1 ${
+                                queuesLoading && "animate-spin opacity-50"
+                              }`}
+                              onClick={() => getQueues()}
+                            ></i>
                           </span>
                         </label>
                         <select
@@ -399,7 +500,7 @@ export default function Transaction() {
                       </div>
                     </div>
                   </div>
-                  <div className={` bg-opacity-50 rounded-md shadow-md mb-4`}>
+                  <div className={` bg-opacity-50 rounded-md shadow-md mb-0`}>
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0">
@@ -426,6 +527,7 @@ export default function Transaction() {
                                 <div
                                   className="btn btn-ghost normal-case flex justify-between cursor-pointer"
                                   key={obj.id}
+                                  onClick={() => setAllCartPromotion(obj)}
                                 >
                                   <span>{obj.name}</span>
                                   <span>{obj.discount}%</span>
@@ -440,7 +542,7 @@ export default function Transaction() {
                           </div>
                         </div>
                       </div>
-                      <div className="bg-white rounded-md mt-4">
+                      <div className="bg-white rounded-md mt-4 min-h-[58vh]">
                         {category?.map((obj, index) => {
                           return (
                             <div
@@ -521,50 +623,127 @@ export default function Transaction() {
                           <div
                             ref={queuesRef}
                             {...queuesEvents}
-                            className="overflow-y-scroll h-[44vh]"
+                            className="overflow-y-scroll h-[47vh]"
                           >
                             <div className="mt-4">
                               <small className="text-zinc-400">Services</small>{" "}
                               <br />
                             </div>
                             <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden">
-                              <div
-                                className={`flex justify-between overflow-hidden items-center px-1`}
-                              >
-                                <table
-                                  className={`w-full text-sm breadcrumbs font-semibold text-zinc-800`}
+                              <div className="">
+                                <div
+                                  className={`flex justify-between overflow-hidden items-center px-1`}
                                 >
-                                  <tbody>
-                                    {selectedQueue?.queue_details?.map(
-                                      (obj) => {
+                                  <table
+                                    className={`group w-full text-sm breadcrumbs font-semibold text-zinc-800`}
+                                  >
+                                    <tbody>
+                                      {serviceCart?.array?.map((obj) => {
                                         return (
-                                          <tr key={obj.id}>
-                                            <td
-                                              className={`max-w-36 py-2 overflow-hidden ${
-                                                obj.is_cancelled && "hidden"
-                                              }`}
-                                            >
-                                              <i className="fa-solid fa-kit-medical mr-2"></i>
-                                              <span className="truncate">
-                                                {obj.service.name}
-                                              </span>
-                                            </td>
-                                            <td
-                                              className={`text-right max-w-36 overflow-hidden ${
-                                                obj.is_cancelled && "hidden"
-                                              }`}
-                                            >
-                                              {" "}
-                                              {numeral(
-                                                obj.service.price
-                                              ).format("0,0")}
-                                            </td>
-                                          </tr>
+                                          <React.Fragment key={obj.id}>
+                                            <tr className="rounded-md transition-all duration-300">
+                                              <td
+                                                className={`w-2/3 py-2 overflow-hidden`}
+                                              >
+                                                <span
+                                                  className="truncate cursor-pointer"
+                                                  onClick={() => {
+                                                    promotionRef.current.click();
+                                                    setSelectedCart(obj);
+                                                  }}
+                                                >
+                                                  {obj.name}
+                                                </span>
+                                              </td>
+                                              <td
+                                                className={`text-center w-16 overflow-hidden`}
+                                              ></td>
+                                              <td className={`text-right w-22`}>
+                                                <div className="div flex justify-between items-center">
+                                                  <div
+                                                    className="tooltip tooltip-left"
+                                                    data-tip="Add Discount"
+                                                  >
+                                                    {obj.discount <= 0 && (
+                                                      <label
+                                                        htmlFor="addServicePromotionModal"
+                                                        className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-blue-500 hover:bg-zinc-100"
+                                                        onClick={() =>
+                                                          setSelectedServiceCart(
+                                                            obj
+                                                          )
+                                                        }
+                                                      >
+                                                        <i className="fas fa-tag"></i>
+                                                      </label>
+                                                    )}
+                                                  </div>
+                                                  <label
+                                                    htmlFor="addServicePromotionModal"
+                                                    className=""
+                                                    onClick={() =>
+                                                      setSelectedServiceCart(
+                                                        obj
+                                                      )
+                                                    }
+                                                  >
+                                                    <span>
+                                                      {" "}
+                                                      {numeral(
+                                                        obj.price
+                                                      ).format("0,0")}
+                                                    </span>
+                                                  </label>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                            {obj.discount > 0 && (
+                                              <tr className="text-emerald-400 py-2 text-sm">
+                                                <td
+                                                  className={`w-2/3 overflow-hidden`}
+                                                >
+                                                  <span className="truncate">
+                                                    ⤷ Discount{" "}
+                                                    {obj.promotion_name} (
+                                                    {obj.promotion}%)
+                                                  </span>
+                                                </td>
+                                                <td
+                                                  className={`text-center w-16 overflow-hidden`}
+                                                ></td>
+                                                <td
+                                                  className={`text-right w-22 flex justify-between`}
+                                                >
+                                                  <div
+                                                    className="tooltip tooltip-left"
+                                                    data-tip="Remove Discount"
+                                                  >
+                                                    <button
+                                                      className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-rose-400 hover:bg-zinc-100"
+                                                      onClick={() => {
+                                                        removeServiceCartPromotion(
+                                                          obj
+                                                        );
+                                                      }}
+                                                    >
+                                                      <i className="fas fa-trash"></i>
+                                                    </button>
+                                                  </div>
+                                                  <span className="flex justify-end items-center">
+                                                    {"-"}
+                                                    {numeral(
+                                                      obj.discount
+                                                    ).format("0,0")}
+                                                  </span>
+                                                </td>
+                                              </tr>
+                                            )}
+                                          </React.Fragment>
                                         );
-                                      }
-                                    )}
-                                  </tbody>
-                                </table>
+                                      })}
+                                    </tbody>
+                                  </table>
+                                </div>
                               </div>
                             </div>
                             <div className="mt-4 flex justify-between">
@@ -598,10 +777,7 @@ export default function Transaction() {
                                                   className="truncate cursor-pointer"
                                                   onClick={() => {
                                                     promotionRef.current.click();
-                                                    setSelectedCart(
-                                                      obj,
-                                                      promotionRef.current.click()
-                                                    );
+                                                    setSelectedCart(obj);
                                                   }}
                                                 >
                                                   {obj.name}
@@ -617,7 +793,7 @@ export default function Transaction() {
                                                     onClick={() =>
                                                       addToCart(obj, true)
                                                     }
-                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pr-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
+                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pr-1 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
                                                   >
                                                     <i className="fas fa-caret-left"></i>
                                                   </button>
@@ -626,7 +802,7 @@ export default function Transaction() {
                                                     onClick={() =>
                                                       addToCart(obj)
                                                     }
-                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pl-0 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
+                                                    className="btn btn-sm btn-ghost opacity-20 group-hover:opacity-100 pl-1 text-zinc-400 active:bg-zinc-100 hover:bg-zinc-100"
                                                   >
                                                     <i className="fas fa-caret-right"></i>
                                                   </button>
@@ -673,8 +849,7 @@ export default function Transaction() {
                                                   className={`w-2/3 overflow-hidden`}
                                                 >
                                                   <span className="truncate">
-                                                    {/* <i className=""></i> */}
-                                                    - Discount{" "}
+                                                    ⤷ Discount{" "}
                                                     {obj.promotion_name} (
                                                     {obj.promotion}%)
                                                   </span>
@@ -691,7 +866,7 @@ export default function Transaction() {
                                                   >
                                                     <button
                                                       className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-rose-400 hover:bg-zinc-100"
-                                                      onClick={async () => {
+                                                      onClick={() => {
                                                         removeCartPromotion(
                                                           obj
                                                         );
@@ -723,14 +898,14 @@ export default function Transaction() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between border-t-zinc-300 border-dashed border-t py-2 w-full text-xl">
+                  <div className="flex justify-between border-t-zinc-300 border-dashed border-t pt-2 w-full text-xl">
                     <p className="font-semibold ml-1">Total</p>
                     <p className="font-semibold ml-1 text-right">
                       {numeral(total).format("0,0")}
                     </p>
                   </div>
 
-                  <div className="flex gap-2 mt-6 items-end">
+                  <div className="flex gap-2 items-end">
                     {/* <button className="btn btn-success bg-success text-white w-1/2">
                       Contact{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
@@ -739,7 +914,7 @@ export default function Transaction() {
                       htmlFor="checkoutModal"
                       className="btn btn-primary w-full"
                     >
-                      Checkout <i className="fas fa-check ml-2"></i>
+                      Select Payment
                     </label>
                   </div>
                 </div>
@@ -822,40 +997,116 @@ export default function Transaction() {
         {/* </form> */}
       </ModalBox>
 
+      <ModalBox id="addServicePromotionModal">
+        <h3 className="font-bold text-lg mb-4">Add Service Promotion</h3>
+        {/* <form onSubmit={() => {}} autoComplete="off"> */}
+        <input type="hidden" autoComplete="off" />
+        <div className="form-control w-full">
+          <div className="bg-white rounded-md mt-4">
+            <div
+              tabIndex={0}
+              className="collapse collapse-open p-0 m-0 rounded-md bg-emerald-50 group"
+            >
+              <div className="collapse-title font-semibold capitalize text-sm text-emerald-500 flex items-center gap-4">
+                <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
+                <p>Promotion</p>
+              </div>
+              <div className="collapse-content font-normal capitalize">
+                {promotions?.map((obj) => {
+                  return (
+                    <div
+                      className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                      key={obj.id}
+                      onClick={() =>
+                        addServiceCartPromotion(obj, selectedServiceCart)
+                      }
+                    >
+                      <span>{obj.name}</span>
+                      <span>{obj.discount}%</span>
+                    </div>
+                  );
+                })}
+                {promotions?.length <= 0 && (
+                  <div className="btn btn-disabled bg-zinc-200 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                    No Promotion
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="modal-action rounded-sm">
+          <label
+            htmlFor="addServicePromotionModal"
+            ref={servicePromotionRef}
+            className="btn btn-ghost rounded-md"
+          >
+            Cancel
+          </label>
+          {/* <button className="btn btn-primary rounded-md">Add</button> */}
+        </div>
+        {/* </form> */}
+      </ModalBox>
+
       <ModalBox id="checkoutModal">
-        <h3 className="font-bold text-lg mb-4">Payment Method</h3>
+        <h3 className="font-bold text-lg mb-8">Payment Method</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <div className="card">
           <div className="card-body py-2">
             <p className="font-semibold">Cash</p>
-            <input
-              type="number"
-              name="payment"
-              // value={addForm}
-              onChange={(e) =>
-                setTransaction((prev) => {
-                  return {
-                    ...prev,
-                    payment: e.target.value,
-                  };
-                })
-              }
-              onClick={(e) => {
-                setTransaction((prev) => {
-                  return {
-                    ...prev,
-                    payment_id: 0,
-                    payment: e.target.value,
-                  };
-                });
-              }}
-              className="input input-bordered input-primary border-slate-300 w-full"
-            />
+            <div
+              className={`${transaction.payment_id != null && "opacity-50"}`}
+            >
+              <input
+                type="number"
+                name="payment"
+                value={paymentAmount}
+                onChange={(e) => {
+                  setPaymentAmount(e.target.value)
+                }}
+                onClick={(e) => {
+                  setTransaction((prev) => {
+                    return {
+                      ...prev,
+                      payment_id: null,
+                      payment: e.target.value,
+                    };
+                  });
+                }}
+                // placeholder={`Total ${total}`}
+                className={`input input-bordered  w-full ${
+                  transaction.payment >= total
+                    ? "border-emerald-400 bg-emerald-50"
+                    : "border-rose-400 bg-zinc-50"
+                }`}
+              />
+
+              <i
+                className={`fas fa-check absolute right-10 top-12 rounded-md p-2 ${
+                  transaction.payment_id == null ? "block" : "hidden"
+                } ${
+                  transaction.payment >= total
+                    ? "bg-emerald-400"
+                    : "bg-zinc-50 text-rose-400"
+                }`}
+              ></i>
+              <div className="flex justify-between text-sm mt-1">
+                <p>Total {numeral(total).format()}</p>
+                <p
+                  className={`text-right ${
+                    transaction.payment >= total ? "block" : "hidden"
+                  }`}
+                >
+                  Change {numeral(transaction.payment - total).format()}
+                </p>
+              </div>
+            </div>
+            <div className="divider mb-2"></div>
           </div>
         </div>
         {categoryPayments.map((obj) => {
           return (
-            <div className="card" key={obj.id}>
+            <div className={`card`} key={obj.id}>
               <div className="card-body py-2">
                 <p className="font-semibold">{obj.name}</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -863,7 +1114,9 @@ export default function Transaction() {
                     return (
                       <div
                         key={obj.id}
-                        className={`btn text-left ${
+                        className={`btn text-left  ${
+                          transaction.payment_id != obj.id && "opacity-50"
+                        } ${
                           obj.id == transaction.payment_id
                             ? "btn-success text-zinc-800"
                             : "btn-ghost bg-slate-100"
@@ -878,8 +1131,11 @@ export default function Transaction() {
                           });
                         }}
                       >
-                        <div className="card-body px-4 py-2">
+                        <div className="card-body px-4 py-2 flex flex-row justify-between items-center">
                           <p>{obj.name}</p>
+                          {transaction.payment_id == obj.id && (
+                            <i className="fas fa-check text-lg"></i>
+                          )}
                         </div>
                       </div>
                     );
@@ -898,7 +1154,7 @@ export default function Transaction() {
             Cancel
           </label>
           <button
-            className="btn btn-primary rounded-md"
+            className="btn btn-warning rounded-md"
             onClick={createTransaction}
           >
             Checkout

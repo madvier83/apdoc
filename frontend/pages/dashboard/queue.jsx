@@ -263,6 +263,10 @@ export default function Queue() {
     queue_details: null,
   };
   const [selectedQueue, setSelectedQueue] = useState(dummy);
+
+  useEffect(() => {
+    setIsAddService(false)
+  }, [selectedQueue])
   // console.log(selectedQueue)
   // console.log(patients);
 

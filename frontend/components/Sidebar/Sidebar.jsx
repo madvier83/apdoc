@@ -511,23 +511,25 @@ export default function Sidebar() {
 
                   {/* end submenu */}
                 </li>
-
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
+                    router.pathname == "/dashboard/promotion" &&
                     "text-emerald-500 animate-pulse"
                   }`}
                 >
-                  <button
-                    onClick={() => setPromotionMenu((p) => !p)}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
+                  <Link
+                    href="/dashboard/promotion"
+                    className={`text-xs py-3 font-bold block text-slate-500 ${
+                      router.pathname == "/dashboard/promotion" &&
+                      "text-emerald-500 animate-pulse"
+                    }`}
                   >
-                    <i className={"fas fa-tag mr-2 text-sm "}></i> Promotion
-                  </button>
+                    <i className={"fas fa-tag mr-2 text-sm"}></i>{" "}
+                    Promotion
+                  </Link>
+                </li>
 
-                  {promotionMenu && (
+                  {/* {promotionMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -550,10 +552,9 @@ export default function Sidebar() {
                         </Link>
                       </li>
                     </ul>
-                  )}
+                  )} */}
 
                   {/* end submenu */}
-                </li>
 
                 <li
                   className={`items-center ${
@@ -705,7 +706,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <Link
-                    href="/dashboard/account"
+                    href="/dashboard/settings"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
