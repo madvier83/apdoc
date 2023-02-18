@@ -37,6 +37,7 @@ export default function Transaction() {
   const transactionRef = useRef();
 
   const [total, setTotal] = useState(0);
+  const [suggest, setSuggest] = useState([]);
 
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
@@ -410,6 +411,21 @@ export default function Transaction() {
     }
   }
 
+  function suggestCash() {
+    const newSuggest = [];
+    let cash = total;
+    const fraction = [10000, 20000, 50000, 100000];
+    do {
+      fraction.push(fraction[fraction.length - 1] + 50000);
+    } while (fraction[fraction.length - 1] < 5000000);
+
+    fraction.map(
+      (obj) => obj > cash && newSuggest.length < 2 && newSuggest.push(obj)
+    );
+    // console.log(newSuggest);
+    setSuggest(newSuggest);
+  }
+
   useEffect(() => {
     getQueues();
     getServices();
@@ -440,6 +456,10 @@ export default function Transaction() {
       };
     });
   }, [selectedQueue, cart.array, serviceCart.array, paymentAmount]);
+
+  useEffect(() => {
+    suggestCash();
+  }, [total, selectedQueue, cart.array, serviceCart.array]);
 
   return (
     <>
@@ -1062,7 +1082,7 @@ export default function Transaction() {
                 name="payment"
                 value={paymentAmount}
                 onChange={(e) => {
-                  setPaymentAmount(e.target.value)
+                  setPaymentAmount(e.target.value);
                 }}
                 onClick={(e) => {
                   setTransaction((prev) => {
@@ -1073,7 +1093,6 @@ export default function Transaction() {
                     };
                   });
                 }}
-                // placeholder={`Total ${total}`}
                 className={`input input-bordered  w-full ${
                   transaction.payment >= total
                     ? "border-emerald-400 bg-emerald-50"
@@ -1100,10 +1119,46 @@ export default function Transaction() {
                   Change {numeral(transaction.payment - total).format()}
                 </p>
               </div>
+              <div className="grid grid-flow-col gap-2 col-span-3 mt-4">
+                <div
+                  className={`btn btn-ghost bg-slate-100 text-left rounded-md cursor-pointer`}
+                  onClick={() => {
+                    setPaymentAmount(total);
+                    setTransaction((prev) => {
+                      return {
+                        ...prev,
+                        payment_id: null,
+                      };
+                    });
+                  }}
+                >
+                  {numeral(total).format()}
+                </div>
+                {suggest?.map((obj) => {
+                  return (
+                    <div
+                      key={obj}
+                      className={`btn btn-ghost bg-slate-100 text-left rounded-md cursor-pointer`}
+                      onClick={() => {
+                        setPaymentAmount(obj);
+                        setTransaction((prev) => {
+                          return {
+                            ...prev,
+                            payment_id: null,
+                          };
+                        });
+                      }}
+                    >
+                      {numeral(obj).format()}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div className="divider mb-2"></div>
           </div>
         </div>
+
         {categoryPayments.map((obj) => {
           return (
             <div className={`card`} key={obj.id}>
