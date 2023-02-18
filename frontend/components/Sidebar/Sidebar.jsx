@@ -9,11 +9,11 @@ export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
   const [adminMenu, setAdminMenu] = useState(false);
-  const [receptionistMenu, setReceptionistMenu] = useState(true);
-  const [doctorMenu, setDoctorMenu] = useState(true);
-  const [pharmacyMenu, setPharmacyMenu] = useState(true);
+  const [receptionistMenu, setReceptionistMenu] = useState(false);
+  const [doctorMenu, setDoctorMenu] = useState(false);
+  const [pharmacyMenu, setPharmacyMenu] = useState(false);
   const [promotionMenu, setPromotionMenu] = useState(false);
-  const [cashierMenu, setCashierMenu] = useState(true);
+  const [cashierMenu, setCashierMenu] = useState(false);
   const [reportsMenu, setReportsMenu] = useState(false);
 
   // console.log(adminMenu);

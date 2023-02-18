@@ -60,7 +60,7 @@ export default function Transaction() {
   const dummyTransaction = {
     patient_id: 0,
     payment_id: null,
-    payment: 0,
+    payment: null,
     items: [],
     services: [],
   };
@@ -413,16 +413,24 @@ export default function Transaction() {
 
   function suggestCash() {
     const newSuggest = [];
+
     let cash = total;
     const fraction = [10000, 20000, 50000, 100000];
     do {
       fraction.push(fraction[fraction.length - 1] + 50000);
     } while (fraction[fraction.length - 1] < 5000000);
 
+    let limit = 50000;
+    if (cash <= 50000) limit = 100000;
+    if (cash >= 100000 && cash % 100000 <= 50000) limit = 100000;
+    if (cash % 100000 == 0) limit = 0;
     fraction.map(
-      (obj) => obj > cash && newSuggest.length < 2 && newSuggest.push(obj)
+      (obj) =>
+        newSuggest.length < 2 &&
+        obj - cash < limit &&
+        obj > cash &&
+        newSuggest.push(obj)
     );
-    // console.log(newSuggest);
     setSuggest(newSuggest);
   }
 
@@ -459,6 +467,14 @@ export default function Transaction() {
 
   useEffect(() => {
     suggestCash();
+    setTransaction((prev) => {
+      return {
+        ...prev,
+        payment_id: null,
+        payment: paymentAmount,
+      };
+    });
+    setPaymentAmount("");
   }, [total, selectedQueue, cart.array, serviceCart.array]);
 
   return (
