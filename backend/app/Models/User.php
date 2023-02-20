@@ -21,7 +21,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $guarded = ['id'];
-
     // RELATIONSHIPS
 
     public function role()

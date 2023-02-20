@@ -5,6 +5,7 @@ namespace App\Events;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Queue\SerializesModels;
 
 class ForgotPasswordMail extends Mailable
@@ -16,11 +17,12 @@ class ForgotPasswordMail extends Mailable
      *
      * @return void
      */
-    protected $email;
+    protected $email, $token;
     
-    public function __construct( $email)
+    public function __construct($email, $token)
     {
         $this->email = $email;
+        $this->token = $token;
     }
 
     /**
@@ -34,7 +36,8 @@ class ForgotPasswordMail extends Mailable
         ->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'))
         ->subject('APP Doc - Forgot Password')
         ->view('mails.forgotpassword', [
-            'email' => $this->email
+            'email' => $this->email,
+            'token' => Crypt::encrypt($this->token)
         ]);
     }
 }

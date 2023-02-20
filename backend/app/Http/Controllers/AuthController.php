@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
+use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
 
@@ -72,8 +75,12 @@ class AuthController extends Controller
     }
 
     public function send_otp(Request $request)
-    {
+    {   
         $data = User::where('email', $request->email)->first();
+        $this->validate($request,[
+            'phone' => 'unique:users,phone',
+            'email' => 'required'
+        ]);
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'User Not Found'], 404);
         } else {
@@ -94,10 +101,10 @@ class AuthController extends Controller
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
                 $data->update();
-                \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
+                // \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200);
             } catch (\Throwable $e) {
-                return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
             }
         }
     }
@@ -106,7 +113,6 @@ class AuthController extends Controller
     {
         try {
             $data = User::where('email', $request->email)->first();
-
             if (!$data) {
                 return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
@@ -131,11 +137,20 @@ class AuthController extends Controller
                 return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
                 // return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
-
-            $data->updated_at = Carbon::now('Asia/Jakarta');
+            if($data->password_resets_token_created){
+                $limit = Carbon::parse($data->password_resets_token_created)->addMinutes(10)->toString();
+                $now = Carbon::now()->toString();
+                if($now < $limit){
+                    return response()->json(['status' => 'failed', 'message' => 'Your request is limit for 10 minutes'], 403);
+                }
+            }
+            $data->password_resets_token = Str::random(8);
+            $data->expired_password_resets_token = Carbon::now()->addMinutes(30);
+            $data->password_resets_token_created = Carbon::now();
+            $data->updated_at = Carbon::now();
             $data->update();
 
-            Mail::to($data->email)->send(new ForgotPasswordMail($data->email));
+            Mail::to($data->email)->send(new ForgotPasswordMail($data->email, $data->password_resets_token));
             
             return response()->json(['status' => 'success', 'message' => 'Success send email'], 200);
         } catch (\Throwable $th) {
@@ -147,27 +162,30 @@ class AuthController extends Controller
     public function change_password(Request $request)
     {
         try {
-
             $this->validate($request, [
                 'password' => 'required|min:8',
                 'confirmPassword' => 'required_with:password|same:password',
             ]);
-
             // $data = User::where('email', $email)->where('is_verified', 1)->first();
             $data = User::where('email', $request->email)->first();
-            
             if(!$data){
                 return response()->json(['status' => 'failed', 'message' => 'User not found'], 404);
                 // return response()->json(['status' => 'failed', 'message' => 'User not found or not verified'], 404);
             }
+            
+            $decrypted = Crypt::decrypt($request->token);
+            $limit = Carbon::parse($data->expired_password_resets_token)->toString();
+            $now = Carbon::now()->toString();
 
+            if($data->password_resets_token != $decrypted && $now > $limit){
+                return response()->json(['status' => 'failed', 'message' => 'Unvalid token'], 404);
+            }
             if($request->password){
                 $data->password = app('hash')->make($request->password);
-                $data->updated_at = Carbon::now('Asia/Jakarta');
+                $data->updated_at = Carbon::now();
                 $data->update();
-
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success change password!'], 200);
-            }
+            }   
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
@@ -229,7 +247,6 @@ class AuthController extends Controller
             'phone' => $user->phone,
             'password' => $request->password
         ];
-
         try {
             if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role' => $user->role->name])->attempt($credentials)) {
                 return response()->json(['error' => 'Unauthorized'], 401);
@@ -237,11 +254,9 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
-
         if ($user->is_verified == 0) {
             return response()->json(['error' => 'Unauthorized', 'message' => 'User not verified'], 403);
         }
-
         return $this->respondWithToken($token);
     }
 

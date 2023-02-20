@@ -94,9 +94,9 @@
             <p class="msg">If you've lost your password or wish to reset it,</p>
             <p class="msg">use the link below to get started.</p>
             <div class="btn">
-                <a href="{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}" class="btntext">Change Password</a>
+                <a href="{{ route('email.changepassword', ['email' => $email, 'token' => $token]) }}" class="btntext">Change Password</a>
             </div>
-            <p class="link">If you have trouble clicking the "Change Password" button, copy and paste url below into your web browser: <a href="{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}" target="_blank" class="linkverify">{{ 'http://localhost:3000/auth/changePassword/?email='. $email }}</a></p>
+            <p class="link">If you have trouble clicking the "Change Password" button, copy and paste url below into your web browser: <a href="{{ route('email.changepassword', ['email' => $email, 'token' => $token]) }}" target="_blank" class="linkverify">{{ route('email.changepassword', ['email' => $email, 'token' => $token]) }}</a></p>
         </div>
     </div>
 </body>

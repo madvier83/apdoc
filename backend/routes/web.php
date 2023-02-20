@@ -16,7 +16,7 @@ use App\Models\User;
 */
 
 $router->get('/', function () use ($router) {
-	return $router->app->version();
+	return "AppDoc API v1.0";
 });
 
 // Email Verification
