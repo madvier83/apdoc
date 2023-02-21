@@ -43,9 +43,8 @@ class AuthController extends Controller
 
     public function verification_otp(Request $request)
     {
-
         $this->validate($request, [
-            'otp_verification' => 'required|min:6|max:6'
+            'otp_verification' => 'required|min:6|numeric'
         ]);
 
         $data = User::where('email', $request->email)->where('otp_verification', $request->otp_verification)->first();
@@ -62,6 +61,7 @@ class AuthController extends Controller
             if ($expired < $now) {
                 return response()->json(['status' => 'failed', 'message' => 'Verification OTP expired!'], 410);
             }
+            $data->phone = $request->phone;
             $data->is_verified = 1;
             $data->phone_verified_at = Carbon::now();
             $data->save();
@@ -96,7 +96,6 @@ class AuthController extends Controller
                         return response()->json(['status' => 'failed', 'data' => $data, 'message' => 'Your request token is limit for 5 minutes, You was request OTP code ' . $times_remaining . '.'], 403);
                     }
                 }
-                $data->phone = $request->phone;
                 $data->otp_verification = random_int(100000, 999999);
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
