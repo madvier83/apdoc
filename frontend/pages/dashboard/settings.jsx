@@ -131,7 +131,7 @@ export default function Settings() {
                         setIsEditUser((prev) => {
                           return !prev;
                         });
-                        setTimeout(() => userFormRef.current.focus(), 10);
+                        // setTimeout(() => userFormRef.current.focus(), 10);
                         getUser();
                         // console.log(userForm);
                       }}

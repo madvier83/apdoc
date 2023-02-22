@@ -81,6 +81,9 @@ export default function Verify() {
       if(err.response?.status == 403) {
         setVerifyFormError(err.response?.data?.message);
       }
+      if(err.response?.status == 500) {
+        setVerifyFormError(err.response?.data?.message);
+      }
     }
   }
   useEffect(()=>{
@@ -199,7 +202,7 @@ export default function Verify() {
                           {verifyFormError && (<span className="text-emerald-500 cursor-pointer" onClick={()=>{setSent(true);setVerifyFormError("")}}><br/>Submit OTP</span>)}
                         </label>
                       </div>
-
+                      {/* <p>{verifyForm.fullPhone}</p> */}
                       <div className="text-center mt-4">
                         <button className="bg-zinc-700 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
                           Send OTP

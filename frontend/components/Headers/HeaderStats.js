@@ -10,7 +10,7 @@ export default function HeaderStats({ headerStats }) {
   return (
     <>
       {/* Header */}
-      <div className="relative bg-emerald-400 md:pt-24 pb-16 pt-12">
+      <div className="relative bg-gray-800 md:pt-24 pb-16 pt-12">
         {headerStats && (
           <div className="px-2 md:px-8 mx-auto w-full">
             <div>
