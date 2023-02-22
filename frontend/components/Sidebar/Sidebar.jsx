@@ -1,11 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
+import jwt_decode from "jwt-decode";
 
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
+import ModalBox from "../Modals/ModalBox";
+import axios from "../../pages/api/axios";
 
 export default function Sidebar() {
+  const router = useRouter();
+  const pwdRef = useRef()
+
+  const token = getCookie("token");
+  const [user, setUser] = useState(decodeUser)
+  function decodeUser() {
+    try {
+      const payload = jwt_decode(token);
+      return payload;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+  async function sendChangePassword() {
+    try {
+      const res = await axios.post("/auth/email/send/forgot-password", {
+        email: user?.email,
+      });
+      deleteCookie("token");
+      router.push("/auth/resetPassword")
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
   const [adminMenu, setAdminMenu] = useState(false);
@@ -18,7 +47,6 @@ export default function Sidebar() {
 
   // console.log(adminMenu);
 
-  const router = useRouter();
   // console.log(router)
   return (
     <>
@@ -524,12 +552,11 @@ export default function Sidebar() {
                       "text-emerald-500 animate-pulse"
                     }`}
                   >
-                    <i className={"fas fa-tag mr-2 text-sm"}></i>{" "}
-                    Promotion
+                    <i className={"fas fa-tag mr-2 text-sm"}></i> Promotion
                   </Link>
                 </li>
 
-                  {/* {promotionMenu && (
+                {/* {promotionMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -554,12 +581,11 @@ export default function Sidebar() {
                     </ul>
                   )} */}
 
-                  {/* end submenu */}
+                {/* end submenu */}
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
                   <button
@@ -622,8 +648,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
                   <button
@@ -687,8 +712,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
                   <Link
@@ -701,8 +725,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
                   <Link
@@ -715,22 +738,51 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
-                  <Link
-                    href="#"
+                  <label
+                    htmlFor="modalPwd"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Change
                     Password
-                  </Link>
+                  </label>
+                  <ModalBox id="modalPwd">
+                    <h3 className="font-bold text-lg mb-4 text-black">
+                      Change Password
+                    </h3>
+                      <input type="hidden" autoComplete="off" />
+                      <div className="form-control w-full">
+                        <label className="label">
+                          <span className="label-text">Email</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={user?.email}
+                          placeholder=""
+                          className="input text-zinc-700 input-bordered input-primary border-slate-300 w-full"
+                          disabled
+                        />
+                      </div>
+                      <div className="modal-action rounded-sm">
+                        <label
+                          htmlFor="modalPwd"
+                          ref={pwdRef}
+                          className="btn btn-ghost rounded-md"
+                        >
+                          Cancel
+                        </label>
+                        <button className="btn btn-primary rounded-md" onClick={sendChangePassword}>
+                          Send Email
+                        </button>
+                      </div>
+                  </ModalBox>
                 </li>
                 <li
                   className={`items-center ${
-                    router.pathname == "/" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 animate-pulse"
                   }`}
                 >
                   <button

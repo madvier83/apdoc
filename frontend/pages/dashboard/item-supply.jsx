@@ -211,7 +211,7 @@ export default function ItemSupply() {
                       </th>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <span className={"ml-3 font-bold"}>
-                          {obj.item.name}
+                          {obj.item?.name}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">

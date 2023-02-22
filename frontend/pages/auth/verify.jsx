@@ -73,10 +73,14 @@ export default function Verify() {
       setSent(true);
       resetOTP();
       setVerifyFormError("")
+      console.log(response)
       // document.querySelector(`input[name=otp_1]`).focus();
     } catch (err) {
       console.error(err);
-      setVerifyFormError(err.response?.data?.message);
+      setVerifyFormError(err.response?.data?.phone);
+      if(err.response?.status == 403) {
+        setVerifyFormError(err.response?.data?.message);
+      }
     }
   }
   useEffect(()=>{
@@ -88,7 +92,7 @@ export default function Verify() {
     try {
       const response = await axios.post(
         "auth/phone/verification",
-        { email: userdata.email, otp_verification: combineOtp() },
+        { email: userdata.email, otp_verification: combineOtp(), phone: verifyForm.fullPhone },
         {
           "Content-Type": "application/json",
         }
@@ -171,7 +175,7 @@ export default function Verify() {
                         <div className="flex">
                           <select
                             name="code"
-                            value={verifyForm.code}
+                            value={verifyForm?.code}
                             onChange={(e) => handleVerifyInput(e)}
                             className="input mr-1 w-24 px-3"
                           >
@@ -180,12 +184,12 @@ export default function Verify() {
                           </select>
                           <input
                             name="phone"
-                            value={verifyForm.phone}
+                            value={verifyForm?.phone}
                             onChange={(e) => handleVerifyInput(e)}
                             required
                             type="text"
                             className={`input w-full ${
-                              verifyFormError.phone ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                             placeholder="xxx xxxx xxxx"
                           />
@@ -234,7 +238,7 @@ export default function Verify() {
                             autoFocus
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_1 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                           <input
@@ -245,7 +249,7 @@ export default function Verify() {
                             maxLength={1}
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_2 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                           <input
@@ -256,7 +260,7 @@ export default function Verify() {
                             maxLength={1}
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_3 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                           <input
@@ -267,7 +271,7 @@ export default function Verify() {
                             maxLength={1}
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_4 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                           <input
@@ -278,7 +282,7 @@ export default function Verify() {
                             maxLength={1}
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_5 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                           <input
@@ -289,7 +293,7 @@ export default function Verify() {
                             maxLength={1}
                             autoComplete="off"
                             className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError.otp_6 ? "border-rose-500" : null
+                              verifyFormError ? "border-rose-500" : null
                             }`}
                           />
                         </div>

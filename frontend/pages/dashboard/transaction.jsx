@@ -415,7 +415,7 @@ export default function Transaction() {
     const newSuggest = [];
 
     let cash = total;
-    const fraction = [10000, 20000, 50000, 100000];
+    const fraction = [10000, 50000, 100000];
     do {
       fraction.push(fraction[fraction.length - 1] + 50000);
     } while (fraction[fraction.length - 1] < 5000000);
@@ -431,8 +431,51 @@ export default function Transaction() {
         obj > cash &&
         newSuggest.push(obj)
     );
+    if (
+      newSuggest.length < 3 &&
+      cash % 10000 != 0 &&
+      (cash - (cash % 10000) + 10000) % 50000 != 0
+    ) {
+      newSuggest.unshift(cash - (cash % 10000) + 10000);
+    }
     setSuggest(newSuggest);
+    console.log(newSuggest);
   }
+
+  // function suggestCash() {
+  //   const newSuggest = [];
+
+  //   let cash = total;
+  //   const fraction = [50000, 100000];
+  //   do {
+  //     fraction.push(fraction[fraction.length - 1] + 50000);
+  //   } while (fraction[fraction.length - 1] < 1000000);
+
+  //   let limit = 50000;
+  //   if (cash <= 50000) limit = 100000;
+  //   if (cash >= 100000 && cash % 100000 <= 50000) limit = 100000;
+  //   if (cash % 100000 == 0) limit = 0;
+
+  //   if (
+  //     cash - (cash % 10000) + 10000 != 50000 &&
+  //     cash - (cash % 10000) + 10000 != 100000 &&
+  //     cash % 10000 != 0 &&
+  //     cash % 50000 != 0 &&
+  //     cash % 100000 != 0 &&
+  //     newSuggest.length < 2
+  //   ) {
+  //     newSuggest.unshift(cash - (cash % 10000) + 10000);
+  //   }
+
+  //   fraction.map((obj) => {
+  //     newSuggest.length < 3 &&
+  //       obj - cash < limit &&
+  //       obj > cash &&
+  //       newSuggest.push(obj);
+  //   });
+
+  //   setSuggest(newSuggest);
+  // }
 
   useEffect(() => {
     getQueues();
@@ -536,7 +579,11 @@ export default function Transaction() {
                       </div>
                     </div>
                   </div>
-                  <div className={` bg-opacity-50 rounded-md shadow-md mb-0`}>
+                  <div
+                    className={`${
+                      !selectedQueue?.id && "opacity-40"
+                    } bg-opacity-50 rounded-md shadow-md mb-0 mt-2`}
+                  >
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0">
@@ -1125,7 +1172,7 @@ export default function Transaction() {
                     : "bg-zinc-50 text-rose-400"
                 }`}
               ></i>
-              <div className="flex justify-between text-sm mt-1">
+              <div className="flex justify-between text-sm mt-1 mb-2">
                 <p>Total {numeral(total).format()}</p>
                 <p
                   className={`text-right ${
@@ -1135,7 +1182,8 @@ export default function Transaction() {
                   Change {numeral(transaction.payment - total).format()}
                 </p>
               </div>
-              <div className="grid grid-flow-col gap-2 col-span-3 mt-4">
+              <small className="text-zinc-400">Suggestion</small>
+              <div className="grid grid-flow-col gap-2 col-span-3 mt-1 mb-2">
                 <div
                   className={`btn btn-ghost bg-slate-100 text-left rounded-md cursor-pointer`}
                   onClick={() => {
@@ -1171,7 +1219,7 @@ export default function Transaction() {
                 })}
               </div>
             </div>
-            <div className="divider mb-2"></div>
+            <div className="border-t border-dashed my-2"></div>
           </div>
         </div>
 

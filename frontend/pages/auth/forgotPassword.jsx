@@ -100,7 +100,7 @@ export default function ForgotPassword() {
                       <Link href={"/auth/login"}>
                         <span className="text-emerald-200">
                           {" "}
-                          Back to Login page
+                          back to Login page
                         </span>
                       </Link>
                     </div>
