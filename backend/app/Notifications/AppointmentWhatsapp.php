@@ -8,7 +8,7 @@ use App\Events\WhatsappChannel;
 use App\Events\Messages\WhatsappMessages;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OTPWhatsapp extends Notification
+class AppointmentWhatsapp extends Notification
 {
     use Queueable;
 
@@ -44,6 +44,18 @@ class OTPWhatsapp extends Notification
     public function WhatsappMessage($notifiable)
     {   
         return (new WhatsappMessages())
-        ->WhatsappContent("Use this {$this->otp_verification} code for verify your account, don't give it to other, the estimation time for code is 5 minutes.");
+            ->WhatsappContent("
+            Selamat Pagi Bpk / Ibu {{1}},
+            Kami ingin mengkonfirmasi janji untuk {{2}},
+            di {{3}} {{4}} Pada hari {{5}}, {{6}}.
+            Pukul {{7}}.
+
+            Mohon untuk datang tepat pada waktu yang sudah ditentukan.
+            Untuk informasi lebih lanjut silahkan menghubungi kami di No. Whatsapp
+            {{8}}
+
+            Salam sehat,
+            {{9}}.
+            ");
     }
 }

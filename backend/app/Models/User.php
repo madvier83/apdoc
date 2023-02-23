@@ -41,6 +41,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'otp_verification',
+        'password_resets_token'
     ];
 
     /**
