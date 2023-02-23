@@ -415,7 +415,7 @@ export default function Transaction() {
     const newSuggest = [];
 
     let cash = total;
-    const fraction = [10000, 20000, 50000, 100000];
+    const fraction = [50000, 100000];
     do {
       fraction.push(fraction[fraction.length - 1] + 50000);
     } while (fraction[fraction.length - 1] < 5000000);
@@ -431,8 +431,51 @@ export default function Transaction() {
         obj > cash &&
         newSuggest.push(obj)
     );
+    if (
+      newSuggest.length < 3 &&
+      cash % 10000 != 0 &&
+      (cash - (cash % 10000) + 10000) % 50000 != 0
+    ) {
+      newSuggest.unshift(cash - (cash % 10000) + 10000);
+    }
     setSuggest(newSuggest);
+    console.log(newSuggest);
   }
+
+  // function suggestCash() {
+  //   const newSuggest = [];
+
+  //   let cash = total;
+  //   const fraction = [50000, 100000];
+  //   do {
+  //     fraction.push(fraction[fraction.length - 1] + 50000);
+  //   } while (fraction[fraction.length - 1] < 1000000);
+
+  //   let limit = 50000;
+  //   if (cash <= 50000) limit = 100000;
+  //   if (cash >= 100000 && cash % 100000 <= 50000) limit = 100000;
+  //   if (cash % 100000 == 0) limit = 0;
+
+  //   if (
+  //     cash - (cash % 10000) + 10000 != 50000 &&
+  //     cash - (cash % 10000) + 10000 != 100000 &&
+  //     cash % 10000 != 0 &&
+  //     cash % 50000 != 0 &&
+  //     cash % 100000 != 0 &&
+  //     newSuggest.length < 2
+  //   ) {
+  //     newSuggest.unshift(cash - (cash % 10000) + 10000);
+  //   }
+
+  //   fraction.map((obj) => {
+  //     newSuggest.length < 3 &&
+  //       obj - cash < limit &&
+  //       obj > cash &&
+  //       newSuggest.push(obj);
+  //   });
+
+  //   setSuggest(newSuggest);
+  // }
 
   useEffect(() => {
     getQueues();
@@ -482,7 +525,7 @@ export default function Transaction() {
       <DashboardLayout title="Transaction">
         <div className="mt-6">
           <div
-            className={`relative max-w-6xl min-w-0 md:min-w-[720px] bg-gray-900 p-8 rounded-b-md rounded-t`}
+            className={`relative max-w-7xl min-w-0 md:min-w-[720px] bg-gray-900 p-6 rounded-md`}
           >
             <div
               ref={listRef}
@@ -501,7 +544,7 @@ export default function Transaction() {
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0 pt-0">
-                          <span className="label-text text-white ">
+                          <span className="label-text text-white">
                             Patients
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
@@ -522,9 +565,9 @@ export default function Transaction() {
                               )[0]
                             );
                           }}
-                          className="input py-4 h-full input-bordered without-ring input-primary border-slate-300 w-full"
+                          className={`input py-4 h-full without-ring text-white ${selectedQueue?.id ? "bg-indigo-600" : "bg-slate-800" } w-full`}
                         >
-                          <option value={dummyQueue.id}>Select</option>
+                          <option value={dummyQueue.id}>Select patient</option>
                           {queues?.map((obj) => {
                             return (
                               <option key={obj.id} value={obj.id}>
@@ -536,7 +579,11 @@ export default function Transaction() {
                       </div>
                     </div>
                   </div>
-                  <div className={` bg-opacity-50 rounded-md shadow-md mb-0`}>
+                  <div
+                    className={`${
+                      !selectedQueue?.id && "opacity-50"
+                    } bg-opacity-50 rounded-md shadow-md mb-0 mt-2`}
+                  >
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0">
@@ -548,12 +595,12 @@ export default function Transaction() {
                           </span>
                         </label>
                       </div>
-                      <div className="bg-white rounded-md">
+                      <div className="bg-slate-800 rounded-md">
                         <div
                           tabIndex={0}
-                          className="collapse p-0 m-0 rounded-md bg-white focus:bg-emerald-50 group"
+                          className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
                         >
-                          <div className="collapse-title font-semibold capitalize text-sm group-focus:text-emerald-500 text-zinc-500 flex items-center gap-4">
+                          <div className="collapse-title font-semibold capitalize text-sm group-focus:text-indigo-400 text-zinc-300 flex items-center gap-4">
                             <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
                             <p>Promotions</p>
                           </div>
@@ -578,15 +625,15 @@ export default function Transaction() {
                           </div>
                         </div>
                       </div>
-                      <div className="bg-white rounded-md mt-4 min-h-[58vh]">
+                      <div className="bg-slate-800 rounded-md mt-4 min-h-[58vh]">
                         {category?.map((obj, index) => {
                           return (
                             <div
                               key={obj.id}
                               tabIndex={index}
-                              className="collapse p-0 m-0 rounded-md bg-white focus:bg-emerald-50 group"
+                              className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
                             >
-                              <div className="collapse-title font-semibold capitalize text-sm group-focus:text-emerald-500 text-zinc-500 flex items-center gap-4">
+                              <div className="collapse-title font-semibold capitalize text-sm group-focus:text-indigo-400 text-zinc-300 flex items-center gap-4">
                                 <i className="fas fa-caret-down group-focus:rotate-180 duration-500"></i>
                                 <span>{obj.name}</span>
                               </div>
@@ -606,7 +653,7 @@ export default function Transaction() {
                                   );
                                 })}
                                 {obj.items?.length <= 0 && (
-                                  <div className="btn btn-disabled bg-zinc-200 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                                  <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
                                     No Item
                                   </div>
                                 )}
@@ -636,9 +683,9 @@ export default function Transaction() {
                         </div>
 
                         {selectedQueue?.patient?.gender == "male" ? (
-                          <i className="fas fa-mars z-10 absolute -right-2 text-sm group-focus:text-emerald-500 w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
+                          <i className="fas fa-mars z-10 absolute -right-2 text-sm group-focus:text-primary w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
                         ) : (
-                          <i className="fas fa-venus z-10 absolute -right-2 text-sm group-focus:text-emerald-500 w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
+                          <i className="fas fa-venus z-10 absolute -right-2 text-sm group-focus:text-primary w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
                         )}
                       </div> */}
                       <div className="w-full">
@@ -1125,7 +1172,7 @@ export default function Transaction() {
                     : "bg-zinc-50 text-rose-400"
                 }`}
               ></i>
-              <div className="flex justify-between text-sm mt-1">
+              <div className="flex justify-between text-sm mt-1 mb-2">
                 <p>Total {numeral(total).format()}</p>
                 <p
                   className={`text-right ${
@@ -1135,7 +1182,8 @@ export default function Transaction() {
                   Change {numeral(transaction.payment - total).format()}
                 </p>
               </div>
-              <div className="grid grid-flow-col gap-2 col-span-3 mt-4">
+              <small className="text-zinc-400">Suggestion</small>
+              <div className="grid grid-flow-col gap-2 col-span-3 mt-1 mb-2">
                 <div
                   className={`btn btn-ghost bg-slate-100 text-left rounded-md cursor-pointer`}
                   onClick={() => {
@@ -1171,7 +1219,7 @@ export default function Transaction() {
                 })}
               </div>
             </div>
-            <div className="divider mb-2"></div>
+            <div className="border-t border-dashed my-2"></div>
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 export default function ForgotPassword() {
   const router = useRouter();
 
+  const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,13 +18,22 @@ export default function ForgotPassword() {
   async function changePassword(e) {
     e.preventDefault();
     setError("")
+    if(!token) {
+      setError("Invalid password reset token")
+      return;
+    }
     if(password != confirmPassword) {
       setError("Password doesn't match")
+      return;
+    }
+    if(!password) {
+      setError("Password required")
       return;
     }
     setIsLoading(true);
     try {
       const data = {
+        token,
         email,
         password,
         confirmPassword,
@@ -40,6 +50,7 @@ export default function ForgotPassword() {
   useEffect(() => {
     if (!router.isReady) return;
     setEmail(router.query.email);
+    setToken(router.query.token);
   }, [router.isReady]);
   return (
     <>

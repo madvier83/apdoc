@@ -231,7 +231,7 @@ export default function Item() {
                         <span>Rp. {numeral(obj.sell_price).format("0,0")}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category?.name}</span>
+                        <span>{obj.category_item?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span>{obj.distributor}</span>

@@ -13,6 +13,7 @@ import moment from "moment";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 import axios from "../api/axios";
+import Link from "next/link";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -27,6 +28,7 @@ export default function Queue() {
 
   // toggle state
   const [isAddService, setIsAddService] = useState(false);
+  const [addServiceError, setAddServiceError] = useState("");
   const [isRegular, setIsRegular] = useState(true);
 
   // open service form ref
@@ -217,6 +219,7 @@ export default function Queue() {
       setServiceForm(initialServiceForm);
     } catch (err) {
       console.error(err);
+      setAddServiceError(err.response?.data?.message)
     }
   }
   async function cancelService(id) {
@@ -267,8 +270,11 @@ export default function Queue() {
   useEffect(() => {
     setIsAddService(false)
   }, [selectedQueue])
-  // console.log(selectedQueue)
-  // console.log(patients);
+
+  useEffect(() => {
+    setAddServiceError("")
+    setServiceForm(initialServiceForm)
+  }, [isAddService])
 
   return (
     <>
@@ -306,7 +312,7 @@ export default function Queue() {
             </span>
           </div>
           <div
-            className={`relative max-w-6xl min-w-0 md:min-w-[720px] bg-gray-900 p-8 rounded-b-md rounded-r-md ${
+            className={`relative max-w-7xl min-w-0 md:min-w-[720px] bg-gray-900 p-6 rounded-b-md rounded-r-md ${
               !isRegular && "rounded-l-md"
             }`}
           >
@@ -542,7 +548,7 @@ export default function Queue() {
                           required
                           className="input input-bordered without-ring input-primary border-slate-300 w-full"
                         >
-                          <option value="">Unasigned</option>
+                          <option value="">Select service</option>
                           {services?.map((obj) => {
                             return (
                               <option key={obj.id} value={obj.id}>
@@ -574,19 +580,22 @@ export default function Queue() {
                             );
                           })}
                         </select>
+                        <p className="text-rose-400 text-sm mt-2">
+                          {addServiceError}
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   {!isAddService ? (
                     <div className="flex gap-2 mt-6 items-end">
-                      <button className="btn btn-success bg-success text-white w-1/2">
+                      <a href={`https://wa.me/${selectedQueue.patient?.phone.replace(/\D/g,'')}`} target="_blank" className="btn btn-success bg-success text-white w-1/2">
                         Contact{" "}
                         <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
-                      </button>
-                      <button className="btn btn-primary w-1/2">
+                      </a>
+                      <Link href={"/dashboard/transaction"} className="btn btn-primary w-1/2">
                         Checkout <i className="fas fa-check ml-2"></i>
-                      </button>
+                      </Link>
                     </div>
                   ) : (
                     <div className="flex gap-2 mt-6 items-end">
