@@ -87,6 +87,12 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
 	// RECEPTIONIST
 
+	$router->get('/v1/appointments', 'AppointmentController@index');
+	$router->get('/v1/appointment/{id}', 'AppointmentController@index');
+	$router->put('/v1/appointment/{id}', 'AppointmentController@store');
+	$router->post('/v1/appointment', 'AppointmentController@store');
+	$router->delete('/v1/appointment/{id}','AppointmentController@destroy');
+
 	$router->get('/v1/patients', 'PatientController@index');
 	$router->get('/v1/patient/{id}', 'PatientController@show');
 	$router->post('/v1/patient', 'PatientController@create');
