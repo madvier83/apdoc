@@ -14,6 +14,7 @@ import moment from "moment";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import axios from "../api/axios";
 import Link from "next/link";
+import ModalDelete from "../../components/Modals/ModalDelete";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -409,7 +410,7 @@ export default function Queue() {
                                       {obj.queue_number}
                                     </h1>
                                   </div>
-                                  {obj.patient.gender == "male" ? (
+                                  {obj.patient?.gender == "male" ? (
                                     <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
                                   ) : (
                                     <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
@@ -417,10 +418,10 @@ export default function Queue() {
                                 </div>
                                 <div className="">
                                   <h2 className="card-title text-base lg:text-lg text-primary-content">
-                                    {obj.patient.name}
+                                    {obj.patient?.name}
                                   </h2>
                                   <small className="text-zinc-400">
-                                    NIK: {obj.patient.nik} |{" "}
+                                    NIK: {obj.patient?.nik} |{" "}
                                     {obj.status_id == 1 && "Active"}
                                     {obj.status_id == 2 && "Done"}
                                     {obj.status_id == 3 && "Canceled"}
@@ -433,12 +434,12 @@ export default function Queue() {
                                       : "hidden"
                                   }`}
                                 >
-                                  <div
-                                    onClick={() => cancelQueue(obj.id)}
+                                  <label
                                     className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
+                                    htmlFor={obj.id}
                                   >
                                     Cancel <i className="fas fa-trash ml-2"></i>
-                                  </div>
+                                  </label>
                                 </div>
                               </div>
                             </div>
@@ -462,7 +463,7 @@ export default function Queue() {
                               <div className="flex items-center">
                                 <div className="">
                                   <h2 className="card-title text-base lg:text-lg text-primary-content">
-                                    {obj.patient.name}
+                                    {obj.patient?.name}
                                   </h2>
                                   <small className="text-zinc-400">
                                     {moment(obj.appointment_date).format(
@@ -804,6 +805,14 @@ export default function Queue() {
           </div>
         </div>
       </DashboardLayout>
+
+      {queues?.map((obj) => (
+        <ModalDelete
+          id={obj.id}
+          callback={() => cancelQueue(obj.id)}
+          title={`Cancel queue ${obj.queue_number}?`}
+        ></ModalDelete>
+      ))}
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">

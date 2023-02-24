@@ -28,7 +28,7 @@ export default function Verify() {
   const [otpError, setOtpError] = useState("");
 
   const initialVerifyForm = {
-    code: "+62",
+    code: "62",
     phone: "",
     fullPhone: "",
     otp_1: "",
@@ -183,14 +183,14 @@ export default function Verify() {
                             className="input mr-1 w-24 px-3"
                           >
                             {/* <option value="-">-</option> */}
-                            <option value="+62">+62</option>
+                            <option value="62">+62</option>
                           </select>
                           <input
                             name="phone"
                             value={verifyForm?.phone}
                             onChange={(e) => handleVerifyInput(e)}
                             required
-                            type="text"
+                            type="number"
                             className={`input w-full ${
                               verifyFormError ? "border-rose-500" : null
                             }`}

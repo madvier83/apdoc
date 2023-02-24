@@ -6,6 +6,7 @@ import numeral from "numeral";
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
+import ModalDelete from "../../components/Modals/ModalDelete";
 
 export default function Service() {
   const token = getCookies("token");
@@ -224,14 +225,14 @@ export default function Service() {
                           className="tooltip tooltip-left"
                           data-tip="Delete"
                         >
-                          <button
+                          <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            onClick={() => deleteService(obj.id)}
+                            htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
-                          </button>
+                          </label>
                         </div>
+                      <ModalDelete id={obj.id} callback={() => deleteService(obj.id)} title={`Delete service?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -268,7 +269,7 @@ export default function Service() {
                 <span className="label-text">Price</span>
               </label>
               <input
-                type="text"
+                type="number"
                 name="price"
                 value={addForm.price}
                 onChange={(e) => handleAddInput(e)}
@@ -342,7 +343,7 @@ export default function Service() {
                 <span className="label-text">Price</span>
               </label>
               <input
-                type="text"
+                type="number"
                 name="price"
                 value={putForm.price}
                 onChange={(e) => handlePutInput(e)}

@@ -5,6 +5,7 @@ import moment from "moment/moment";
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
+import ModalDelete from "../../components/Modals/ModalDelete";
 import numeral from "numeral";
 
 export default function Appointment() {
@@ -215,26 +216,30 @@ export default function Appointment() {
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <i
                           className={`text-md mr-2 ${
-                            obj.patient.gender == "male"
+                            obj.patient?.gender == "male"
                               ? "text-blue-400 fas fa-mars"
                               : "text-pink-400 fas fa-venus"
                           }`}
                         ></i>{" "}
-                        <span className={"font-bold"}>
-                          {obj.patient.name}
-                        </span>
+                        <span className={"font-bold"}>{obj.patient?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span>{obj.description.slice(0, 40)} ...</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="ml-2">{moment(obj.appointment_date).fromNow()}</span>
+                        <span className="ml-2">
+                          {moment(obj.appointment_date).fromNow()}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{moment(obj.appointment_date).format(('DD MMM YYYY'))}</span>
+                        <span>
+                          {moment(obj.appointment_date).format("DD MMM YYYY")}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{moment(obj.appointment_date).format(('h:mm A'))}</span>
+                        <span>
+                          {moment(obj.appointment_date).format("h:mm A")}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
@@ -245,7 +250,7 @@ export default function Appointment() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                        <span className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -257,16 +262,23 @@ export default function Appointment() {
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
-                          <button
+                        </span>
+                        <span
+                          className="tooltip tooltip-left"
+                          data-tip="Delete"
+                        >
+                          <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            onClick={() => deleteItem(obj.id)}
+                            htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
+                          </label>
+                        </span>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteItem(obj.id)}
+                          title={`Delete appointment?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
