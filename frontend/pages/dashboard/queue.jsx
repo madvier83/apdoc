@@ -128,7 +128,7 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
   async function getQueues() {
-    setQueuesLoading(true)
+    setQueuesLoading(true);
     try {
       const response = await axios.get(`queues`, {
         headers: {
@@ -137,18 +137,45 @@ export default function Queue() {
       });
       // console.log(response.data);
       setQueues(response.data);
-      let isFound = false;
-      response.data.map((obj) => {
-        if (obj.id == selectedQueue.id) {
-          setSelectedQueue(obj);
-          isFound = true;
+
+      if (isRegular) {
+        let isFound = false;
+        response.data.map((obj) => {
+          if (obj.id == selectedQueue.id) {
+            setSelectedQueue(obj);
+            isFound = true;
+          }
+        });
+        if (!isFound) {
+          setSelectedQueue(response.data[0]);
         }
-      });
-      if (!isFound) {
-        setSelectedQueue(response.data[0]);
+        response.data.length <= 0 && setSelectedQueue({ dummy });
       }
-      response.data.length <= 0 && setSelectedQueue({ dummy });
-      setQueuesLoading(false)
+      setQueuesLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const [appointment, setAppointment] = useState();
+  const [appointmentLoading, setAppointmentLoading] = useState(true);
+  async function getAppointment() {
+    try {
+      const response = await axios.get("appointments", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setAppointment(response.data.data);
+      setAppointmentLoading(false);
+
+      if (!isRegular) {
+        if (response.data?.data?.length > 0) {
+          setSelectedQueue(response.data.data[0]);
+        } else {
+          setSelectedQueue(dummy);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -188,6 +215,7 @@ export default function Queue() {
     getQueues();
     getServices();
     getEmployees();
+    getAppointment();
   }, []);
 
   const initialServiceForm = {
@@ -279,6 +307,18 @@ export default function Queue() {
     setServiceForm(initialServiceForm);
   }, [isAddService]);
 
+  useEffect(() => {
+    setIsAddService(false);
+    if (!isRegular && appointment?.length > 0) {
+      setSelectedQueue(appointment[0]);
+    } else {
+      setSelectedQueue(dummy);
+    }
+    if (isRegular && queues?.length > 0) {
+      setSelectedQueue(queues[0]);
+    }
+  }, [isRegular]);
+
   return (
     <>
       <DashboardLayout title="Queue List">
@@ -319,7 +359,10 @@ export default function Queue() {
                   )} */}
                 </span>
                 <span
-                  onClick={() => getQueues()}
+                  onClick={() => {
+                    getQueues();
+                    getAppointment();
+                  }}
                   className={`relative text-sm pt-6 ml-auto rounded-t-md px-6 bg-gray-900 text-white cursor-pointer`}
                 >
                   <i
@@ -340,71 +383,111 @@ export default function Queue() {
                     {...servicesEvents}
                     className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                   >
-                    {queues?.map((obj) => {
-                      return (
-                        <div
-                          key={obj.id}
-                          onClick={() => setSelectedQueue(obj)}
-                          className={`card cursor-pointer overflow-hidden ${
-                            obj.id == selectedQueue.id
-                              ? "bg-indigo-900 bg-opacity-50"
-                              : "bg-slate-800"
-                          } bg-opacity-70 rounded-md shadow-md mb-4`}
-                        >
-                          <div className="card-body">
-                            <div className="flex items-center">
-                              <div className="avatar mr-6">
-                                <div
-                                  className={`w-16 mask mask-hexagon shadow-md ${
-                                    obj.id == selectedQueue.id
-                                      ? "bg-indigo-700"
-                                      : "bg-indigo-900"
-                                  } flex items-center justify-center`}
-                                >
-                                  <h1 className="text-xl font-semibold text-white mb-1">
-                                    {obj.queue_number}
-                                  </h1>
+                    {isRegular &&
+                      queues?.map((obj) => {
+                        return (
+                          <div
+                            key={obj.id}
+                            onClick={() => setSelectedQueue(obj)}
+                            className={`card cursor-pointer overflow-hidden ${
+                              obj.id == selectedQueue.id
+                                ? "bg-indigo-900 bg-opacity-50"
+                                : "bg-slate-800"
+                            } bg-opacity-70 rounded-md shadow-md mb-4`}
+                          >
+                            <div className="card-body">
+                              <div className="flex items-center">
+                                <div className="avatar mr-6">
+                                  <div
+                                    className={`w-16 mask mask-hexagon shadow-md ${
+                                      obj.id == selectedQueue.id
+                                        ? "bg-indigo-700"
+                                        : "bg-indigo-900"
+                                    } flex items-center justify-center`}
+                                  >
+                                    <h1 className="text-xl font-semibold text-white mb-1">
+                                      {obj.queue_number}
+                                    </h1>
+                                  </div>
+                                  {obj.patient.gender == "male" ? (
+                                    <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
+                                  ) : (
+                                    <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
+                                  )}
                                 </div>
-                                {obj.patient.gender == "male" ? (
-                                  <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
-                                ) : (
-                                  <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
-                                )}
-                              </div>
-                              <div className="">
-                                <h2 className="card-title text-base lg:text-lg text-primary-content">
-                                  {obj.patient.name}
-                                </h2>
-                                <small className="text-zinc-400">
-                                  NIK: {obj.patient.nik} |{" "}
-                                  {obj.status_id == 1 && "Active"}
-                                  {obj.status_id == 2 && "Done"}
-                                  {obj.status_id == 3 && "Canceled"}
-                                </small>
-                              </div>
-                              <div
-                                className={`ml-auto ${
-                                  obj.id == selectedQueue.id
-                                    ? "block"
-                                    : "hidden"
-                                }`}
-                              >
+                                <div className="">
+                                  <h2 className="card-title text-base lg:text-lg text-primary-content">
+                                    {obj.patient.name}
+                                  </h2>
+                                  <small className="text-zinc-400">
+                                    NIK: {obj.patient.nik} |{" "}
+                                    {obj.status_id == 1 && "Active"}
+                                    {obj.status_id == 2 && "Done"}
+                                    {obj.status_id == 3 && "Canceled"}
+                                  </small>
+                                </div>
                                 <div
-                                  onClick={() => cancelQueue(obj.id)}
-                                  className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
+                                  className={`ml-auto ${
+                                    obj.id == selectedQueue.id
+                                      ? "block"
+                                      : "hidden"
+                                  }`}
                                 >
-                                  Cancel <i className="fas fa-trash ml-2"></i>
+                                  <div
+                                    onClick={() => cancelQueue(obj.id)}
+                                    className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
+                                  >
+                                    Cancel <i className="fas fa-trash ml-2"></i>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+
+                    {!isRegular &&
+                      appointment?.map((obj) => {
+                        return (
+                          <div
+                            key={obj.id}
+                            onClick={() => setSelectedQueue(obj)}
+                            className={`card cursor-pointer overflow-hidden ${
+                              obj.id == selectedQueue.id
+                                ? "bg-indigo-900 bg-opacity-50"
+                                : "bg-slate-800"
+                            } bg-opacity-70 rounded-md shadow-md mb-4`}
+                          >
+                            <div className="card-body">
+                              <div className="flex items-center">
+                                <div className="">
+                                  <h2 className="card-title text-base lg:text-lg text-primary-content">
+                                    {obj.patient.name}
+                                  </h2>
+                                  <small className="text-zinc-400">
+                                    {moment(obj.appointment_date).format(
+                                      "DD MMM YYYY, h:mm A"
+                                    )}
+                                  </small>
+                                </div>
+                                <div
+                                  className={`ml-auto ${
+                                    obj.id == selectedQueue.id
+                                      ? "block"
+                                      : "hidden"
+                                  }`}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     <label
                       htmlFor="addQueueModal"
                       onClick={getPatients}
-                      className="card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4"
+                      className={`card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4 ${
+                        !isRegular && "hidden"
+                      }`}
                     >
                       <div className="card-body">
                         <div className="flex items-center text-zinc-400">
@@ -415,6 +498,23 @@ export default function Queue() {
                         </div>
                       </div>
                     </label>
+                    {appointment?.length <= 0 && (
+                      <label
+                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
+                          isRegular && "hidden"
+                        }`}
+                      >
+                        <div className="card-body">
+                          <div className="flex items-center text-zinc-400">
+                            <div className="mx-auto">
+                              <span className="font-semibold">
+                                No Appointment
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    )}
                   </div>
                 </div>
               </div>
@@ -464,7 +564,7 @@ export default function Queue() {
                             {selectedQueue?.patient?.birth_place +
                               ", " +
                               moment(selectedQueue?.patient?.birth_date).format(
-                                "MMMM Do YYYY"
+                                "DD MMMM YYYY"
                               )}
                           </span>
                         </div>
@@ -475,76 +575,102 @@ export default function Queue() {
                             {selectedQueue?.patient?.address}
                           </span>
                         </div>
-                        <div className="mt-4">
-                          <small className="text-zinc-400">Services</small>{" "}
-                          <br />
-                        </div>
-                        <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[24vh]">
-                          <div
-                            ref={queuesRef}
-                            {...queuesEvents}
-                            className="overflow-y-scroll"
-                          >
-                            {selectedQueue?.queue_details?.map((obj) => {
-                              return (
-                                <div
-                                  key={obj.id}
-                                  className={`flex justify-between overflow-hidden items-center px-1`}
-                                >
+                        {!isRegular && (
+                          <div className="">
+                            <div className="mt-4">
+                              <small className="text-zinc-400">
+                                Appointment date
+                              </small>{" "}
+                              <br />
+                              <span className="font-sm text-zinc-800 line-clamp-2">
+                                {moment(selectedQueue?.appointment_date).format(
+                                  "DD MMM YYYY, h:mm A"
+                                )}
+                              </span>
+                            </div>
+                            <div className="mt-4">
+                              <small className="text-zinc-400">
+                                Description
+                              </small>{" "}
+                              <br />
+                              <span className="font-sm text-zinc-800 line-clamp-2">
+                                {selectedQueue?.description}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        <div className={`${!isRegular && "hidden"}`}>
+                          <div className="mt-4">
+                            <small className="text-zinc-400">Services</small>{" "}
+                            <br />
+                          </div>
+                          <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[24vh]">
+                            <div
+                              ref={queuesRef}
+                              {...queuesEvents}
+                              className="overflow-y-scroll"
+                            >
+                              {selectedQueue?.queue_details?.map((obj) => {
+                                return (
                                   <div
-                                    className={`text-sm breadcrumbs font-semibold text-zinc-800`}
+                                    key={obj.id}
+                                    className={`flex justify-between overflow-hidden items-center px-1`}
                                   >
-                                    <ul>
-                                      <li
-                                        className={`max-w-36 overflow-hidden ${
-                                          obj.is_cancelled &&
-                                          "line-through text-rose-400"
-                                        }`}
-                                      >
-                                        <i className="fa-solid fa-kit-medical mr-2"></i>
-                                        <span className="truncate">
-                                          {obj.service.name}
-                                        </span>
-                                      </li>
-                                      <li
-                                        className={`max-w-36 overflow-hidden text-zinc-400 ${
-                                          obj.is_cancelled &&
-                                          "line-through text-rose-400"
-                                        }`}
-                                      >
-                                        <i className="fas fa-user-doctor mr-2"></i>
-                                        <span className="text-sm normal-case truncate">
-                                          {obj.employee.name}
-                                        </span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                  <div className="flex">
-                                    {/* {!obj.is_cancelled && (
+                                    <div
+                                      className={`text-sm breadcrumbs font-semibold text-zinc-800`}
+                                    >
+                                      <ul>
+                                        <li
+                                          className={`max-w-36 overflow-hidden ${
+                                            obj.is_cancelled &&
+                                            "line-through text-rose-400"
+                                          }`}
+                                        >
+                                          <i className="fa-solid fa-kit-medical mr-2"></i>
+                                          <span className="truncate">
+                                            {obj.service.name}
+                                          </span>
+                                        </li>
+                                        <li
+                                          className={`max-w-36 overflow-hidden text-zinc-400 ${
+                                            obj.is_cancelled &&
+                                            "line-through text-rose-400"
+                                          }`}
+                                        >
+                                          <i className="fas fa-user-doctor mr-2"></i>
+                                          <span className="text-sm normal-case truncate">
+                                            {obj.employee.name}
+                                          </span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div className="flex">
+                                      {/* {!obj.is_cancelled && (
                                         <div className="btn btn-ghost btn-sm px-2">
                                           <i className="fas fa-edit"></i>
                                         </div>
                                       )} */}
-                                    <div
-                                      onClick={() => cancelService(obj.id)}
-                                      className="btn btn-ghost btn-sm px-2"
-                                    >
-                                      {obj.is_cancelled ? (
-                                        <i className="fas fa-undo"></i>
-                                      ) : (
-                                        <i className="fas fa-trash"></i>
-                                      )}
+                                      <div
+                                        onClick={() => cancelService(obj.id)}
+                                        className="btn btn-ghost btn-sm px-2"
+                                      >
+                                        {obj.is_cancelled ? (
+                                          <i className="fas fa-undo"></i>
+                                        ) : (
+                                          <i className="fas fa-trash"></i>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            })}
-                            <div
-                              className="py-2 mt-1 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
-                              onClick={() => setIsAddService(true)}
-                            >
-                              <span>Add service</span>
-                              <i className="fas fa-add ml-2 font-thin"></i>
+                                );
+                              })}
+                              <div
+                                className="py-2 mt-1 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
+                                onClick={() => setIsAddService(true)}
+                              >
+                                <span>Add service</span>
+                                <i className="fas fa-add ml-2 font-thin"></i>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -610,7 +736,11 @@ export default function Queue() {
                 </div>
 
                 {!isAddService ? (
-                  <div className="flex gap-2 mt-6 items-end">
+                  <div
+                    className={`flex gap-2 mt-6 items-end  ${
+                      !isRegular && "hidden"
+                    }`}
+                  >
                     <a
                       href={`https://wa.me/${selectedQueue.patient?.phone.replace(
                         /\D/g,
@@ -624,7 +754,7 @@ export default function Queue() {
                     </a>
                     <Link
                       href={"/dashboard/transaction"}
-                      className="btn btn-primary w-1/2"
+                      className={`btn btn-primary w-1/2`}
                     >
                       Checkout <i className="fas fa-check ml-2"></i>
                     </Link>
@@ -757,7 +887,7 @@ export default function Queue() {
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                           <span className={"capitalize"}>
-                            {moment(obj.birth_date).format("MMM Do YYYY")} -{" "}
+                            {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
                             {obj.birth_place}
                           </span>
                         </td>

@@ -205,7 +205,7 @@ export default function Patients() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("MMM Do YYYY")} -{" "}
+                          {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
                           {obj.birth_place}
                         </span>
                       </td>

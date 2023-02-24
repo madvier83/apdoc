@@ -335,7 +335,7 @@ export default function Sidebar() {
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/appointment"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
