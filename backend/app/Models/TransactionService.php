@@ -15,4 +15,9 @@ class TransactionService extends Model
     {
         return $this->belongsTo(Transaction::class);
     }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

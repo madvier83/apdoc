@@ -11,6 +11,7 @@ use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +27,18 @@ class DatabaseSeeder extends Seeder
             DummySeeder::class,
             RoleSeeder::class,
             StatusSeeder::class,
+        ]);
+
+        User::create([
+            'email'             => 'cursor.id',
+            'password'          => app('hash')->make('Cursor123'),
+            'role_id'           => 1,
+            'phone'             => '628995754988',
+            'otp_verification'  => '552141',
+            'created_at_otp'    => Carbon::now(),
+            'expired_otp'       => Carbon::now(),
+            'phone_verified_at' => Carbon::now(),
+            'is_verified'       => 1
         ]);
 
         User::factory(5)->create();

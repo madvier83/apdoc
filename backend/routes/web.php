@@ -139,6 +139,8 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	
 	// CASHIER
 	
+	$router->get('/v1/transactions', 'TransactionController@index');
 	$router->post('/v1/transaction', 'TransactionController@create');
+	$router->put('/v1/transaction/{id}', 'TransactionController@update');
 	
 // });

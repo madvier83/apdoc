@@ -17,7 +17,8 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        //
+        $transaction = Transaction::with(['transactionItems', 'transactionItems.item', 'transactionServices', 'transactionServices.service'])->get();
+        return response()->json($transaction);
     }
 
     public function code()
@@ -146,7 +147,22 @@ class TransactionController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
+        $transaction = Transaction::find($id);
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaction not found!'], 404);
+        }
+
+        $data = [
+            'is_cancelled' => ($transaction->is_cancelled == 0) ? 1 : 0
+        ];
+
+        $transaction->fill($data);
+
+        $transaction->save();
+        TransactionItem::where('transaction_id', $id)->update($data);
+        TransactionService::where('transaction_id', $id)->update($data);
+        return response()->json(['message' => 'Service updated successfully!']);
     }
 
     public function destroy($id)
