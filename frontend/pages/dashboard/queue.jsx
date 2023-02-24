@@ -385,65 +385,73 @@ export default function Queue() {
                     className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                   >
                     {isRegular &&
-                      queues?.map((obj) => {
+                      queues?.map((obj, index) => {
                         return (
-                          <div
-                            key={obj.id}
-                            onClick={() => setSelectedQueue(obj)}
-                            className={`card cursor-pointer overflow-hidden ${
-                              obj.id == selectedQueue.id
-                                ? "bg-indigo-900 bg-opacity-50"
-                                : "bg-slate-800"
-                            } bg-opacity-70 rounded-md shadow-md mb-4`}
-                          >
-                            <div className="card-body">
-                              <div className="flex items-center">
-                                <div className="avatar mr-6">
-                                  <div
-                                    className={`w-16 mask mask-hexagon shadow-md ${
-                                      obj.id == selectedQueue.id
-                                        ? "bg-indigo-700"
-                                        : "bg-indigo-900"
-                                    } flex items-center justify-center`}
-                                  >
-                                    <h1 className="text-xl font-semibold text-white mb-1">
-                                      {obj.queue_number}
-                                    </h1>
+                          <React.Fragment>
+                            <div
+                              key={obj.id}
+                              onClick={() => setSelectedQueue(obj)}
+                              className={`card cursor-pointer overflow-hidden ${
+                                obj.id == selectedQueue.id
+                                  ? "bg-indigo-900 bg-opacity-50"
+                                  : "bg-slate-800"
+                              } bg-opacity-70 rounded-md shadow-md mb-4`}
+                            >
+                              <div className="card-body">
+                                <div className="flex items-center">
+                                  <div className="avatar mr-6">
+                                    <div
+                                      className={`w-16 mask mask-hexagon shadow-md ${
+                                        obj.id == selectedQueue.id
+                                          ? "bg-indigo-700"
+                                          : "bg-indigo-900"
+                                      } flex items-center justify-center`}
+                                    >
+                                      <h1 className="text-xl font-semibold text-white mb-1">
+                                        {obj.queue_number}
+                                      </h1>
+                                    </div>
+                                    {obj.patient?.gender == "male" ? (
+                                      <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
+                                    ) : (
+                                      <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
+                                    )}
                                   </div>
-                                  {obj.patient?.gender == "male" ? (
-                                    <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
-                                  ) : (
-                                    <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
-                                  )}
-                                </div>
-                                <div className="">
-                                  <h2 className="card-title text-base lg:text-lg text-primary-content">
-                                    {obj.patient?.name}
-                                  </h2>
-                                  <small className="text-zinc-400">
-                                    NIK: {obj.patient?.nik} |{" "}
-                                    {obj.status_id == 1 && "Active"}
-                                    {obj.status_id == 2 && "Done"}
-                                    {obj.status_id == 3 && "Canceled"}
-                                  </small>
-                                </div>
-                                <div
-                                  className={`ml-auto ${
-                                    obj.id == selectedQueue.id
-                                      ? "block"
-                                      : "hidden"
-                                  }`}
-                                >
-                                  <label
-                                    className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
-                                    htmlFor={obj.id}
+                                  <div className="">
+                                    <h2 className="card-title text-base lg:text-lg text-primary-content">
+                                      {obj.patient?.name}
+                                    </h2>
+                                    <small className="text-zinc-400">
+                                      NIK: {obj.patient?.nik} |{" "}
+                                      {obj.status_id == 1 && "Active"}
+                                      {obj.status_id == 2 && "Done"}
+                                      {obj.status_id == 3 && "Canceled"}
+                                    </small>
+                                  </div>
+                                  <div
+                                    className={`ml-auto ${
+                                      obj.id == selectedQueue.id
+                                        ? "block"
+                                        : "hidden"
+                                    }`}
                                   >
-                                    Cancel <i className="fas fa-trash ml-2"></i>
-                                  </label>
+                                    <label
+                                      className="btn btn-ghost text-rose-400 bg-rose-900 bg-opacity-50"
+                                      htmlFor={obj.queue_number}
+                                    >
+                                      Cancel{" "}
+                                      <i className="fas fa-trash ml-2"></i>
+                                    </label>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                            <ModalDelete
+                              id={obj.queue_number}
+                              callback={() => cancelQueue(obj.id)}
+                              title={`Delete queue ${obj.queue_number}?`}
+                            ></ModalDelete>
+                          </React.Fragment>
                         );
                       })}
 
@@ -806,13 +814,13 @@ export default function Queue() {
         </div>
       </DashboardLayout>
 
-      {queues?.map((obj) => (
+      {/* {queues?.map((obj) => (
         <ModalDelete
-          id={obj.id}
+          id={"delete"+obj.id}
           callback={() => cancelQueue(obj.id)}
           title={`Delete queue ${obj.queue_number}?`}
         ></ModalDelete>
-      ))}
+      ))} */}
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">
