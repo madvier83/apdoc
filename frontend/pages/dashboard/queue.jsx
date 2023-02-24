@@ -810,7 +810,7 @@ export default function Queue() {
         <ModalDelete
           id={obj.id}
           callback={() => cancelQueue(obj.id)}
-          title={`Cancel queue ${obj.queue_number}?`}
+          title={`Delete queue ${obj.queue_number}?`}
         ></ModalDelete>
       ))}
       {/* Patients Modal */}
