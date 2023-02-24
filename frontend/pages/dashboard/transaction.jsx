@@ -105,7 +105,7 @@ export default function Transaction() {
       setQueuesLoading(false);
       response.data.length <= 0 && setSelectedQueue({ dummyQueue });
       response.data.map((obj) => {
-        if (obj.id == selectedQueue.id) {
+        if (obj?.id == selectedQueue.id) {
           setSelectedQueue(obj);
         }
       });
@@ -202,7 +202,7 @@ export default function Transaction() {
     let prevCart = cart.array;
     let newCart = [];
     let newItem = {
-      id: obj.id,
+      id: obj?.id,
       qty: 1,
       promotion_id: null,
 
@@ -215,7 +215,7 @@ export default function Transaction() {
     };
     let isNewItem = true;
     prevCart.map((item) => {
-      if (item.id == obj.id) {
+      if (item.id == obj?.id) {
         let oldItem;
         if (remove == true) {
           oldItem = {
@@ -247,7 +247,7 @@ export default function Transaction() {
   function addCartPromotion(obj) {
     let newSelectedCart = {
       ...selectedCart,
-      promotion_id: obj.id,
+      promotion_id: obj?.id,
 
       promotion: obj.discount,
       promotion_name: obj.name,
@@ -277,7 +277,7 @@ export default function Transaction() {
       discount: 0,
     };
     prevCart.map((item) => {
-      if (item.id == obj.id) {
+      if (item.id == obj?.id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -322,7 +322,7 @@ export default function Transaction() {
     let prevCart = serviceCart.array;
     let newCart = [];
     prevCart.map((obj) => {
-      if (obj.id == item.id) {
+      if (obj?.id == item.id) {
         newCart.push(newItem);
       } else {
         newCart.push(obj);
@@ -343,7 +343,7 @@ export default function Transaction() {
       discount: 0,
     };
     prevCart.map((item) => {
-      if (item.id == obj.id) {
+      if (item.id == obj?.id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -439,7 +439,7 @@ export default function Transaction() {
       newSuggest.unshift(cash - (cash % 10000) + 10000);
     }
     setSuggest(newSuggest);
-    console.log(newSuggest);
+    // console.log(newSuggest);
   }
 
   // function suggestCash() {
@@ -525,32 +525,40 @@ export default function Transaction() {
       <DashboardLayout title="Transaction">
         <div className="mt-6">
           <div
-            className={`relative max-w-7xl min-w-0 md:min-w-[720px] bg-gray-900 p-6 rounded-md`}
+            className={`relative max-w-7xl min-w-0 md:min-w-[720px] rounded-md`}
           >
             <div
               ref={listRef}
               className="flex flex-col-reverse md:flex-row gap-4"
               style={{ display: "block" }}
             >
-              <div className="h-[80vh] min-h-fit md:w-1/2">
+              <div className="h-[87.6vh] min-h-fit md:w-1/2 bg-gray-900 px-6 pt-6 rounded-md">
                 <div
                   ref={servicesRef}
                   {...servicesEvents}
                   className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                 >
                   <div
-                    className={`overflow-hidden bg-opacity-70 rounded-md shadow-md mb-0`}
+                    className={`overflow-hidden rounded-md shadow-md mb-0`}
                   >
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0 pt-0">
-                          <span className="label-text text-white">
+                          <span className="label-text text-white pl-1">
                             Patients
                           </span>
-                          <span className="label-text opacity-50 ml-auto text-white">
-                            {queues?.length} in queue{" "}
+                          <span className="label-text ml-auto flex items-center text-white">
+                            {queues?.length > 0 ? (
+                              <div className="opacity-80">
+                                <div className="badge badge-error font-semibold animate-pulse">
+                                  {queues?.length} in queue
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="opacity-20 mr-1">Empty</div>
+                            )}
                             <i
-                              className={`fas fa-refresh ml-1 ${
+                              className={`fas fa-refresh mx-1 ${
                                 queuesLoading && "animate-spin opacity-50"
                               }`}
                               onClick={() => getQueues()}
@@ -561,17 +569,19 @@ export default function Transaction() {
                           onChange={(e) => {
                             setSelectedQueue(
                               queues.filter(
-                                (obj) => e.target.value == obj.id
+                                (obj) => e.target.value == obj?.id
                               )[0]
                             );
                           }}
-                          className={`input py-4 h-full without-ring text-white ${selectedQueue?.id ? "bg-indigo-600" : "bg-slate-800" } w-full`}
+                          className={`input py-4 mt-1 h-full without-ring text-white ${
+                            selectedQueue?.id ? "bg-indigo-600" : "bg-slate-800"
+                          } w-full`}
                         >
                           <option value={dummyQueue.id}>Select patient</option>
                           {queues?.map((obj) => {
                             return (
-                              <option key={obj.id} value={obj.id}>
-                                {obj.patient.name}
+                              <option key={obj?.id} value={obj?.id}>
+                                {obj.queue_number} - {obj.patient.name}
                               </option>
                             );
                           })}
@@ -581,13 +591,13 @@ export default function Transaction() {
                   </div>
                   <div
                     className={`${
-                      !selectedQueue?.id && "opacity-50"
+                      !selectedQueue?.id && "opacity-30"
                     } bg-opacity-50 rounded-md shadow-md mb-0 mt-2`}
                   >
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0">
-                          <span className="label-text text-white ">
+                          <span className="label-text text-white pl-1">
                             Library
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
@@ -595,7 +605,7 @@ export default function Transaction() {
                           </span>
                         </label>
                       </div>
-                      <div className="bg-slate-800 rounded-md">
+                      <div className="bg-slate-800 rounded-md mt-1">
                         <div
                           tabIndex={0}
                           className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
@@ -609,7 +619,7 @@ export default function Transaction() {
                               return (
                                 <div
                                   className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                  key={obj.id}
+                                  key={obj?.id}
                                   onClick={() => setAllCartPromotion(obj)}
                                 >
                                   <span>{obj.name}</span>
@@ -629,7 +639,7 @@ export default function Transaction() {
                         {category?.map((obj, index) => {
                           return (
                             <div
-                              key={obj.id}
+                              key={obj?.id}
                               tabIndex={index}
                               className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
                             >
@@ -674,7 +684,7 @@ export default function Transaction() {
                   }`}
                 >
                   <div className="">
-                    <div className="flex items-center mb-4">
+                    <div className="flex items-center">
                       {/* <div className="avatar mr-6">
                         <div className="w-16 mask mask-hexagon shadow-md bg-primary flex items-center justify-center">
                           <h1 className="text-xl font-semibold text-white mb-1">
@@ -689,15 +699,16 @@ export default function Transaction() {
                         )}
                       </div> */}
                       <div className="w-full">
-                        <h2 className="card-title text-base lg:text-lg text-zinc-600 truncate">
+                        <h2 className="card-title text-base lg:text-2xl text-zinc-900 truncate">
                           {selectedQueue?.patient?.name}
                         </h2>
                         <small className="text-zinc-400">
-                          NIK: {selectedQueue?.patient?.nik} |{" "}
-                          {selectedQueue?.status_id == 1 && "Active"}
+                          NIK: {selectedQueue?.patient?.nik}
+                          {/* {selectedQueue?.status_id == 1 && "Active"}
                           {selectedQueue?.status_id == 2 && "Done"}
-                          {selectedQueue?.status_id == 3 && "Canceled"}
+                          {selectedQueue?.status_id == 3 && "Canceled"} */}
                         </small>
+                        <div className="border-t border-dashed mt-4"></div>
                       </div>
                     </div>
                     <div className="px-0" ref={infoRef}>
@@ -723,7 +734,7 @@ export default function Transaction() {
                                     <tbody>
                                       {serviceCart?.array?.map((obj) => {
                                         return (
-                                          <React.Fragment key={obj.id}>
+                                          <React.Fragment key={obj?.id}>
                                             <tr className="rounded-md transition-all duration-300">
                                               <td
                                                 className={`w-2/3 py-2 overflow-hidden`}
@@ -851,7 +862,7 @@ export default function Transaction() {
                                     <tbody>
                                       {cart?.array?.map((obj) => {
                                         return (
-                                          <React.Fragment key={obj.id}>
+                                          <React.Fragment key={obj?.id}>
                                             <tr className="rounded-md transition-all duration-300">
                                               <td
                                                 className={`w-2/3 py-2 overflow-hidden`}
@@ -870,7 +881,7 @@ export default function Transaction() {
                                                 className={`text-center w-16 overflow-hidden`}
                                               >
                                                 <div
-                                                  className={`grid grid-flow-col items-center group-[${obj.id}]:`}
+                                                  className={`grid grid-flow-col items-center group-[${obj?.id}]:`}
                                                 >
                                                   <button
                                                     onClick={() =>
@@ -1006,7 +1017,7 @@ export default function Transaction() {
                     selectedQueue?.id ? "hidden" : ""
                   }`}
                 >
-                  <div className="alert btn-primary rounded-md">
+                  <div className="alert py-4 btn-primary rounded-md">
                     <div>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1021,7 +1032,7 @@ export default function Transaction() {
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
-                      <span>Empty</span>
+                      <span>Select patient</span>
                     </div>
                   </div>
                 </div>
@@ -1050,7 +1061,7 @@ export default function Transaction() {
                   return (
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                      key={obj.id}
+                      key={obj?.id}
                       onClick={() => addCartPromotion(obj)}
                     >
                       <span>{obj.name}</span>
@@ -1099,7 +1110,7 @@ export default function Transaction() {
                   return (
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                      key={obj.id}
+                      key={obj?.id}
                       onClick={() =>
                         addServiceCartPromotion(obj, selectedServiceCart)
                       }
@@ -1156,8 +1167,10 @@ export default function Transaction() {
                     };
                   });
                 }}
-                className={`input input-bordered  w-full ${
-                  transaction.payment >= total
+                className={`input input-bordered w-full  ${
+                  transaction.payment_id != null && "border-zinc-400"
+                } ${
+                  transaction.payment >= total && transaction.payment_id == null
                     ? "border-emerald-400 bg-emerald-50"
                     : "border-rose-400 bg-zinc-50"
                 }`}
@@ -1225,18 +1238,18 @@ export default function Transaction() {
 
         {categoryPayments.map((obj) => {
           return (
-            <div className={`card`} key={obj.id}>
+            <div className={`card`} key={obj?.id}>
               <div className="card-body py-2">
                 <p className="font-semibold">{obj.name}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {obj.payments.map((obj) => {
                     return (
                       <div
-                        key={obj.id}
+                        key={obj?.id}
                         className={`btn text-left  ${
-                          transaction.payment_id != obj.id && "opacity-50"
+                          transaction.payment_id != obj?.id && "opacity-50"
                         } ${
-                          obj.id == transaction.payment_id
+                          obj?.id == transaction.payment_id
                             ? "btn-success text-zinc-800"
                             : "btn-ghost bg-slate-100"
                         }  rounded-md cursor-pointer`}
@@ -1244,7 +1257,7 @@ export default function Transaction() {
                           setTransaction((prev) => {
                             return {
                               ...prev,
-                              payment_id: obj.id,
+                              payment_id: obj?.id,
                               payment: total,
                             };
                           });
@@ -1252,7 +1265,7 @@ export default function Transaction() {
                       >
                         <div className="card-body px-4 py-2 flex flex-row justify-between items-center">
                           <p>{obj.name}</p>
-                          {transaction.payment_id == obj.id && (
+                          {transaction.payment_id == obj?.id && (
                             <i className="fas fa-check text-lg"></i>
                           )}
                         </div>

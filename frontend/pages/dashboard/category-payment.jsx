@@ -120,7 +120,7 @@ export default function CategoryPayment() {
       <DashboardLayout title="Category Payment">
         <div
           className={
-            "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded text-blueGray-700 bg-white"
+            "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
           }
         >
           <div className="rounded-t mb-0 px-4 py-4 border-0">
@@ -183,7 +183,7 @@ export default function CategoryPayment() {
                         <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                            {moment(obj.created_at).format("MMM Do YYYY")}
+                      {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}

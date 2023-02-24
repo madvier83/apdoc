@@ -10,10 +10,10 @@ import axios from "../../pages/api/axios";
 
 export default function Sidebar() {
   const router = useRouter();
-  const pwdRef = useRef()
+  const pwdRef = useRef();
 
   const token = getCookie("token");
-  const [user, setUser] = useState(decodeUser)
+  const [user, setUser] = useState(decodeUser);
   function decodeUser() {
     try {
       const payload = jwt_decode(token);
@@ -29,9 +29,9 @@ export default function Sidebar() {
         email: user?.email,
       });
       deleteCookie("token");
-      router.push("/auth/resetPassword")
+      router.push("/auth/resetPassword");
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
@@ -748,37 +748,6 @@ export default function Sidebar() {
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Change
                     Password
                   </label>
-                  <ModalBox id="modalPwd">
-                    <h3 className="font-bold text-lg mb-4 text-black">
-                      Change Password
-                    </h3>
-                      <input type="hidden" autoComplete="off" />
-                      <div className="form-control w-full">
-                        <label className="label">
-                          <span className="label-text">Email</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={user?.email}
-                          placeholder=""
-                          className="input text-zinc-700 input-bordered input-primary border-slate-300 w-full"
-                          disabled
-                        />
-                      </div>
-                      <div className="modal-action rounded-sm">
-                        <label
-                          htmlFor="modalPwd"
-                          ref={pwdRef}
-                          className="btn btn-ghost rounded-md"
-                        >
-                          Cancel
-                        </label>
-                        <button className="btn btn-primary rounded-md" onClick={sendChangePassword}>
-                          Send Email
-                        </button>
-                      </div>
-                  </ModalBox>
                 </li>
                 <li
                   className={`items-center ${
@@ -800,6 +769,39 @@ export default function Sidebar() {
           </div>
         </div>
       </nav>
+
+      <ModalBox id="modalPwd">
+        <h3 className="font-bold text-lg mb-4 text-black">Change Password</h3>
+        <input type="hidden" autoComplete="off" />
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text">Email</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={user?.email}
+            placeholder=""
+            className="input text-zinc-700 input-bordered input-primary border-slate-300 w-full"
+            disabled
+          />
+        </div>
+        <div className="modal-action rounded-sm">
+          <label
+            htmlFor="modalPwd"
+            ref={pwdRef}
+            className="btn btn-ghost text-black rounded-md"
+          >
+            Cancel
+          </label>
+          <button
+            className="btn btn-primary rounded-md"
+            onClick={sendChangePassword}
+          >
+            Send Email
+          </button>
+        </div>
+      </ModalBox>
     </>
   );
 }
