@@ -20,4 +20,9 @@ class TransactionService extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function promotion()
+    {
+        return $this->belongsTo(Promotion::class);
+    }
 }

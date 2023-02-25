@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
@@ -84,6 +84,18 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->post('/v1/payment', 'PaymentController@create');
 	$router->put('/v1/payment/{id}', 'PaymentController@update');
 	$router->delete('/v1/payment/{id}', 'PaymentController@destroy');
+
+	$router->get('/v1/category-outcomes', 'CategoryOutcomeController@index');
+	$router->get('/v1/category-outcome/{id}', 'CategoryOutcomeController@show');
+	$router->post('/v1/category-outcome', 'CategoryOutcomeController@create');
+	$router->put('/v1/category-outcome/{id}', 'CategoryOutcomeController@update');
+	$router->delete('/v1/category-outcome/{id}', 'CategoryOutcomeController@destroy');
+
+	$router->get('/v1/outcomes', 'OutcomeController@index');
+	$router->get('/v1/outcome/{id}', 'OutcomeController@show');
+	$router->post('/v1/outcome', 'OutcomeController@create');
+	$router->put('/v1/outcome/{id}', 'OutcomeController@update');
+	$router->delete('/v1/outcome/{id}', 'OutcomeController@destroy');
 
 	// RECEPTIONIST
 
@@ -142,5 +154,10 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->get('/v1/transactions', 'TransactionController@index');
 	$router->post('/v1/transaction', 'TransactionController@create');
 	$router->put('/v1/transaction/{id}', 'TransactionController@update');
+
+	// SETTING
 	
-// });
+	$router->get('/v1/setting/{id}', 'SettingController@show');
+	$router->put('/v1/setting/{id}', 'SettingController@update');
+	
+});

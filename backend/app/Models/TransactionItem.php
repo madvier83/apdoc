@@ -20,4 +20,9 @@ class TransactionItem extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function promotion()
+    {
+        return $this->belongsTo(Promotion::class);
+    }
 }

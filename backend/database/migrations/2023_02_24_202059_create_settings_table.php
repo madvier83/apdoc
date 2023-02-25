@@ -15,15 +15,14 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('logo');
-            $table->string('name');
-            $table->string('phone');
-            $table->longText('address');
-            $table->string('city');
-            $table->string('country');
-            $table->string('postal_code');
+            $table->string('logo')->nullable();
+            $table->string('name')->nullable();
+            $table->string('phone')->nullable();
+            $table->longText('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('postal_code')->nullable();
             $table->foreignId('clinic_id')->nullable();
-            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }

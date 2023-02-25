@@ -17,7 +17,7 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transaction = Transaction::with(['transactionItems', 'transactionItems.item', 'transactionServices', 'transactionServices.service'])->get();
+        $transaction = Transaction::with(['patient', 'payment', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->get();
         return response()->json($transaction);
     }
 
