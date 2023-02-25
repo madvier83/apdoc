@@ -182,7 +182,7 @@ export default function Diagnose() {
                 )}
                 {diagnosis?.map((obj, index) => {
                   return (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>

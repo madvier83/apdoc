@@ -28,7 +28,7 @@ export default function Verify() {
   const [otpError, setOtpError] = useState("");
 
   const initialVerifyForm = {
-    code: "62",
+    code: "+62",
     phone: "",
     fullPhone: "",
     otp_1: "",
@@ -82,6 +82,9 @@ export default function Verify() {
         setVerifyFormError(err.response?.data?.message);
       }
       if(err.response?.status == 500) {
+        setVerifyFormError(err.response?.data?.message);
+      }
+      if(err.response?.status == 429) {
         setVerifyFormError(err.response?.data?.message);
       }
     }
@@ -183,7 +186,7 @@ export default function Verify() {
                             className="input mr-1 w-24 px-3"
                           >
                             {/* <option value="-">-</option> */}
-                            <option value="62">+62</option>
+                            <option value="+62">+62</option>
                           </select>
                           <input
                             name="phone"

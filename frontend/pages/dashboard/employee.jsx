@@ -208,7 +208,7 @@ export default function Employee() {
                 )}
                 {employees?.map((obj, index) => {
                   return (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
@@ -216,14 +216,14 @@ export default function Employee() {
                         <span className={"font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <span className={"font-bold capitalize"}>
-                          <i
+                        <span className={" capitalize"}>
+                          {/* <i
                             className={`fas fa-circle mr-2 ${
                               obj.position?.name
                                 ? "text-emerald-400"
                                 : "text-orange-400"
                             }`}
-                          ></i>{" "}
+                          ></i>{" "} */}
                           {obj.position?.name ? obj.position.name : "unasigned"}
                         </span>
                       </td>

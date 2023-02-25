@@ -10,6 +10,7 @@ import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
 import { getCookies } from "cookies-next";
 import moment from "moment";
+import numeral from "numeral";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 import axios from "../api/axios";
@@ -613,7 +614,7 @@ export default function Queue() {
                             <small className="text-zinc-400">Services</small>{" "}
                             <br />
                           </div>
-                          <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[24vh]">
+                          <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[32vh]">
                             <div
                               ref={queuesRef}
                               {...queuesEvents}
@@ -709,7 +710,7 @@ export default function Queue() {
                         {services?.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
-                              {obj.name}
+                              {obj.name} - {numeral(obj.price).format("0,0")}
                             </option>
                           );
                         })}
@@ -888,11 +889,11 @@ export default function Queue() {
                   )}
                   {patients?.map((obj, index) => {
                     return (
-                      <tr key={obj.id}>
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
                           <span className={"ml-3 font-bold "}>{index + 1}</span>
                         </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <i
                             className={`text-md mr-2 ${
                               obj.gender == "male"
@@ -902,13 +903,13 @@ export default function Queue() {
                           ></i>{" "}
                           <span className={"font-bold"}>{obj.name}</span>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <span className={"capitalize"}>
                             {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
                             {obj.birth_place}
                           </span>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <a
                             href={`https://wa.me/${obj.phone.replace(
                               /\D/g,
@@ -921,13 +922,13 @@ export default function Queue() {
                             {obj.phone}
                           </a>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.created_at).format("DD MMM YYYY")}
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.updated_at).fromNow()}
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {obj.queues[0]?.status_id == 1 ? (
                             <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
                               Already In Queue

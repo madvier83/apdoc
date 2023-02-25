@@ -622,17 +622,17 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
-                          router.pathname == "/" &&
+                          router.pathname == "/dashboard/history" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/history"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/"
+                              router.pathname == "/dashboard/history"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}

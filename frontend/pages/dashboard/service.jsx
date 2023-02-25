@@ -184,7 +184,7 @@ export default function Service() {
                 )}
                 {services?.map((obj, index) => {
                   return (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
                         <span className={"ml-3 font-bold "}>{index + 1}</span>
                       </th>
@@ -192,12 +192,12 @@ export default function Service() {
                         <span className={"font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold capitalize"}>
+                        <span className={"font-semibold capitalize"}>
                           Rp. {numeral(obj.price).format("0,0")}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold"}>
+                        <span className={"font-semibold"}>
                           Rp. {numeral(obj.commission).format("0,0")}
                         </span>
                       </td>

@@ -717,7 +717,7 @@ export default function Transaction() {
                           <div
                             ref={queuesRef}
                             {...queuesEvents}
-                            className="overflow-y-scroll h-[47vh]"
+                            className="overflow-y-scroll h-[51vh]"
                           >
                             <div className="mt-4">
                               <small className="text-zinc-400">Services</small>{" "}
@@ -876,6 +876,12 @@ export default function Transaction() {
                                                 >
                                                   {obj.name}
                                                 </span>
+                                                <span className="ml-2 opacity-50">
+                                                #{" "}
+                                                {numeral(
+                                                  obj.sell_price
+                                                ).format("0,0")}
+                                              </span>
                                               </td>
                                               <td
                                                 className={`text-center w-16 overflow-hidden`}
@@ -1261,6 +1267,7 @@ export default function Transaction() {
                               payment: total,
                             };
                           });
+                          // setPaymentAmount(total)
                         }}
                       >
                         <div className="card-body px-4 py-2 flex flex-row justify-between items-center">
