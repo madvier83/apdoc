@@ -271,7 +271,7 @@ export default function Transaction() {
     let newCart = [];
     let newSelectedCart = {
       ...obj,
-      promotion_id: 0,
+      promotion_id: null,
       promotion: 0,
       promotion_name: 0,
       discount: 0,
@@ -297,7 +297,7 @@ export default function Transaction() {
         newCart.push({
           id: obj.service_id,
           employee_id: obj.employee_id,
-          promotion_id: 0,
+          promotion_id: null,
 
           name: obj.service.name,
           price: obj.service.price,
@@ -337,7 +337,7 @@ export default function Transaction() {
     let newCart = [];
     let newSelectedCart = {
       ...obj,
-      promotion_id: 0,
+      promotion_id: null,
       promotion: 0,
       promotion_name: 0,
       discount: 0,
