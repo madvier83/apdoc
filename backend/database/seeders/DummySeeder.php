@@ -2,16 +2,42 @@
 
 namespace Database\Seeders;
 
+use App\Models\CategoryOutcome;
 use App\Models\CategoryPayment;
 use App\Models\ItemSupply;
+use App\Models\Outcome;
 use App\Models\Payment;
 use App\Models\Promotion;
+use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
 class DummySeeder extends Seeder
 {
 	public function run()
 	{
+		CategoryOutcome::create([
+			'name' => 'Salary'
+		]);
+		CategoryOutcome::create([
+			'name' => 'Other'
+		]);
+
+        Outcome::create([
+			'category_outcome_id' 	=> 1,
+            'nominal'      			=> '4000000',
+			'note'					=> 'lorem ipsum dolor sit amet.'
+		]);
+		Outcome::create([
+			'category_outcome_id' 	=> 1,
+            'nominal'      			=> '4000000',
+			'note'					=> 'lorem ipsum dolor sit amet.'
+		]);
+		Outcome::create([
+			'category_outcome_id' 	=> 2,
+            'nominal'      			=> '20000',
+			'note'					=> 'lorem ipsum dolor sit amet.'
+		]);
+
 		CategoryPayment::create([
 			'name' => 'EDC'
 		]);
@@ -94,6 +120,16 @@ class DummySeeder extends Seeder
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
 			'clinic_id'		=> null
+		]);
+
+		Setting::create([
+			'logo'        => null,
+            'name'        => 'Cursor ID',
+            'phone'       => '628995754988',
+            'address'     => 'Jl. Dalem Kaum',
+            'city'        => 'Bandung',
+            'country'     => 'Jawa Barat',
+            'postal_code' => '40228',
 		]);
 	}
 }
