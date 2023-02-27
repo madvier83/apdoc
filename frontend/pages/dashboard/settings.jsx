@@ -51,6 +51,32 @@ export default function Settings() {
     setSettingsForm({ [name]: value });
   };
 
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
+
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
+
   async function getSettings() {
     setSettingsLoading(true);
     try {
@@ -146,13 +172,25 @@ export default function Settings() {
                   <div className="flex flex-wrap">
                     <div className="w-full px-4 mt-8">
                       <div className="relative w-full mb-3">
-                        <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
-                          <span>Logo</span>
-                        </label>
-                        <input
-                          type="file"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        />
+                        <div className="flex w-full gap-8">
+                          <div className="w-full">
+                            <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
+                              <span>Logo</span>
+                            </label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={onSelectFile}
+                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            />
+                          </div>
+                          {/* {selectedFile && (
+                            <img
+                              src={preview}
+                              className="border max-h-20 max-w-md bg-cover"
+                            />
+                          )} */}
+                        </div>
                       </div>
                       <hr className="mt-6 border-b-1 border-blueGray-300 py-4" />
                       <div className="relative w-full mb-3">
@@ -288,24 +326,31 @@ export default function Settings() {
             </form>
           </div>
 
-          <div className="relative flex flex-col min-w-0 break-words mb-6 shadow-xl mt-1 w-full max-w-sm tracking-tight">
+          <div className="relative flex flex-col min-w-0 break-words mb-6 mt-1 w-full max-w-sm">
             <img src="/jagged2.svg" className="rotate-180"></img>
             <div
               ref={structRef}
-              className="px-6 pt-12 h-full bg-[#fff] font-mono overflow-hidden"
+              className="px-6 pt-8 h-full bg-[#fff] tracking- font-mono overflow-hidden"
             >
               <div className="flex justify-center items-center flex-col">
-                <div className="w-full h-14 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
-                  LOGO
-                </div>
-                <div className="font-bold text-xl mt-5">
+                {selectedFile ? (
+                  <img
+                    src={preview}
+                    className="max-h-28 max-w-sm grayscale mb-2"
+                  />
+                ) : (
+                  <div className="w-full h-20 mb-4 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
+                    LOGO
+                  </div>
+                )}
+                <div className="font-bold text-xl">
                   {settingsForm.name}
                 </div>
                 <div className="text-xs text-center mt-2">
                   {settingsForm.address}, {settingsForm.city},{" "}
                   {settingsForm.country}, {settingsForm.postal_code}
                 </div>
-                <div className="text-xs mt-2">
+                <div className="text-xs mt-1">
                   <i className="fa-brands fa-whatsapp mr-1"></i>
                   {settingsForm.phone}
                 </div>
@@ -326,7 +371,7 @@ export default function Settings() {
                   <small>Served by</small>
                   <small>John Doe</small>
                 </div>
-                <div className="border-t w-full border-dashed my-5 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
                   <small>Service 001</small>
                   <small>{numeral("990000").format("0,0")}</small>
@@ -343,7 +388,7 @@ export default function Settings() {
                   <small>Item 002</small>
                   <small>{numeral("990000").format("0,0")}</small>
                 </div>
-                {/* <div className="border-t w-full border-dashed my-5 border-t-slate-500"></div>
+                {/* <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
                   <small>Subtotal</small>
                   <small>{numeral("990000").format("0,0")}</small>
@@ -356,7 +401,7 @@ export default function Settings() {
                   <small>Tax test</small>
                   <small>{numeral("990000").format("0,0")}</small>
                 </div> */}
-                <div className="border-t w-full border-dashed my-5 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center font-bold text-lg">
                   <small>Total</small>
                   <small>{numeral("990000").format("0,0")}</small>
@@ -374,7 +419,7 @@ export default function Settings() {
             <img src="/jagged2.svg" className=""></img>
             <ReactToPrint
               trigger={() => (
-                <button className="btn bg-indigo-600 mt-3 ">
+                <button className="btn bg-gray-600 mt-3 ">
                   Test print <i className="fas fa-print ml-2"></i>
                 </button>
               )}
