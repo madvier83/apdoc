@@ -374,7 +374,7 @@ export default function Settings() {
             <img src="/jagged2.svg" className=""></img>
             <ReactToPrint
               trigger={() => (
-                <button className="btn bg-indigo-600 mt-2 ">
+                <button className="btn bg-indigo-600 mt-3 ">
                   Test print <i className="fas fa-print ml-2"></i>
                 </button>
               )}

@@ -102,7 +102,7 @@ export default function Account() {
     <>
       <DashboardLayout title="Account" headerStats={false}>
         <div className="flex flex-wrap mt-6">
-          <div className="w-full max-w-7xl mt-1">
+          <div className="w-full lg:w-8/12 max-w-7xl mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-blueGray-100 border-0">
               {/* Personal detail form */}
               <form onSubmit={(e) => updateUser(e)}>
