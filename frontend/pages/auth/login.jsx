@@ -9,10 +9,11 @@ import AuthLayout from "../../layouts/AuthLayout";
 export default function Login() {
   const router = useRouter();
 
+  const [showPwd, setShowPwd] = useState(false);
   const [credential, setCredential] = useState("");
   const [pwd, setPwd] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loginError, setLoginError] = useState("")
+  const [loginError, setLoginError] = useState("");
 
   function parseJwt(token) {
     return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
@@ -45,12 +46,15 @@ export default function Login() {
       // setLoading(false);
     } catch (e) {
       setLoading(false);
-      setLoginError("Login failed")
-      if(e.response?.status == 403){
-        router.push({
-          pathname: "/auth/verify",
-          query: {email: credential}
-        }, "/auth/verify")
+      setLoginError("Login failed");
+      if (e.response?.status == 403) {
+        router.push(
+          {
+            pathname: "/auth/verify",
+            query: { email: credential },
+          },
+          "/auth/verify"
+        );
       }
     }
   }
@@ -98,13 +102,23 @@ export default function Login() {
                       <input
                         value={pwd}
                         onChange={(e) => setPwd(e.target.value)}
-                        type="password"
+                        type={showPwd ? "text" : "password"}
                         className="input w-full"
                         id="password"
                       />
+                      <div
+                        onClick={() => setShowPwd((prev) => !prev)}
+                        className="flex justify-center items-center absolute top-8 right-2 h-8 w-8"
+                      >
+                        <i
+                          className={`${
+                            !showPwd ? "fa-regular fa-eye-slash" : "fas fa-eye"
+                          } opacity-40 hover:opacity-60 transition-all duration-300 text-emerald-600`}
+                        ></i>
+                      </div>
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {loginError}
-                        </label>
+                        {loginError}
+                      </label>
                     </div>
                     <div className="">
                       <Link

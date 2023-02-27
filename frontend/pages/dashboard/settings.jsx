@@ -89,7 +89,7 @@ export default function Settings() {
       setSettings(response.data);
       setSettingsForm(response.data);
       setSettingsLoading(false);
-      console.log(settings);
+      // console.log(settings);
     } catch (err) {
       console.error(err);
     }

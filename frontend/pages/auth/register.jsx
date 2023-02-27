@@ -7,7 +7,8 @@ import AuthLayout from "../../layouts/AuthLayout";
 
 export default function Register() {
   const router = useRouter();
-
+  
+  const [showPwd, setShowPwd] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
   const initialRegisterForm = {
@@ -125,7 +126,7 @@ export default function Register() {
                         name="password"
                         value={registerForm.password}
                         onChange={(e) => handleRegisterInput(e)}
-                        type="password"
+                        type={showPwd ? "text" : "password"}
                         className={`input w-full ${
                           registerFormError.password[0]
                             ? "border-rose-500"
@@ -133,6 +134,16 @@ export default function Register() {
                         }`}
                         placeholder="min 8 characters"
                       />
+                      <div
+                        onClick={() => setShowPwd((prev) => !prev)}
+                        className="flex justify-center items-center absolute top-8 right-2 h-8 w-8"
+                      >
+                        <i
+                          className={`${
+                            !showPwd ? "fa-regular fa-eye-slash" : "fas fa-eye"
+                          } opacity-40 hover:opacity-60 transition-all duration-300 text-emerald-600`}
+                        ></i>
+                      </div>
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
                         {registerFormError.password}
                       </label>
