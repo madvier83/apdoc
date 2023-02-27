@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      'mono': ['inconsolata'],
+    }
   },
   daisyui: {
     themes: ["light"],
