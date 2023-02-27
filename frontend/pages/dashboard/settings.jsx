@@ -7,10 +7,12 @@ import ModalBox from "../../components/Modals/ModalBox";
 import axios from "../api/axios";
 import moment from "moment";
 import numeral, { Numeral } from "numeral";
+import ReactToPrint from "react-to-print";
 
 export default function Settings() {
   const token = getCookie("token");
   const settingsFormRef = useRef();
+  const structRef = useRef();
 
   const [isEditSettings, setIsEditSettings] = useState(false);
 
@@ -286,9 +288,12 @@ export default function Settings() {
             </form>
           </div>
 
-          <div className=" font-mono relative flex flex-col min-w-0 break-words mb-6 shadow-xl mt-1 w-full max-w-sm tracking-tight">
+          <div className="relative flex flex-col min-w-0 break-words mb-6 shadow-xl mt-1 w-full max-w-sm tracking-tight">
             <img src="/jagged2.svg" className="rotate-180"></img>
-            <div className="px-6 pt-12 h-full bg-[#fff] ">
+            <div
+              ref={structRef}
+              className="px-6 pt-12 h-full bg-[#fff] font-mono overflow-hidden"
+            >
               <div className="flex justify-center items-center flex-col">
                 <div className="w-full h-14 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
                   LOGO
@@ -367,6 +372,14 @@ export default function Settings() {
               </div>
             </div>
             <img src="/jagged2.svg" className=""></img>
+            <ReactToPrint
+              trigger={() => (
+                <button className="btn bg-indigo-600 mt-2 ">
+                  Test print <i className="fas fa-print ml-2"></i>
+                </button>
+              )}
+              content={() => structRef.current}
+            />
           </div>
         </div>
       </DashboardLayout>
