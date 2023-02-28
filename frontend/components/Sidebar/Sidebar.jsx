@@ -267,6 +267,46 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
+                          router.pathname == "/dashboard/category-outcome" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/category-outcome"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/category-outcome"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Category Outcome
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
+                          router.pathname == "/dashboard/outcome" &&
+                          "text-emerald-500 animate-pulse"
+                        }`}
+                      >
+                        <Link
+                          href="/dashboard/outcome"
+                          className={"text-xs py-3 font-semibold block "}
+                        >
+                          <i
+                            className={`fa-regular ${
+                              router.pathname == "/dashboard/outcome"
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Outcome
+                        </Link>
+                      </li>
+                      <li
+                        className={`items-center ${
                           router.pathname == "/dashboard/promotion" &&
                           "text-emerald-500 animate-pulse"
                         }`}
@@ -622,17 +662,17 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
-                          router.pathname == "/" &&
+                          router.pathname == "/dashboard/history" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/history"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/"
+                              router.pathname == "/dashboard/history"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}

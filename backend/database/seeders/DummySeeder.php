@@ -120,6 +120,55 @@ class DummySeeder extends Seeder
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
 			'clinic_id'		=> null
+		]);ItemSupply::create([
+			'item_id' 		=> 6,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 7,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 8,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 9,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
+		]);
+		ItemSupply::create([
+			'item_id' 		=> 10,
+			'total' 		=> 500,
+			'before' 		=> 0,
+			'after' 		=> 500,
+			'manufacturing' => '2023-02-05',
+			'expired' 		=> '2024-02-05',
+			'stock' 		=> 500,
+			'clinic_id'		=> null
 		]);
 
 		Setting::create([

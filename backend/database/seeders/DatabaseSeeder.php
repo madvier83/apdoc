@@ -41,14 +41,14 @@ class DatabaseSeeder extends Seeder
             'is_verified'       => 1
         ]);
 
-        User::factory(5)->create();
-        Clinic::factory(5)->create();
-        Position::factory(5)->create();
-        Employee::factory(5)->create();
-        Diagnose::factory(5)->create();
-        Service::factory(5)->create();
-        Patient::factory(5)->create();
-        CategoryItem::factory(5)->create();
-        Item::factory(5)->create();
+        User::factory(10)->create();
+        Clinic::factory(10)->create();
+        Position::factory(10)->create();
+        Employee::factory(10)->create();
+        Diagnose::factory(10)->create();
+        Service::factory(10)->create();
+        Patient::factory(10)->create();
+        CategoryItem::factory(10)->create();
+        Item::factory(10)->create();
     }
 }

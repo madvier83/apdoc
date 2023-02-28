@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
@@ -7,96 +7,118 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import ModalDelete from "../../components/Modals/ModalDelete";
 
-export default function Position() {
+export default function CategoryOutcome() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
-  const updateModalRef = useRef();
+  const putModalRef = useRef();
 
-  const [positions, setPosition] = useState([]);
-  const [positionsLoading, setPostionsLoading] = useState(true);
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
 
-  const [position, setPostion] = useState("");
-  const [errorPosition, setErrorPosition] = useState("");
-  const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
-  const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
+  const initialCategoryForm = {
+    name: "",
+  };
 
-  async function getPositions() {
+  const [addForm, setAddForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialCategoryForm
+  );
+  const [addFormError, setAddFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialCategoryForm
+  );
+  const [putForm, setPutForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialCategoryForm
+  );
+  const [putFormError, setPutFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialCategoryForm
+  );
+
+  const handleAddInput = (event) => {
+    const { name, value } = event.target;
+    setAddForm({ [name]: value });
+  };
+  const handlePutInput = (event) => {
+    const { name, value } = event.target;
+    setPutForm({ [name]: value });
+  };
+
+  async function getCategory() {
     try {
-      const response = await axios.get("/positions", {
+      const response = await axios.get("category-outcomes", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPosition(response.data);
-      setPostionsLoading(false);
+      setCategory(response.data);
+      setCategoryLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addPosition(e) {
+  async function addCategory(e) {
     e.preventDefault();
-    const data = {
-      name: position,
-    };
     try {
-      const response = await axios.post("/position", data, {
+      const response = await axios.post("category-outcome", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       addModalRef.current.click();
-      setPostion("");
-      setErrorPosition("");
-      getPositions();
+      getCategory();
+      setAddForm(initialCategoryForm);
+      setAddFormError(initialCategoryForm);
     } catch (err) {
-      setErrorPosition(err.response?.data.name[0]);
+      setAddFormError(initialCategoryForm);
+      setAddFormError(err.response?.data);
     }
   }
 
-  async function putPosition(e, id) {
+  async function putCategory(e) {
     e.preventDefault();
-    const data = {
-      name: updatePosition.name,
-    };
+    console.log(putForm);
     try {
-      const response = await axios.put(`position/${id}`, data, {
+      const response = await axios.put(`category-outcome/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
-      updateModalRef.current.click();
-      getPositions();
+      putModalRef.current.click();
+      getCategory();
+      setPutForm(initialCategoryForm);
+      setPutFormError(initialCategoryForm);
     } catch (err) {
-      setErrorUpdatePosition(err.response?.data.name[0]);
+      setPutFormError(initialCategoryForm);
+      setPutFormError(err.response?.data);
     }
   }
 
-  async function deletePosition(id) {
+  async function deleteCategory(id) {
     try {
-      const response = await axios.delete(`position/${id}`, {
+      const response = await axios.delete(`category-outcome/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getPositions();
+      getCategory();
     } catch (err) {
-      // console.error(err.response.data.name[0]);
+      console.error(err);
     }
   }
 
   useEffect(() => {
-    getPositions();
-    // console.log(positions);
+    getCategory();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Positions">
+      <DashboardLayout title="Category Outcome">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -105,7 +127,9 @@ export default function Position() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i> Postitions Table</h3>
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Category Outcome Table
+                </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -120,13 +144,13 @@ export default function Position() {
           </div>
           <div className="min-h-[80vh] block w-full overflow-x-auto">
             {/* Projects table */}
-            <table className="items-center w-full bg-transparent border-collapse">
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead>
                 <tr>
-                  <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-3 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
@@ -141,7 +165,7 @@ export default function Position() {
                 </tr>
               </thead>
               <tbody>
-                {positionsLoading && (
+                {categoryLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -150,32 +174,32 @@ export default function Position() {
                     </td>
                   </tr>
                 )}
-                {positions?.map((obj, index) => {
+                {category?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            htmlFor="modal-update"
+                            htmlFor="modal-put"
                             onClick={() => {
-                              setUpdatePosition(obj);
-                              setErrorUpdatePosition("");
+                              setPutForm(obj);
+                              setPutFormError("");
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -192,7 +216,7 @@ export default function Position() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deletePosition(obj.id)} title={`Delete position?`}></ModalDelete>
+                        <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category payment?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -202,29 +226,27 @@ export default function Position() {
           </div>
         </div>
 
-        {/* The button to open modal */}
-        {/* <label htmlFor="modal-add" className="btn">
-          open modal
-        </label> */}
-
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-8">Add Position</h3>
-          <form onSubmit={addPosition}>
+          <h3 className="font-bold text-lg mb-4">Add Category Outcome</h3>
+          <form onSubmit={addCategory} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Name</span>
               </label>
               <input
                 type="text"
-                placeholder="Type here"
+                name="name"
+                value={addForm.name}
+                onChange={(e) => handleAddInput(e)}
+                required
+                placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-                value={position}
-                onChange={(e) => setPostion(e.target.value)}
               />
-              {errorPosition && (
+              {addFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {errorPosition}
+                    {addFormError.name}
                   </span>
                 </label>
               )}
@@ -242,39 +264,35 @@ export default function Position() {
           </form>
         </ModalBox>
 
-        <ModalBox id="modal-update">
-          <h3 className="font-bold text-lg mb-8">Update Position</h3>
-          <form onSubmit={(e) => putPosition(e, updatePosition.id)}>
+        <ModalBox id="modal-put">
+          <h3 className="font-bold text-lg mb-4">Update Category Outcome</h3>
+          <form onSubmit={putCategory} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Name</span>
               </label>
               <input
                 type="text"
-                placeholder="Type here"
+                name="name"
+                value={putForm.name}
+                onChange={(e) => handlePutInput(e)}
+                required
+                placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-                value={updatePosition.name}
-                onChange={(e) =>
-                  setUpdatePosition((prev) => {
-                    return {
-                      ...prev,
-                      name: e.target.value,
-                    };
-                  })
-                }
               />
-              {errorUpdatePosition && (
+              {putFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {errorUpdatePosition}
+                    {putFormError.name}
                   </span>
                 </label>
               )}
             </div>
             <div className="modal-action rounded-sm">
               <label
-                htmlFor="modal-update"
-                ref={updateModalRef}
+                htmlFor="modal-put"
+                ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel

@@ -36,6 +36,7 @@
     "react-date-range": "^1.4.0",
     "react-dom": "18.2.0",
     "react-indiana-drag-scroll": "^2.2.0",
+    "react-to-print": "^2.14.12",
     "react-use-draggable-scroll": "^0.4.7",
     "recharts": "^2.3.2"
   },

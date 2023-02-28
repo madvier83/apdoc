@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 
 export default function ForgotPassword() {
   const router = useRouter();
+  
+  const [showPwd, setShowPwd] = useState(false);
 
   const [token, setToken] = useState("");
   const [email, setEmail] = useState("");
@@ -13,21 +15,21 @@ export default function ForgotPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
 
   async function changePassword(e) {
     e.preventDefault();
-    setError("")
-    if(!token) {
-      setError("Invalid password reset token")
+    setError("");
+    if (!token) {
+      setError("Invalid password reset token");
       return;
     }
-    if(password != confirmPassword) {
-      setError("Password doesn't match")
+    if (password != confirmPassword) {
+      setError("Password doesn't match");
       return;
     }
-    if(!password) {
-      setError("Password required")
+    if (!password) {
+      setError("Password required");
       return;
     }
     setIsLoading(true);
@@ -41,7 +43,7 @@ export default function ForgotPassword() {
       const res = await axios.post("/auth/change-password", data);
       console.log(res);
       setIsDone(true);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
     setIsLoading(false);
@@ -77,7 +79,7 @@ export default function ForgotPassword() {
                           New Password
                         </label>
                         <input
-                          type="password"
+                          type={showPwd ? "text" : "password"}
                           name="password"
                           value={password}
                           onChange={(e) => {
@@ -87,6 +89,18 @@ export default function ForgotPassword() {
                           className="input w-full"
                           placeholder=""
                         />
+                        <div
+                          onClick={() => setShowPwd((prev) => !prev)}
+                          className="flex justify-center items-center absolute top-8 right-2 h-8 w-8"
+                        >
+                          <i
+                            className={`${
+                              !showPwd
+                                ? "fa-regular fa-eye-slash"
+                                : "fas fa-eye"
+                            } opacity-40 hover:opacity-60 transition-all duration-300 text-emerald-600`}
+                          ></i>
+                        </div>
                       </div>
                       <div className="relative w-full mb-3">
                         <label
