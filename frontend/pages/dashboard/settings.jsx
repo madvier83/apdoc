@@ -330,7 +330,7 @@ export default function Settings() {
             <img src="/jagged2.svg" className="rotate-180"></img>
             <div
               ref={structRef}
-              className="px-6 pt-8 h-full bg-[#fff] tracking- font-mono overflow-hidden"
+              className="px-6 pb-2 h-full bg-[#fff] tracking- font-mono overflow-hidden"
             >
               <div className="flex justify-center items-center flex-col">
                 {selectedFile ? (
@@ -339,8 +339,8 @@ export default function Settings() {
                     className="max-h-28 max-w-sm grayscale mb-2"
                   />
                 ) : (
-                  <div className="w-full h-20 mb-4 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
-                    LOGO
+                  <div className="w-full font-semibold italic h-20 mb-4 flex items-center justify-center border-slate-400 bg-slate-100 mt-2 text-slate-700 border rounded-md border-dashed">
+                    CLINIC LOGO
                   </div>
                 )}
                 <div className="font-bold text-xl">
@@ -414,12 +414,14 @@ export default function Settings() {
                   <small>Change</small>
                   <small>{numeral("990000").format("0,0")}</small>
                 </div>
+                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+                <h1 className="font-bold">Terima Kasih</h1>
               </div>
             </div>
             <img src="/jagged2.svg" className=""></img>
             <ReactToPrint
               trigger={() => (
-                <button className="btn bg-gray-600 mt-3 ">
+                <button className="btn bg-rose-600 mt-3 ">
                   Test print <i className="fas fa-print ml-2"></i>
                 </button>
               )}

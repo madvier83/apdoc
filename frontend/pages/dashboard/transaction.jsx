@@ -16,6 +16,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import axios from "../api/axios";
 import numeral from "numeral";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 export default function Transaction() {
   const token = getCookies("token");
@@ -35,6 +36,8 @@ export default function Transaction() {
   const promotionRef = useRef();
   const servicePromotionRef = useRef();
   const transactionRef = useRef();
+  const structRef = useRef();
+  const printRef = useRef();
 
   const [total, setTotal] = useState(0);
   const [suggest, setSuggest] = useState([]);
@@ -45,6 +48,8 @@ export default function Transaction() {
   const [employees, setEmployees] = useState();
   const [items, setItems] = useState();
   const [promotions, setPromotions] = useState();
+  const [settings, setSettings] = useState();
+  const [isPrint, setIsPrint] = useState(false);
 
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
@@ -56,6 +61,8 @@ export default function Transaction() {
 
   const [selectedCart, setSelectedCart] = useState({});
   const [selectedServiceCart, setSelectedServiceCart] = useState({});
+
+  const [time, setTime] = useState("");
 
   const dummyTransaction = {
     patient_id: 0,
@@ -92,6 +99,20 @@ export default function Transaction() {
     queue_details: null,
   };
   const [selectedQueue, setSelectedQueue] = useState(dummyQueue);
+
+  async function getSettings() {
+    try {
+      const response = await axios.get(`setting/1`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      // console.log(response.data);
+      setSettings(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   async function getQueues() {
     setQueuesLoading(true);
@@ -391,6 +412,9 @@ export default function Transaction() {
     setTotal(currentTotal);
   }
 
+  const print = useReactToPrint({
+    content: () => structRef.current,
+  });
   async function createTransaction() {
     console.log(transaction);
     try {
@@ -400,7 +424,9 @@ export default function Transaction() {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
+      setIsPrint(true);
+      printRef.current.click();
+      setIsPrint(false);
       getQueues();
       setSelectedQueue(dummyQueue);
       setTransaction(dummyTransaction);
@@ -442,42 +468,8 @@ export default function Transaction() {
     // console.log(newSuggest);
   }
 
-  // function suggestCash() {
-  //   const newSuggest = [];
-
-  //   let cash = total;
-  //   const fraction = [50000, 100000];
-  //   do {
-  //     fraction.push(fraction[fraction.length - 1] + 50000);
-  //   } while (fraction[fraction.length - 1] < 1000000);
-
-  //   let limit = 50000;
-  //   if (cash <= 50000) limit = 100000;
-  //   if (cash >= 100000 && cash % 100000 <= 50000) limit = 100000;
-  //   if (cash % 100000 == 0) limit = 0;
-
-  //   if (
-  //     cash - (cash % 10000) + 10000 != 50000 &&
-  //     cash - (cash % 10000) + 10000 != 100000 &&
-  //     cash % 10000 != 0 &&
-  //     cash % 50000 != 0 &&
-  //     cash % 100000 != 0 &&
-  //     newSuggest.length < 2
-  //   ) {
-  //     newSuggest.unshift(cash - (cash % 10000) + 10000);
-  //   }
-
-  //   fraction.map((obj) => {
-  //     newSuggest.length < 3 &&
-  //       obj - cash < limit &&
-  //       obj > cash &&
-  //       newSuggest.push(obj);
-  //   });
-
-  //   setSuggest(newSuggest);
-  // }
-
   useEffect(() => {
+    getSettings();
     getQueues();
     getServices();
     getEmployees();
@@ -520,6 +512,13 @@ export default function Transaction() {
     setPaymentAmount("");
   }, [total, selectedQueue, cart.array, serviceCart.array]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(moment().format("h:mm:ss A"));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <DashboardLayout title="Transaction">
@@ -538,9 +537,7 @@ export default function Transaction() {
                   {...servicesEvents}
                   className="h-full rounded-md overflow-y-scroll overflow-x-hidden"
                 >
-                  <div
-                    className={`overflow-hidden rounded-md shadow-md mb-0`}
-                  >
+                  <div className={`overflow-hidden rounded-md shadow-md mb-0`}>
                     <div className="px-0 flex flex-col">
                       <div className="">
                         <label className="label px-0 pt-0">
@@ -877,11 +874,11 @@ export default function Transaction() {
                                                   {obj.name}
                                                 </span>
                                                 <span className="ml-2 opacity-50">
-                                                #{" "}
-                                                {numeral(
-                                                  obj.sell_price
-                                                ).format("0,0")}
-                                              </span>
+                                                  #{" "}
+                                                  {numeral(
+                                                    obj.sell_price
+                                                  ).format("0,0")}
+                                                </span>
                                               </td>
                                               <td
                                                 className={`text-center w-16 overflow-hidden`}
@@ -1045,6 +1042,122 @@ export default function Transaction() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className={isPrint ? "block" : "hidden"}>
+          <div
+            ref={structRef}
+            className="px-6 h-full max-w-sm my-8 bg-[#fff] tracking- font-mono overflow-hidden"
+          >
+            <div className="flex justify-center items-center flex-col">
+              {/* {selectedFile ? (
+                  <img
+                    src={preview}
+                    className="max-h-28 max-w-sm grayscale mb-2"
+                  />
+                ) : (
+                  <div className="w-full h-20 mb-4 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
+                    LOGO
+                  </div>
+                )} */}
+              {settings?.name && (
+                <React.Fragment>
+                  <div className="font-bold text-xl">{settings.name}</div>
+                  <div className="text-xs text-center mt-2">
+                    {settings.address}, {settings.city}, {settings.country},{" "}
+                    {settings.postal_code}
+                  </div>
+                  <div className="text-xs mt-1">
+                    <i className="fa-brands fa-whatsapp mr-1"></i>
+                    {settings.phone}
+                  </div>
+                </React.Fragment>
+              )}
+              <div className="border-t w-full border-dashed my-5 border-t-slate-800"></div>
+              <div className="flex w-full justify-between items-center">
+                <small>{moment().format("MMMM Do YYYY")}</small>
+                <small>{time}</small>
+              </div>
+              <div className="flex w-full justify-between items-center">
+                <small>Receipt Number</small>
+                <small>APDOCXXXXXXX</small>
+              </div>
+              <div className="flex w-full justify-between items-center">
+                <small>Customer</small>
+                <small>{selectedQueue.patient?.name}</small>
+              </div>
+              <div className="flex w-full justify-between items-center">
+                <small>Served by</small>
+                <small>John Doe</small>
+              </div>
+              <div className="border-t w-full border-dashed my-4 border-t-slate-800"></div>
+              {serviceCart?.array?.map((obj) => {
+                return (
+                  <React.Fragment key={obj.id}>
+                    <div className="flex w-full justify-between items-center">
+                      <small>{obj.name}</small>
+                      <small>{numeral(obj.price).format("0,0")}</small>
+                    </div>
+                    {obj.discount > 0 && (
+                      <div className="flex w-full justify-between items-center">
+                        <small>
+                          ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
+                        </small>
+                        <small>- {numeral(obj.discount).format("0,0")}</small>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              {cart.array?.length > 0 && serviceCart.array?.length > 0 && (
+                <br />
+              )}
+              {cart?.array?.map((obj) => {
+                return (
+                  <React.Fragment key={obj.id}>
+                    <div className="flex w-full justify-between items-center">
+                      <small>
+                        {obj.name}{" "}
+                        <span className="text-gray-800">
+                          #{obj.sell_price} x{obj.qty}
+                        </span>
+                      </small>
+                      <small>{numeral(obj.total).format("0,0")}</small>
+                    </div>
+                    {obj.discount > 0 && (
+                      <div className="flex w-full justify-between items-center">
+                        <small>
+                          ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
+                        </small>
+                        <small>- {numeral(obj.discount).format("0,0")}</small>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+              <div className="flex w-full justify-between items-center font-bold text-lg">
+                <small>Total</small>
+                <small>{numeral(total).format("0,0")}</small>
+              </div>
+              <div className="flex w-full justify-between items-center">
+                <small>{"Payment"}</small>
+                <small>{numeral(transaction.payment).format("0,0")}</small>
+              </div>
+              <div className="flex w-full justify-between items-center">
+                <small>Change</small>
+                <small>
+                  {numeral(transaction.payment - total).format("0,0")}
+                </small>
+              </div>
+              <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+              <h1 className="font-bold">Terima Kasih</h1>
+              <div className="border-t w-full border-dashed mt-4 border-t-slate-500"></div>
+            </div>
+          </div>
+          <button onClick={print} className="btn bg-rose-600" ref={printRef}>
+            Test print <i className="fas fa-print ml-2"></i>
+          </button>
         </div>
       </DashboardLayout>
 

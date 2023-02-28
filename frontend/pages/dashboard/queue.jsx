@@ -388,7 +388,7 @@ export default function Queue() {
                     {isRegular &&
                       queues?.map((obj, index) => {
                         return (
-                          <React.Fragment>
+                          <React.Fragment key={index}>
                             <div
                               key={obj.id}
                               onClick={() => setSelectedQueue(obj)}
