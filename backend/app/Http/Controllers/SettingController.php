@@ -32,6 +32,7 @@ class SettingController extends Controller
         }
 
         $this->validate($request, [
+            'logo'        => 'image',
             'name'        => 'required',
             'phone'       => 'required',
             'address'     => 'required',
@@ -41,6 +42,12 @@ class SettingController extends Controller
         ]);
 
         $data = $request->all();
+
+        if($request->file('logo')) {
+            $data['logo'] = $request->file('logo')->store('setting/logo');
+        } else {
+            $data['logo'] = null;
+        }
 
         $setting->fill($data);
 
