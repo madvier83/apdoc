@@ -40,6 +40,8 @@ export default function Transaction() {
   const printRef = useRef();
 
   const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const [suggest, setSuggest] = useState([]);
 
   const [queues, setQueues] = useState();
@@ -411,6 +413,26 @@ export default function Transaction() {
     );
     setTotal(currentTotal);
   }
+  function countSubtotal() {
+    let currentSubtotal = 0;
+    serviceCart.array?.map(
+      (obj) => (currentSubtotal = currentSubtotal + obj.price)
+    );
+    cart.array?.map(
+      (obj) => (currentSubtotal = currentSubtotal + obj.total )
+    );
+    setSubtotal(currentSubtotal);
+  }
+  function countTotalDiscount() {
+    let currentTotalDiscount = 0;
+    serviceCart.array?.map(
+      (obj) => (currentTotalDiscount = currentTotalDiscount + obj.discount)
+    );
+    cart.array?.map(
+      (obj) => (currentTotalDiscount = currentTotalDiscount + obj.discount)
+    );
+    setTotalDiscount(currentTotalDiscount);
+  }
 
   const print = useReactToPrint({
     content: () => structRef.current,
@@ -481,6 +503,8 @@ export default function Transaction() {
 
   useEffect(() => {
     countTotal();
+    countSubtotal();
+    countTotalDiscount()
   }, [selectedQueue, cart.array, serviceCart.array]);
 
   useEffect(() => {
@@ -512,12 +536,15 @@ export default function Transaction() {
     setPaymentAmount("");
   }, [total, selectedQueue, cart.array, serviceCart.array]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTime(moment().format("h:mm:ss A"));
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(moment().format("h:mm:ss A"));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    console.log(transaction)
+  }, [transaction])
 
   return (
     <>
@@ -1044,120 +1071,140 @@ export default function Transaction() {
           </div>
         </div>
 
-        <div className={isPrint ? "block" : "hidden"}>
-          <div
-            ref={structRef}
-            className="px-6 h-full max-w-sm my-8 bg-[#fff] tracking- font-mono overflow-hidden"
-          >
-            <div className="flex justify-center items-center flex-col">
-              {/* {selectedFile ? (
-                  <img
-                    src={preview}
-                    className="max-h-28 max-w-sm grayscale mb-2"
-                  />
-                ) : (
-                  <div className="w-full h-20 mb-4 flex items-center justify-center border-slate-400 text-slate-900 border rounded-md border-dashed">
-                    LOGO
-                  </div>
-                )} */}
-              {settings?.name && (
-                <React.Fragment>
-                  <div className="font-bold text-xl">{settings.name}</div>
-                  <div className="text-xs text-center mt-2">
-                    {settings.address}, {settings.city}, {settings.country},{" "}
-                    {settings.postal_code}
-                  </div>
-                  <div className="text-xs mt-1">
-                    <i className="fa-brands fa-whatsapp mr-1"></i>
-                    {settings.phone}
-                  </div>
-                </React.Fragment>
-              )}
-              <div className="border-t w-full border-dashed my-5 border-t-slate-800"></div>
-              <div className="flex w-full justify-between items-center">
-                <small>{moment().format("MMMM Do YYYY")}</small>
-                <small>{time}</small>
-              </div>
-              <div className="flex w-full justify-between items-center">
-                <small>Receipt Number</small>
-                <small>APDOCXXXXXXX</small>
-              </div>
-              <div className="flex w-full justify-between items-center">
-                <small>Customer</small>
-                <small>{selectedQueue.patient?.name}</small>
-              </div>
-              <div className="flex w-full justify-between items-center">
-                <small>Served by</small>
-                <small>John Doe</small>
-              </div>
-              <div className="border-t w-full border-dashed my-4 border-t-slate-800"></div>
-              {serviceCart?.array?.map((obj) => {
-                return (
-                  <React.Fragment key={obj.id}>
-                    <div className="flex w-full justify-between items-center">
-                      <small>{obj.name}</small>
-                      <small>{numeral(obj.price).format("0,0")}</small>
+        <div className={`${isPrint ? "block" : "hidden"} my-8`}>
+          <div className="ml-auto">
+            <div
+              ref={structRef}
+              className="px-6 h-full max-w-sm bg-[#fff] w-full font-mono overflow-hidden"
+            >
+              <div className="flex justify-center items-center flex-col">
+                {/* {selectedFile ? (
+                <img
+                  src={preview}
+                  className="max-h-28 max-w-sm grayscale mb-2"
+                />
+              ) : (
+                <img
+                  src={"/apdocLogo.png"}
+                  className="max-h-28 max-w-sm grayscale mb-1"
+                />
+              )} */}
+                <img
+                  src={"/apdocLogo.png"}
+                  className="max-h-28 max-w-sm grayscale mb-1"
+                />
+                {settings?.name && (
+                  <React.Fragment>
+                    <div className="font-bold text-xl">{settings.name}</div>
+                    <div className="text-xs text-center mt-2">
+                      {settings.address}, {settings.city}, {settings.country},{" "}
+                      {settings.postal_code}
                     </div>
-                    {obj.discount > 0 && (
-                      <div className="flex w-full justify-between items-center">
-                        <small>
-                          ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
-                        </small>
-                        <small>- {numeral(obj.discount).format("0,0")}</small>
-                      </div>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-              {cart.array?.length > 0 && serviceCart.array?.length > 0 && (
-                <br />
-              )}
-              {cart?.array?.map((obj) => {
-                return (
-                  <React.Fragment key={obj.id}>
-                    <div className="flex w-full justify-between items-center">
-                      <small>
-                        {obj.name}{" "}
-                        <span className="text-gray-800">
-                          #{obj.sell_price} x{obj.qty}
-                        </span>
-                      </small>
-                      <small>{numeral(obj.total).format("0,0")}</small>
+                    <div className="text-xs mt-1">
+                      <i className="fa-brands fa-whatsapp mr-1"></i>
+                      {settings.phone}
                     </div>
-                    {obj.discount > 0 && (
-                      <div className="flex w-full justify-between items-center">
-                        <small>
-                          ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
-                        </small>
-                        <small>- {numeral(obj.discount).format("0,0")}</small>
-                      </div>
-                    )}
                   </React.Fragment>
-                );
-              })}
-              <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
-              <div className="flex w-full justify-between items-center font-bold text-lg">
-                <small>Total</small>
-                <small>{numeral(total).format("0,0")}</small>
+                )}
+                <div className="border-t w-full border-dashed my-3 border-t-slate-800"></div>
+                <div className="flex w-full justify-between items-center">
+                  <small>{moment().format("MMMM Do YYYY")}</small>
+                  <small>{time}</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Receipt Number</small>
+                  <small>APDOCXXXXXXX</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Customer</small>
+                  <small>{selectedQueue.patient?.name}</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Served by</small>
+                  <small>John Doe</small>
+                </div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-800"></div>
+                {serviceCart?.array?.map((obj) => {
+                  return (
+                    <React.Fragment key={obj.id}>
+                      <div className="flex w-full justify-between items-center font-semibold">
+                        <small>{obj.name}</small>
+                        <small>{numeral(obj.price).format("0,0")}</small>
+                      </div>
+                      {obj.discount > 0 && (
+                        <div className="flex w-full justify-between items-center">
+                          <small>
+                            ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
+                          </small>
+                          <small>- {numeral(obj.discount).format("0,0")}</small>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                {cart.array?.length > 0 && serviceCart.array?.length > 0 && (
+                  <br />
+                )}
+                {cart?.array?.map((obj) => {
+                  return (
+                    <React.Fragment key={obj.id}>
+                      <div className="flex w-full justify-between items-center font-semibold">
+                        <small>
+                          {obj.name}{" "}
+                          <span className="text-gray-800 font-normal">
+                            #{obj.sell_price} x{obj.qty}
+                          </span>
+                        </small>
+                        <small>{numeral(obj.total).format("0,0")}</small>
+                      </div>
+                      {obj.discount > 0 && (
+                        <div className="flex w-full justify-between items-center">
+                          <small>
+                            ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
+                          </small>
+                          <small>- {numeral(obj.discount).format("0,0")}</small>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Subtotal</small>
+                  <small>{numeral(subtotal).format("0,0")}</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Total discount</small>
+                  <small>-{numeral(totalDiscount).format("0,0")}</small>
+                </div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
+                <div className="flex w-full justify-between items-center font-bold text-lg">
+                  <small>Total</small>
+                  <small>{numeral(total).format("0,0")}</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>{"Payment"}</small>
+                  <small>{numeral(transaction.payment).format("0,0")}</small>
+                </div>
+                <div className="flex w-full justify-between items-center">
+                  <small>Change</small>
+                  <small>
+                    {numeral(transaction.payment - total).format("0,0")}
+                  </small>
+                </div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
+                <h1 className="font-bold">Terima Kasih</h1>
+                <div className="border-t w-full border-dashed mt-3 border-t-slate-500"></div>
               </div>
-              <div className="flex w-full justify-between items-center">
-                <small>{"Payment"}</small>
-                <small>{numeral(transaction.payment).format("0,0")}</small>
-              </div>
-              <div className="flex w-full justify-between items-center">
-                <small>Change</small>
-                <small>
-                  {numeral(transaction.payment - total).format("0,0")}
-                </small>
-              </div>
-              <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
-              <h1 className="font-bold">Terima Kasih</h1>
-              <div className="border-t w-full border-dashed mt-4 border-t-slate-500"></div>
             </div>
+            <button
+              onClick={print}
+              className="btn bg-rose-600 w-full max-w-sm"
+              ref={printRef}
+            >
+              Test print <i className="fas fa-print ml-2"></i>
+            </button>
           </div>
-          <button onClick={print} className="btn bg-rose-600" ref={printRef}>
-            Test print <i className="fas fa-print ml-2"></i>
-          </button>
         </div>
       </DashboardLayout>
 
@@ -1262,7 +1309,7 @@ export default function Transaction() {
       </ModalBox>
 
       <ModalBox id="checkoutModal">
-        <h3 className="font-bold text-lg mb-8">Payment Method</h3>
+        <h3 className="font-bold text-lg mb-8">Select Payment Method</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <div className="card">
           <div className="card-body py-2">
@@ -1406,7 +1453,7 @@ export default function Transaction() {
             Cancel
           </label>
           <button
-            className="btn btn-warning rounded-md"
+            className={`btn ${transaction.payment >= total ? "btn-primary" : "btn-disabled"} rounded-md`}
             onClick={createTransaction}
           >
             Checkout

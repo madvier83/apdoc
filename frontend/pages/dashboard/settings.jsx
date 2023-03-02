@@ -336,17 +336,19 @@ export default function Settings() {
                 {selectedFile ? (
                   <img
                     src={preview}
-                    className="max-h-28 max-w-sm grayscale mb-2"
+                    className="max-h-28 max-w-sm grayscale mb-1"
                   />
                 ) : (
-                  <div className="w-full font-semibold italic h-20 mb-4 flex items-center justify-center border-slate-400 bg-slate-100 mt-2 text-slate-700 border rounded-md border-dashed">
-                    CLINIC LOGO
-                  </div>
+                  <img
+                    src={"/apdocLogo.png"}
+                    className="max-h-28 max-w-sm grayscale mb-1"
+                  />
+                  // <div className="w-full font-semibold italic h-20 mb-4 flex items-center justify-center border-slate-400 bg-slate-100 mt-2 text-slate-700 border rounded-md border-dashed">
+                  //   CLINIC LOGO
+                  // </div>
                 )}
-                <div className="font-bold text-xl">
-                  {settingsForm.name}
-                </div>
-                <div className="text-xs text-center mt-2">
+                <div className="font-bold text-xl">{settingsForm.name}</div>
+                <div className="text-xs text-center mt-1">
                   {settingsForm.address}, {settingsForm.city},{" "}
                   {settingsForm.country}, {settingsForm.postal_code}
                 </div>
@@ -354,7 +356,7 @@ export default function Settings() {
                   <i className="fa-brands fa-whatsapp mr-1"></i>
                   {settingsForm.phone}
                 </div>
-                <div className="border-t w-full border-dashed my-5 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
                   <small>{moment().format("MMMM Do YYYY")}</small>
                   <small>{time}</small>
@@ -371,51 +373,40 @@ export default function Settings() {
                   <small>Served by</small>
                   <small>John Doe</small>
                 </div>
-                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
-                <div className="flex w-full justify-between items-center">
-                  <small>Service 001</small>
-                  <small>{numeral("990000").format("0,0")}</small>
-                </div>
-                <div className="flex w-full justify-between items-center">
-                  <small>Service 002</small>
-                  <small>{numeral("990000").format("0,0")}</small>
-                </div>
-                <div className="flex w-full justify-between items-center">
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
+                <div className="flex w-full justify-between items-center font-semibold">
                   <small>Item 001</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>{numeral("999000").format("0,0")}</small>
                 </div>
-                <div className="flex w-full justify-between items-center">
-                  <small>Item 002</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                <div className="flex w-full justify-between items-center font-semibold">
+                  <small>⤷ Discount Item 002</small>
+                  <small>{numeral("-99000").format("0,0")}</small>
                 </div>
-                {/* <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
                   <small>Subtotal</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>{numeral("999000").format("0,0")}</small>
                 </div>
                 <div className="flex w-full justify-between items-center">
-                  <small>Gratuty test</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>Total discount</small>
+                  <small>{numeral("-99000").format("0,0")}</small>
                 </div>
-                <div className="flex w-full justify-between items-center">
-                  <small>Tax test</small>
-                  <small>{numeral("990000").format("0,0")}</small>
-                </div> */}
-                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center font-bold text-lg">
                   <small>Total</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>{numeral("900000").format("0,0")}</small>
                 </div>
                 <div className="flex w-full justify-between items-center">
                   <small>Cash</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>{numeral("900000").format("0,0")}</small>
                 </div>
                 <div className="flex w-full justify-between items-center">
                   <small>Change</small>
-                  <small>{numeral("990000").format("0,0")}</small>
+                  <small>{numeral("0").format("0,0")}</small>
                 </div>
-                <div className="border-t w-full border-dashed my-4 border-t-slate-500"></div>
+                <div className="border-t w-full border-dashed my-2 border-t-slate-500"></div>
                 <h1 className="font-bold">Terima Kasih</h1>
+                <div className="border-t w-full border-dashed my-2 border-t-slate-500"></div>
               </div>
             </div>
             <img src="/jagged2.svg" className=""></img>
