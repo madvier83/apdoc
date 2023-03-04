@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useReducer } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { deleteCookie, getCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import jwt_decode from "jwt-decode";
 
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
@@ -45,9 +45,37 @@ export default function Sidebar() {
   const [cashierMenu, setCashierMenu] = useState(false);
   const [reportsMenu, setReportsMenu] = useState(false);
 
-  // console.log(adminMenu);
+  const initialSidebar = {
+    admin: false,
+    receptionist: false,
+    doctor: false,
+    pharmacy: false,
+    promotion: false,
+    cashier: false,
+    reports: false,
+  };
+  const [sidebar, setSidebar] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialSidebar
+  );
+  const [cookieCheck, setCookieCheck] = useState(false)
+  useEffect(() => {
+    try {
+      let sidebarCookie = JSON.parse(getCookie("sidebar"))
+      setSidebar(sidebarCookie)
+      setCookieCheck(true)
+    } catch(e) {
+      console.error(e)
+      setCookie("sidebar", JSON.stringify(sidebar))
+      setCookieCheck(true)
+    }
+  }, [])
+  useEffect(() => {
+    if(cookieCheck) {
+      setCookie("sidebar", JSON.stringify(sidebar))
+    }
+  }, [sidebar])
 
-  // console.log(router)
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -135,7 +163,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setAdminMenu((p) => !p)}
+                    onClick={() => setSidebar({admin: !sidebar.admin})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -143,7 +171,7 @@ export default function Sidebar() {
                     <i className={"fas fa-user mr-2 text-sm "}></i> Admin
                   </button>
 
-                  {adminMenu && (
+                  {sidebar.admin && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -337,7 +365,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setReceptionistMenu((p) => !p)}
+                    onClick={() => setSidebar({receptionist: !sidebar.receptionist})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -346,7 +374,7 @@ export default function Sidebar() {
                     Receptionist
                   </button>
 
-                  {receptionistMenu && (
+                  {sidebar.receptionist && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -420,7 +448,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setDoctorMenu((p) => !p)}
+                    onClick={() => setSidebar({doctor: !sidebar.doctor})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -429,7 +457,7 @@ export default function Sidebar() {
                     Doctor
                   </button>
 
-                  {doctorMenu && (
+                  {sidebar.doctor && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -483,7 +511,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setPharmacyMenu((p) => !p)}
+                    onClick={() => setSidebar({pharmacy: !sidebar.pharmacy})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -492,7 +520,7 @@ export default function Sidebar() {
                     Pharmacy
                   </button>
 
-                  {pharmacyMenu && (
+                  {sidebar.pharmacy && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -629,7 +657,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setCashierMenu((p) => !p)}
+                    onClick={() => setSidebar({cashier: !sidebar.cashier})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -638,7 +666,7 @@ export default function Sidebar() {
                     Cashier
                   </button>
 
-                  {cashierMenu && (
+                  {sidebar.cashier && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
@@ -692,7 +720,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setReportsMenu((p) => !p)}
+                    onClick={() => setSidebar({reports: !sidebar.reports})}
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
@@ -700,7 +728,7 @@ export default function Sidebar() {
                     <i className={"fas fa-file mr-2 text-sm "}></i> Reports
                   </button>
 
-                  {reportsMenu && (
+                  {sidebar.reports && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${

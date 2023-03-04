@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { addDays } from "date-fns";
 import { DateRangePicker } from "react-date-range";
+
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 import {
   AreaChart,
@@ -21,17 +22,42 @@ import {
 import DashboardLayout from "../../layouts/DashboardLayout";
 
 export default function Dashboard() {
-
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
+  const [cookieCheck, setCookieCheck] = useState(false);
+  useEffect(() => {
+    try {
+      let range = JSON.parse(getCookie("rangeDate"));
+      setSelectionRange({
+        ...range,
+        startDate: new Date(range.startDate),
+        endDate: new Date(range.endDate),
+      });
+      setCookie(
+        "rangeDate",
+        JSON.stringify({
+          ...range,
+          startDate: new Date(range.startDate),
+          endDate: new Date(range.endDate),
+        })
+      );
+      setCookieCheck(true);
+    } catch (e) {
+      deleteCookie("rangeDate");
+      setCookie("rangeDate", JSON.stringify(selectionRange))
+      setCookieCheck(true)
+    }
+  }, []);
+  useEffect(() => {
+    if (cookieCheck) {
+      setCookie("rangeDate", JSON.stringify(selectionRange));
+    }
+  }, [selectionRange]);
 
   function handleSelect(ranges) {
-    // console.log(ranges.selection);
-    console.log(ranges.selection.startDate);
-    console.log(ranges.selection.endDate);
     setSelectionRange(ranges.selection);
   }
 
@@ -186,6 +212,7 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
         </div>
+        <div className="py-8"></div>
       </DashboardLayout>
     </>
   );
