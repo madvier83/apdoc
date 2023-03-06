@@ -158,6 +158,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	// SETTING
 	
 	$router->get('/v1/setting/{id}', 'SettingController@show');
-	$router->put('/v1/setting/{id}', 'SettingController@update');
+	$router->post('/v1/setting', 'SettingController@create');
 	
 });

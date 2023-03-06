@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -19,11 +21,6 @@ class SettingController extends Controller
     }
 
     public function create(Request $request)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
     {
         $setting = Setting::first();
 
@@ -43,8 +40,10 @@ class SettingController extends Controller
 
         $data = $request->all();
 
-        if($request->file('logo')) {
-            $data['logo'] = $request->file('logo')->store('setting/logo');
+        if ($request->file('logo')) {
+            $logo = time() . '_' . $request->file('logo')->getClientOriginalName();
+            $data['logo'] = $request->file('logo')->move('img/setting/logo', $logo);
+            File::delete($setting->logo);
         } else {
             $data['logo'] = null;
         }
@@ -52,7 +51,12 @@ class SettingController extends Controller
         $setting->fill($data);
 
         $setting->save();
-        return response()->json($setting);
+        return response()->json(Setting::first());
+    }
+
+    public function update(Request $request)
+    {
+       //
     }
 
     public function destroy($id)
