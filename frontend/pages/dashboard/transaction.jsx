@@ -1077,21 +1077,17 @@ export default function Transaction() {
                 className="px-6 h-full max-w-sm bg-[#fff] w-full font-mono overflow-hidden"
               >
                 <div className="flex justify-center items-center flex-col">
-                  {/* {selectedFile ? (
-                <img
-                  src={preview}
-                  className="max-h-28 max-w-sm grayscale mb-2"
-                />
-              ) : (
-                <img
-                  src={"/apdocLogo.png"}
-                  className="max-h-28 max-w-sm grayscale mb-1"
-                />
-              )} */}
-                  <img
-                    src={"/apdocLogo.png"}
-                    className="max-h-28 max-w-sm grayscale mb-1"
-                  />
+                  {settings?.logo ? (
+                    <img
+                      src={"http://localhost:8000/" + settings?.logo}
+                      className="max-h-28 max-w-sm grayscale mb-1"
+                    />
+                  ) : (
+                    <img
+                      src={"/apdocLogo.png"}
+                      className="max-h-28 max-w-sm grayscale mb-1"
+                    />
+                  )}
                   {settings?.name && (
                     <React.Fragment>
                       <div className="font-bold text-xl">{settings.name}</div>

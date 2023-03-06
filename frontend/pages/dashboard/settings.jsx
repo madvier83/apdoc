@@ -54,34 +54,31 @@ export default function Settings() {
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
 
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
     if (!selectedFile) {
       setPreview(undefined);
       return;
     }
+    // const objectUrl = URL.createObjectURL(selectedFile);
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreview(objectUrl);
-
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
-
-  const onSelectFile = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-
-    // I've kept this example simple by using the first image instead of multiple
-    setSelectedFile(e.target.files[0]);
-  };
 
   async function getSettings() {
     setSettingsLoading(true);
     try {
       const response = await axios.get(`/setting/1`, {
-        "Content-Type": "application/json",
         headers: {
           Authorization: "Bearer" + token,
         },
@@ -100,14 +97,36 @@ export default function Settings() {
   }, []);
   useEffect(() => {
     setSettingsFormError(initialForm);
+    setPreview(null)
+    setSelectedFile(null)
   }, [isEditSettings]);
 
   async function updateSettings(e) {
     e.preventDefault();
+
+    let formData = new FormData();
+    selectedFile && formData.append("logo", selectedFile);
+    formData.append("name", settingsForm.name);
+    formData.append("phone", settingsForm.phone);
+    formData.append("address", settingsForm.address);
+    formData.append("city", settingsForm.city);
+    formData.append("country", settingsForm.country);
+    formData.append("postal_code", settingsForm.postal_code);
+    // Object.keys(settingsForm).forEach((key) =>
+    //   formData.append(key, settingsForm[key])
+    // );
+    // console.log(formData);
+    // console.log(selectedFile);
+    // for (var key of formData.entries()) {
+    //   console.log(key[0] + ", " + key[1]);
+    // }
+
     try {
-      const response = await axios.put(`setting/1`, settingsForm, {
-        "Content-Type": "application/json",
+      // console.log(settingsForm);
+      const response = await axios.post(`setting`, formData, {
+        data: formData,
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: "Bearer" + token,
         },
       });
@@ -115,6 +134,7 @@ export default function Settings() {
       getSettings();
     } catch (err) {
       setSettingsFormError(err.response?.data);
+      console.log(err);
     }
   }
 
@@ -172,24 +192,25 @@ export default function Settings() {
                   <div className="flex flex-wrap">
                     <div className="w-full px-4 mt-8">
                       <div className="relative w-full mb-3">
-                        <div className="flex w-full gap-8">
+                        <div className="w-full gap-8">
                           <div className="w-full">
                             <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
                               <span>Logo</span>
                             </label>
                             <input
                               type="file"
+                              name="logo"
                               accept="image/*"
                               onChange={onSelectFile}
+                              disabled={!isEditSettings}
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                             />
                           </div>
-                          {/* {selectedFile && (
-                            <img
-                              src={preview}
-                              className="border max-h-20 max-w-md bg-cover"
-                            />
-                          )} */}
+                          <label className="">
+                            <span className="label-text-alt text-rose-300">
+                              {settingsFormError?.logo}
+                            </span>
+                          </label>
                         </div>
                       </div>
                       <hr className="mt-6 border-b-1 border-blueGray-300 py-4" />
@@ -336,16 +357,22 @@ export default function Settings() {
                 {selectedFile ? (
                   <img
                     src={preview}
-                    className="max-h-28 max-w-sm grayscale mb-1"
+                    className="max-h-28 max-w-sm grayscale mb-1 mt-2"
                   />
                 ) : (
-                  <img
-                    src={"/apdocLogo.png"}
-                    className="max-h-28 max-w-sm grayscale mb-1"
-                  />
-                  // <div className="w-full font-semibold italic h-20 mb-4 flex items-center justify-center border-slate-400 bg-slate-100 mt-2 text-slate-700 border rounded-md border-dashed">
-                  //   CLINIC LOGO
-                  // </div>
+                  <React.Fragment>
+                    {settingsForm.logo ? (
+                      <img
+                        src={"http://localhost:8000/" + settingsForm.logo}
+                        className="max-h-28 max-w-sm grayscale mb-1 mt-2"
+                      />
+                    ) : (
+                      <img
+                        src={"/apdocLogo.png"}
+                        className="max-h-28 max-w-sm grayscale mb-1 mt-2"
+                      />
+                    )}
+                  </React.Fragment>
                 )}
                 <div className="font-bold text-xl">{settingsForm.name}</div>
                 <div className="text-xs text-center mt-1">
@@ -374,11 +401,11 @@ export default function Settings() {
                   <small>John Doe</small>
                 </div>
                 <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
-                <div className="flex w-full justify-between items-center font-semibold">
-                  <small>Item 001</small>
-                  <small>{numeral("999000").format("0,0")}</small>
+                <div className="flex w-full justify-between items-center">
+                  <small className="font-semibold">Item 001 <span className="font-normal">#33,300 x30</span></small>
+                  <small className="font-semibold">{numeral("999000").format("0,0")}</small>
                 </div>
-                <div className="flex w-full justify-between items-center font-semibold">
+                <div className="flex w-full justify-between items-center">
                   <small>⤷ Discount Item 002</small>
                   <small>{numeral("-99000").format("0,0")}</small>
                 </div>
@@ -412,7 +439,7 @@ export default function Settings() {
             <img src="/jagged2.svg" className=""></img>
             <ReactToPrint
               trigger={() => (
-                <button className="btn bg-rose-600 mt-3 ">
+                <button className="btn bg-indigo-900 mt-3 ">
                   Test print <i className="fas fa-print ml-2"></i>
                 </button>
               )}
