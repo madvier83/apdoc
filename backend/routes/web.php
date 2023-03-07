@@ -159,5 +159,14 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	
 	$router->get('/v1/setting/{id}', 'SettingController@show');
 	$router->post('/v1/setting', 'SettingController@create');
+
+	// DOCTOR
+
+	$router->get('/v1/records', 'RecordController@index');
+	$router->get('/v1/record/{id}', 'RecordController@show');
+	$router->post('/v1/record', 'RecordController@create');
+	$router->put('/v1/record/{id}', 'RecordController@update');
+	$router->put('/v1/record/{id}/editable', 'RecordController@updateEditable');
+	$router->delete('/v1/record/{id}', 'RecordController@destroy');
 	
 });
