@@ -84,6 +84,7 @@ class TransactionController extends Controller
             'code'          => $this->code(),
             'patient_id'    => $request->patient_id, 
             'payment_id'    => $request->payment_id ?? null,
+            'discount'      => 0,
             'total'         => 0,
             'payment'       => $request->payment,
             'employee_id'   => auth()->user()->employees->id ?? null
@@ -93,6 +94,7 @@ class TransactionController extends Controller
         
         $items = collect($request->items);
         $services = collect($request->services);
+        $totalDiscount = 0;
         $totalPayment = 0;
         
         foreach ($items as $data) {
@@ -114,6 +116,7 @@ class TransactionController extends Controller
                 'total'             => $total,
             ];
             
+            $totalDiscount += $discount;
             $totalPayment += $total;
             TransactionItem::create($dataItem);
         }
@@ -135,11 +138,12 @@ class TransactionController extends Controller
                 'commission'        => $service->commission,
             ];
             
+            $totalDiscount += $discount;
             $totalPayment += $total;
             TransactionService::create($dataService);
         }
 
-        Transaction::where('id', $transaction->id)->update(['total' => $totalPayment]);
+        Transaction::where('id', $transaction->id)->update(['discount' => $totalDiscount, 'total' => $totalPayment]);
         Queue::where('patient_id', $request->patient_id)->update(['status_id' => 3]);
 
         return response()->json('Transaction successfully');

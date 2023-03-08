@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->string('code');
             $table->foreignId('patient_id')->nullable();
             $table->foreignId('payment_id')->nullable();
+            $table->integer('discount');
             $table->integer('total');
             $table->integer('payment');
             $table->foreignId('employee_id')->nullable(); // cashier
