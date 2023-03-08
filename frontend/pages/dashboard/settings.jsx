@@ -406,8 +406,8 @@ export default function Settings() {
                   <small className="font-semibold">{numeral("999000").format("0,0")}</small>
                 </div>
                 <div className="flex w-full justify-between items-center">
-                  <small>⤷ Discount Item 002</small>
-                  <small>{numeral("-99000").format("0,0")}</small>
+                  <small>⤷ Discount Item 001</small>
+                  <small>({numeral("99000").format("0,0")})</small>
                 </div>
                 <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
@@ -416,7 +416,7 @@ export default function Settings() {
                 </div>
                 <div className="flex w-full justify-between items-center">
                   <small>Total discount</small>
-                  <small>{numeral("-99000").format("0,0")}</small>
+                  <small>({numeral("99000").format("0,0")})</small>
                 </div>
                 <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center font-bold text-lg">
@@ -439,7 +439,7 @@ export default function Settings() {
             <img src="/jagged2.svg" className=""></img>
             <ReactToPrint
               trigger={() => (
-                <button className="btn bg-indigo-900 mt-3 ">
+                <button className="btn outline-none bg-gray-100 text-gray-800 mt-3 ">
                   Test print <i className="fas fa-print ml-2"></i>
                 </button>
               )}

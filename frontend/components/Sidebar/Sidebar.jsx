@@ -461,17 +461,17 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
-                          router.pathname == "/dashboard/patients" &&
+                          router.pathname == "/dashboard/doctor-patients" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="/dashboard/patients"
+                          href="/dashboard/doctor-patients"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/dashboard/patients"
+                              router.pathname == "/dashboard/doctor-patients"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}

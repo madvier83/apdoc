@@ -164,7 +164,7 @@ export default function Promotion() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Acitons
+                  Actions
                   </th>
                 </tr>
               </thead>

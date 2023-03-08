@@ -19,7 +19,8 @@ class RecordController extends Controller
 
     public function show($id)
     {
-        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->find($id);
+        // $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->find($id);
+        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where("patient_id", $id)->latest()->get();
         return response()->json($record);
     }
 

@@ -534,12 +534,12 @@ export default function Transaction() {
     setPaymentAmount("");
   }, [total, selectedQueue, cart.array, serviceCart.array]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setTime(moment().format("h:mm:ss A"));
-  //   }, 10000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(moment().format("h:mm:ss A"));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     console.log(transaction);
   }, [transaction]);
@@ -725,7 +725,7 @@ export default function Transaction() {
                           {selectedQueue?.patient?.name}
                         </h2>
                         <small className="text-zinc-400">
-                          NIK: {selectedQueue?.patient?.nik}
+                          NIK: {selectedQueue?.patient?.nik} | Gender: {selectedQueue?.patient?.gender}
                           {/* {selectedQueue?.status_id == 1 && "Active"}
                           {selectedQueue?.status_id == 2 && "Done"}
                           {selectedQueue?.status_id == 3 && "Canceled"} */}
@@ -1132,7 +1132,7 @@ export default function Transaction() {
                               ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
                             </small>
                             <small>
-                              - {numeral(obj.discount).format("0,0")}
+                              ({numeral(obj.discount).format("0,0")})
                             </small>
                           </div>
                         )}
@@ -1160,7 +1160,7 @@ export default function Transaction() {
                               ⤷ Disc {obj.promotion_name} ({obj.promotion}%)
                             </small>
                             <small>
-                              - {numeral(obj.discount).format("0,0")}
+                              ({numeral(obj.discount).format("0,0")})
                             </small>
                           </div>
                         )}
@@ -1174,7 +1174,7 @@ export default function Transaction() {
                   </div>
                   <div className="flex w-full justify-between items-center">
                     <small>Total discount</small>
-                    <small>-{numeral(totalDiscount).format("0,0")}</small>
+                    <small>({numeral(totalDiscount).format("0,0")})</small>
                   </div>
                   <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                   <div className="flex w-full justify-between items-center font-bold text-lg">

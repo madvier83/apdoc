@@ -23,7 +23,7 @@ class PositionController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string',
+            'name' => 'required|string|max:32',
         ]);
 
         $data = $request->all();

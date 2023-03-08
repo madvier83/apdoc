@@ -160,7 +160,7 @@ export default function CategoryItem() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Acitons
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -205,10 +205,7 @@ export default function CategoryItem() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -216,7 +213,11 @@ export default function CategoryItem() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category item?`}></ModalDelete>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteCategory(obj.id)}
+                          title={`Delete category item?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -295,7 +296,9 @@ export default function CategoryItem() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

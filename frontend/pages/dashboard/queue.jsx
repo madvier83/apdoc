@@ -412,11 +412,6 @@ export default function Queue() {
                                         {obj.queue_number}
                                       </h1>
                                     </div>
-                                    {obj.patient?.gender == "male" ? (
-                                      <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
-                                    ) : (
-                                      <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
-                                    )}
                                   </div>
                                   <div className="">
                                     <h2 className="card-title text-base lg:text-lg text-primary-content">
@@ -538,28 +533,17 @@ export default function Queue() {
               >
                 <div className="">
                   <div className="flex items-center mb-4">
-                    {/* <div className="avatar mr-6">
-                        <div className="w-16 mask mask-hexagon shadow-md bg-indigo-500 flex items-center justify-center">
-                          <h1 className="text-xl font-semibold text-white mb-1">
-                            {selectedQueue?.queue_number}
-                          </h1>
-                        </div>
-
-                        {selectedQueue?.patient?.gender == "male" ? (
-                          <i className="fas fa-mars z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm font-bold text-blue-400 p-1 rounded-full"></i>
-                        ) : (
-                          <i className="fas fa-venus z-10 absolute -right-2 text-xs w-6 h-6 flex items-center justify-center bottom-0 bg-white shadow-sm text-rose-400 p-1 rounded-full"></i>
-                        )}
-                      </div> */}
                     <div className="w-full">
-                      <h2 className="card-title text-base font-semibold lg:text-2xl text-zinc-900 truncate">
+                      <h2 className="card-title text-base font-semibold lg:text-2xl text-zinc-900 truncate flex">
                         {selectedQueue?.patient?.name}
+                        {/* {selectedQueue?.patient?.gender == "male" ? (
+                          <i className="fas fa-mars z-10 text-xl ml-1 text-blue-400"></i>
+                        ) : (
+                          <i className="fas fa-venus z-10 text-xl ml-1 text-rose-400"></i>
+                        )} */}
                       </h2>
                       <small className="text-zinc-400">
-                        NIK: {selectedQueue?.patient?.nik}
-                        {/* {selectedQueue.status_id == 1 && "Active"}
-                          {selectedQueue.status_id == 2 && "Done"}
-                        {selectedQueue.status_id == 3 && "Canceled"} */}
+                        NIK: {selectedQueue?.patient?.nik} | Gender: {selectedQueue?.patient?.gender}
                       </small>
                       <div className="border-t border-dashed mt-4"></div>
                     </div>
@@ -815,20 +799,13 @@ export default function Queue() {
         </div>
       </DashboardLayout>
 
-      {/* {queues?.map((obj) => (
-        <ModalDelete
-          id={"delete"+obj.id}
-          callback={() => cancelQueue(obj.id)}
-          title={`Delete queue ${obj.queue_number}?`}
-        ></ModalDelete>
-      ))} */}
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box px-0 pt-1 w-11/12 max-w-7xl">
           <div
             className={
-              "relative flex flex-col min-w-0 break-words w-full mb-32 min-h-fit rounded text-blueGray-700 bg-white"
+              "relative flex flex-col min-w-0 break-words w-full mb-32 min-h-fit rounded-md text-blueGray-700 bg-white"
             }
           >
             <div className="rounded-t-md mb-0 px-4 py-4 border-0">
@@ -840,11 +817,12 @@ export default function Queue() {
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                   <label
-                    className=""
+                    className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
                     ref={queueAddedRef}
                     htmlFor="addQueueModal"
                   >
-                    <i className="fas fa-x font-bold"></i>
+                    <i className="fas fa-x"></i>
                   </label>
                 </div>
               </div>
@@ -873,7 +851,7 @@ export default function Queue() {
                       Updated At
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Acitons
+                      Actions
                     </th>
                   </tr>
                 </thead>
