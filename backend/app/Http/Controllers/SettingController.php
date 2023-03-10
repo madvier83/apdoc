@@ -44,8 +44,6 @@ class SettingController extends Controller
             $logo = time() . '_' . $request->file('logo')->getClientOriginalName();
             $data['logo'] = $request->file('logo')->move('img/setting/logo', $logo);
             File::delete($setting->logo);
-        } else {
-            $data['logo'] = null;
         }
 
         $setting->fill($data);

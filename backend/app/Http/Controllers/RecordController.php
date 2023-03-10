@@ -8,6 +8,7 @@ use App\Models\RecordDiagnose;
 use App\Models\RecordFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class RecordController extends Controller
 {
@@ -15,6 +16,40 @@ class RecordController extends Controller
     {
         $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->get();
         return response()->json($record);
+    }
+
+    public function addImageRecord(Request $request, $record) {
+        $record = Record::find($record);
+
+        if (!$record) {
+            return response()->json(['message' => 'Record not found!'], 404);
+        }
+
+        $this->validate($request, [
+            'files' => 'required|image',
+        ]);
+
+        if ($request->file('files')) {
+            $patient = Patient::find($record->patient_id);
+
+            $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
+            $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+            $request->file('files')->move($path, $recordFileName);
+            
+            $recordFile = [
+                'record_id' => $record->id,
+                'file'      => $path . '/' . $recordFileName
+            ];
+
+            $recordFile = RecordFile::create($recordFile);
+            return response()->json($recordFile);
+        }
+    }
+
+    public function deleteImageRecord($id) {
+        $recordFile = RecordFile::find($id);
+        File::delete($recordFile->file);
+        return response()->json(['message' => 'Image deleted successfully!']);
     }
 
     public function show($patient)
@@ -26,6 +61,7 @@ class RecordController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
+            'files'      => 'image',
             'patient_id' => 'required',
             'complaint'  => 'required',
             'inspection' => 'required',
@@ -38,30 +74,17 @@ class RecordController extends Controller
         $record = Record::create($data);
 
         // Record File
-        if ($request->file('file')) {
-            $patient = Patient::find($request->patient_id);
-
-            $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-            $request->file('files')->move('img/record/recordFile', $recordFileName);
-            
-            $recordFile = [
-                'record_id' => $record->id,
-                'file'      => 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now() . '/' . $recordFileName
-            ];
-
-            RecordFile::create($recordFile);
-        }
-
         if ($request->file('files')) {
             $patient = Patient::find($request->patient_id);
 
             foreach ($request->file('files') as $data) {
                 $recordFileName = time() . '_' . $data->getClientOriginalName();
-                $data->move('img/record/recordFile', $recordFileName);
+                $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                $data->move($path, $recordFileName);
                 
                 $recordFile = [
                     'record_id' => $record->id,
-                    'file'      => 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now() . '/' . $recordFileName
+                    'file'      => $path . '/' . $recordFileName
                 ];
 
                 RecordFile::create($recordFile);
@@ -94,6 +117,7 @@ class RecordController extends Controller
         }
 
         $this->validate($request, [
+            'files'      => 'image',
             'patient_id' => 'required',
             'complaint'  => 'required',
             'inspection' => 'required',
@@ -103,37 +127,26 @@ class RecordController extends Controller
         $data = $request->all();
         $data['employee_id'] = auth()->user()->employee_id ?? null;
 
-        // return $record = Record::where('id', $id)->update($data);
         $record->fill($data);
         $record->save();
 
         // Record File
-        if ($request->file('file')) {
-            RecordFile::where('record_id', $record->id)->delete();
-            $patient = Patient::find($request->patient_id);
-
-            $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-            $request->file('files')->move('img/record/recordFile', $recordFileName);
-            
-            $recordFile = [
-                'record_id' => $record->id,
-                'file'      => 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now() . '/' . $recordFileName
-            ];
-
-            RecordFile::create($recordFile);
-        }
-
         if ($request->file('files')) {
+            foreach($record->recordFiles as $rf) {
+                File::delete($rf->file);
+            }
             RecordFile::where('record_id', $record->id)->delete();
+
             $patient = Patient::find($request->patient_id);
 
             foreach ($request->file('files') as $data) {
                 $recordFileName = time() . '_' . $data->getClientOriginalName();
-                $data->move('img/record/recordFile', $recordFileName);
+                $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                $data->move($path, $recordFileName);
                 
                 $recordFile = [
                     'record_id' => $record->id,
-                    'file'      => 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now() . '/' . $recordFileName
+                    'file'      => $path . '/' . $recordFileName
                 ];
 
                 RecordFile::create($recordFile);
@@ -153,6 +166,8 @@ class RecordController extends Controller
                     RecordDiagnose::create($data);
                 }
             }
+        } else {
+            RecordDiagnose::where('record_id', $record->id)->delete();
         }
 
         return response()->json($record);
@@ -166,7 +181,6 @@ class RecordController extends Controller
             return response()->json(['message' => 'Record not found!'], 404);
         }
 
-        // $record->delete();
         $record->fill(['is_editable' => ($record->is_editable == 0) ? 1 : 0]);
         $record->save();
         return response()->json(['message' => 'Record updated successfully!']);
@@ -180,7 +194,10 @@ class RecordController extends Controller
             return response()->json(['message' => 'Record not found!'], 404);
         }
 
-        // $record->delete();
+        // foreach($record->recordFiles as $rf) {
+        //     File::delete($rf->file);
+        // }
+
         $record->fill(['is_delete' => true]);
         $record->save();
         return response()->json(['message' => 'Record deleted successfully!']);

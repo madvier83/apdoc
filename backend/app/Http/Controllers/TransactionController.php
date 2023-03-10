@@ -21,6 +21,12 @@ class TransactionController extends Controller
         return response()->json($transaction);
     }
 
+    public function status($cancelled)
+    {
+        $transaction = Transaction::where('is_cancelled', $cancelled)->with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->get();
+        return response()->json($transaction);
+    }
+
     public function code()
     {
 
@@ -146,7 +152,7 @@ class TransactionController extends Controller
         Transaction::where('id', $transaction->id)->update(['discount' => $totalDiscount, 'total' => $totalPayment]);
         Queue::where('patient_id', $request->patient_id)->update(['status_id' => 3]);
 
-        return response()->json('Transaction successfully');
+        return response()->json(Transaction::find($transaction->id));
     }
 
     public function update(Request $request, $id)

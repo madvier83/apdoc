@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
@@ -116,6 +116,7 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
 
 	$router->get('/v1/queue-details', 'QueueDetailController@index');
+	$router->get('/v1/queue-detail', 'QueueDetailController@getByDoctor');
 	$router->post('/v1/queue-detail/{queue}/{employee}/{service}', 'QueueDetailController@create');
 	$router->put('/v1/queue-detail/{id}', 'QueueDetailController@update');
 
@@ -152,6 +153,7 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	// CASHIER
 	
 	$router->get('/v1/transactions', 'TransactionController@index');
+	$router->get('/v1/transaction/{cancelled}/status', 'TransactionController@status');
 	$router->get('/v1/transaction/code', 'TransactionController@code');
 	$router->post('/v1/transaction', 'TransactionController@create');
 	$router->put('/v1/transaction/{id}', 'TransactionController@update');
@@ -166,8 +168,11 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->get('/v1/records', 'RecordController@index');
 	$router->get('/v1/record/{patient}', 'RecordController@show');
 	$router->post('/v1/record', 'RecordController@create');
-	$router->put('/v1/record/{id}', 'RecordController@update');
+	$router->post('/v1/record/{id}', 'RecordController@update');
 	$router->put('/v1/record/{id}/editable', 'RecordController@updateEditable');
 	$router->delete('/v1/record/{id}', 'RecordController@destroy');
+
+	$router->post('/v1/record-image/{record}', 'RecordController@addImageRecord');
+	$router->delete('/v1/record-image/{id}', 'RecordController@deleteImageRecord');
 	
-// });
+});

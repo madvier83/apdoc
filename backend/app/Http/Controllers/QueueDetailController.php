@@ -14,9 +14,17 @@ class QueueDetailController extends Controller
         return response()->json($queueDetail);
     }
 
-    public function show($id)
+    public function getByDoctor()
     {
-        //
+        $employee_id = auth()->user()->employee_id ?? null;
+
+        if (!$employee_id) {
+            $queueDetail = QueueDetail::whereDate('created_at', Carbon::today())->with(['queue', 'employee', 'service'])->get();
+            return response()->json($queueDetail);
+        } else {
+            $queueDetail = QueueDetail::where('employee_id', auth()->user()->employee_id)->whereDate('created_at', Carbon::today())->with(['queue', 'employee', 'service'])->get();
+            return response()->json($queueDetail);
+        }
     }
 
     public function create($queue, $employee, $service)
