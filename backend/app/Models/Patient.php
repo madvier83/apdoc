@@ -17,4 +17,9 @@ class Patient extends Model
     {
         return $this->hasMany(Queue::class)->where('status_id', 1);
     }
+
+    public function growths()
+    {
+        return $this->hasMany(Growth::class);
+    }
 }

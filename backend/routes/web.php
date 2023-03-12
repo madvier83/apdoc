@@ -174,5 +174,23 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	$router->post('/v1/record-image/{record}', 'RecordController@addImageRecord');
 	$router->delete('/v1/record-image/{id}', 'RecordController@deleteImageRecord');
+
+	$router->get('/v1/growths', 'GrowthController@index');
+	$router->get('/v1/growth/latest', 'GrowthController@getLatest');
+	$router->get('/v1/growth/{id}', 'GrowthController@show');
+	$router->get('/v1/growth/{patient}/patient', 'GrowthController@getByPatient');
+	$router->post('/v1/growth', 'GrowthController@create');
+	$router->put('/v1/growth/{id}', 'GrowthController@update');
+	$router->delete('/v1/growth/{id}', 'GrowthController@destroy');
+
+	//  REPORT
+	$router->get('/v1/report-sales/summary/{from}/{to}', 'ReportSalesController@summary');
+	$router->get('/v1/report-sales/gross/{from}/{to}', 'ReportSalesController@gross');
+	$router->get('/v1/report-sales/payment/{from}/{to}', 'ReportSalesController@payment');
+	$router->get('/v1/report-sales/service/{from}/{to}', 'ReportSalesController@service');
+	$router->get('/v1/report-sales/item/{from}/{to}', 'ReportSalesController@item');
+	$router->get('/v1/report-sales/category/{from}/{to}', 'ReportSalesController@category');
+	$router->get('/v1/report-sales/promotion/{from}/{to}', 'ReportSalesController@promotion');
+	$router->get('/v1/report-sales/collected/{from}/{to}', 'ReportSalesController@collected');
 	
 });

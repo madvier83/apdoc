@@ -170,8 +170,8 @@ class TransactionController extends Controller
         $transaction->fill($data);
 
         $transaction->save();
-        TransactionItem::where('transaction_id', $id)->update($data);
-        TransactionService::where('transaction_id', $id)->update($data);
+        // TransactionItem::where('transaction_id', $id)->update($data);
+        // TransactionService::where('transaction_id', $id)->update($data);
         return response()->json(['message' => 'Service updated successfully!']);
     }
 
