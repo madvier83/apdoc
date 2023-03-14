@@ -57,6 +57,7 @@ export default function Transaction() {
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [categoryPayments, setCategoryPayments] = useState([]);
   const [categoryPaymentsLoading, setCategoryPaymentsLoading] = useState(true);
+  const [code, setCode] = useState("");
 
   const [cart, setCart] = useState({ array: [] });
   const [serviceCart, setServiceCart] = useState({ array: [] });
@@ -73,8 +74,6 @@ export default function Transaction() {
     items: [],
     services: [],
   };
-  const [transaction, setTransaction] = useState(dummyTransaction);
-  const [paymentAmount, setPaymentAmount] = useState("");
 
   const dummyQueue = {
     id: 0,
@@ -100,6 +99,9 @@ export default function Transaction() {
     },
     queue_details: null,
   };
+
+  const [transaction, setTransaction] = useState(dummyTransaction);
+  const [paymentAmount, setPaymentAmount] = useState("");
   const [selectedQueue, setSelectedQueue] = useState(dummyQueue);
 
   async function getSettings() {
@@ -413,6 +415,7 @@ export default function Transaction() {
     );
     setTotal(currentTotal);
   }
+
   function countSubtotal() {
     let currentSubtotal = 0;
     serviceCart.array?.map(
@@ -421,6 +424,7 @@ export default function Transaction() {
     cart.array?.map((obj) => (currentSubtotal = currentSubtotal + obj.total));
     setSubtotal(currentSubtotal);
   }
+
   function countTotalDiscount() {
     let currentTotalDiscount = 0;
     serviceCart.array?.map(
@@ -430,31 +434,6 @@ export default function Transaction() {
       (obj) => (currentTotalDiscount = currentTotalDiscount + obj.discount)
     );
     setTotalDiscount(currentTotalDiscount);
-  }
-
-  const print = useReactToPrint({
-    content: () => structRef.current,
-  });
-  async function createTransaction() {
-    console.log(transaction);
-    try {
-      const response = await axios.post(`transaction`, transaction, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
-      setIsPrint(true);
-      printRef.current.click();
-      setIsPrint(false);
-      getQueues();
-      setSelectedQueue(dummyQueue);
-      setTransaction(dummyTransaction);
-      setPaymentAmount(0);
-      transactionRef.current.click();
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   function suggestCash() {
@@ -488,6 +467,44 @@ export default function Transaction() {
     // console.log(newSuggest);
   }
 
+  const print = useReactToPrint({
+    content: () => structRef.current,
+  });
+
+  const [transactionSuccess, setTransactionSuccess] = useState(false);
+  async function createTransaction() {
+    // console.log(transaction);
+    try {
+      const response = await axios.post(`transaction`, transaction, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "application/json",
+        },
+      });
+      // reset
+      setCode(response.data?.code);
+      setTransactionSuccess(true);
+      transactionRef.current.click();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  useEffect(() => {
+    if (transactionSuccess) {
+      setIsPrint(true);
+      printRef.current.click();
+      setIsPrint(false);
+
+      setSelectedQueue(dummyQueue);
+      getQueues();
+      setPaymentAmount(0);
+      setTransaction(dummyTransaction);
+
+      setTransactionSuccess(false);
+    }
+  }, [transactionSuccess]);
+
+  // get required data
   useEffect(() => {
     getSettings();
     getQueues();
@@ -498,18 +515,18 @@ export default function Transaction() {
     getCategory();
     getCategoryPayments();
   }, []);
-
+  // change queue target
+  useEffect(() => {
+    clearCart();
+    addServiceCart();
+  }, [selectedQueue]);
+  // count totals
   useEffect(() => {
     countTotal();
     countSubtotal();
     countTotalDiscount();
   }, [selectedQueue, cart.array, serviceCart.array]);
-
-  useEffect(() => {
-    clearCart();
-    addServiceCart();
-  }, [selectedQueue]);
-
+  // preset transaction
   useEffect(() => {
     setTransaction((prev) => {
       return {
@@ -521,7 +538,7 @@ export default function Transaction() {
       };
     });
   }, [selectedQueue, cart.array, serviceCart.array, paymentAmount]);
-
+  //
   useEffect(() => {
     suggestCash();
     setTransaction((prev) => {
@@ -533,15 +550,9 @@ export default function Transaction() {
     });
     setPaymentAmount("");
   }, [total, selectedQueue, cart.array, serviceCart.array]);
-
+  //
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(moment().format("h:mm:ss A"));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
-  useEffect(() => {
-    console.log(transaction);
+    setTime(moment().format("h:mm:ss A"));
   }, [transaction]);
 
   return (
@@ -725,7 +736,8 @@ export default function Transaction() {
                           {selectedQueue?.patient?.name}
                         </h2>
                         <small className="text-zinc-400">
-                          NIK: {selectedQueue?.patient?.nik} | Gender: {selectedQueue?.patient?.gender}
+                          NIK: {selectedQueue?.patient?.nik} | Gender:{" "}
+                          {selectedQueue?.patient?.gender}
                           {/* {selectedQueue?.status_id == 1 && "Active"}
                           {selectedQueue?.status_id == 2 && "Done"}
                           {selectedQueue?.status_id == 3 && "Canceled"} */}
@@ -1108,7 +1120,7 @@ export default function Transaction() {
                   </div>
                   <div className="flex w-full justify-between items-center">
                     <small>Receipt Number</small>
-                    <small>APDOCXXXXXXX</small>
+                    <small>{code}</small>
                   </div>
                   <div className="flex w-full justify-between items-center">
                     <small>Customer</small>

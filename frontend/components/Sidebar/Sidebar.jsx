@@ -37,14 +37,6 @@ export default function Sidebar() {
 
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
-  const [adminMenu, setAdminMenu] = useState(false);
-  const [receptionistMenu, setReceptionistMenu] = useState(false);
-  const [doctorMenu, setDoctorMenu] = useState(false);
-  const [pharmacyMenu, setPharmacyMenu] = useState(false);
-  const [promotionMenu, setPromotionMenu] = useState(false);
-  const [cashierMenu, setCashierMenu] = useState(false);
-  const [reportsMenu, setReportsMenu] = useState(false);
-
   const initialSidebar = {
     admin: false,
     receptionist: false,
@@ -461,17 +453,17 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
-                          router.pathname == "/dashboard/doctor-patients" &&
-                          "text-emerald-500 animate-pulse"
+                          router.pathname == "/dashboard/doctor/patients" || router.pathname == "/dashboard/doctor/patients/[id]" ?
+                          "text-emerald-500 animate-pulse" : ""
                         }`}
                       >
                         <Link
-                          href="/dashboard/doctor-patients"
+                          href="/dashboard/doctor/patients"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/dashboard/doctor-patients"
+                              router.pathname == "/dashboard/doctor/patients" || router.pathname == "/dashboard/doctor/patients/[id]"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}
@@ -481,17 +473,17 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
-                          router.pathname == "/dashboard/queue" &&
+                          router.pathname == "/dashboard/doctor/queue" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="/dashboard/queue"
+                          href="/dashboard/doctor/queue"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/dashboard/queue"
+                              router.pathname == "/dashboard/doctor/queue"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}

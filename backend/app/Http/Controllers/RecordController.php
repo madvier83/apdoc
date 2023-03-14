@@ -18,7 +18,8 @@ class RecordController extends Controller
         return response()->json($record);
     }
 
-    public function addImageRecord(Request $request, $record) {
+    public function addImageRecord(Request $request, $record)
+    {
         $record = Record::find($record);
 
         if (!$record) {
@@ -33,9 +34,9 @@ class RecordController extends Controller
             $patient = Patient::find($record->patient_id);
 
             $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-            $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+            $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
             $request->file('files')->move($path, $recordFileName);
-            
+
             $recordFile = [
                 'record_id' => $record->id,
                 'file'      => $path . '/' . $recordFileName
@@ -46,7 +47,8 @@ class RecordController extends Controller
         }
     }
 
-    public function deleteImageRecord($id) {
+    public function deleteImageRecord($id)
+    {
         $recordFile = RecordFile::find($id);
         File::delete($recordFile->file);
         return response()->json(['message' => 'Image deleted successfully!']);
@@ -79,9 +81,9 @@ class RecordController extends Controller
 
             foreach ($request->file('files') as $data) {
                 $recordFileName = time() . '_' . $data->getClientOriginalName();
-                $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
                 $data->move($path, $recordFileName);
-                
+
                 $recordFile = [
                     'record_id' => $record->id,
                     'file'      => $path . '/' . $recordFileName
@@ -90,15 +92,17 @@ class RecordController extends Controller
                 RecordFile::create($recordFile);
             }
         }
-
+        
         // Record Diagnosa
         if ($request->diagnoses) {
+            return $request;
+            $diagnoseParse = $request->diagnoses;
             $diagnose = count($request->diagnoses);
             for ($i = 0; $i < $diagnose; $i++) {
-                if ($request->diagnoses[$i]) {
+                if ($diagnoseParse[$i]) {
                     $data = [
                         'record_id'     => $record->id,
-                        'diagnose_id'  => $request->diagnoses[$i],
+                        'diagnose_id'  => $diagnoseParse[$i],
                     ];
                     RecordDiagnose::create($data);
                 }
@@ -132,7 +136,7 @@ class RecordController extends Controller
 
         // Record File
         if ($request->file('files')) {
-            foreach($record->recordFiles as $rf) {
+            foreach ($record->recordFiles as $rf) {
                 File::delete($rf->file);
             }
             RecordFile::where('record_id', $record->id)->delete();
@@ -141,9 +145,9 @@ class RecordController extends Controller
 
             foreach ($request->file('files') as $data) {
                 $recordFileName = time() . '_' . $data->getClientOriginalName();
-                $path = 'img/record/recordFile/'. $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
                 $data->move($path, $recordFileName);
-                
+
                 $recordFile = [
                     'record_id' => $record->id,
                     'file'      => $path . '/' . $recordFileName

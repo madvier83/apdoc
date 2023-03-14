@@ -2,29 +2,35 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../../api/axios";
+import DashboardLayout from "../../../../layouts/DashboardLayout";
+import ModalBox from "../../../../components/Modals/ModalBox";
+import ModalDelete from "../../../../components/Modals/ModalDelete";
 import { Chart } from "react-google-charts";
 import { MultiSelect } from "react-multi-select-component";
+import { useRouter } from "next/router";
 
 export default function Patients() {
   const token = getCookies("token");
+  const router = useRouter();
+  const [patientId, setPatientId] = useState(null);
 
   const addModalRef = useRef();
   const putModalRef = useRef();
   const detailModalRef = useRef();
 
-  const [isRecord, setIsRecord] = useState(false);
+  const [isRecord, setIsRecord] = useState(true);
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
   const [record, setRecord] = useState([]);
   const [recordLoading, setRecordLoading] = useState(true);
+  const [patient, setPatient] = useState([]);
+  const [patientLoading, setPatientLoading] = useState(true);
   const [diagsosis, setDiagnosis] = useState([]);
   const [diagsosisLoading, setDiagnosisLoading] = useState(true);
 
   const initialRecordForm = {
+    id: "",
     patient_id: "",
     height: "",
     weight: "",
@@ -63,15 +69,16 @@ export default function Patients() {
     setPutForm({ [name]: value });
   };
 
-  async function getPatients() {
+  async function getPatient() {
+    setRecordLoading(true);
     try {
-      const response = await axios.get("/patients", {
+      const response = await axios.get(`/patient/${router.query.id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPatients(response.data);
-      setPatientsLoading(false);
+      setSelectedPatient(response.data);
+      setPatientLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -80,7 +87,7 @@ export default function Patients() {
   async function getRecord() {
     setRecordLoading(true);
     try {
-      const response = await axios.get(`/record/${selectedPatient?.id}`, {
+      const response = await axios.get(`/record/${router.query.id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -115,21 +122,35 @@ export default function Patients() {
   }
 
   async function addRecord(e) {
-    setAddForm({ patient_id: selectedPatient.id });
     e.preventDefault();
+
+    let formData = new FormData();
+    formData.append("patient_id", addForm.patient_id);
+    formData.append("complaint", addForm.complaint);
+    formData.append("inspection", addForm.inspection);
+    formData.append("therapy", addForm.therapy);
+    formData.append(`diagnoses`, JSON.stringify(addForm.diagnoses));
+    // formData.append("files[]", addForm.files);
+
+    for (var key of formData.entries()) {
+      console.log(key[0] + ", " + key[1]);
+    }
+
     try {
-      const response = await axios.post(`/record`, addForm, {
+      const response = await axios.post(`/record`, formData, {
         headers: {
           Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response)
       addModalRef.current.click();
       getRecord();
       setAddForm(initialRecordForm);
       setAddForm({ patient_id: selectedPatient.id });
       setAddFormError(initialRecordForm);
     } catch (err) {
+      console.error(err)
       setAddFormError(initialRecordForm);
       setAddFormError(err.response?.data);
     }
@@ -138,6 +159,16 @@ export default function Patients() {
   async function putRecord(e) {
     setPutForm({ patient_id: selectedPatient.id });
     e.preventDefault();
+    let data = new FormData();
+    data.append("patient_id", putForm.patient_id);
+    data.append("height", putForm.height);
+    data.append("weight", putForm.weight);
+    data.append("diagnoses", putForm.diagnoses);
+    data.append("complaint", putForm.complaint);
+    data.append("inspection", putForm.inspection);
+    data.append("therapy", putForm.therapy);
+    data.append("files", putForm.files);
+
     try {
       const response = await axios.put(`/record/${putForm.id}`, putForm, {
         headers: {
@@ -178,12 +209,13 @@ export default function Patients() {
   }
 
   useEffect(() => {
-    getPatients();
+    getPatient();
+    getRecord();
     getDiagnosis();
   }, []);
 
   useEffect(() => {
-    getRecord();
+    // selectedPatient.id && getRecord();
     setAddForm({ patient_id: selectedPatient.id });
     setPutForm({ patient_id: selectedPatient.id });
   }, [selectedPatient]);
@@ -194,138 +226,12 @@ export default function Patients() {
     });
     setAddForm({ diagnoses: data });
     setPutForm({ diagnoses: data });
+    console.log(selectedDiagnosis)
   }, [selectedDiagnosis]);
 
   return (
     <>
       <DashboardLayout title="Patient Records">
-        {!isRecord ? (
-          <div
-            className={
-              "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
-            }
-          >
-            <div className="rounded-t mb-0 px-4 py-4 border-0">
-              <div className="flex flex-wrap items-center">
-                <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                  <h3 className={"font-semibold text-lg "}>
-                    <i className="fas fa-filter mr-3"></i> Patients Table
-                  </h3>
-                </div>
-                <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right"></div>
-              </div>
-            </div>
-            <div className="min-h-[80vh] block w-full overflow-x-auto">
-              {/* Projects table */}
-              <table className="items-center w-full bg-transparent border-collapse">
-                <thead>
-                  <tr>
-                    <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      #
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Name
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Birth
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Phone
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Created At
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Updated At
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patientsLoading && (
-                    <tr>
-                      <td colSpan={99}>
-                        <div className="flex w-full justify-center my-4">
-                          <img src="/loading.svg" alt="now loading" />
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {patients?.map((obj, index) => {
-                    return (
-                      <tr
-                        key={obj.id}
-                        className="hover:bg-zinc-50 cursor-pointer"
-                        onClick={() => {
-                          setIsRecord(true);
-                          setSelectedPatient(obj);
-                        }}
-                      >
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                          <span className={"ml-3 font-bold "}>{index + 1}</span>
-                        </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          <i
-                            className={`text-md mr-2 ${
-                              obj.gender == "male"
-                                ? "text-blue-400 fas fa-mars"
-                                : "text-pink-400 fas fa-venus"
-                            }`}
-                          ></i>{" "}
-                          <span className={"font-bold"}>{obj.name}</span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          <span className={"capitalize"}>
-                            {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                            {obj.birth_place}
-                          </span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          <a
-                            href={`https://wa.me/${obj.phone.replace(
-                              /\D/g,
-                              ""
-                            )}`}
-                            target="_blank"
-                            className={""}
-                          >
-                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                            {obj.phone}
-                          </a>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          {moment(obj.created_at).format("DD MMM YYYY")}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          {moment(obj.updated_at).fromNow()}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          <div
-                            className="tooltip tooltip-left"
-                            data-tip="Records"
-                          >
-                            <label
-                              className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                              type="button"
-                              onClick={() => {
-                                setIsRecord(true);
-                                setSelectedPatient(obj);
-                              }}
-                            >
-                              <i className="fa-solid fa-heart-pulse"></i>{" "}
-                            </label>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ) : (
           <div
             className={
               "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700"
@@ -358,7 +264,7 @@ export default function Patients() {
                         <small className="text-zinc-400">Phone</small> <br />
                         <span className="font-sm text-zinc-800 line-clamp-2">
                           <a
-                            href={`https://wa.me/${selectedPatient?.phone.replace(
+                            href={`https://wa.me/${selectedPatient?.phone?.replace(
                               /\D/g,
                               ""
                             )}`}
@@ -456,7 +362,7 @@ export default function Patients() {
                         <button
                           className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
-                          onClick={() => setIsRecord(false)}
+                          onClick={() => router.back()}
                         >
                           Back <i className="fas fa-arrow-left"></i>
                         </button>
@@ -481,12 +387,15 @@ export default function Patients() {
                               key={obj.id}
                             >
                               <div className="border-t border-dashed"></div>
-                              <div className="card-body pr-5 pl-8 py-4">
+                              <div className="card-body pr-6 pl-0 py-4">
                                 <div className="flex">
                                   <span className="font-semibold ">
                                     {moment(obj.created_at).format(
                                       "DD MMMM YYYY, h:mm A"
                                     )}
+                                  </span>
+                                  <span className="text-xs ml-2">
+                                    ({moment(obj.created_at).fromNow()})
                                   </span>
 
                                   <label
@@ -499,7 +408,10 @@ export default function Patients() {
                                   >
                                     Edit <i className="fas fa-edit ml-2"></i>
                                   </label>
-                                  <label className=" btn btn-xs btn-error bg-rose-400 text-white ml-1 font-bold" htmlFor={obj.id}>
+                                  <label
+                                    className=" btn btn-xs btn-error bg-rose-400 text-white ml-1 font-bold"
+                                    htmlFor={obj.id}
+                                  >
                                     Delete <i className="fas fa-trash ml-2"></i>
                                   </label>
                                 </div>
@@ -556,12 +468,11 @@ export default function Patients() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          </div>../
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4">Add Record</h3>
-          <form onSubmit={addRecord} autoComplete="off">
+          <form onSubmit={(e) => addRecord(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <div className="flex gap-4">
@@ -649,7 +560,7 @@ export default function Patients() {
                 <span className="label-text">Diagnosa</span>
               </label>
               {/* <pre>{JSON.stringify(selectedDiagnosis)}</pre> */}
-              {/* <p>{JSON.stringify(selectedDiagnosis)}</p> */}
+              <p>{JSON.stringify(selectedDiagnosis)}</p>
               <MultiSelect
                 options={diagsosis || []}
                 value={selectedDiagnosis}
@@ -709,7 +620,7 @@ export default function Patients() {
 
         <ModalBox id="modal-put">
           <h3 className="font-bold text-lg mb-4">Edit Record</h3>
-          <form onSubmit={putRecord} autoComplete="off">
+          <form onSubmit={(e) => putRecord(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <div className="flex gap-4">
