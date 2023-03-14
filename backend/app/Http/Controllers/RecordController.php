@@ -78,8 +78,9 @@ class RecordController extends Controller
         // Record File
         if ($request->file('files')) {
             $patient = Patient::find($request->patient_id);
+            $fileParse = json_decode($request->file('files'));
 
-            foreach ($request->file('files') as $data) {
+            foreach ($fileParse as $data) {
                 $recordFileName = time() . '_' . $data->getClientOriginalName();
                 $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
                 $data->move($path, $recordFileName);
@@ -95,14 +96,12 @@ class RecordController extends Controller
         
         // Record Diagnosa
         if ($request->diagnoses) {
-            return $request;
-            $diagnoseParse = $request->diagnoses;
-            $diagnose = count($request->diagnoses);
-            for ($i = 0; $i < $diagnose; $i++) {
-                if ($diagnoseParse[$i]) {
+            $diagnose = json_decode($request->diagnoses);
+            for ($i = 0; $i < count($diagnose); $i++) {
+                if ($diagnose[$i]) {
                     $data = [
                         'record_id'     => $record->id,
-                        'diagnose_id'  => $diagnoseParse[$i],
+                        'diagnose_id'  => $diagnose[$i],
                     ];
                     RecordDiagnose::create($data);
                 }
@@ -160,12 +159,12 @@ class RecordController extends Controller
         // Record Diagnosa
         if ($request->diagnoses) {
             RecordDiagnose::where('record_id', $record->id)->delete();
-            $diagnose = count($request->diagnoses);
-            for ($i = 0; $i < $diagnose; $i++) {
-                if ($request->diagnoses[$i]) {
+            $diagnose = json_decode($request->diagnoses);
+            for ($i = 0; $i < count($diagnose); $i++) {
+                if ($request->diagnose[$i]) {
                     $data = [
                         'record_id'     => $record->id,
-                        'diagnose_id'  => $request->diagnoses[$i],
+                        'diagnose_id'  => $request->diagnose[$i],
                     ];
                     RecordDiagnose::create($data);
                 }
