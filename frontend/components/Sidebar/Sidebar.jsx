@@ -454,7 +454,7 @@ export default function Sidebar() {
                       <li
                         className={`items-center ${
                           router.pathname == "/dashboard/doctor/patients" || router.pathname == "/dashboard/doctor/patients/[id]" ?
-                          "text-emerald-500 animate-pulse" : ""
+                          "text-emerald-500 animate-pulse" : " "
                         }`}
                       >
                         <Link

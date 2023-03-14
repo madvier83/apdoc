@@ -161,10 +161,10 @@ class RecordController extends Controller
             RecordDiagnose::where('record_id', $record->id)->delete();
             $diagnose = json_decode($request->diagnoses);
             for ($i = 0; $i < count($diagnose); $i++) {
-                if ($request->diagnose[$i]) {
+                if ($diagnose[$i]) {
                     $data = [
                         'record_id'     => $record->id,
-                        'diagnose_id'  => $request->diagnose[$i],
+                        'diagnose_id'  => $diagnose[$i],
                     ];
                     RecordDiagnose::create($data);
                 }

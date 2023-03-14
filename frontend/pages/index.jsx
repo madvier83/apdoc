@@ -53,17 +53,17 @@ export default function Index() {
                     y="0"
                     >
                     <polygon
-                        className="text-blueGray-200 fill-current"
+                        className="text-blueGray-800 fill-current"
                         points="2560 0 2560 100 0 100"
                     ></polygon>
                     </svg>
                 </div>
                 </div>
 
-                <section className="pb-20 bg-blueGray-200 -mt-24">
+                <section className="pb-20 bg-blueGray-800 -mt-24">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap">
-                    <div className="lg:pt-12 pt-6 w-full md:w-4/12 px-4 text-center">
+                    <div className="lg:pt-0 pt-0 w-full md:w-4/12 px-4 text-center">
                         <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
                         <div className="px-4 py-5 flex-auto">
                             <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-red-400">
@@ -93,7 +93,7 @@ export default function Index() {
                         </div>
                     </div>
 
-                    <div className="pt-6 w-full md:w-4/12 px-4 text-center">
+                    <div className="pt-0 w-full md:w-4/12 px-4 text-center">
                         <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
                         <div className="px-4 py-5 flex-auto">
                             <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-emerald-400">
@@ -109,7 +109,7 @@ export default function Index() {
                     </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center mt-32">
+                    {/* <div className="flex flex-wrap items-center mt-32">
                     <div className="w-full md:w-5/12 px-4 mr-auto ml-auto">
                         <div className="text-blueGray-500 p-3 text-center inline-flex items-center justify-center w-16 h-16 mb-6 shadow-lg rounded-full bg-white">
                         <i className="fas fa-user-friends text-xl"></i>
@@ -129,9 +129,6 @@ export default function Index() {
                         JavaScript.
                         </p>
                         <Link href="/">
-                        {/* <a href="#pablo" className="font-bold text-blueGray-700 mt-8">
-                            Check Notus NextJS!
-                        </a> */}
                         </Link>
                     </div>
 
@@ -165,11 +162,11 @@ export default function Index() {
                         </blockquote>
                         </div>
                     </div>
-                    </div>
+                    </div> */}
                 </div>
                 </section>
 
-                <section className="relative py-20">
+                {/* <section className="relative py-20">
                 <div
                     className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20"
                     style={{ transform: "translateZ(0)" }}
@@ -415,7 +412,7 @@ export default function Index() {
                     </div>
                     </div>
                 </div>
-                </section>
+                </section> */}
 
                 <section className="pb-20 relative block bg-blueGray-800">
                 <div
@@ -492,7 +489,7 @@ export default function Index() {
                 </div>
                 </section>
 
-                <section className="relative block py-24 lg:pt-0 bg-blueGray-800">
+                <section className="relative block py-24 lg:pt-32 pb-32 bg-blueGray-800">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap justify-center lg:-mt-64 -mt-48">
                     <div className="w-full lg:w-6/12 px-4">
