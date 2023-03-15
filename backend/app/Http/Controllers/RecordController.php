@@ -141,10 +141,10 @@ class RecordController extends Controller
 
             $patient = Patient::find($request->patient_id);
 
-            foreach ($request->file('files') as $data) {
-                $recordFileName = time() . '_' . $data->getClientOriginalName();
+            // foreach ($request->file('files') as $data) {
+                $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
                 $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
-                $data->move($path, $recordFileName);
+                $request->file('files')->move($path, $recordFileName);
 
                 $recordFile = [
                     'record_id' => $record->id,
@@ -152,7 +152,7 @@ class RecordController extends Controller
                 ];
 
                 RecordFile::create($recordFile);
-            }
+            // }
         }
 
         // Record Diagnosa
