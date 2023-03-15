@@ -126,7 +126,7 @@ export default function Patients() {
     e.preventDefault();
 
     let formData = new FormData();
-    files.length > 0 && formData.append("files", files);
+    files.length > 0 && formData.append("files", files[0]);
     formData.append("patient_id", addForm.patient_id);
     formData.append("complaint", addForm.complaint);
     formData.append("inspection", addForm.inspection);

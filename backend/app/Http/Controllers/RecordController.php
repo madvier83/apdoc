@@ -78,12 +78,11 @@ class RecordController extends Controller
         // Record File
         if ($request->file('files')) {
             $patient = Patient::find($request->patient_id);
-            $fileParse = json_decode($request->file('files'));
 
-            foreach ($fileParse as $data) {
-                $recordFileName = time() . '_' . $data->getClientOriginalName();
+            // foreach ($request->file('files') as $data) {
+                $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
                 $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
-                $data->move($path, $recordFileName);
+                $request->file('files')->move($path, $recordFileName);
 
                 $recordFile = [
                     'record_id' => $record->id,
@@ -91,7 +90,7 @@ class RecordController extends Controller
                 ];
 
                 RecordFile::create($recordFile);
-            }
+            // }
         }
         
         // Record Diagnosa
