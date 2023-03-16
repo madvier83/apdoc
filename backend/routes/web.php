@@ -43,6 +43,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/user/{id}', 'UserController@update');
 	$router->delete('/v1/user/{id}', 'UserController@destroy');
 
+	$router->get('/v1/access/{user}/user', 'AccessController@getByUser');
+	$router->put('/v1/access/{user}', 'AccessController@update');
+
 	$router->get('/v1/clinics', 'ClinicController@index');
 	$router->get('/v1/clinic/{id}', 'ClinicController@show');
 	$router->post('/v1/clinic', 'ClinicController@create');

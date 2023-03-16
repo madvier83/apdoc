@@ -12,31 +12,50 @@ class AccessController extends Controller
 {
     public function index()
     {
-        $this->authorize('admin_access');
-
-        return view('admin.access.index',[
-            'users'     => User::with(['role', 'employees'])->get(),
-            'roles'     => Role::all(),
-            'menus'     => Menu::all(),
-            'accesses'  => Access::with('submenu')->get(),
-        ]);
+        // 
     }
 
-    public function update(Request $request, $id)
+    public function getByUser($user)
     {
-        if($request->menu) {
-            Access::where('user_id', $id)->update(['status' => false]);
-            
-            $menu = count($request->menu);
-            for($i = 0; $i < $menu; $i++){
-                if($request->menu[$i]) { 
-                    Access::where('user_id', $id)->where('submenu_id', $request->menu[$i])->update(['status' => true]); 
-                }
-            }
-        } else {
-            Access::where('user_id', $id)->update(['status' => false]);
+        $access = Access::where('user_id', $user)->get();
+        return response()->json($access);
+    }
+
+    public function update(Request $request, $user)
+    {
+        $this->validate($request, [
+            'accesses'  =>  'required',
+        ]);
+
+        $access = Access::where('user_id', $user)->first();
+
+        if (!$access) {
+            $data = [
+                'user_id'   => $user,
+                'accesses'  => $request->accesses
+            ];
+            Access::create($data);
+
+            $response = [
+                'user_id'   => $user,
+                'accesses'  => json_decode($request->accesses)
+            ];
+            return response()->json($response);
         }
 
-        return redirect('access')->with('success', 'Access updated successfully.');
+        return $data = [
+            'user_id'   => $user,
+            'accesses'  => $request->accesses
+        ];
+
+        $access->fill($data);
+
+        $access->save();
+
+        $response = [
+            'user_id'   => $user,
+            'accesses'  => json_decode($request->accesses)
+        ];
+        return response()->json($response);
     }
 }

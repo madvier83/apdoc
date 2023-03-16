@@ -15,10 +15,8 @@ class CreateAccessesTable extends Migration
     {
         Schema::create('accesses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('menu_id');
-            $table->foreignId('submenu_id');
-            $table->boolean('status')->default(false);
+            $table->foreignId('user_id')->unique();
+            $table->longText('accesess')->nullable();
             $table->timestamps();
         });
     }
