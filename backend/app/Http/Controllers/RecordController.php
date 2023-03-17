@@ -50,6 +50,12 @@ class RecordController extends Controller
     public function deleteImageRecord($id)
     {
         $recordFile = RecordFile::find($id);
+
+        if (!$recordFile) {
+            return response()->json(['message' => 'Record file not found!'], 404);
+        }
+
+        $recordFile->delete();
         File::delete($recordFile->file);
         return response()->json(['message' => 'Image deleted successfully!']);
     }

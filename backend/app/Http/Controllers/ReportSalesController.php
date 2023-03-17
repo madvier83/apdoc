@@ -29,7 +29,7 @@ class ReportSalesController extends Controller
 
         while ($dateFrom != $dateTo) {
             array_push($chart, [
-                $dateFrom,
+                Carbon::createFromFormat('Y-m-d', $dateFrom)->format('d M Y'),
                 Transaction::whereDate('created_at', $dateFrom)->sum('discount') + Transaction::whereDate('created_at', $dateFrom)->sum('total'),
                 (integer) Transaction::whereDate('created_at', $dateFrom)->where('is_cancelled', false)->sum('total'),
             ]);
