@@ -124,7 +124,6 @@ export default function Patients() {
 
   async function addRecord(e) {
     e.preventDefault();
-
     let formData = new FormData();
     files.length > 0 && formData.append("files", files[0]);
     formData.append("patient_id", addForm.patient_id);
@@ -132,11 +131,10 @@ export default function Patients() {
     formData.append("inspection", addForm.inspection);
     formData.append("therapy", addForm.therapy);
     formData.append(`diagnoses`, JSON.stringify(addForm.diagnoses));
-    // formData.append("files[]", addForm.files);
 
-    for (var key of formData.entries()) {
-      console.log(key[0] + ", " + key[1]);
-    }
+    // for (var key of formData.entries()) {
+    //   console.log(key[0] + ", " + key[1]);
+    // }
 
     try {
       const response = await axios.post(`/record`, formData, {
@@ -145,8 +143,8 @@ export default function Patients() {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response);
       addModalRef.current.click();
+      setFiles([]);
       getRecord();
       setAddForm(initialRecordForm);
       setAddForm({ patient_id: selectedPatient.id });
@@ -162,12 +160,12 @@ export default function Patients() {
     setPutForm({ patient_id: selectedPatient.id });
     e.preventDefault();
     let formData = new FormData();
+    files.length > 0 && formData.append("files", files[0]);
     formData.append("patient_id", putForm.patient_id);
     formData.append("complaint", putForm.complaint);
     formData.append("inspection", putForm.inspection);
     formData.append("therapy", putForm.therapy);
     formData.append(`diagnoses`, JSON.stringify(putForm.diagnoses));
-    // data.append("files", putForm.files);
 
     try {
       const response = await axios.post(`/record/${putForm.id}`, formData, {
@@ -176,8 +174,8 @@ export default function Patients() {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response);
       putModalRef.current.click();
+      setFiles([]);
       getRecord();
       setPutForm({ patient_id: selectedPatient.id });
       setPutForm(initialRecordForm);
@@ -240,6 +238,8 @@ export default function Patients() {
     setAddForm({ diagnoses: data });
     setPutForm({ diagnoses: data });
   }, [selectedDiagnosis]);
+
+  console.log(record);
 
   return (
     <>
@@ -398,22 +398,22 @@ export default function Patients() {
                             key={obj.id}
                           >
                             <div className="border-t border-dashed"></div>
-                            <div className="card-body pr-6 pl-0 py-4">
+                            <div className="card-body pr-6 pl-0 pt-4 pb-2">
                               <div className="flex">
                                 <div className="flex items-center">
-                                  <span className="font-semibold ">
+                                  <span className="font-semibold text-xl">
                                     {moment(obj.created_at).format(
                                       "DD MMMM YYYY, h:mm A"
                                     )}
                                   </span>
-                                  <span className="text-xs ml-2">
+                                  <span className="text-xs ml-2 mt-2">
                                     ({moment(obj.created_at).fromNow()})
                                   </span>
                                 </div>
                                 <div className="dropdown dropdown-end ml-auto rounded-md">
                                   <label
                                     tabIndex={0}
-                                    className="btn btn-ghost btn-xs m-1"
+                                    className="btn btn-ghost btn-sm m-1"
                                   >
                                     <i className="fa-solid fa-ellipsis-vertical"></i>
                                   </label>
@@ -422,7 +422,7 @@ export default function Patients() {
                                     className="dropdown-content menu p-2 shadow bg-base-100 rounded-md w-32"
                                   >
                                     <label
-                                      className="btn btn-ghost font-semibold rounded-md"
+                                      className="btn btn-sm flex justify-between text-emerald-600 btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
                                         putSelectedDiagnosis(obj);
@@ -432,7 +432,7 @@ export default function Patients() {
                                       Edit <i className="fas fa-edit ml-2"></i>
                                     </label>
                                     <label
-                                      className="btn btn-ghost font-semibold rounded-md"
+                                      className="btn btn-sm flex justify-between text-rose-600 btn-ghost font-semibold rounded-md"
                                       htmlFor={obj.id}
                                     >
                                       Delete{" "}
@@ -485,6 +485,29 @@ export default function Patients() {
                                   </tr>
                                 </tbody>
                               </table>
+                            </div>
+
+                            <div className="text-zinc-500 text-sm ml-[2px]">Files</div>
+                            <div className="flex gap-2 mb-4">
+                              {obj.record_files?.length > 0 &&
+                                obj.record_files?.map((obj) => {
+                                  return (
+                                    <div key={obj.id}>
+                                      <div className="flex items-center justify-center rounded-md overflow-hidden bg-gray-300 w-28 bg-cover h-28 my-4">
+                                        <img
+                                          className="min-w-full min-h-full"
+                                          src={`http://localhost:8000/${obj.file}`}
+                                          alt=""
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              <div key={obj.id}>
+                                <div className="flex items-center justify-center rounded-md overflow-hidden bg-gray-100 text-gray-500 w-28 bg-cover h-28 my-4">
+                                  <i className="fas fa-plus"></i>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         );
@@ -619,7 +642,7 @@ export default function Patients() {
               <input
                 type="file"
                 name="file"
-                multiple={true}
+                // multiple={true}
                 accept="image/*"
                 value={addForm.file}
                 onChange={(e) => onSelectFile(e)}
@@ -768,7 +791,7 @@ export default function Patients() {
               <input
                 type="file"
                 name="file"
-                multiple={true}
+                // multiple={true}
                 value={putForm.file}
                 onChange={(e) => handlePutInput(e)}
                 className="border-slate-300 w-full"
