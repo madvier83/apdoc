@@ -724,17 +724,17 @@ export default function Sidebar() {
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li
                         className={`items-center ${
-                          router.pathname == "/" &&
+                          router.pathname == "/dashboard/sales" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >
                         <Link
-                          href="#"
+                          href="/dashboard/sales"
                           className={"text-xs py-3 font-semibold block "}
                         >
                           <i
                             className={`fa-regular ${
-                              router.pathname == "/"
+                              router.pathname == "/dashboard/sales"
                                 ? "fa-folder-open"
                                 : "fa-folder"
                             } mr-2 text-sm`}
@@ -744,7 +744,7 @@ export default function Sidebar() {
                       </li>
                       <li
                         className={`items-center ${
-                          router.pathname == "/" &&
+                          router.pathname == "/dashboard" &&
                           "text-emerald-500 animate-pulse"
                         }`}
                       >

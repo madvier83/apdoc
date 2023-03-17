@@ -132,8 +132,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <DashboardLayout title="Dashboard" headerStats={true}>
-        <div className="mt-12 relative bg-gray-900 text-white rounded-md px-4 py-8 mx-0">
+      <DashboardLayout title="Dashboard">
+        <div className="mt-6 relative bg-white text-gray-900 rounded-md px-4 py-8 mx-0">
           <div className="dropdown ml-4">
             <label tabIndex={0}>
               <h1 className="text-2xl font-bold">Overview</h1>
