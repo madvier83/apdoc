@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { deleteCookie, getCookie, getCookies, setCookie } from "cookies-next";
 import moment from "moment/moment";
 import numeral from "numeral";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 
 import { Chart } from "react-google-charts";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file

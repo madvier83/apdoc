@@ -44,7 +44,7 @@ export default function Sidebar() {
     pharmacy: false,
     promotion: false,
     cashier: false,
-    reports: false,
+    report: false,
   };
   const [sidebar, setSidebar] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -137,6 +137,8 @@ export default function Sidebar() {
       ],
     },
   ];
+
+  console.log(router);
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -218,9 +220,10 @@ export default function Sidebar() {
               <hr className="my-4 md:min-w-full" />
 
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-                {access.map((menu) => {
+                {access.map((menu, index) => {
                   return (
                     <li
+                      key={index}
                       className={`items-center ${
                         router.pathname == "/" &&
                         "text-emerald-500 animate-pulse"
@@ -238,35 +241,37 @@ export default function Sidebar() {
                         {menu.name}
                       </button>
 
-                      {/* {sidebar.reports && ( */}
-                      <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                        {menu.submenu.map((obj) => {
-                          return (
-                            <li
-                              className={`items-center ${
-                                router.pathname == obj.route &&
-                                "text-emerald-500 animate-pulse"
-                              }`}
-                            >
-                              <Link
-                                href={obj.route}
-                                className={"text-xs py-3 font-semibold block capitalize"}
+                      {/* {sidebar.report && ( */}
+                        <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
+                          {menu.submenu.map((obj, index) => {
+                            return (
+                              <li
+                                key={index}
+                                className={`items-center ${
+                                  router.pathname.startsWith(obj.route) &&
+                                  "text-emerald-500 animate-pulse"
+                                }`}
                               >
-                                <i
-                                  className={`fa-regular ${
-                                    router.pathname == obj.route
-                                      ? "fa-folder-open"
-                                      : "fa-folder"
-                                  } mr-2 text-sm`}
-                                ></i>{" "}
-                                {obj.name}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
+                                <Link
+                                  href={obj.route}
+                                  className={
+                                    "text-xs py-3 font-semibold block capitalize"
+                                  }
+                                >
+                                  <i
+                                    className={`fa-regular ${
+                                      router.pathname.startsWith(obj.route)
+                                        ? "fa-folder-open"
+                                        : "fa-folder"
+                                    } mr-2 text-sm`}
+                                  ></i>{" "}
+                                  {obj.name}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       {/* )} */}
-                      {/* end submenu */}
                     </li>
                   );
                 })}

@@ -1,44 +1,41 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
-import numeral from "numeral";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Service() {
+export default function Promotion() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [services, setServices] = useState([]);
-  const [servicesLoading, setServicesLoading] = useState(true);
+  const [promotion, setPromotion] = useState([]);
+  const [promotionLoading, setPromotionLoading] = useState(true);
 
-  const initialServiceForm = {
-    id: "",
+  const initialCategoryForm = {
     name: "",
-    price: "",
-    commission: "",
+    discount: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialCategoryForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialCategoryForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialCategoryForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialCategoryForm
   );
 
   const handleAddInput = (event) => {
@@ -50,79 +47,79 @@ export default function Service() {
     setPutForm({ [name]: value });
   };
 
-  async function getServices() {
+  async function getPromotion() {
     try {
-      const response = await axios.get("/services", {
+      const response = await axios.get("promotions", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setServices(response.data);
-      setServicesLoading(false);
+      setPromotion(response.data);
+      setPromotionLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addService(e) {
+  async function addPromotion(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("service", addForm, {
+      const response = await axios.post("promotion", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getServices();
-      setAddForm(initialServiceForm);
-      setAddFormError(initialServiceForm);
+      getPromotion();
+      setAddForm(initialCategoryForm);
+      setAddFormError(initialCategoryForm);
     } catch (err) {
-      setAddFormError(initialServiceForm);
+      setAddFormError(initialCategoryForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putService(e) {
+  async function putPromotion(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`service/${putForm.id}`, putForm, {
+      const response = await axios.put(`promotion/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getServices();
-      setPutForm(initialServiceForm);
-      setPutFormError(initialServiceForm);
+      getPromotion();
+      setPutForm(initialCategoryForm);
+      setPutFormError(initialCategoryForm);
     } catch (err) {
-      setPutFormError(initialServiceForm);
+      setPutFormError(initialCategoryForm);
       setPutFormError(err.response?.data);
     }
   }
 
-  async function deleteService(id) {
+  async function deletePromotion(id) {
     try {
-      const response = await axios.delete(`service/${id}`, {
+      const response = await axios.delete(`promotion/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getServices();
+      getPromotion();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getServices();
+    getPromotion();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Services">
+      <DashboardLayout title="Promotion">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -131,7 +128,9 @@ export default function Service() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i> Services Table</h3>
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Promotion Table
+                </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -146,20 +145,17 @@ export default function Service() {
           </div>
           <div className="min-h-[80vh] block w-full overflow-x-auto">
             {/* Projects table */}
-            <table className="items-center w-full bg-transparent border-collapse">
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead>
                 <tr>
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Service
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Name
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Price
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Commision
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Discount
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -173,7 +169,7 @@ export default function Service() {
                 </tr>
               </thead>
               <tbody>
-                {servicesLoading && (
+                {promotionLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -182,24 +178,17 @@ export default function Service() {
                     </td>
                   </tr>
                 )}
-                {services?.map((obj, index) => {
+                {promotion?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
-                        <span className={"ml-3 font-bold "}>{index + 1}</span>
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                        <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold"}>{obj.name}</span>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-4 font-bold"}>{obj.name}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold capitalize"}>
-                          Rp. {numeral(obj.price).format("0,0")}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold"}>
-                          Rp. {numeral(obj.commission).format("0,0")}
-                        </span>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-4 font-bold"}>{obj.discount}%</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -208,6 +197,8 @@ export default function Service() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        Active */}
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -215,16 +206,13 @@ export default function Service() {
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialServiceForm);
+                              setPutFormError("");
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -232,7 +220,7 @@ export default function Service() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deleteService(obj.id)} title={`Delete service?`}></ModalDelete>
+                      <ModalDelete id={obj.id} callback={() => deletePromotion(obj.id)} title={`Delete promotion?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -243,8 +231,8 @@ export default function Service() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Service</h3>
-          <form onSubmit={addService} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
+          <form onSubmit={addPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -255,6 +243,7 @@ export default function Service() {
                 name="name"
                 value={addForm.name}
                 onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
@@ -266,39 +255,21 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Discount</span>
               </label>
               <input
                 type="number"
-                name="price"
-                value={addForm.price}
+                name="discount"
+                value={addForm.discount}
                 onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.price && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.price}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Commission</span>
-              </label>
-              <input
-                type="text"
-                name="commission"
-                value={addForm.commission}
-                onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.commission && (
+              {addFormError.discount && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.commission}
+                    {addFormError.discount}
                   </span>
                 </label>
               )}
@@ -317,8 +288,8 @@ export default function Service() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Service</h3>
-          <form onSubmit={putService} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
+          <form onSubmit={putPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -329,6 +300,7 @@ export default function Service() {
                 name="name"
                 value={putForm.name}
                 onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
@@ -340,39 +312,21 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Discount</span>
               </label>
               <input
                 type="number"
-                name="price"
-                value={putForm.price}
+                name="discount"
+                value={putForm.discount}
                 onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.price && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.price}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Commission</span>
-              </label>
-              <input
-                type="text"
-                name="commission"
-                value={putForm.commission}
-                onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.commission && (
+              {putFormError.discount && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.commission}
+                    {putFormError.discount}
                   </span>
                 </label>
               )}
@@ -385,7 +339,9 @@ export default function Service() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

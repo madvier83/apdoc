@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 import numeral from "numeral";
-import ModalDelete from "../../components/Modals/ModalDelete";
 
-export default function Outcome() {
+export default function Appointment() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -16,13 +16,13 @@ export default function Outcome() {
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
-  const [category, setCategory] = useState([]);
-  const [categoryLoading, setCategoryLoading] = useState(true);
+  const [patients, setPatients] = useState([]);
+  const [patientsLoading, setPatientsLoading] = useState(true);
 
   const initialItemForm = {
-    note: "",
-    nominal: "",
-    category_outcome_id: "",
+    patient_id: "",
+    description: "",
+    appointment_date: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -53,27 +53,28 @@ export default function Outcome() {
 
   async function getItem() {
     try {
-      const response = await axios.get("outcomes", {
+      const response = await axios.get("appointments", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setItem(response.data);
+      console.log(response.data.data);
+      setItem(response.data.data);
       setItemLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function getCategory() {
+  async function getPatients() {
     try {
-      const response = await axios.get("category-outcomes", {
+      const response = await axios.get("patients", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setCategory(response.data);
-      setCategoryLoading(false);
+      setPatients(response.data);
+      setPatientsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -82,7 +83,7 @@ export default function Outcome() {
   async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("outcome", addForm, {
+      const response = await axios.post("appointment", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -102,7 +103,7 @@ export default function Outcome() {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`outcome/${putForm.id}`, putForm, {
+      const response = await axios.put(`appointment/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -120,7 +121,7 @@ export default function Outcome() {
 
   async function deleteItem(id) {
     try {
-      const response = await axios.delete(`outcome/${id}`, {
+      const response = await axios.delete(`appointment/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -133,14 +134,12 @@ export default function Outcome() {
 
   useEffect(() => {
     getItem();
-    getCategory();
+    getPatients();
   }, []);
-
-  console.log(item)
 
   return (
     <>
-      <DashboardLayout title="Outcome">
+      <DashboardLayout title="Appointment">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -150,7 +149,7 @@ export default function Outcome() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Outcome Table
+                  <i className="fas fa-filter mr-3"></i> Appointment Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -172,14 +171,20 @@ export default function Outcome() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
+                  <th className="pl-1 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Name
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Note
+                    Description
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Nominal
+                    Appointment
+                  </th>
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Date
+                  </th>
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Time
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -188,7 +193,7 @@ export default function Outcome() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -208,17 +213,36 @@ export default function Outcome() {
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category_outcome?.name}</span>
-                      </td>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3"}>{obj.note}</span>
-                      </td>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3"}>{numeral(obj.nominal).format("0,0")}</span>
+                        <i
+                          className={`text-md mr-2 ${
+                            obj.patient?.gender == "male"
+                              ? "text-blue-400 fas fa-mars"
+                              : "text-pink-400 fas fa-venus"
+                          }`}
+                        ></i>{" "}
+                        <span className={"font-bold"}>{obj.patient?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                      {moment(obj.created_at).format("DD MMM YYYY")}
+                        <span>{obj.description.slice(0, 40)} ...</span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span className="ml-2">
+                          {moment(obj.appointment_date).fromNow()}
+                        </span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span>
+                          {moment(obj.appointment_date).format("DD MMM YYYY")}
+                        </span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span>
+                          {moment(obj.appointment_date).format("h:mm A")}
+                        </span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
@@ -226,7 +250,7 @@ export default function Outcome() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                        <span className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -238,16 +262,23 @@ export default function Outcome() {
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
+                        </span>
+                        <span
+                          className="tooltip tooltip-left"
+                          data-tip="Delete"
+                        >
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
                           </label>
-                        </div>
-                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete outcome?`}></ModalDelete>
+                        </span>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteItem(obj.id)}
+                          title={`Delete appointment?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -258,21 +289,22 @@ export default function Outcome() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Outcome</h3>
+          <h3 className="font-bold text-lg mb-4">Add Appointment</h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Patients</span>
               </label>
               <select
-                name="category_outcome_id"
+                name="patient_id"
                 onChange={(e) => handleAddInput(e)}
                 required
-                value={addForm.category_outcome_id}
+                value={addForm.patient_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
-                <option value="">Select</option>
-                {category?.map((obj) => {
+                <option value="">Unasigned</option>
+                {patients?.map((obj) => {
                   return (
                     <option key={obj.id} value={obj.id}>
                       {obj.name}
@@ -280,49 +312,48 @@ export default function Outcome() {
                   );
                 })}
               </select>
-              {addFormError.category_outcome_id && (
+              {addFormError.patient_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.category_outcome_id}
+                    {addFormError.patient_id}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Nominal</span>
-              </label>
-              <input
-                type="number"
-                name="nominal"
-                value={addForm.nominal}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.nominal && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.nominal}
-                  </span>
-                </label>
-              )}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Note</span>
+                <span className="label-text">Description</span>
               </label>
               <input
                 type="text"
-                name="note"
-                value={addForm.note}
+                name="description"
+                value={addForm.description}
                 onChange={(e) => handleAddInput(e)}
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.note && (
+              {addFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.note}
+                    {addFormError.description}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Appointment date</span>
+              </label>
+              <input
+                type="datetime-local"
+                name="appointment_date"
+                value={addForm.appointment_date}
+                onChange={(e) => handleAddInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.appointment_date && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.appointment_date}
                   </span>
                 </label>
               )}
@@ -341,22 +372,22 @@ export default function Outcome() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Outcome</h3>
+          <h3 className="font-bold text-lg mb-4">Update Appointment</h3>
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-            <label className="label">
-                <span className="label-text">Category</span>
+              <label className="label">
+                <span className="label-text">Patients</span>
               </label>
               <select
-                name="category_outcome_id"
+                name="patient_id"
                 onChange={(e) => handlePutInput(e)}
                 required
-                value={putForm.category_outcome_id}
+                value={putForm.patient_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
-                <option value="">Select</option>
-                {category?.map((obj) => {
+                <option value="">Unasigned</option>
+                {patients?.map((obj) => {
                   return (
                     <option key={obj.id} value={obj.id}>
                       {obj.name}
@@ -364,53 +395,51 @@ export default function Outcome() {
                   );
                 })}
               </select>
-              {putFormError.category_outcome_id && (
+              {putFormError.patient_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.category_outcome_id}
+                    {putFormError.patient_id}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Nominal</span>
-              </label>
-              <input
-                type="number"
-                name="nominal"
-                value={putForm.nominal}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.nominal && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.nominal}
-                  </span>
-                </label>
-              )}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Note</span>
+                <span className="label-text">Description</span>
               </label>
               <input
                 type="text"
-                name="note"
-                value={putForm.note}
+                name="description"
+                value={putForm.description}
                 onChange={(e) => handlePutInput(e)}
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.note && (
+              {putFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.note}
+                    {putFormError.description}
                   </span>
                 </label>
               )}
-            </div>
+              <label className="label">
+                <span className="label-text">Appointment date</span>
+              </label>
+              <input
+                type="datetime-local"
+                name="appointment_date"
+                value={putForm.appointment_date}
+                onChange={(e) => handlePutInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.appointment_date && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.appointment_date}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label

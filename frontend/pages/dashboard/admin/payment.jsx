@@ -2,39 +2,43 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import numeral from "numeral";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function CategoryOutcome() {
+export default function Payment() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
+  const [item, setItem] = useState([]);
+  const [itemLoading, setItemLoading] = useState(true);
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
 
-  const initialCategoryForm = {
+  const initialItemForm = {
+    category_payment_id: "",
     name: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialCategoryForm
+    initialItemForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialCategoryForm
+    initialItemForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialCategoryForm
+    initialItemForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialCategoryForm
+    initialItemForm
   );
 
   const handleAddInput = (event) => {
@@ -46,9 +50,23 @@ export default function CategoryOutcome() {
     setPutForm({ [name]: value });
   };
 
+  async function getItem() {
+    try {
+      const response = await axios.get("payments", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setItem(response.data);
+      setItemLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function getCategory() {
     try {
-      const response = await axios.get("category-outcomes", {
+      const response = await axios.get("category-payments", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -60,65 +78,66 @@ export default function CategoryOutcome() {
     }
   }
 
-  async function addCategory(e) {
+  async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("category-outcome", addForm, {
+      const response = await axios.post("payment", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getCategory();
-      setAddForm(initialCategoryForm);
-      setAddFormError(initialCategoryForm);
+      getItem();
+      setAddForm(initialItemForm);
+      setAddFormError(initialItemForm);
     } catch (err) {
-      setAddFormError(initialCategoryForm);
+      setAddFormError(initialItemForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putCategory(e) {
+  async function putItem(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`category-outcome/${putForm.id}`, putForm, {
+      const response = await axios.put(`payment/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getCategory();
-      setPutForm(initialCategoryForm);
-      setPutFormError(initialCategoryForm);
+      getItem();
+      setPutForm(initialItemForm);
+      setPutFormError(initialItemForm);
     } catch (err) {
-      setPutFormError(initialCategoryForm);
+      setPutFormError(initialItemForm);
       setPutFormError(err.response?.data);
     }
   }
 
-  async function deleteCategory(id) {
+  async function deleteItem(id) {
     try {
-      const response = await axios.delete(`category-outcome/${id}`, {
+      const response = await axios.delete(`payment/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getCategory();
+      getItem();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
+    getItem();
     getCategory();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Category Outcome">
+      <DashboardLayout title="Payment">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -128,7 +147,7 @@ export default function CategoryOutcome() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Outcome Table
+                  <i className="fas fa-filter mr-3"></i> Payment Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -153,6 +172,9 @@ export default function CategoryOutcome() {
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Name
                   </th>
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Category
+                  </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
@@ -165,7 +187,7 @@ export default function CategoryOutcome() {
                 </tr>
               </thead>
               <tbody>
-                {categoryLoading && (
+                {itemLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -174,7 +196,7 @@ export default function CategoryOutcome() {
                     </td>
                   </tr>
                 )}
-                {category?.map((obj, index) => {
+                {item?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
@@ -182,6 +204,9 @@ export default function CategoryOutcome() {
                       </th>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <span className={"ml-3 font-bold"}>{obj.name}</span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span>{obj.category_payment?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -205,10 +230,7 @@ export default function CategoryOutcome() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -216,7 +238,7 @@ export default function CategoryOutcome() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category payment?`}></ModalDelete>
+                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete payment?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -227,8 +249,8 @@ export default function CategoryOutcome() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Outcome</h3>
-          <form onSubmit={addCategory} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Payment</h3>
+          <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -250,6 +272,32 @@ export default function CategoryOutcome() {
                   </span>
                 </label>
               )}
+              <label className="label">
+                <span className="label-text">Category</span>
+              </label>
+              <select
+                name="category_payment_id"
+                onChange={(e) => handleAddInput(e)}
+                required
+                value={addForm.category_payment_id}
+                className="input input-bordered without-ring input-primary border-slate-300 w-full"
+              >
+                <option value="">Select</option>
+                {category?.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {addFormError.category_payment_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.category_payment_id}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -265,8 +313,8 @@ export default function CategoryOutcome() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Outcome</h3>
-          <form onSubmit={putCategory} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Payment</h3>
+          <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -288,6 +336,32 @@ export default function CategoryOutcome() {
                   </span>
                 </label>
               )}
+              <label className="label">
+                <span className="label-text">Category</span>
+              </label>
+              <select
+                name="category_payment_id"
+                onChange={(e) => handlePutInput(e)}
+                required
+                value={putForm.category_payment_id}
+                className="input input-bordered without-ring input-primary border-slate-300 w-full"
+              >
+                <option value="">Select</option>
+                {category?.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {putFormError.category_payment_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.category_payment_id}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -297,7 +371,9 @@ export default function CategoryOutcome() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

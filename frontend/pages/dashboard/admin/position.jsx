@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Position() {
   const token = getCookies("token");

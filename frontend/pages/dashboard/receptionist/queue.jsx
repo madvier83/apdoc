@@ -12,10 +12,10 @@ import { getCookies } from "cookies-next";
 import moment from "moment";
 import numeral from "numeral";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
-import axios from "../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import axios from "../../api/axios";
 import Link from "next/link";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Queue() {
   // Drag to scroll ref

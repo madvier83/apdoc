@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Payment() {
+export default function Outcome() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -20,8 +20,9 @@ export default function Payment() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
-    category_payment_id: "",
-    name: "",
+    note: "",
+    nominal: "",
+    category_outcome_id: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -52,7 +53,7 @@ export default function Payment() {
 
   async function getItem() {
     try {
-      const response = await axios.get("payments", {
+      const response = await axios.get("outcomes", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -66,7 +67,7 @@ export default function Payment() {
 
   async function getCategory() {
     try {
-      const response = await axios.get("category-payments", {
+      const response = await axios.get("category-outcomes", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -81,7 +82,7 @@ export default function Payment() {
   async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("payment", addForm, {
+      const response = await axios.post("outcome", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -101,7 +102,7 @@ export default function Payment() {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`payment/${putForm.id}`, putForm, {
+      const response = await axios.put(`outcome/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -119,7 +120,7 @@ export default function Payment() {
 
   async function deleteItem(id) {
     try {
-      const response = await axios.delete(`payment/${id}`, {
+      const response = await axios.delete(`outcome/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -135,9 +136,11 @@ export default function Payment() {
     getCategory();
   }, []);
 
+  console.log(item)
+
   return (
     <>
-      <DashboardLayout title="Payment">
+      <DashboardLayout title="Outcome">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -147,7 +150,7 @@ export default function Payment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Payment Table
+                  <i className="fas fa-filter mr-3"></i> Outcome Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -170,10 +173,13 @@ export default function Payment() {
                     #
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                    Category
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
+                    Note
+                  </th>
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Nominal
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -202,11 +208,14 @@ export default function Payment() {
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>{obj.name}</span>
-                      </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category_payment?.name}</span>
+                        <span>{obj.category_outcome?.name}</span>
+                      </td>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-3"}>{obj.note}</span>
+                      </td>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-3"}>{numeral(obj.nominal).format("0,0")}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -238,7 +247,7 @@ export default function Payment() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete payment?`}></ModalDelete>
+                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete outcome?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -249,37 +258,17 @@ export default function Payment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Payment</h3>
+          <h3 className="font-bold text-lg mb-4">Add Outcome</h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={addForm.name}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
-                  </span>
-                </label>
-              )}
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_payment_id"
+                name="category_outcome_id"
                 onChange={(e) => handleAddInput(e)}
                 required
-                value={addForm.category_payment_id}
+                value={addForm.category_outcome_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Select</option>
@@ -291,10 +280,49 @@ export default function Payment() {
                   );
                 })}
               </select>
-              {addFormError.category_payment_id && (
+              {addFormError.category_outcome_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.category_payment_id}
+                    {addFormError.category_outcome_id}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Nominal</span>
+              </label>
+              <input
+                type="number"
+                name="nominal"
+                value={addForm.nominal}
+                onChange={(e) => handleAddInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.nominal && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.nominal}
+                  </span>
+                </label>
+              )}
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Note</span>
+              </label>
+              <input
+                type="text"
+                name="note"
+                value={addForm.note}
+                onChange={(e) => handleAddInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.note && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.note}
                   </span>
                 </label>
               )}
@@ -313,37 +341,18 @@ export default function Payment() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Payment</h3>
+          <h3 className="font-bold text-lg mb-4">Update Outcome</h3>
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={putForm.name}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
-                  </span>
-                </label>
-              )}
-              <label className="label">
+            <label className="label">
                 <span className="label-text">Category</span>
               </label>
               <select
-                name="category_payment_id"
+                name="category_outcome_id"
                 onChange={(e) => handlePutInput(e)}
                 required
-                value={putForm.category_payment_id}
+                value={putForm.category_outcome_id}
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Select</option>
@@ -355,13 +364,53 @@ export default function Payment() {
                   );
                 })}
               </select>
-              {putFormError.category_payment_id && (
+              {putFormError.category_outcome_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.category_payment_id}
+                    {putFormError.category_outcome_id}
                   </span>
                 </label>
               )}
+              <label className="label">
+                <span className="label-text">Nominal</span>
+              </label>
+              <input
+                type="number"
+                name="nominal"
+                value={putForm.nominal}
+                onChange={(e) => handlePutInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.nominal && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.nominal}
+                  </span>
+                </label>
+              )}
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Note</span>
+              </label>
+              <input
+                type="text"
+                name="note"
+                value={putForm.note}
+                onChange={(e) => handlePutInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.note && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.note}
+                  </span>
+                </label>
+              )}
+            </div>
             </div>
             <div className="modal-action rounded-sm">
               <label
