@@ -16,10 +16,12 @@ export default function Patients() {
   const [patientId, setPatientId] = useState(null);
 
   const addModalRef = useRef();
+  const addFileModalRef = useRef();
   const putModalRef = useRef();
   const detailModalRef = useRef();
 
   const [isRecord, setIsRecord] = useState(true);
+  const [isGrowth, setIsGrowth] = useState(false);
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
   const [record, setRecord] = useState([]);
@@ -33,13 +35,13 @@ export default function Patients() {
   const initialRecordForm = {
     id: "",
     patient_id: "",
-    height: "",
-    weight: "",
+    // height: "",
+    // weight: "",
     diagnoses: [],
     complaint: "",
     inspection: "",
     therapy: "",
-    files: [],
+    // files: [],
   };
   const [selectedPatient, setSelectedPatient] = useState(initialRecordForm);
   const [selectedDiagnosis, setSelectedDiagnosis] = useState([]);
@@ -125,7 +127,7 @@ export default function Patients() {
   async function addRecord(e) {
     e.preventDefault();
     let formData = new FormData();
-    files.length > 0 && formData.append("files", files[0]);
+    // files.length > 0 && formData.append("files", files[0]);
     formData.append("patient_id", addForm.patient_id);
     formData.append("complaint", addForm.complaint);
     formData.append("inspection", addForm.inspection);
@@ -144,7 +146,7 @@ export default function Patients() {
         },
       });
       addModalRef.current.click();
-      setFiles([]);
+      // setFiles([]);
       getRecord();
       setAddForm(initialRecordForm);
       setAddForm({ patient_id: selectedPatient.id });
@@ -152,6 +154,43 @@ export default function Patients() {
     } catch (err) {
       console.error(err);
       setAddFormError(initialRecordForm);
+      setAddFormError(err.response?.data);
+    }
+  }
+
+  async function addFile(e, id) {
+    e.preventDefault();
+    let formData = new FormData();
+    files.length > 0 && formData.append("files", files[0]);
+
+    try {
+      const response = await axios.post(`/record-image/${id}`, formData, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      addFileModalRef.current.click();
+      getRecord();
+      e.target.value = null;
+    } catch (err) {
+      console.error(err);
+      setAddFormError(err.response?.data);
+    }
+  }
+
+  async function deleteFile(id) {
+    try {
+      const response = await axios.delete(`/record-image/${id}`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      getRecord();
+      setFiles([]);
+    } catch (err) {
+      console.error(err);
       setAddFormError(err.response?.data);
     }
   }
@@ -215,7 +254,6 @@ export default function Patients() {
     // I've kept this example simple by using the first image instead of multiple
     setFiles(e.target.files);
   };
-  console.log(files);
 
   useEffect(() => {
     if (router.isReady) {
@@ -238,8 +276,6 @@ export default function Patients() {
     setAddForm({ diagnoses: data });
     setPutForm({ diagnoses: data });
   }, [selectedDiagnosis]);
-
-  console.log(record);
 
   return (
     <>
@@ -305,52 +341,69 @@ export default function Patients() {
                     </div>
                   </div>
                   <div className="p-8 rounded-md bg-white w-2/3">
-                    <div className="">
+                    <div className="flex justify-between items-center">
                       <small className="text-2xl font-semibold">
                         Height & weight
                       </small>{" "}
-                      <br />
+                      <div className="flex gap-1">
+                        <div
+                          className="btn btn-xs btn-ghost bg-zinc-200 text-zinc-500 font-bold"
+                          onClick={() => setIsGrowth((prev) => !prev)}
+                        >
+                          Edit <i className="fas fa-edit ml-1"></i>
+                        </div>
+                        <div
+                          className="btn btn-xs btn-primary font-bold"
+                          onClick={() => setIsGrowth((prev) => !prev)}
+                        >
+                          Add <i className="fas fa-plus ml-1"></i>
+                        </div>
+                      </div>
                     </div>
                     <div className="my-3"></div>
-                    <div className="mt-4 w-full">
-                      <Chart
-                        chartType="LineChart"
-                        data={[
-                          [
-                            "Patient",
-                            "Height",
-                            { role: "annotation" },
+                    {isGrowth ? (
+                      <div className="flex"></div>
+                    ) : (
+                      <div className="mt-4 w-full">
+                        <Chart
+                          chartType="LineChart"
+                          data={[
+                            [
+                              "Patient",
+                              "Height",
+                              { role: "annotation" },
 
-                            "Weight",
-                            { role: "annotation" },
-                          ],
-                          ["20 Jan 2023", 169, "169", 55, "55"],
-                          ["22 Jan 2023", 171, "171", 55, "55"],
-                          ["28 Jan 2023", 171, "171", 54, "54"],
-                          ["20 Feb 2023", 172, "172", 52, "52"],
-                          ["27 Feb 2023", 174, "174", 50, "50"],
-                        ]}
-                        options={{
-                          legend: { position: "top", alignment: "end" },
-                          chartArea: { width: "90%", height: "80%" },
-                          bar: { groupWidth: "50%" },
-                          annotations: {
-                            textStyle: {
-                              fontSize: 16,
-                              color: "black",
+                              "Weight",
+                              { role: "annotation" },
+                            ],
+                            ["20 Jan 2023", 169, "169", 55, "55"],
+                            ["22 Jan 2023", 171, "171", 55, "55"],
+                            ["28 Jan 2023", 171, "171", 54, "54"],
+                            ["20 Feb 2023", 172, "172", 52, "52"],
+                            ["27 Feb 2023", 174, "174", 50, "50"],
+                          ]}
+                          options={{
+                            legend: { position: "top", alignment: "end" },
+                            chartArea: { width: "90%", height: "80%" },
+                            bar: { groupWidth: "50%" },
+                            annotations: {
+                              textStyle: {
+                                fontSize: 16,
+                                color: "black",
+                              },
                             },
-                          },
-                          lineWidth: 2,
-                          backgroundColor: { fill: "transparent" },
-                          pointSize: 10,
-                          pointShape: "diamond",
-                          lineDashStyle: [14, 2, 7, 2],
-                          colors: ["#f43f5e", "#6366f1"],
-                        }}
-                        width={"100%"}
-                        height={"240px"}
-                      />
-                    </div>
+                            lineWidth: 2,
+                            backgroundColor: { fill: "transparent" },
+                            pointSize: 10,
+                            pointShape: "diamond",
+                            lineDashStyle: [14, 2, 7, 2],
+                            colors: ["#f43f5e", "#6366f1"],
+                          }}
+                          width={"100%"}
+                          height={"240px"}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -403,7 +456,7 @@ export default function Patients() {
                                 <div className="flex items-center">
                                   <span className="font-semibold text-xl">
                                     {moment(obj.created_at).format(
-                                      "DD MMMM YYYY, h:mm A"
+                                      "dddd, DD MMMM YYYY, h:mm A"
                                     )}
                                   </span>
                                   <span className="text-xs ml-2 mt-2">
@@ -422,7 +475,7 @@ export default function Patients() {
                                     className="dropdown-content menu p-2 shadow bg-base-100 rounded-md w-32"
                                   >
                                     <label
-                                      className="btn btn-sm flex justify-between text-emerald-600 btn-ghost font-semibold rounded-md"
+                                      className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
                                         putSelectedDiagnosis(obj);
@@ -432,7 +485,7 @@ export default function Patients() {
                                       Edit <i className="fas fa-edit ml-2"></i>
                                     </label>
                                     <label
-                                      className="btn btn-sm flex justify-between text-rose-600 btn-ghost font-semibold rounded-md"
+                                      className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor={obj.id}
                                     >
                                       Delete{" "}
@@ -448,7 +501,7 @@ export default function Patients() {
                                   obj.created_at
                                 ).format("DD MMMM YYYY")}?`}
                               ></ModalDelete>
-                              <table className="w-2/3">
+                              <table className="">
                                 <tbody>
                                   <tr className="text-sm text-zinc-500 align-text-top">
                                     <td className="w-24">Complaint</td>
@@ -487,27 +540,69 @@ export default function Patients() {
                               </table>
                             </div>
 
-                            <div className="text-zinc-500 text-sm ml-[2px]">Files</div>
+                            <div className="text-zinc-500 text-sm ml-[2px]">
+                              Files
+                            </div>
                             <div className="flex gap-2 mb-4">
                               {obj.record_files?.length > 0 &&
                                 obj.record_files?.map((obj) => {
                                   return (
-                                    <div key={obj.id}>
-                                      <div className="flex items-center justify-center rounded-md overflow-hidden bg-gray-300 w-28 bg-cover h-28 my-4">
+                                    <React.Fragment key={obj.id}>
+                                      <label className="relative group">
+                                        <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-white border border-gray-400 w-28 h-28 my-4">
+                                          <img
+                                            className="object-cover grayscale opacity-80"
+                                            src={`http://localhost:8000/${obj.file}`}
+                                            alt=""
+                                          />
+                                        </div>
+                                        <div className="absolute opacity-0 group-hover:opacity-100 duration-300 top-[35%] left-[11%]">
+                                          <div className="flex">
+                                            <label
+                                              htmlFor={"fileNo" + obj.id}
+                                              className="btn btn-sm w-10 h-10 px-0 py-0 bg-rose-400 border-none"
+                                            >
+                                              <i className="fas fa-trash text-sm"></i>
+                                            </label>
+                                            <label
+                                              htmlFor={`filePreview` + obj.id}
+                                              className="btn btn-sm w-10 h-10 px-0 py-0 ml-2 bg-indigo-500 border-none"
+                                            >
+                                              <i className="fas fa-eye text-sm"></i>
+                                            </label>
+                                          </div>
+                                        </div>
+                                      </label>
+                                      <ModalDelete
+                                        id={"fileNo" + obj.id}
+                                        callback={() => deleteFile(obj.id)}
+                                        title={`Delete File?`}
+                                      ></ModalDelete>
+                                      <ModalBox id={`filePreview` + obj.id}>
                                         <img
-                                          className="min-w-full min-h-full"
                                           src={`http://localhost:8000/${obj.file}`}
                                           alt=""
                                         />
-                                      </div>
-                                    </div>
+                                        <div className="modal-action pt-0 mt-0">
+                                          <label
+                                            className="btn mt-2"
+                                            htmlFor={`filePreview` + obj.id}
+                                          >
+                                            Close
+                                          </label>
+                                        </div>
+                                      </ModalBox>
+                                    </React.Fragment>
                                   );
                                 })}
-                              <div key={obj.id}>
-                                <div className="flex items-center justify-center rounded-md overflow-hidden bg-gray-100 text-gray-500 w-28 bg-cover h-28 my-4">
+                              <label
+                                htmlFor="modal-add-files"
+                                onClick={() => setPutForm(obj)}
+                              >
+                                <div className="btn flex items-center justify-center rounded-md overflow-hidden border border-gray-400 border-dashed bg-gray-50 text-gray-500 w-28 bg-cover h-28 my-4">
                                   <i className="fas fa-plus"></i>
                                 </div>
-                              </div>
+                              </label>
                             </div>
                           </div>
                         );
@@ -524,49 +619,6 @@ export default function Patients() {
           <form onSubmit={(e) => addRecord(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              {/* <div className="flex gap-4">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Height</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="height"
-                    value={addForm.height}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.height && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.height}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Weight</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="weight"
-                    value={addForm.weight}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    autoComplete="new-off"
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.weight && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.weight}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div> */}
               <label className="label">
                 <span className="label-text">Complaint</span>
               </label>
@@ -636,7 +688,7 @@ export default function Patients() {
                 </label>
               )}
 
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">File</span>
               </label>
               <input
@@ -654,7 +706,7 @@ export default function Patients() {
                     {addFormError.file}
                   </span>
                 </label>
-              )}
+              )} */}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -668,6 +720,47 @@ export default function Patients() {
             </div>
           </form>
         </ModalBox>
+
+        <ModalBox id="modal-add-files">
+          <h3 className="font-bold text-lg mb-4">Add Files</h3>
+          <form onSubmit={(e) => addFile(e, putForm.id)} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">File</span>
+              </label>
+              <div className="rounded border border-slate-400 p-2">
+                <input
+                  type="file"
+                  name="file"
+                  // multiple={true}
+                  accept="image/*"
+                  // value={files}
+                  onChange={(e) => onSelectFile(e)}
+                  className="m-0 p-0 w-full"
+                />
+                {/* {addFormError.file && (
+                <label className="label">
+                <span className="label-text-alt text-rose-300">
+                    {addFormError.file}
+                  </span>
+                </label>
+              )} */}
+              </div>
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-add-files"
+                ref={addFileModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-primary rounded-md">Add</button>
+            </div>
+          </form>
+        </ModalBox>
+
         <ModalBox id="modal-put">
           <h3 className="font-bold text-lg mb-4">Edit Record</h3>
           <form onSubmit={(e) => putRecord(e)} autoComplete="off">
@@ -785,7 +878,7 @@ export default function Patients() {
                 </label>
               )}
 
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">File</span>
               </label>
               <input
@@ -802,7 +895,7 @@ export default function Patients() {
                     {putFormError.file}
                   </span>
                 </label>
-              )}
+              )} */}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -818,114 +911,6 @@ export default function Patients() {
             </div>
           </form>
         </ModalBox>
-        {/* <ModalBox id="modal-details">
-          <h3 className="font-bold text-lg mb-4">Detail Patient</h3>
-
-          <input type="hidden" autoComplete="off" />
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">NIK</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.nik}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.name}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Phone</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.phone}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Address</span>
-            </label>
-            <textarea
-              type="text"
-              rows={3}
-              value={putForm.address}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full h-16"
-            ></textarea>
-            <div className="flex gap-4 w-full">
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Place</span>
-                </label>
-                <input
-                  type="text"
-                  value={putForm.birth_place}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Date</span>
-                </label>
-                <input
-                  type="date"
-                  value={putForm.birth_date}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Gender</span>
-                </label>
-                <select
-                  name="gender"
-                  value={putForm.gender}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-                >
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className="modal-action rounded-sm">
-            <button
-              className="btn btn-ghost rounded-md"
-              onClick={() => {
-                detailModalRef.current.click();
-                setTimeout(() => putModalRef.current.click(), 120);
-              }}
-            >
-              Edit
-            </button>
-            <label
-              htmlFor="modal-details"
-              ref={detailModalRef}
-              className="btn bg-slate-600 border-none text-white rounded-md"
-            >
-              Close
-            </label>
-          </div>
-        </ModalBox> */}
       </DashboardLayout>
     </>
   );

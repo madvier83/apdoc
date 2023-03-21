@@ -413,9 +413,7 @@ export default function Queue() {
                                         : "bg-indigo-900 font-bold text-lg w-[4.4rem]"
                                     } h-24 transition-all duration-500 flex items-center justify-center mr-4 ease-out`}
                                   >
-                                    <h1 className="mb-1">
-                                      {obj.queue_number}
-                                    </h1>
+                                    <h1 className="mb-1">{obj.queue_number}</h1>
                                   </div>
                                   <div className="ml-2">
                                     <h2 className="card-title lg:text-lg">
@@ -428,7 +426,7 @@ export default function Queue() {
                                       {obj.status_id == 3 && "Canceled"}
                                     </small>
                                   </div>
-                                  <label
+                                  {/* <label
                                     className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 bg-indigo-900 bg-opacity-10 cursor-pointer duration-500 ${
                                       obj.id == selectedQueue.id
                                         ? "w-16 text-lg"
@@ -437,7 +435,7 @@ export default function Queue() {
                                     htmlFor={obj.queue_number}
                                   >
                                     <i className="fas fa-trash px-4"></i>
-                                  </label>
+                                  </label> */}
                                 </div>
                               </div>
                             </div>
@@ -486,22 +484,24 @@ export default function Queue() {
                           </div>
                         );
                       })}
-                    <label
-                      htmlFor="addQueueModal"
-                      onClick={getPatients}
-                      className={`card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4 ${
-                        !isRegular && "hidden"
-                      }`}
-                    >
-                      <div className="card-body py-4">
-                        <div className="flex items-center text-zinc-400">
-                          <div className="mx-auto">
-                            <span className="font-semibold">Add to queue</span>
-                            <i className="fas fa-plus ml-2"></i>
+                    {queues?.length <= 0 && (
+                      <label
+                        // htmlFor="addQueueModal"
+                        // onClick={getPatients}
+                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
+                          !isRegular && "hidden"
+                        }`}
+                      >
+                        <div className="card-body py-4">
+                          <div className="flex items-center text-zinc-400">
+                            <div className="mx-auto">
+                              <span className="font-semibold">No queue</span>
+                              {/* <i className="fas fa-plus ml-2"></i> */}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </label>
+                      </label>
+                    )}
                     {appointment?.length <= 0 && (
                       <label
                         className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
@@ -644,7 +644,7 @@ export default function Queue() {
                                           <i className="fas fa-edit"></i>
                                         </div>
                                       )} */}
-                                      <div
+                                      {/* <div
                                         onClick={() => cancelService(obj.id)}
                                         className="btn btn-ghost btn-sm px-2"
                                       >
@@ -653,18 +653,18 @@ export default function Queue() {
                                         ) : (
                                           <i className="fas fa-trash"></i>
                                         )}
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </div>
                                 );
                               })}
-                              <div
+                              {/* <div
                                 className="py-2 mt-1 text-sm flex items-center justify-center bg-gray-700 text-white rounded-md font-semibold cursor-pointer select-none"
                                 onClick={() => setIsAddService(true)}
                               >
                                 <span>Add service</span>
                                 <i className="fas fa-add ml-2 font-thin"></i>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>

@@ -16,9 +16,6 @@ import { DateRangePicker } from "react-date-range";
 export default function Sales() {
   const token = getCookies("token");
 
-  const addModalRef = useRef();
-  const putModalRef = useRef();
-
   const [chartData, setChartData] = useState([
     ["Date", "Gross Sales", "Net Sales"],
     ["", 0, 0]
@@ -360,7 +357,7 @@ export default function Sales() {
           </div>
         </div>
         <div className="flex gap-4 mt-4 mb-16">
-          <div className="bg-white min-h-16 rounded-md w-full mb-16 pb-8">
+          <div className="bg-white min-h-[72vh] rounded-md w-full pb-8 mb-96">
             <div className="flex items-center justify-between gap-2">
               <h3 className={"font-bold text-xl ml-8 pt-6"}>Sales Report</h3>
               <div className="mr-8 mt-8">
