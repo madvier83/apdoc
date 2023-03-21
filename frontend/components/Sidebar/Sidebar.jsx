@@ -50,24 +50,93 @@ export default function Sidebar() {
     (state, newState) => ({ ...state, ...newState }),
     initialSidebar
   );
-  const [cookieCheck, setCookieCheck] = useState(false)
+  const [cookieCheck, setCookieCheck] = useState(false);
   useEffect(() => {
     try {
-      let sidebarCookie = JSON.parse(getCookie("sidebar"))
-      setSidebar(sidebarCookie)
-      setCookieCheck(true)
-    } catch(e) {
-      console.error(e)
-      setCookie("sidebar", JSON.stringify(sidebar))
-      setCookieCheck(true)
+      let sidebarCookie = JSON.parse(getCookie("sidebar"));
+      setSidebar(sidebarCookie);
+      setCookieCheck(true);
+    } catch (e) {
+      console.error(e);
+      setCookie("sidebar", JSON.stringify(sidebar));
+      setCookieCheck(true);
     }
-  }, [])
+  }, []);
   useEffect(() => {
-    if(cookieCheck) {
-      setCookie("sidebar", JSON.stringify(sidebar))
+    if (cookieCheck) {
+      setCookie("sidebar", JSON.stringify(sidebar));
     }
-  }, [sidebar])
+  }, [sidebar]);
 
+  const access = [
+    {
+      name: "admin",
+      route: "/dashboard/admin",
+      submenu: [
+        { name: "position", route: "/dashboard/admin/position" },
+        { name: "employee", route: "/dashboard/admin/employee" },
+        { name: "service", route: "/dashboard/admin/service" },
+        { name: "diagnose", route: "/dashboard/admin/diagnose" },
+        {
+          name: "category-payment",
+          route: "/dashboard/admin/category-payment",
+        },
+        { name: "payment", route: "/dashboard/admin/payment" },
+        {
+          name: "category-outcome",
+          route: "/dashboard/admin/category-outcome",
+        },
+        { name: "outcome", route: "/dashboard/admin/outcome" },
+        { name: "promotion", route: "/dashboard/admin/promotion" },
+      ],
+    },
+    {
+      name: "receptionist",
+      route: "/dashboard/receptionist",
+      submenu: [
+        { name: "patient", route: "/dashboard/receptionist/patient" },
+        { name: "appointment", route: "/dashboard/receptionist/appointment" },
+        { name: "queue", route: "/dashboard/receptionist/queue" },
+      ],
+    },
+    {
+      name: "doctor",
+      route: "/dashboard/doctor",
+      submenu: [
+        { name: "patient", route: "/dashboard/doctor/patient" },
+        { name: "queue", route: "/dashboard/doctor/queue" },
+      ],
+    },
+    {
+      name: "pharmacy",
+      route: "/dashboard/pharmacy",
+      submenu: [
+        { name: "category-item", route: "/dashboard/pharmacy/category-item" },
+        { name: "item", route: "/dashboard/pharmacy/item" },
+        { name: "item-supply", route: "/dashboard/pharmacy/item-supply" },
+        {
+          name: "stock-adjustment",
+          route: "/dashboard/pharmacy/stock-adjustment",
+        },
+      ],
+    },
+    {
+      name: "cashier",
+      route: "/dashboard/cashier",
+      submenu: [
+        { name: "transaction", route: "/dashboard/cashier/transaction" },
+        { name: "history", route: "/dashboard/cashier/history" },
+      ],
+    },
+    {
+      name: "report",
+      route: "/dashboard/report",
+      submenu: [
+        { name: "sales", route: "/dashboard/report/sales" },
+        { name: "commision", route: "/dashboard/report/commision" },
+      ],
+    },
+  ];
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -149,624 +218,58 @@ export default function Sidebar() {
               <hr className="my-4 md:min-w-full" />
 
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-                <li
-                  className={`items-center ${
-                    router.pathname == "#" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({admin: !sidebar.admin})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-user mr-2 text-sm "}></i> Admin
-                  </button>
+                {access.map((menu) => {
+                  return (
+                    <li
+                      className={`items-center ${
+                        router.pathname == "/" &&
+                        "text-emerald-500 animate-pulse"
+                      }`}
+                    >
+                      <button
+                        onClick={() =>
+                          setSidebar({ reports: !sidebar.reports })
+                        }
+                        className={
+                          "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                        }
+                      >
+                        <i className={"fas fa-folder mr-2 text-sm "}></i>{" "}
+                        {menu.name}
+                      </button>
 
-                  {sidebar.admin && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/position" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/position"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/position"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Position
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/employee" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/employee"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/employee"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Employee
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/service" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/service"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/service"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Service
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/diagnose" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/diagnose"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/diagnose"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Diagnose
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/category-payment" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/category-payment"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/category-payment"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Category Payment
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/payment" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/payment"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/payment"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Payment
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/category-outcome" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/category-outcome"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/category-outcome"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Category Outcome
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/outcome" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/outcome"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/outcome"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Outcome
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/promotion" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/promotion"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/promotion"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Promotion
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li
-                  className={`items-center ${
-                    router.pathname == "#" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({receptionist: !sidebar.receptionist})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-newspaper mr-2 text-sm"}></i>{" "}
-                    Receptionist
-                  </button>
-
-                  {sidebar.receptionist && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/patients" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/patients"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/patients"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Patients
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/appointment" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/appointment"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/appointment"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Appointment
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/queue" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/queue"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/queue"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Queue
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li
-                  className={`items-center ${
-                    router.pathname == "#" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({doctor: !sidebar.doctor})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-user-doctor mr-2 text-sm "}></i>{" "}
-                    Doctor
-                  </button>
-
-                  {sidebar.doctor && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/doctor/patients" || router.pathname == "/dashboard/doctor/patients/[id]" ?
-                          "text-emerald-500 animate-pulse" : " "
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/doctor/patients"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/doctor/patients" || router.pathname == "/dashboard/doctor/patients/[id]"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Patients
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/doctor/queue" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/doctor/queue"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/doctor/queue"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Queue
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li
-                  className={`items-center ${
-                    router.pathname == "#" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({pharmacy: !sidebar.pharmacy})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-mortar-pestle mr-2 text-sm "}></i>{" "}
-                    Pharmacy
-                  </button>
-
-                  {sidebar.pharmacy && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/category-item" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/category-item"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/category-item"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Category Item
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/item" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/item"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/item"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Item
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/item-supply" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/item-supply"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/item-supply"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Item Supply
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/stock-adjustment" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/stock-adjustment"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/stock-adjustment"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Stock Adjustment
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-                <li
-                  className={`items-center ${
-                    router.pathname == "/dashboard/promotion" &&
-                    "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <Link
-                    href="/dashboard/promotion"
-                    className={`text-xs py-3 font-bold block text-slate-500 ${
-                      router.pathname == "/dashboard/promotion" &&
-                      "text-emerald-500 animate-pulse"
-                    }`}
-                  >
-                    <i className={"fas fa-tag mr-2 text-sm"}></i> Promotion
-                  </Link>
-                </li>
-
-                {/* {promotionMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Manage Data
-                        </Link>
-                      </li>
-                    </ul>
-                  )} */}
-
-                {/* end submenu */}
-
-                <li
-                  className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({cashier: !sidebar.cashier})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-money-bill mr-2 text-sm "}></i>{" "}
-                    Cashier
-                  </button>
-
-                  {sidebar.cashier && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/transaction" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/transaction"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/transaction"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Transaction
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/history" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/history"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/history"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          History
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li
-                  className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
-                  }`}
-                >
-                  <button
-                    onClick={() => setSidebar({reports: !sidebar.reports})}
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
-                    }
-                  >
-                    <i className={"fas fa-file mr-2 text-sm "}></i> Reports
-                  </button>
-
-                  {sidebar.reports && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard/sales" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="/dashboard/sales"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/dashboard/sales"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Sales
-                        </Link>
-                      </li>
-                      <li
-                        className={`items-center ${
-                          router.pathname == "/dashboard" &&
-                          "text-emerald-500 animate-pulse"
-                        }`}
-                      >
-                        <Link
-                          href="#"
-                          className={"text-xs py-3 font-semibold block "}
-                        >
-                          <i
-                            className={`fa-regular ${
-                              router.pathname == "/"
-                                ? "fa-folder-open"
-                                : "fa-folder"
-                            } mr-2 text-sm`}
-                          ></i>{" "}
-                          Commision
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
+                      {/* {sidebar.reports && ( */}
+                      <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
+                        {menu.submenu.map((obj) => {
+                          return (
+                            <li
+                              className={`items-center ${
+                                router.pathname == obj.route &&
+                                "text-emerald-500 animate-pulse"
+                              }`}
+                            >
+                              <Link
+                                href={obj.route}
+                                className={"text-xs py-3 font-semibold block capitalize"}
+                              >
+                                <i
+                                  className={`fa-regular ${
+                                    router.pathname == obj.route
+                                      ? "fa-folder-open"
+                                      : "fa-folder"
+                                  } mr-2 text-sm`}
+                                ></i>{" "}
+                                {obj.name}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      {/* )} */}
+                      {/* end submenu */}
+                    </li>
+                  );
+                })}
 
                 <hr className="my-4 md:min-w-full" />
 

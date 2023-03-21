@@ -16,9 +16,10 @@ export default function Patients() {
   const [patientId, setPatientId] = useState(null);
 
   const addModalRef = useRef();
+  const addGrowthModalRef = useRef();
   const addFileModalRef = useRef();
   const putModalRef = useRef();
-  const detailModalRef = useRef();
+  const putGrowthModalRef = useRef();
 
   const [isRecord, setIsRecord] = useState(true);
   const [isGrowth, setIsGrowth] = useState(false);
@@ -30,18 +31,33 @@ export default function Patients() {
   const [patientLoading, setPatientLoading] = useState(true);
   const [diagsosis, setDiagnosis] = useState([]);
   const [diagsosisLoading, setDiagnosisLoading] = useState(true);
+  const [growth, setGrowth] = useState([]);
+  const [growthLoading, setGrowthLoading] = useState(true);
   const [files, setFiles] = useState([]);
+
+  const [growthChart, setGrowthChart] = useState([
+    [
+      "Patient",
+      "Height",
+      { role: "annotation" },
+      "Weight",
+      { role: "annotation" },
+    ],
+    ["", 0, "0", 0, "0"],
+  ]);
 
   const initialRecordForm = {
     id: "",
     patient_id: "",
-    // height: "",
-    // weight: "",
     diagnoses: [],
     complaint: "",
     inspection: "",
     therapy: "",
-    // files: [],
+  };
+  const initialGrowthForm = {
+    id: "",
+    height: "",
+    weight: "",
   };
   const [selectedPatient, setSelectedPatient] = useState(initialRecordForm);
   const [selectedDiagnosis, setSelectedDiagnosis] = useState([]);
@@ -63,13 +79,38 @@ export default function Patients() {
     initialRecordForm
   );
 
+  const [addGrowthForm, setAddGrowthForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialGrowthForm
+  );
+  const [addGrowthFormError, setAddGrowthFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialGrowthForm
+  );
+  const [putGrowthForm, setPutGrowthForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialGrowthForm
+  );
+  const [putGrowthFormError, setPutGrowthFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialGrowthForm
+  );
+
   const handleAddInput = (event) => {
     const { name, value } = event.target;
     setAddForm({ [name]: value });
   };
+  const handleAddGrowthInput = (event) => {
+    const { name, value } = event.target;
+    setAddGrowthForm({ [name]: value });
+  };
   const handlePutInput = (event) => {
     const { name, value } = event.target;
     setPutForm({ [name]: value });
+  };
+  const handlePutGrowthInput = (event) => {
+    const { name, value } = event.target;
+    setPutGrowthForm({ [name]: value });
   };
 
   async function getPatient() {
@@ -88,7 +129,7 @@ export default function Patients() {
   }
 
   async function getRecord() {
-    setRecordLoading(true);
+    // setRecordLoading(true);
     try {
       const response = await axios.get(`/record/${router.query.id}`, {
         headers: {
@@ -98,6 +139,43 @@ export default function Patients() {
       // console.log(response.data);
       setRecord(response.data);
       setRecordLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function getGrowth() {
+    // setRecordLoading(true);
+    try {
+      const response = await axios.get(`/growth/${router.query.id}/patient`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      // console.log(response.data);
+      let chart = [
+        [
+          "Patient",
+          "Height",
+          { role: "annotation" },
+          "Weight",
+          { role: "annotation" },
+        ],
+      ];
+      if (response.data.length > 0) {
+        response.data.map((obj) => {
+          chart.push([
+            moment(obj.created_at).format("DD MMM YYYY"),
+            Number(obj.height),
+            obj.height,
+            Number(obj.weight),
+            obj.weight,
+          ]);
+        });
+        setGrowthChart(chart);
+      }
+      setGrowth(response.data);
+      setGrowthLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -155,6 +233,71 @@ export default function Patients() {
       console.error(err);
       setAddFormError(initialRecordForm);
       setAddFormError(err.response?.data);
+    }
+  }
+
+  async function addGrowth(e) {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `/growth`,
+        { patient_id: router.query.id, ...addGrowthForm },
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      addGrowthModalRef.current.click();
+      // setFiles([]);
+      getGrowth();
+      setAddGrowthForm(initialGrowthForm);
+      setAddGrowthFormError(initialGrowthForm);
+    } catch (err) {
+      console.error(err);
+      setAddGrowthFormError(initialGrowthForm);
+      setAddGrowthFormError(err.response?.data);
+    }
+  }
+
+  async function deleteGrowth(id) {
+    try {
+      const response = await axios.delete(`/growth/${id}`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setAddGrowthForm(initialGrowthForm);
+      getGrowth();
+      setIsGrowth(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function putGrowth(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `/growth/${putGrowthForm.id}`,
+        putGrowthForm,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "aplication/json",
+          },
+        }
+      );
+      putGrowthModalRef.current.click();
+      setPutGrowthForm(initialGrowthForm);
+      getGrowth();
+      setIsGrowth(false);
+    } catch (err) {
+      console.error(err);
+      setPutFormError(initialRecordForm);
+      setPutFormError(err.response?.data);
     }
   }
 
@@ -259,6 +402,7 @@ export default function Patients() {
     if (router.isReady) {
       getPatient();
       getRecord();
+      getGrowth();
       getDiagnosis();
     }
   }, [router.isReady]);
@@ -345,46 +489,147 @@ export default function Patients() {
                       <small className="text-2xl font-semibold">
                         Height & weight
                       </small>{" "}
-                      <div className="flex gap-1">
-                        <div
-                          className="btn btn-xs btn-ghost bg-zinc-200 text-zinc-500 font-bold"
-                          onClick={() => setIsGrowth((prev) => !prev)}
-                        >
-                          Edit <i className="fas fa-edit ml-1"></i>
+                      {isGrowth ? (
+                        <div className="flex gap-1">
+                          <div
+                            className="btn btn-xs btn-error bg-rose-400 text-white font-bold"
+                            onClick={() => setIsGrowth((prev) => !prev)}
+                          >
+                            Cancel <i className="fas fa-x ml-1"></i>
+                          </div>
                         </div>
-                        <div
-                          className="btn btn-xs btn-primary font-bold"
-                          onClick={() => setIsGrowth((prev) => !prev)}
-                        >
-                          Add <i className="fas fa-plus ml-1"></i>
+                      ) : (
+                        <div className="flex gap-1">
+                          <div
+                            className="btn btn-xs btn-ghost bg-zinc-200 text-zinc-500 font-bold"
+                            onClick={() => setIsGrowth((prev) => !prev)}
+                          >
+                            Edit <i className="fas fa-edit ml-1"></i>
+                          </div>
+                          <label
+                            htmlFor="modal-add-growth"
+                            className="btn btn-xs btn-primary font-bold"
+                            // onClick={() => setIsGrowth((prev) => !prev)}
+                          >
+                            Add <i className="fas fa-plus ml-1"></i>
+                          </label>
                         </div>
-                      </div>
+                      )}
                     </div>
                     <div className="my-3"></div>
                     {isGrowth ? (
-                      <div className="flex"></div>
+                      <div className="h-72 pb-0 overflow-scroll bg-opacity-25 border border-zinc-200 rounded-md">
+                        <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                          <thead>
+                            <tr>
+                              <th className="pr-6 pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                #
+                              </th>
+                              <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                Height (CM)
+                              </th>
+                              <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                Weight (KG)
+                              </th>
+                              <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                Created At
+                              </th>
+                              <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                Updated At
+                              </th>
+                              <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                                Actions
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {growthLoading && (
+                              <tr>
+                                <td colSpan={99}>
+                                  <div className="flex w-full justify-center my-4">
+                                    <img src="/loading.svg" alt="now loading" />
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                            {growth?.map((obj, index) => {
+                              return (
+                                <tr key={obj.id} className="hover:bg-zinc-50">
+                                  <th className="border-t-0 pl-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                                    <span className={"ml-3 font-bold"}>
+                                      {index + 1}
+                                    </span>
+                                  </th>
+                                  <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                                    <span className={"ml-4 font-bold"}>
+                                      {obj.height}
+                                    </span>
+                                  </td>
+                                  <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                                    <span className={"ml-4 font-bold"}>
+                                      {obj.weight}
+                                    </span>
+                                  </td>
+                                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                                    {moment(obj.created_at).format(
+                                      "DD MMM YYYY"
+                                    )}
+                                  </td>
+                                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                                    {moment(obj.updated_at).fromNow()}
+                                  </td>
+                                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                                    <div
+                                      className="tooltip tooltip-left"
+                                      data-tip="Edit"
+                                    >
+                                      <label
+                                        className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        type="button"
+                                        htmlFor="modal-put-growth"
+                                        onClick={() => {
+                                          setPutGrowthForm(obj);
+                                          setPutFormError("");
+                                        }}
+                                      >
+                                        <i className="fas fa-pen-to-square"></i>
+                                      </label>
+                                    </div>
+                                    <div
+                                      className="tooltip tooltip-left"
+                                      data-tip="Delete"
+                                    >
+                                      <label
+                                        className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        htmlFor={"growthDelete" + obj.id}
+                                      >
+                                        <i className="fas fa-trash"></i>
+                                      </label>
+                                    </div>
+                                    <ModalDelete
+                                      id={"growthDelete" + obj.id}
+                                      callback={() => deleteGrowth(obj.id)}
+                                      title={`Delete item?`}
+                                    ></ModalDelete>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     ) : (
-                      <div className="mt-4 w-full">
+                      <div className="w-full h-72">
                         <Chart
                           chartType="LineChart"
-                          data={[
-                            [
-                              "Patient",
-                              "Height",
-                              { role: "annotation" },
-
-                              "Weight",
-                              { role: "annotation" },
-                            ],
-                            ["20 Jan 2023", 169, "169", 55, "55"],
-                            ["22 Jan 2023", 171, "171", 55, "55"],
-                            ["28 Jan 2023", 171, "171", 54, "54"],
-                            ["20 Feb 2023", 172, "172", 52, "52"],
-                            ["27 Feb 2023", 174, "174", 50, "50"],
-                          ]}
+                          data={growthChart}
                           options={{
-                            legend: { position: "top", alignment: "end" },
-                            chartArea: { width: "90%", height: "80%" },
+                            legend: {
+                              position: "top",
+                              alignment: "center",
+                              top: 20,
+                            },
+                            chartArea: { width: "92%", height: "80%" },
                             bar: { groupWidth: "50%" },
                             annotations: {
                               textStyle: {
@@ -400,7 +645,7 @@ export default function Patients() {
                             colors: ["#f43f5e", "#6366f1"],
                           }}
                           width={"100%"}
-                          height={"240px"}
+                          height={"280px"}
                         />
                       </div>
                     )}
@@ -721,6 +966,63 @@ export default function Patients() {
           </form>
         </ModalBox>
 
+        <ModalBox id="modal-add-growth">
+          <h3 className="font-bold text-lg mb-4">Growth Record</h3>
+          <form onSubmit={(e) => addGrowth(e)} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Height (cm)</span>
+              </label>
+              <input
+                type="number"
+                name="height"
+                value={addGrowthForm.height}
+                onChange={(e) => handleAddGrowthInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              ></input>
+              {addGrowthFormError.height && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addGrowthFormError.height}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Weight (kg)</span>
+              </label>
+              <input
+                type="number"
+                name="weight"
+                value={addGrowthForm.weight}
+                onChange={(e) => handleAddGrowthInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              ></input>
+              {addGrowthFormError.weight && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addGrowthFormError.weight}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-add-growth"
+                ref={addGrowthModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-primary rounded-md">Add</button>
+            </div>
+          </form>
+        </ModalBox>
+
         <ModalBox id="modal-add-files">
           <h3 className="font-bold text-lg mb-4">Add Files</h3>
           <form onSubmit={(e) => addFile(e, putForm.id)} autoComplete="off">
@@ -906,6 +1208,65 @@ export default function Patients() {
                 Cancel
               </label>
               <button className="btn btn-success text-black rounded-md">
+                Update
+              </button>
+            </div>
+          </form>
+        </ModalBox>
+
+        <ModalBox id="modal-put-growth">
+          <h3 className="font-bold text-lg mb-4">Update Growth Record</h3>
+          <form onSubmit={(e) => putGrowth(e)} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Height (cm)</span>
+              </label>
+              <input
+                type="number"
+                name="height"
+                value={putGrowthForm.height}
+                onChange={(e) => handlePutGrowthInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              ></input>
+              {putGrowthFormError.height && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putGrowthFormError.height}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Weight (kg)</span>
+              </label>
+              <input
+                type="number"
+                name="weight"
+                value={putGrowthForm.weight}
+                onChange={(e) => handlePutGrowthInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              ></input>
+              {putGrowthFormError.weight && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putGrowthFormError.weight}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-put-growth"
+                ref={putGrowthModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-success text-zinc-900 rounded-md">
                 Update
               </button>
             </div>
