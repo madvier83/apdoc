@@ -7,15 +7,15 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Employee() {
+export default function User() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
   const detailModalRef = useRef();
 
-  const [employees, setEmployees] = useState([]);
-  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [positions, setPositions] = useState([]);
   const [positionsLoading, setPositionsLoading] = useState(true);
 
@@ -57,15 +57,15 @@ export default function Employee() {
     setPutForm({ [name]: value });
   };
 
-  async function getEmployee() {
+  async function getUser() {
     try {
-      const response = await axios.get("/employees", {
+      const response = await axios.get("/users", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setEmployees(response.data);
-      setEmployeesLoading(false);
+      setUsers(response.data);
+      setUsersLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -85,17 +85,17 @@ export default function Employee() {
     }
   }
 
-  async function addEmployee(e) {
+  async function addUser(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("/employee", addForm, {
+      const response = await axios.post("/user", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getEmployee();
+      getUser();
       setAddForm(initialEmployeeForm);
       setAddFormError(initialEmployeeForm);
     } catch (err) {
@@ -104,18 +104,18 @@ export default function Employee() {
     }
   }
 
-  async function putEmployee(e) {
+  async function putUser(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`/employee/${putForm.id}`, putForm, {
+      const response = await axios.put(`/user/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getEmployee();
+      getUser();
       setPutForm(initialEmployeeForm);
       setPutFormError(initialEmployeeForm);
     } catch (err) {
@@ -124,27 +124,28 @@ export default function Employee() {
     }
   }
 
-  async function deleteEmployee(id) {
+  async function deleteUser(id) {
     try {
-      const response = await axios.delete(`/employee/${id}`, {
+      const response = await axios.delete(`/user/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getEmployee();
+      getUser();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getEmployee();
+    getUser();
     getPositions();
   }, []);
 
+  console.log(users)
   return (
     <>
-      <DashboardLayout title="Employees">
+      <DashboardLayout title="Users">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -154,17 +155,17 @@ export default function Employee() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Employees Table
+                  <i className="fas fa-filter mr-3"></i> Users Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                <label
+                {/* <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
                 >
                   Add <i className="fas fa-add"></i>
-                </label>
+                </label> */}
               </div>
             </div>
           </div>
@@ -180,7 +181,7 @@ export default function Employee() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Position
+                    Email
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Phone
@@ -197,7 +198,7 @@ export default function Employee() {
                 </tr>
               </thead>
               <tbody>
-                {employeesLoading && (
+                {usersLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -206,25 +207,18 @@ export default function Employee() {
                     </td>
                   </tr>
                 )}
-                {employees?.map((obj, index) => {
+                {users?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <span className={"font-bold"}>{obj.name}</span>
+                        <span className={"font-bold"}>{obj.name || "-"}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <span className={" capitalize"}>
-                          {/* <i
-                            className={`fas fa-circle mr-2 ${
-                              obj.position?.name
-                                ? "text-emerald-400"
-                                : "text-orange-400"
-                            }`}
-                          ></i>{" "} */}
-                          {obj.position?.name ? obj.position.name : "unasigned"}
+                        <span className={""}>
+                          {obj.email}
                         </span>
                       </td>
 
@@ -258,7 +252,7 @@ export default function Employee() {
                             <i className="fas fa-eye"></i>
                           </label>
                         </div> */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                        {/* <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -270,7 +264,7 @@ export default function Employee() {
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </div>
+                        </div> */}
                         <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -279,7 +273,7 @@ export default function Employee() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteEmployee(obj.id)} title={`Delete employee?`}></ModalDelete>
+                        <ModalDelete id={obj.id} callback={() => deleteUser(obj.id)} title={`Delete user?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -290,8 +284,8 @@ export default function Employee() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Employee</h3>
-          <form onSubmit={addEmployee} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add User</h3>
+          <form onSubmit={addUser} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -474,8 +468,8 @@ export default function Employee() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Edit Employee</h3>
-          <form onSubmit={putEmployee} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Edit User</h3>
+          <form onSubmit={putUser} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -658,7 +652,7 @@ export default function Employee() {
         </ModalBox>
 
         <ModalBox id="modal-details">
-          <h3 className="font-bold text-lg mb-4">Detail Employee</h3>
+          <h3 className="font-bold text-lg mb-4">Detail User</h3>
 
           <input type="hidden" autoComplete="off" />
           <div className="form-control w-full">

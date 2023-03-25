@@ -136,8 +136,6 @@ export default function Outcome() {
     getCategory();
   }, []);
 
-  console.log(item)
-
   return (
     <>
       <DashboardLayout title="Outcome">
