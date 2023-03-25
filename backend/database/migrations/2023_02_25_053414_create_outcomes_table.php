@@ -18,8 +18,8 @@ class CreateOutcomesTable extends Migration
             $table->foreignId('category_outcome_id')->nullable();
             $table->string('nominal');
             $table->longText('note')->nullable();
-            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

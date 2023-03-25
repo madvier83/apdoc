@@ -17,8 +17,8 @@ class CreateDiagnosesTable extends Migration
             $table->id();
             $table->string('code');
             $table->longText('description');
-            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

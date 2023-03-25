@@ -11,6 +11,7 @@ use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
+use App\Models\Employee;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
@@ -35,10 +36,24 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
         }
         try {
+            $employee = Employee::create([
+                'nik'         => null,
+                'name'        => null,
+                'birth_place' => null,
+                'birth_date'  => null,
+                'gender'      => null,
+                'address'     => null,
+                'phone'       => null,
+                'position_id' => null,
+                'clinic_id'   => time(),
+            ]);
+
             $user = new User();
-            $user->email    = $request->email;
-            $user->password = app('hash')->make($request->password);
-            $user->role_id  = 2;
+            $user->email     = $request->email;
+            $user->password  = app('hash')->make($request->password);
+            $user->role_id   = 2;
+            $user->appdoc_id = time();
+            $user->employee_id = $employee->id;
             $user->save();
             return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);
         } catch (\Exception $e) {

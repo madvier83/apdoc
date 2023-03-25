@@ -17,8 +17,8 @@ class CreatePromotionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->double('discount');
-            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

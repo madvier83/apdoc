@@ -22,8 +22,8 @@ class CreateItemsTable extends Migration
             $table->integer('buy_price');
             $table->string('factory');
             $table->string('distributor');
-            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

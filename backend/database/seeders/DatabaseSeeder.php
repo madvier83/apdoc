@@ -29,6 +29,17 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
         ]);
 
+        $employee = Employee::create([
+            'nik'         => null,
+            'name'        => 'Administrator',
+            'birth_place' => null,
+            'birth_date'  => null,
+            'gender'      => null,
+            'address'     => null,
+            'phone'       => null,
+            'position_id' => null,
+        ]);
+
         User::create([
             'email'             => 'cursor.id',
             'password'          => app('hash')->make('Cursor123'),
@@ -38,13 +49,14 @@ class DatabaseSeeder extends Seeder
             'created_at_otp'    => Carbon::now(),
             'expired_otp'       => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
-            'is_verified'       => 1
+            'is_verified'       => 1,
+            'employee_id'       => $employee->id
         ]);
 
-        User::factory(10)->create();
-        Clinic::factory(10)->create();
+        // User::factory(10)->create();
+        // Clinic::factory(10)->create();
+        // Employee::factory(10)->create();
         Position::factory(10)->create();
-        Employee::factory(10)->create();
         Diagnose::factory(10)->create();
         Service::factory(10)->create();
         Patient::factory(10)->create();

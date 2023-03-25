@@ -22,6 +22,7 @@ class CreateRecordsTable extends Migration
             $table->longText('therapy')->nullable();
             $table->boolean('is_editable')->default(true);
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }
