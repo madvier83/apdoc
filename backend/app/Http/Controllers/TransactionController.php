@@ -17,7 +17,7 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->get();
+        $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($transaction);
     }
 
@@ -95,6 +95,7 @@ class TransactionController extends Controller
             'payment'       => $request->payment,
             'employee_id'   => auth()->user()->employees->id ?? null
         ];
+        $dataTransaction['clinic_id'] = auth()->user()->employee->clinic_id;
 
         $transaction = Transaction::create($dataTransaction);
         

@@ -18,6 +18,7 @@ class CreateAppointmentTable extends Migration
             $table->foreignId('patient_id');
             $table->longtext('description');
             $table->dateTime('appointment_date');
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

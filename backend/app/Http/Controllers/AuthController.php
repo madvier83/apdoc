@@ -11,6 +11,7 @@ use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
+use App\Models\Clinic;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
@@ -36,6 +37,17 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
         }
         try {
+            $clinic = Clinic::create([
+                'name'        => null,
+                'address'     => null,
+                'province'    => null,
+                'city'        => null,
+                'district'    => null,
+                'postal_code' => null,
+                'phone'       => null,
+                'apdoc_id'    => time() . 'AP' . User::latest()->first()->id + 1,
+            ]);
+
             $employee = Employee::create([
                 'nik'         => null,
                 'name'        => null,
@@ -45,14 +57,14 @@ class AuthController extends Controller
                 'address'     => null,
                 'phone'       => null,
                 'position_id' => null,
-                'clinic_id'   => time(),
+                'clinic_id'   => $clinic->id,
             ]);
 
             $user = new User();
-            $user->email     = $request->email;
-            $user->password  = app('hash')->make($request->password);
-            $user->role_id   = 2;
-            $user->appdoc_id = time();
+            $user->email       = $request->email;
+            $user->password    = app('hash')->make($request->password);
+            $user->role_id     = 2;
+            $user->apdoc_id    = $clinic->apdoc_id;
             $user->employee_id = $employee->id;
             $user->save();
             return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);

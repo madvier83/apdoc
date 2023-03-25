@@ -9,7 +9,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $service = Service::all();
+        $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($service);
     }
 
@@ -28,6 +28,7 @@ class ServiceController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $service = Service::create($data);
 
         return response()->json($service);

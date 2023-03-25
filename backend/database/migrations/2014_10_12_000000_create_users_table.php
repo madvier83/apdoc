@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->foreignId('role_id');
             $table->foreignId('employee_id')->nullable();
-            $table->string('appdoc_id')->nullable();
+            $table->string('apdoc_id')->unique()->nullable();
             $table->boolean('is_verified')->default(0);
             $table->boolean('is_delete')->default(false);
             $table->timestamps();

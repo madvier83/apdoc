@@ -10,7 +10,7 @@ class GrowthController extends Controller
 {
     public function index()
     {
-        $growth = Growth::all();
+        $growth = Growth::where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($growth);
     }
 
@@ -41,6 +41,7 @@ class GrowthController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $growth = Growth::create($data);
 
         return response()->json($growth);

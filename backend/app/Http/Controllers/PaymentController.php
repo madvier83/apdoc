@@ -9,7 +9,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payment = Payment::with('categoryPayment')->get();
+        $payment = Payment::with('categoryPayment')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($payment);
     }
 
@@ -27,6 +27,7 @@ class PaymentController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $payment = Payment::create($data);
 
         return response()->json($payment);

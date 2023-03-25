@@ -30,7 +30,7 @@ $router->post('/v1/auth/send/otp','AuthController@send_otp');
 $router->post('/v1/auth/change-password', ['as' => 'email.changepassword', 'uses' => 'AuthController@change_password']);
 $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// send email verification
 	$router->post('/v1/auth/send/email', 'AuthController@send_email');
@@ -196,4 +196,4 @@ $router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->get('/v1/report-sales/promotion/{from}/{to}', 'ReportSalesController@promotion');
 	$router->get('/v1/report-sales/collected/{from}/{to}', 'ReportSalesController@collected');
 	
-// });
+});

@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
             'email'             => 'cursor.id',
             'password'          => app('hash')->make('Cursor123'),
             'role_id'           => 2,
-            'phone'             => '+628995754988',
+            'phone'             => '+6289518223591',
             'otp_verification'  => '750587',
             'created_at_otp'    => Carbon::now(),
             'expired_otp'       => Carbon::now(),
@@ -56,11 +56,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         // Clinic::factory(10)->create();
         // Employee::factory(10)->create();
-        Position::factory(10)->create();
-        Diagnose::factory(10)->create();
-        Service::factory(10)->create();
-        Patient::factory(10)->create();
-        CategoryItem::factory(10)->create();
-        Item::factory(10)->create();
+        // Position::factory(10)->create();
+        // Diagnose::factory(10)->create();
+        // Service::factory(10)->create();
+        // Patient::factory(10)->create();
+        // CategoryItem::factory(10)->create();
+        // Item::factory(10)->create();
     }
 }

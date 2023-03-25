@@ -10,7 +10,7 @@ class StockAdjustmentController extends Controller
 {
     public function index()
     {
-        $itemSupply = StockAdjustment::orderBy('created_at', 'desc')->with(['itemSupply', 'itemSupply.item'])->get();
+        $itemSupply = StockAdjustment::orderBy('created_at', 'desc')->with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($itemSupply);
     }
 
@@ -35,6 +35,7 @@ class StockAdjustmentController extends Controller
             'before'        => $before->stock,
             'difference'    => $request->adjustment - $before->stock,
         ];
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
 
         $adjustment = StockAdjustment::create($data);
 

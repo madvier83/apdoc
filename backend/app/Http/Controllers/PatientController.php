@@ -9,7 +9,7 @@ class PatientController extends Controller
 {
     public function index()
     {
-        $patient = Patient::with('queues')->get();
+        $patient = Patient::with('queues')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($patient);
     }
 
@@ -32,6 +32,7 @@ class PatientController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $patient = Patient::create($data);
 
         return response()->json($patient);

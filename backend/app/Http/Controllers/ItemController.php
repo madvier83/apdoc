@@ -9,7 +9,7 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $item = Item::with(['categoryItem', 'itemSupplys'])->get();
+        $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($item);
     }
 
@@ -32,6 +32,7 @@ class ItemController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $item = Item::create($data);
 
         return response()->json($item);
