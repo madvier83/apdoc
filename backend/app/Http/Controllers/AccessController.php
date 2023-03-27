@@ -15,36 +15,36 @@ class AccessController extends Controller
         // 
     }
 
-    public function getByUser($user)
+    public function getByRole($role)
     {
-        $access = Access::where('user_id', $user)->get();
+        $access = Access::where('role_id', $role)->get();
         return response()->json($access);
     }
 
-    public function update(Request $request, $user)
+    public function update(Request $request, $role)
     {
         $this->validate($request, [
             'accesses'  =>  'required',
         ]);
 
-        $access = Access::where('user_id', $user)->first();
+        $access = Access::where('role_id', $role)->first();
 
         if (!$access) {
             $data = [
-                'user_id'   => $user,
+                'role_id'   => $role,
                 'accesses'  => $request->accesses
             ];
             Access::create($data);
 
             $response = [
-                'user_id'   => $user,
-                'accesses'  => json_decode($request->accesses)
+                'role_id'   => $role,
+                'accesses'  => $request->accesses
             ];
             return response()->json($response);
         }
 
-        return $data = [
-            'user_id'   => $user,
+        $data = [
+            'role_id'   => $role,
             'accesses'  => $request->accesses
         ];
 
@@ -53,8 +53,8 @@ class AccessController extends Controller
         $access->save();
 
         $response = [
-            'user_id'   => $user,
-            'accesses'  => json_decode($request->accesses)
+            'role_id'   => $role,
+            'accesses'  => $request->accesses
         ];
         return response()->json($response);
     }

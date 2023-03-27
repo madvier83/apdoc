@@ -61,6 +61,6 @@ class DatabaseSeeder extends Seeder
         // Service::factory(10)->create();
         // Patient::factory(10)->create();
         // CategoryItem::factory(10)->create();
-        // Item::factory(10)->create();
+        Item::factory(10)->create();
     }
 }

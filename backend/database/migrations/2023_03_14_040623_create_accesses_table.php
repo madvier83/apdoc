@@ -15,8 +15,8 @@ class CreateAccessesTable extends Migration
     {
         Schema::create('accesses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique();
-            $table->longText('accesess')->nullable();
+            $table->foreignId('role_id')->unique();
+            $table->longText('accesses')->nullable();
             $table->timestamps();
         });
     }
