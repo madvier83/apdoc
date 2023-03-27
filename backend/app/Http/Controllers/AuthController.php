@@ -295,7 +295,7 @@ class AuthController extends Controller
             if ($user->is_verified == 0) {
                 return response()->json(['status' => 'error', 'message' => 'user not verified'], 403);
             }
-            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role' => $user->role->name])->attempt($credentials)) {
+            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'accesses' => $user->role->accesses[0]->accesses])->attempt($credentials)) {
                 return response()->json(['status'=> 'error', 'message' => 'unauthorized'], 401);
             }
         } catch (\Throwable $th) {

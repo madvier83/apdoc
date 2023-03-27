@@ -17,6 +17,7 @@ class CreateAccessesTable extends Migration
             $table->id();
             $table->foreignId('role_id')->unique();
             $table->longText('accesses')->nullable();
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

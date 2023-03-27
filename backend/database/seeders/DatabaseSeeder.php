@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Access;
 use App\Models\CategoryItem;
 use App\Models\Clinic;
 use App\Models\Diagnose;
@@ -29,6 +30,17 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
         ]);
 
+        $clinic = Clinic::create([
+            'name'        => null,
+            'address'     => null,
+            'province'    => null,
+            'city'        => null,
+            'district'    => null,
+            'postal_code' => null,
+            'phone'       => null,
+            'apdoc_id'    => time() . 'AP1',
+        ]);
+
         $employee = Employee::create([
             'nik'         => null,
             'name'        => 'Administrator',
@@ -38,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'address'     => null,
             'phone'       => null,
             'position_id' => null,
+            'clinic_id'   => $clinic->id
         ]);
 
         User::create([
@@ -50,7 +63,14 @@ class DatabaseSeeder extends Seeder
             'expired_otp'       => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
             'is_verified'       => 1,
+            'apdoc_id'          => $clinic->apdoc_id,
             'employee_id'       => $employee->id
+        ]);
+
+        Access::create([
+            'role_id'  => 2,
+            'accesses' => '[{"name":"admin","submenu":[{"name":"service","status":1},{"name":"outcome","status":1}]},{"name":"receptionist","submenu":[{"name":"patient","status":1},{"name":"queue","status":1}]}'
+            
         ]);
 
         // User::factory(10)->create();
