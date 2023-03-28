@@ -1,45 +1,43 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
-
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
 import numeral from "numeral";
 
-export default function Appointment() {
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
+
+export default function Diagnose() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [item, setItem] = useState([]);
-  const [itemLoading, setItemLoading] = useState(true);
-  const [patients, setPatients] = useState([]);
-  const [patientsLoading, setPatientsLoading] = useState(true);
+  const [diagnosis, setDiagnosis] = useState([]);
+  const [diagnosisLoading, setDiagnosisLoading] = useState(true);
 
-  const initialItemForm = {
-    patient_id: "",
+  const initialDiagnosisForm = {
+    id: "",
+    code: "",
     description: "",
-    appointment_date: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialItemForm
+    initialDiagnosisForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialItemForm
+    initialDiagnosisForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialItemForm
+    initialDiagnosisForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialItemForm
+    initialDiagnosisForm
   );
 
   const handleAddInput = (event) => {
@@ -51,95 +49,79 @@ export default function Appointment() {
     setPutForm({ [name]: value });
   };
 
-  async function getItem() {
+  async function getDiagnosis() {
     try {
-      const response = await axios.get("appointments", {
+      const response = await axios.get("diagnoses", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      console.log(response.data.data);
-      setItem(response.data.data);
-      setItemLoading(false);
+      setDiagnosis(response.data);
+      setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function getPatients() {
-    try {
-      const response = await axios.get("patients", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      setPatients(response.data);
-      setPatientsLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function addItem(e) {
+  async function addDiagnosis(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("appointment", addForm, {
+      const response = await axios.post("diagnose", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getItem();
-      setAddForm(initialItemForm);
-      setAddFormError(initialItemForm);
+      getDiagnosis();
+      setAddForm(initialDiagnosisForm);
+      setAddFormError(initialDiagnosisForm);
     } catch (err) {
-      setAddFormError(initialItemForm);
+      setAddFormError(initialDiagnosisForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putItem(e) {
+  async function putDiagnosis(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`appointment/${putForm.id}`, putForm, {
+      const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getItem();
-      setPutForm(initialItemForm);
-      setPutFormError(initialItemForm);
+      getDiagnosis();
+      setPutForm(initialDiagnosisForm);
+      setPutFormError(initialDiagnosisForm);
     } catch (err) {
-      setPutFormError(initialItemForm);
+      setPutFormError(initialDiagnosisForm);
       setPutFormError(err.response?.data);
     }
   }
 
-  async function deleteItem(id) {
+  async function deleteDiagnosis(id) {
     try {
-      const response = await axios.delete(`appointment/${id}`, {
+      const response = await axios.delete(`diagnose/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getItem();
+      getDiagnosis();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getItem();
-    getPatients();
+    getDiagnosis();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Appointment">
+      <DashboardLayout title="Diagnose">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -149,7 +131,7 @@ export default function Appointment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Appointment Table
+                  <i className="fas fa-filter mr-3"></i> Diagnose Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -171,20 +153,11 @@ export default function Appointment() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-1 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Code
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Description
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Appointment
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Date
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Time
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -193,12 +166,12 @@ export default function Appointment() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                  Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
+                {diagnosisLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -207,78 +180,78 @@ export default function Appointment() {
                     </td>
                   </tr>
                 )}
-                {item?.map((obj, index) => {
+                {diagnosis?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.patient?.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>{obj.patient?.name}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.description.slice(0, 40)} ...</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="ml-2">
-                          {moment(obj.appointment_date).fromNow()}
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
+                        <span className={"font-bold ml-3 text-xl"}>
+                          {obj.code}
                         </span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>
-                          {moment(obj.appointment_date).format("DD MMM YYYY")}
-                        </span>
+                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <label htmlFor={`detail-${obj.id}`}>
+                          <span>{obj.description.slice(0, 40)} ...</span>
+                        </label>
+                        <input
+                          type="checkbox"
+                          id={`detail-${obj.id}`}
+                          className="modal-toggle"
+                        />
+                        <label
+                          htmlFor={`detail-${obj.id}`}
+                          className="modal cursor-pointer"
+                        >
+                          <label
+                            className="modal-box px-16 py-8 bg-primary text-primary-content max-w-md relative"
+                            htmlFor=""
+                          >
+                            <h3 className="text-3xl font-bold">{obj.code}</h3>
+                            <p className="py-4 opacity-90 text-base whitespace-pre-wrap">
+                              {obj.description}
+                            </p>
+                          </label>
+                        </label>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>
-                          {moment(obj.appointment_date).format("h:mm A")}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.created_at).format("DD MMM YYYY")}
+                      {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
-                        Active */}
-                        <span className="tooltip tooltip-left" data-tip="Edit">
+                        <div className="tooltip tooltip-left" data-tip="Detail">
+                          <label
+                            htmlFor={`detail-${obj.id}`}
+                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                        </div>
+                        <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError("");
+                              setPutFormError(initialDiagnosisForm);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </span>
-                        <span
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        </div>
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
                           </label>
-                        </span>
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteItem(obj.id)}
-                          title={`Delete appointment?`}
-                        ></ModalDelete>
+                        </div>
+                        <ModalDelete id={obj.id} callback={() => deleteDiagnosis(obj.id)} title={`Delete diagnosis?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -289,71 +262,44 @@ export default function Appointment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Appointment</h3>
-          <form onSubmit={addItem} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Diagnose</h3>
+          <form onSubmit={addDiagnosis} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Patients</span>
+                <span className="label-text">Code</span>
               </label>
-              <select
-                name="patient_id"
+              <input
+                type="text"
+                name="code"
+                value={addForm.code}
                 onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.patient_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {patients?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {addFormError.patient_id && (
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.code && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.patient_id}
+                    {addFormError.code}
                   </span>
                 </label>
               )}
               <label className="label">
                 <span className="label-text">Description</span>
               </label>
-              <input
+              <textarea
                 type="text"
                 name="description"
                 value={addForm.description}
                 onChange={(e) => handleAddInput(e)}
-                required
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
+                rows={6}
+                className="input input-bordered input-primary border-slate-300 w-full h-32"
+              ></textarea>
               {addFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {addFormError.description}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Appointment date</span>
-              </label>
-              <input
-                type="datetime-local"
-                name="appointment_date"
-                value={addForm.appointment_date}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.appointment_date && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.appointment_date}
                   </span>
                 </label>
               )}
@@ -372,71 +318,44 @@ export default function Appointment() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Appointment</h3>
-          <form onSubmit={putItem} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Diagnose</h3>
+          <form onSubmit={putDiagnosis} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Patients</span>
+                <span className="label-text">Code</span>
               </label>
-              <select
-                name="patient_id"
+              <input
+                type="text"
+                name="code"
+                value={putForm.code}
                 onChange={(e) => handlePutInput(e)}
-                required
-                value={putForm.patient_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {patients?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {putFormError.patient_id && (
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.code && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.patient_id}
+                    {putFormError.code}
                   </span>
                 </label>
               )}
               <label className="label">
                 <span className="label-text">Description</span>
               </label>
-              <input
+              <textarea
                 type="text"
                 name="description"
                 value={putForm.description}
                 onChange={(e) => handlePutInput(e)}
-                required
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
+                rows={6}
+                className="input input-bordered input-primary border-slate-300 w-full h-32"
+              ></textarea>
               {putFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {putFormError.description}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Appointment date</span>
-              </label>
-              <input
-                type="datetime-local"
-                name="appointment_date"
-                value={putForm.appointment_date}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.appointment_date && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.appointment_date}
                   </span>
                 </label>
               )}
@@ -449,9 +368,7 @@ export default function Appointment() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">
-                Update
-              </button>
+              <button className="btn btn-success bg-success rounded-md">Update</button>
             </div>
           </form>
         </ModalBox>

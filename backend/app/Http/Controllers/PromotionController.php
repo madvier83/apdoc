@@ -9,7 +9,7 @@ class PromotionController extends Controller
 {
     public function index()
     {
-        $promotion = Promotion::all();
+        $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($promotion);
     }
 
@@ -27,6 +27,7 @@ class PromotionController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $promotion = Promotion::create($data);
 
         return response()->json($promotion);

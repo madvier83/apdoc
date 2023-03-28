@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function CategoryPayment() {
+export default function CategoryItem() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -48,7 +48,7 @@ export default function CategoryPayment() {
 
   async function getCategory() {
     try {
-      const response = await axios.get("category-payments", {
+      const response = await axios.get("category-items", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -63,7 +63,7 @@ export default function CategoryPayment() {
   async function addCategory(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("category-payment", addForm, {
+      const response = await axios.post("category-item", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export default function CategoryPayment() {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`category-payment/${putForm.id}`, putForm, {
+      const response = await axios.put(`category-item/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -101,7 +101,7 @@ export default function CategoryPayment() {
 
   async function deleteCategory(id) {
     try {
-      const response = await axios.delete(`category-payment/${id}`, {
+      const response = await axios.delete(`category-item/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -118,7 +118,7 @@ export default function CategoryPayment() {
 
   return (
     <>
-      <DashboardLayout title="Category Payment">
+      <DashboardLayout title="Category Item">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -128,7 +128,7 @@ export default function CategoryPayment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Payment Table
+                  <i className="fas fa-filter mr-3"></i> Category Item Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -184,7 +184,7 @@ export default function CategoryPayment() {
                         <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                      {moment(obj.created_at).format("DD MMM YYYY")}
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
@@ -205,10 +205,7 @@ export default function CategoryPayment() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -216,7 +213,11 @@ export default function CategoryPayment() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category payment?`}></ModalDelete>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteCategory(obj.id)}
+                          title={`Delete category item?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -227,7 +228,7 @@ export default function CategoryPayment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
+          <h3 className="font-bold text-lg mb-4">Add Category Item</h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -239,7 +240,6 @@ export default function CategoryPayment() {
                 name="name"
                 value={addForm.name}
                 onChange={(e) => handleAddInput(e)}
-                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
@@ -265,7 +265,7 @@ export default function CategoryPayment() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
+          <h3 className="font-bold text-lg mb-4">Update Category Item</h3>
           <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -277,7 +277,6 @@ export default function CategoryPayment() {
                 name="name"
                 value={putForm.name}
                 onChange={(e) => handlePutInput(e)}
-                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
@@ -297,7 +296,9 @@ export default function CategoryPayment() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

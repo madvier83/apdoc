@@ -15,13 +15,13 @@ class CreateClinicsTable extends Migration
     {
         Schema::create('clinics', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->longText('address');
-            $table->string('province');
-            $table->string('city');
-            $table->string('district');
-            $table->string('postal_code');
-            $table->string('phone');
+            $table->string('name')->nullable();
+            $table->longText('address')->nullable();
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('phone')->nullable();
             $table->string('apdoc_id')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();

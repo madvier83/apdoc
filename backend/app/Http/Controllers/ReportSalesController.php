@@ -11,6 +11,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\TransactionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ReportSalesController extends Controller
@@ -21,14 +22,30 @@ class ReportSalesController extends Controller
         $discountSuccess = Transaction::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('is_cancelled', false)->sum('discount');
         $discountCancelled = Transaction::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('is_cancelled', true)->sum('discount');
 
-        $data['Gross Sales']    = $totalSuccess + $totalCancelled + $discountSuccess + $discountCancelled;
+        $chart = array();
+
+        $dateFrom = $from;
+        $dateTo   = Carbon::createFromFormat('Y-m-d', $to)->addDay(1)->format('Y-m-d');
+
+        while ($dateFrom != $dateTo) {
+            array_push($chart, [
+                Carbon::createFromFormat('Y-m-d', $dateFrom)->format('d M Y'),
+                Transaction::whereDate('created_at', $dateFrom)->sum('discount') + Transaction::whereDate('created_at', $dateFrom)->sum('total'),
+                (integer) Transaction::whereDate('created_at', $dateFrom)->where('is_cancelled', false)->sum('total'),
+            ]);
+
+            $dateFrom = Carbon::createFromFormat('Y-m-d', $dateFrom)->addDay(1)->format('Y-m-d');
+        }
+
+        $data['GrossSales']    = $totalSuccess + $totalCancelled + $discountSuccess + $discountCancelled;
         $data['Discounts']      = (integer) $discountSuccess;
         $data['Refund']         = $totalCancelled + $discountCancelled;
-        $data['Net Sales']      = $data['Gross Sales'] - $data['Discounts'] - $data['Refund'];
+        $data['NetSales']      = $data['GrossSales'] - $data['Discounts'] - $data['Refund'];
         $data['Gratuify']       = 0;
         $data['Tax']            = 0;
         $data['Rounding']       = 0;
-        $data['Total']          = $data['Net Sales'];
+        $data['Total']          = $data['NetSales'];
+        $data['Chart']          = $chart;
 
         return response()->json($data);
     }
@@ -39,12 +56,12 @@ class ReportSalesController extends Controller
         $discountSuccess = Transaction::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('is_cancelled', false)->sum('discount');
         $discountCancelled = Transaction::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('is_cancelled', true)->sum('discount');
 
-        $data['Gross Sales']                = $totalSuccess + $totalCancelled + $discountSuccess + $discountCancelled;
+        $data['GrossSales']                = $totalSuccess + $totalCancelled + $discountSuccess + $discountCancelled;
         $data['Discounts']                  = $discountSuccess + 0;
         $data['Refund']                     = $totalCancelled + $discountCancelled;
-        $data['Net Sales']                  = $data['Gross Sales'] - $data['Discounts'] - $data['Refund'];
+        $data['NetSales']                  = $data['GrossSales'] - $data['Discounts'] - $data['Refund'];
         $data['Cost of Goods Sold (COGS)']  = 0;
-        $data['Total']                      = $data['Net Sales'];
+        $data['Total']                      = $data['NetSales'];
 
         return response()->json($data);
     }
@@ -104,9 +121,9 @@ class ReportSalesController extends Controller
             ]);
         }
 
-        $data['Net Sales']      = $totalNetSales;
+        $data['NetSales']      = $totalNetSales;
         $data['Discount']       = $totalDiscount;
-        $data['Gross Sales']    = $totalGrossSales;
+        $data['GrossSales']    = $totalGrossSales;
         $data['qty']            = $totalQty;
         $data['data']           = $collection;
 
@@ -141,9 +158,9 @@ class ReportSalesController extends Controller
             ]);
         }
 
-        $data['Net Sales']      = $totalNetSales;
+        $data['NetSales']      = $totalNetSales;
         $data['Discount']       = $totalDiscount;
-        $data['Gross Sales']    = $totalGrossSales;
+        $data['GrossSales']    = $totalGrossSales;
         $data['qty']            = $totalQty;
         $data['data']           = $collection;
 
@@ -178,9 +195,9 @@ class ReportSalesController extends Controller
             ]);
         }
 
-        $data['Net Sales']      = $totalNetSales;
+        $data['NetSales']      = $totalNetSales;
         $data['Discount']       = $totalDiscount;
-        $data['Gross Sales']    = $totalGrossSales;
+        $data['GrossSales']    = $totalGrossSales;
         $data['qty']            = $totalQty;
         $data['data']           = $collection;
 

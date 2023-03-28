@@ -1,44 +1,45 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
+
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
-
-export default function Service() {
+export default function Outcome() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [services, setServices] = useState([]);
-  const [servicesLoading, setServicesLoading] = useState(true);
+  const [item, setItem] = useState([]);
+  const [itemLoading, setItemLoading] = useState(true);
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
 
-  const initialServiceForm = {
-    id: "",
-    name: "",
-    price: "",
-    commission: "",
+  const initialItemForm = {
+    note: "",
+    nominal: "",
+    category_outcome_id: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialItemForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialItemForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialItemForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialServiceForm
+    initialItemForm
   );
 
   const handleAddInput = (event) => {
@@ -50,79 +51,94 @@ export default function Service() {
     setPutForm({ [name]: value });
   };
 
-  async function getServices() {
+  async function getItem() {
     try {
-      const response = await axios.get("/services", {
+      const response = await axios.get("outcomes", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setServices(response.data);
-      setServicesLoading(false);
+      setItem(response.data);
+      setItemLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addService(e) {
+  async function getCategory() {
+    try {
+      const response = await axios.get("category-outcomes", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setCategory(response.data);
+      setCategoryLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("service", addForm, {
+      const response = await axios.post("outcome", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getServices();
-      setAddForm(initialServiceForm);
-      setAddFormError(initialServiceForm);
+      getItem();
+      setAddForm(initialItemForm);
+      setAddFormError(initialItemForm);
     } catch (err) {
-      setAddFormError(initialServiceForm);
+      setAddFormError(initialItemForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putService(e) {
+  async function putItem(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`service/${putForm.id}`, putForm, {
+      const response = await axios.put(`outcome/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getServices();
-      setPutForm(initialServiceForm);
-      setPutFormError(initialServiceForm);
+      getItem();
+      setPutForm(initialItemForm);
+      setPutFormError(initialItemForm);
     } catch (err) {
-      setPutFormError(initialServiceForm);
+      setPutFormError(initialItemForm);
       setPutFormError(err.response?.data);
     }
   }
 
-  async function deleteService(id) {
+  async function deleteItem(id) {
     try {
-      const response = await axios.delete(`service/${id}`, {
+      const response = await axios.delete(`outcome/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getServices();
+      getItem();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getServices();
+    getItem();
+    getCategory();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Services">
+      <DashboardLayout title="Outcome">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -131,7 +147,9 @@ export default function Service() {
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}><i className="fas fa-filter mr-3"></i> Services Table</h3>
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Outcome Table
+                </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
@@ -146,20 +164,20 @@ export default function Service() {
           </div>
           <div className="min-h-[80vh] block w-full overflow-x-auto">
             {/* Projects table */}
-            <table className="items-center w-full bg-transparent border-collapse">
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead>
                 <tr>
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Service
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Category
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Price
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Note
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Commision
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Nominal
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -173,7 +191,7 @@ export default function Service() {
                 </tr>
               </thead>
               <tbody>
-                {servicesLoading && (
+                {itemLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -182,24 +200,20 @@ export default function Service() {
                     </td>
                   </tr>
                 )}
-                {services?.map((obj, index) => {
+                {item?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
-                        <span className={"ml-3 font-bold "}>{index + 1}</span>
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                        <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold"}>{obj.name}</span>
+                        <span>{obj.category_outcome?.name}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold capitalize"}>
-                          Rp. {numeral(obj.price).format("0,0")}
-                        </span>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-3"}>{obj.note}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold"}>
-                          Rp. {numeral(obj.commission).format("0,0")}
-                        </span>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-3"}>{numeral(obj.nominal).format("0,0")}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -208,6 +222,8 @@ export default function Service() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        Active */}
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -215,16 +231,13 @@ export default function Service() {
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialServiceForm);
+                              setPutFormError("");
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
+                        <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -232,7 +245,7 @@ export default function Service() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deleteService(obj.id)} title={`Delete service?`}></ModalDelete>
+                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete outcome?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -243,62 +256,71 @@ export default function Service() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Service</h3>
-          <form onSubmit={addService} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Outcome</h3>
+          <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
-            <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Category</span>
               </label>
-              <input
-                type="text"
-                name="name"
-                value={addForm.name}
+              <select
+                name="category_outcome_id"
                 onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.name && (
+                required
+                value={addForm.category_outcome_id}
+                className="input input-bordered without-ring input-primary border-slate-300 w-full"
+              >
+                <option value="">Select</option>
+                {category?.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {addFormError.category_outcome_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
+                    {addFormError.category_outcome_id}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Nominal</span>
               </label>
               <input
                 type="number"
-                name="price"
-                value={addForm.price}
+                name="nominal"
+                value={addForm.nominal}
                 onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
-                autoComplete="new-off"
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.price && (
+              {addFormError.nominal && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.price}
+                    {addFormError.nominal}
                   </span>
                 </label>
               )}
+            <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Commission</span>
+                <span className="label-text">Note</span>
               </label>
               <input
                 type="text"
-                name="commission"
-                value={addForm.commission}
+                name="note"
+                value={addForm.note}
                 onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.commission && (
+              {addFormError.note && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.commission}
+                    {addFormError.note}
                   </span>
                 </label>
               )}
@@ -317,65 +339,76 @@ export default function Service() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Service</h3>
-          <form onSubmit={putService} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Outcome</h3>
+          <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Name</span>
+            <label className="label">
+                <span className="label-text">Category</span>
               </label>
-              <input
-                type="text"
-                name="name"
-                value={putForm.name}
+              <select
+                name="category_outcome_id"
                 onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.name && (
+                required
+                value={putForm.category_outcome_id}
+                className="input input-bordered without-ring input-primary border-slate-300 w-full"
+              >
+                <option value="">Select</option>
+                {category?.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {putFormError.category_outcome_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
+                    {putFormError.category_outcome_id}
                   </span>
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Nominal</span>
               </label>
               <input
                 type="number"
-                name="price"
-                value={putForm.price}
+                name="nominal"
+                value={putForm.nominal}
                 onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
-                autoComplete="new-off"
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.price && (
+              {putFormError.nominal && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.price}
+                    {putFormError.nominal}
                   </span>
                 </label>
               )}
+            <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Commission</span>
+                <span className="label-text">Note</span>
               </label>
               <input
                 type="text"
-                name="commission"
-                value={putForm.commission}
+                name="note"
+                value={putForm.note}
                 onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.commission && (
+              {putFormError.note && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.commission}
+                    {putFormError.note}
                   </span>
                 </label>
               )}
+            </div>
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -385,7 +418,9 @@ export default function Service() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

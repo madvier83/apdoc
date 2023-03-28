@@ -10,7 +10,7 @@ class QueueController extends Controller
 {
     public function index()
     {
-        $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient', 'queueDetails', 'queueDetails.employee', 'queueDetails.service'])->get();
+        $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient', 'queueDetails', 'queueDetails.employee', 'queueDetails.service'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($queue);
     }
 
@@ -34,6 +34,7 @@ class QueueController extends Controller
             'queue_number'  => 'A'.$queue_number,
             'status_id'     => 1
         ];
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
 
         $queue = Queue::create($data);
 

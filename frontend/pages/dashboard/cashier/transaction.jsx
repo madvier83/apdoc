@@ -12,9 +12,9 @@ import { getCookies } from "cookies-next";
 import moment from "moment";
 import { nanoid } from "nanoid";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import axios from "../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import axios from "../../api/axios";
 import numeral from "numeral";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 

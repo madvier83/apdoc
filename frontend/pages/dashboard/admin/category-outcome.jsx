@@ -2,23 +2,22 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Promotion() {
+export default function CategoryOutcome() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [promotion, setPromotion] = useState([]);
-  const [promotionLoading, setPromotionLoading] = useState(true);
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialCategoryForm = {
     name: "",
-    discount: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -47,31 +46,31 @@ export default function Promotion() {
     setPutForm({ [name]: value });
   };
 
-  async function getPromotion() {
+  async function getCategory() {
     try {
-      const response = await axios.get("promotions", {
+      const response = await axios.get("category-outcomes", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPromotion(response.data);
-      setPromotionLoading(false);
+      setCategory(response.data);
+      setCategoryLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addPromotion(e) {
+  async function addCategory(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("promotion", addForm, {
+      const response = await axios.post("category-outcome", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getPromotion();
+      getCategory();
       setAddForm(initialCategoryForm);
       setAddFormError(initialCategoryForm);
     } catch (err) {
@@ -80,18 +79,18 @@ export default function Promotion() {
     }
   }
 
-  async function putPromotion(e) {
+  async function putCategory(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`promotion/${putForm.id}`, putForm, {
+      const response = await axios.put(`category-outcome/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getPromotion();
+      getCategory();
       setPutForm(initialCategoryForm);
       setPutFormError(initialCategoryForm);
     } catch (err) {
@@ -100,26 +99,26 @@ export default function Promotion() {
     }
   }
 
-  async function deletePromotion(id) {
+  async function deleteCategory(id) {
     try {
-      const response = await axios.delete(`promotion/${id}`, {
+      const response = await axios.delete(`category-outcome/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getPromotion();
+      getCategory();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getPromotion();
+    getCategory();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Promotion">
+      <DashboardLayout title="Category Outcome">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -129,7 +128,7 @@ export default function Promotion() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Promotion Table
+                  <i className="fas fa-filter mr-3"></i> Category Outcome Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -154,9 +153,6 @@ export default function Promotion() {
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Name
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Discount
-                  </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
@@ -169,7 +165,7 @@ export default function Promotion() {
                 </tr>
               </thead>
               <tbody>
-                {promotionLoading && (
+                {categoryLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -178,17 +174,14 @@ export default function Promotion() {
                     </td>
                   </tr>
                 )}
-                {promotion?.map((obj, index) => {
+                {category?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-4 font-bold"}>{obj.name}</span>
-                      </td>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-4 font-bold"}>{obj.discount}%</span>
+                        <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -212,7 +205,10 @@ export default function Promotion() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
+                        <div
+                          className="tooltip tooltip-left"
+                          data-tip="Delete"
+                        >
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -220,7 +216,7 @@ export default function Promotion() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deletePromotion(obj.id)} title={`Delete promotion?`}></ModalDelete>
+                        <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category payment?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -231,8 +227,8 @@ export default function Promotion() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
-          <form onSubmit={addPromotion} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Category Outcome</h3>
+          <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -254,25 +250,6 @@ export default function Promotion() {
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Discount</span>
-              </label>
-              <input
-                type="number"
-                name="discount"
-                value={addForm.discount}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.discount && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.discount}
-                  </span>
-                </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -288,8 +265,8 @@ export default function Promotion() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
-          <form onSubmit={putPromotion} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Category Outcome</h3>
+          <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -311,25 +288,6 @@ export default function Promotion() {
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Discount</span>
-              </label>
-              <input
-                type="number"
-                name="discount"
-                value={putForm.discount}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.discount && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.discount}
-                  </span>
-                </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -339,9 +297,7 @@ export default function Promotion() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">
-                Update
-              </button>
+              <button className="btn btn-success bg-success rounded-md">Update</button>
             </div>
           </form>
         </ModalBox>

@@ -9,7 +9,7 @@ class DiagnoseController extends Controller
 {
     public function index()
     {
-        $diagnose = Diagnose::all();
+        $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($diagnose);
     }
 
@@ -27,6 +27,7 @@ class DiagnoseController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $diagnose = Diagnose::create($data);
 
         return response()->json($diagnose);

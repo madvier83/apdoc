@@ -17,8 +17,8 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->foreignId('category_payment_id')->nullable();
             $table->string('name');
-            $table->foreignId('clinic_id')->nullable();
             $table->boolean('is_delete')->default(false);
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

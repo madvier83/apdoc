@@ -11,6 +11,8 @@ use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
 use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
+use App\Models\Clinic;
+use App\Models\Employee;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Twilio\Rest\Client;
@@ -35,10 +37,35 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
         }
         try {
+            $clinic = Clinic::create([
+                'name'        => null,
+                'address'     => null,
+                'province'    => null,
+                'city'        => null,
+                'district'    => null,
+                'postal_code' => null,
+                'phone'       => null,
+                'apdoc_id'    => time() . 'AP' . User::latest()->first()->id + 1,
+            ]);
+
+            $employee = Employee::create([
+                'nik'         => null,
+                'name'        => null,
+                'birth_place' => null,
+                'birth_date'  => null,
+                'gender'      => null,
+                'address'     => null,
+                'phone'       => null,
+                'position_id' => null,
+                'clinic_id'   => $clinic->id,
+            ]);
+
             $user = new User();
-            $user->email    = $request->email;
-            $user->password = app('hash')->make($request->password);
-            $user->role_id  = 2;
+            $user->email       = $request->email;
+            $user->password    = app('hash')->make($request->password);
+            $user->role_id     = 2;
+            $user->apdoc_id    = $clinic->apdoc_id;
+            $user->employee_id = $employee->id;
             $user->save();
             return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);
         } catch (\Exception $e) {
@@ -268,7 +295,7 @@ class AuthController extends Controller
             if ($user->is_verified == 0) {
                 return response()->json(['status' => 'error', 'message' => 'user not verified'], 403);
             }
-            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role' => $user->role->name])->attempt($credentials)) {
+            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'accesses' => $user->role->accesses[0]->accesses])->attempt($credentials)) {
                 return response()->json(['status'=> 'error', 'message' => 'unauthorized'], 401);
             }
         } catch (\Throwable $th) {

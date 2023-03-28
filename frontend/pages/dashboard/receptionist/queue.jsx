@@ -12,10 +12,10 @@ import { getCookies } from "cookies-next";
 import moment from "moment";
 import numeral from "numeral";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
-import axios from "../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import axios from "../../api/axios";
 import Link from "next/link";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -747,11 +747,17 @@ export default function Queue() {
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </a>
                     <Link
+                      href={`/dashboard/doctor/patients/${selectedQueue.patient?.id}`}
+                      className={`btn btn-primary w-1/2`}
+                    >
+                      Records <i className="fas fa-heart-pulse ml-2"></i>
+                    </Link>
+                    {/* <Link
                       href={"/dashboard/transaction"}
                       className={`btn btn-primary w-1/2`}
                     >
                       Checkout <i className="fas fa-check ml-2"></i>
-                    </Link>
+                    </Link> */}
                   </div>
                 ) : (
                   <div className="flex gap-2 mt-6 items-end">

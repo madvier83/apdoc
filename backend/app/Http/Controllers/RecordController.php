@@ -14,7 +14,7 @@ class RecordController extends Controller
 {
     public function index()
     {
-        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->get();
+        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($record);
     }
 
@@ -50,6 +50,12 @@ class RecordController extends Controller
     public function deleteImageRecord($id)
     {
         $recordFile = RecordFile::find($id);
+
+        if (!$recordFile) {
+            return response()->json(['message' => 'Record file not found!'], 404);
+        }
+
+        $recordFile->delete();
         File::delete($recordFile->file);
         return response()->json(['message' => 'Image deleted successfully!']);
     }
@@ -71,6 +77,7 @@ class RecordController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $data['employee_id'] = auth()->user()->employee_id ?? null;
 
         $record = Record::create($data);

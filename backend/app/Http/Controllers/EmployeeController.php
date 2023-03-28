@@ -9,7 +9,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employee = Employee::with('position')->get();
+        $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($employee);
     }
 
@@ -33,6 +33,7 @@ class EmployeeController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $employee = Employee::create($data);
 
         return response()->json($employee);

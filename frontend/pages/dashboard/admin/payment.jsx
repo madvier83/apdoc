@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Payment() {
   const token = getCookies("token");

@@ -12,31 +12,77 @@ class AccessController extends Controller
 {
     public function index()
     {
-        $this->authorize('admin_access');
-
-        return view('admin.access.index',[
-            'users'     => User::with(['role', 'employees'])->get(),
-            'roles'     => Role::all(),
-            'menus'     => Menu::all(),
-            'accesses'  => Access::with('submenu')->get(),
-        ]);
+        $access = Access::with('role')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+        return response()->json($access);
     }
 
-    public function update(Request $request, $id)
+    public function getByRole($role)
     {
-        if($request->menu) {
-            Access::where('user_id', $id)->update(['status' => false]);
-            
-            $menu = count($request->menu);
-            for($i = 0; $i < $menu; $i++){
-                if($request->menu[$i]) { 
-                    Access::where('user_id', $id)->where('submenu_id', $request->menu[$i])->update(['status' => true]); 
-                }
-            }
-        } else {
-            Access::where('user_id', $id)->update(['status' => false]);
+        $access = Access::where('role_id', $role)->get();
+        return response()->json($access);
+    }
+
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'role'      =>  'required',
+            'accesses'  =>  'required',
+        ]);
+
+        $role = Role::create([
+            'name' => $request->role
+        ]);
+
+        $data = [
+            'role_id'   => $role->id,
+            'accesses'  => $request->accesses,
+            'clinic_id' => auth()->user()->employee->clinic_id
+        ];
+
+        $access = Access::create($data);
+
+        return response()->json($access);
+    }
+
+    public function update(Request $request, $role)
+    {
+        $access = Access::where('role_id', $role)->first();
+        
+        if (!$access) {
+            return response()->json(['message' => 'Access role not found!'], 404);
         }
 
-        return redirect('access')->with('success', 'Access updated successfully.');
+        $this->validate($request, [
+            'accesses'  =>  'required',
+        ]);
+
+        // if (!$access) {
+        //     $data = [
+        //         'role_id'   => $role,
+        //         'accesses'  => $request->accesses
+        //     ];
+        //     Access::create($data);
+
+        //     $response = [
+        //         'role_id'   => $role,
+        //         'accesses'  => $request->accesses
+        //     ];
+        //     return response()->json($response);
+        // }
+
+        $data = [
+            'role_id'   => $role,
+            'accesses'  => $request->accesses
+        ];
+
+        $access->fill($data);
+
+        $access->save();
+
+        $response = [
+            'role_id'   => $role,
+            'accesses'  => $request->accesses
+        ];
+        return response()->json($response);
     }
 }

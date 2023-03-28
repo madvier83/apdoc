@@ -2,22 +2,24 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Patients() {
+export default function Employee() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
   const detailModalRef = useRef();
 
-  const [patients, setPatients] = useState([]);
-  const [patientsLoading, setPatientsLoading] = useState(true);
+  const [employees, setEmployees] = useState([]);
+  const [employeesLoading, setEmployeesLoading] = useState(true);
+  const [positions, setPositions] = useState([]);
+  const [positionsLoading, setPositionsLoading] = useState(true);
 
-  const initialPatientForm = {
+  const initialEmployeeForm = {
     id: "",
     nik: "",
     name: "",
@@ -26,23 +28,24 @@ export default function Patients() {
     gender: "",
     birth_date: "",
     birth_place: "",
+    position_id: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialPatientForm
+    initialEmployeeForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialPatientForm
+    initialEmployeeForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialPatientForm
+    initialEmployeeForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialPatientForm
+    initialEmployeeForm
   );
 
   const handleAddInput = (event) => {
@@ -54,79 +57,94 @@ export default function Patients() {
     setPutForm({ [name]: value });
   };
 
-  async function getPatients() {
+  async function getEmployee() {
     try {
-      const response = await axios.get("/patients", {
+      const response = await axios.get("/employees", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPatients(response.data);
-      setPatientsLoading(false);
+      setEmployees(response.data);
+      setEmployeesLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addPatients(e) {
+  async function getPositions() {
+    try {
+      const response = await axios.get("/positions", {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      setPositions(response.data);
+      setPositionsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function addEmployee(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("/patient", addForm, {
+      const response = await axios.post("/employee", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getPatients();
-      setAddForm(initialPatientForm);
-      setAddFormError(initialPatientForm);
+      getEmployee();
+      setAddForm(initialEmployeeForm);
+      setAddFormError(initialEmployeeForm);
     } catch (err) {
-      setAddFormError(initialPatientForm);
+      setAddFormError(initialEmployeeForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putPatients(e) {
+  async function putEmployee(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`/patient/${putForm.id}`, putForm, {
+      const response = await axios.put(`/employee/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getPatients();
-      setPutForm(initialPatientForm);
-      setPutFormError(initialPatientForm);
+      getEmployee();
+      setPutForm(initialEmployeeForm);
+      setPutFormError(initialEmployeeForm);
     } catch (err) {
-      setPutFormError(initialPatientForm);
+      setPutFormError(initialEmployeeForm);
       setPutFormError(err.response?.data);
     }
   }
 
   async function deleteEmployee(id) {
     try {
-      const response = await axios.delete(`/patient/${id}`, {
+      const response = await axios.delete(`/employee/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getPatients();
+      getEmployee();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getPatients();
+    getEmployee();
+    getPositions();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Patients">
+      <DashboardLayout title="Employees">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -136,7 +154,7 @@ export default function Patients() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Patients Table
+                  <i className="fas fa-filter mr-3"></i> Employees Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -162,7 +180,7 @@ export default function Patients() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Birth
+                    Position
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Phone
@@ -179,7 +197,7 @@ export default function Patients() {
                 </tr>
               </thead>
               <tbody>
-                {patientsLoading && (
+                {employeesLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -188,51 +206,58 @@ export default function Patients() {
                     </td>
                   </tr>
                 )}
-                {patients?.map((obj, index) => {
+                {employees?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold "}>{index + 1}</span>
+                      <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
+                        <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <span className={"font-bold"}>{obj.name}</span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                          {obj.birth_place}
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        <span className={" capitalize"}>
+                          {/* <i
+                            className={`fas fa-circle mr-2 ${
+                              obj.position?.name
+                                ? "text-emerald-400"
+                                : "text-orange-400"
+                            }`}
+                          ></i>{" "} */}
+                          {obj.position?.name ? obj.position.name : "unasigned"}
                         </span>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <a href={`https://wa.me/${obj.phone.replace(/\D/g,'')}`} target="_blank" className={""}><i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> {obj.phone}</a>
+
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        <a
+                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
+                          target="_blank"
+                          className={""}
+                        >
+                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                          {obj.phone}
+                        </a>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                      {moment(obj.created_at).format("DD MMM YYYY")}
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         {moment(obj.updated_at).fromNow()}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <div className="tooltip tooltip-left" data-tip="Detail">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        {/* <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
                             htmlFor="modal-details"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialPatientForm);
+                              setPutFormError(initialEmployeeForm);
                             }}
                           >
                             <i className="fas fa-eye"></i>
                           </label>
-                        </div>
+                        </div> */}
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -240,7 +265,7 @@ export default function Patients() {
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialPatientForm);
+                              setPutFormError(initialEmployeeForm);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -254,7 +279,7 @@ export default function Patients() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteEmployee(obj.id)} title={`Delete patient?`}></ModalDelete>
+                        <ModalDelete id={obj.id} callback={() => deleteEmployee(obj.id)} title={`Delete employee?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -265,8 +290,8 @@ export default function Patients() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Patient</h3>
-          <form onSubmit={addPatients} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Employee</h3>
+          <form onSubmit={addEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -310,7 +335,7 @@ export default function Patients() {
                 <span className="label-text">Phone</span>
               </label>
               <input
-                type="text"
+                type="number"
                 name="phone"
                 value={addForm.phone}
                 onChange={(e) => handleAddInput(e)}
@@ -408,6 +433,32 @@ export default function Patients() {
                   )}
                 </div>
               </div>
+
+              <label className="label">
+                <span className="label-text">Position</span>
+              </label>
+              <select
+                name="position_id"
+                value={addForm.position_id}
+                onChange={(e) => handleAddInput(e)}
+                className="input input-bordered input-primary border-slate-300 w-full"
+              >
+                <option value="">Unasigned</option>
+                {positions.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {addFormError.position_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.position_id}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -423,8 +474,8 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Edit Patient</h3>
-          <form onSubmit={putPatients} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Edit Employee</h3>
+          <form onSubmit={putEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -468,7 +519,7 @@ export default function Patients() {
                 <span className="label-text">Phone</span>
               </label>
               <input
-                type="text"
+                type="number"
                 name="phone"
                 value={putForm.phone}
                 onChange={(e) => handlePutInput(e)}
@@ -566,6 +617,32 @@ export default function Patients() {
                   )}
                 </div>
               </div>
+
+              <label className="label">
+                <span className="label-text">Position</span>
+              </label>
+              <select
+                name="position_id"
+                value={putForm.position_id}
+                onChange={(e) => handlePutInput(e)}
+                className="input input-bordered input-primary border-slate-300 w-full"
+              >
+                <option value="">Unasigned</option>
+                {positions.map((obj) => {
+                  return (
+                    <option key={obj.id} value={obj.id}>
+                      {obj.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {putFormError.position_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.position_id}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -581,7 +658,7 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-details">
-          <h3 className="font-bold text-lg mb-4">Detail Patient</h3>
+          <h3 className="font-bold text-lg mb-4">Detail Employee</h3>
 
           <input type="hidden" autoComplete="off" />
           <div className="form-control w-full">
@@ -668,6 +745,26 @@ export default function Patients() {
                 </select>
               </div>
             </div>
+
+            <label className="label">
+              <span className="label-text">Position</span>
+            </label>
+            <select
+              name="position_id"
+              value={putForm.position_id}
+              onChange={() => {}}
+              disabled
+              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            >
+              <option value="">Unasigned</option>
+              {positions.map((obj) => {
+                return (
+                  <option key={obj.id} value={obj.id}>
+                    {obj.name}
+                  </option>
+                );
+              })}
+            </select>
           </div>
           <div className="modal-action rounded-sm">
             <button
@@ -682,7 +779,7 @@ export default function Patients() {
             <label
               htmlFor="modal-details"
               ref={detailModalRef}
-              className="btn btn-ghost border-none rounded-md"
+              className="btn bg-slate-600 border-none text-white rounded-md"
             >
               Close
             </label>

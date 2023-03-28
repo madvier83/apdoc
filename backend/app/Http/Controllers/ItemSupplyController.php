@@ -9,7 +9,7 @@ class ItemSupplyController extends Controller
 {
     public function index()
     {
-        $itemSupply = ItemSupply::orderBy('created_at', 'desc')->with('item')->get();
+        $itemSupply = ItemSupply::orderBy('created_at', 'desc')->with('item')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($itemSupply);
     }
 
@@ -40,6 +40,7 @@ class ItemSupplyController extends Controller
             'note'          => $request->note ?? '-',
             'stock'         => $request->total,
         ];
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
 
         $itemSupply = ItemSupply::create($data);
 

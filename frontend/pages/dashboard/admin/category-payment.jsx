@@ -1,43 +1,40 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
-import numeral from "numeral";
 
-import axios from "../api/axios";
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import ModalDelete from "../../components/Modals/ModalDelete";
+import axios from "../../api/axios";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import ModalBox from "../../../components/Modals/ModalBox";
+import ModalDelete from "../../../components/Modals/ModalDelete";
 
-export default function Diagnose() {
+export default function CategoryPayment() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
 
-  const [diagnosis, setDiagnosis] = useState([]);
-  const [diagnosisLoading, setDiagnosisLoading] = useState(true);
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
 
-  const initialDiagnosisForm = {
-    id: "",
-    code: "",
-    description: "",
+  const initialCategoryForm = {
+    name: "",
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialDiagnosisForm
+    initialCategoryForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialDiagnosisForm
+    initialCategoryForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialDiagnosisForm
+    initialCategoryForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialDiagnosisForm
+    initialCategoryForm
   );
 
   const handleAddInput = (event) => {
@@ -49,79 +46,79 @@ export default function Diagnose() {
     setPutForm({ [name]: value });
   };
 
-  async function getDiagnosis() {
+  async function getCategory() {
     try {
-      const response = await axios.get("diagnoses", {
+      const response = await axios.get("category-payments", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setDiagnosis(response.data);
-      setDiagnosisLoading(false);
+      setCategory(response.data);
+      setCategoryLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addDiagnosis(e) {
+  async function addCategory(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("diagnose", addForm, {
+      const response = await axios.post("category-payment", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       addModalRef.current.click();
-      getDiagnosis();
-      setAddForm(initialDiagnosisForm);
-      setAddFormError(initialDiagnosisForm);
+      getCategory();
+      setAddForm(initialCategoryForm);
+      setAddFormError(initialCategoryForm);
     } catch (err) {
-      setAddFormError(initialDiagnosisForm);
+      setAddFormError(initialCategoryForm);
       setAddFormError(err.response?.data);
     }
   }
 
-  async function putDiagnosis(e) {
+  async function putCategory(e) {
     e.preventDefault();
     console.log(putForm);
     try {
-      const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
+      const response = await axios.put(`category-payment/${putForm.id}`, putForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
         },
       });
       putModalRef.current.click();
-      getDiagnosis();
-      setPutForm(initialDiagnosisForm);
-      setPutFormError(initialDiagnosisForm);
+      getCategory();
+      setPutForm(initialCategoryForm);
+      setPutFormError(initialCategoryForm);
     } catch (err) {
-      setPutFormError(initialDiagnosisForm);
+      setPutFormError(initialCategoryForm);
       setPutFormError(err.response?.data);
     }
   }
 
-  async function deleteDiagnosis(id) {
+  async function deleteCategory(id) {
     try {
-      const response = await axios.delete(`diagnose/${id}`, {
+      const response = await axios.delete(`category-payment/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      getDiagnosis();
+      getCategory();
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getDiagnosis();
+    getCategory();
   }, []);
 
   return (
     <>
-      <DashboardLayout title="Diagnose">
+      <DashboardLayout title="Category Payment">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -131,7 +128,7 @@ export default function Diagnose() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Diagnose Table
+                  <i className="fas fa-filter mr-3"></i> Category Payment Table
                 </h3>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -153,11 +150,8 @@ export default function Diagnose() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Code
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Description
+                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -166,12 +160,12 @@ export default function Diagnose() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {diagnosisLoading && (
+                {categoryLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -180,40 +174,14 @@ export default function Diagnose() {
                     </td>
                   </tr>
                 )}
-                {diagnosis?.map((obj, index) => {
+                {category?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold"}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
-                        <span className={"font-bold ml-3 text-xl"}>
-                          {obj.code}
-                        </span>
-                      </td>
-                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <label htmlFor={`detail-${obj.id}`}>
-                          <span>{obj.description.slice(0, 40)} ...</span>
-                        </label>
-                        <input
-                          type="checkbox"
-                          id={`detail-${obj.id}`}
-                          className="modal-toggle"
-                        />
-                        <label
-                          htmlFor={`detail-${obj.id}`}
-                          className="modal cursor-pointer"
-                        >
-                          <label
-                            className="modal-box px-16 py-8 bg-primary text-primary-content max-w-md relative"
-                            htmlFor=""
-                          >
-                            <h3 className="text-3xl font-bold">{obj.code}</h3>
-                            <p className="py-4 opacity-90 text-base whitespace-pre-wrap">
-                              {obj.description}
-                            </p>
-                          </label>
-                        </label>
+                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                        <span className={"ml-3 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
@@ -222,14 +190,8 @@ export default function Diagnose() {
                         {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <div className="tooltip tooltip-left" data-tip="Detail">
-                          <label
-                            htmlFor={`detail-${obj.id}`}
-                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </label>
-                        </div>
+                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        Active */}
                         <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -237,13 +199,16 @@ export default function Diagnose() {
                             htmlFor="modal-put"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialDiagnosisForm);
+                              setPutFormError("");
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
+                        <div
+                          className="tooltip tooltip-left"
+                          data-tip="Delete"
+                        >
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -251,7 +216,7 @@ export default function Diagnose() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteDiagnosis(obj.id)} title={`Delete diagnosis?`}></ModalDelete>
+                        <ModalDelete id={obj.id} callback={() => deleteCategory(obj.id)} title={`Delete category payment?`}></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -262,44 +227,26 @@ export default function Diagnose() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Diagnose</h3>
-          <form onSubmit={addDiagnosis} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
+          <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Name</span>
               </label>
               <input
                 type="text"
-                name="code"
-                value={addForm.code}
+                name="name"
+                value={addForm.name}
                 onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.code && (
+              {addFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.code}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Description</span>
-              </label>
-              <textarea
-                type="text"
-                name="description"
-                value={addForm.description}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={6}
-                className="input input-bordered input-primary border-slate-300 w-full h-32"
-              ></textarea>
-              {addFormError.description && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.description}
+                    {addFormError.name}
                   </span>
                 </label>
               )}
@@ -318,44 +265,26 @@ export default function Diagnose() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Diagnose</h3>
-          <form onSubmit={putDiagnosis} autoComplete="off">
+          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
+          <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Name</span>
               </label>
               <input
                 type="text"
-                name="code"
-                value={putForm.code}
+                name="name"
+                value={putForm.name}
                 onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.code && (
+              {putFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.code}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Description</span>
-              </label>
-              <textarea
-                type="text"
-                name="description"
-                value={putForm.description}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={6}
-                className="input input-bordered input-primary border-slate-300 w-full h-32"
-              ></textarea>
-              {putFormError.description && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.description}
+                    {putFormError.name}
                   </span>
                 </label>
               )}

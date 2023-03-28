@@ -284,7 +284,7 @@ export default function Patients() {
                         key={obj.id}
                         className="hover:bg-zinc-50 cursor-pointer"
                         onClick={() => {
-                          router.push(`/dashboard/doctor/patients/${obj.id}`);
+                          router.push(`/dashboard/doctor/patient/${obj.id}`);
                         }}
                       >
                         <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
@@ -335,7 +335,7 @@ export default function Patients() {
                               type="button"
                               onClick={() => {
                                 router.push(
-                                  `/dashboard/doctor/patients/${obj.id}`
+                                  `/dashboard/doctor/patient/${obj.id}`
                                 );
                               }}
                             >

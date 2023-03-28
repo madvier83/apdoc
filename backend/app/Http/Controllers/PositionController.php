@@ -10,7 +10,7 @@ class PositionController extends Controller
 {
     public function index()
     {
-        $position = Position::all();
+        $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($position);
     }
 
@@ -27,6 +27,7 @@ class PositionController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $position = Position::create($data);
 
         return response()->json($position);

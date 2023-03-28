@@ -18,6 +18,7 @@ class CreateGrowthsTable extends Migration
             $table->foreignId('patient_id');
             $table->text('height');
             $table->text('weight');
+            $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ class CategoryItemController extends Controller
 {
     public function index()
     {
-        $category = CategoryItem::with('items')->get();
+        $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($category);
     }
 
@@ -27,6 +27,7 @@ class CategoryItemController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $category = CategoryItem::create($data);
 
         return response()->json($category);

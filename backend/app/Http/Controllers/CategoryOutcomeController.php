@@ -10,7 +10,7 @@ class CategoryOutcomeController extends Controller
 {
     public function index()
     {
-        $category = CategoryOutcome::with('outcomes')->get();
+        $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($category);
     }
 
@@ -27,6 +27,7 @@ class CategoryOutcomeController extends Controller
         ]);
 
         $data = $request->all();
+        $data['clinic_id'] = auth()->user()->employee->clinic_id;
         $category = CategoryOutcome::create($data);
 
         return response()->json($category);
