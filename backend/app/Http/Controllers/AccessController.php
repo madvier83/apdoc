@@ -71,7 +71,6 @@ class AccessController extends Controller
         // }
 
         $data = [
-            'role_id'   => $role,
             'accesses'  => $request->accesses
         ];
 
@@ -79,10 +78,6 @@ class AccessController extends Controller
 
         $access->save();
 
-        $response = [
-            'role_id'   => $role,
-            'accesses'  => $request->accesses
-        ];
-        return response()->json($response);
+        return response()->json($access);
     }
 }

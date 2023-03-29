@@ -12,12 +12,17 @@ class AppointmentWhatsapp extends Notification
 {
     use Queueable;
 
-    protected $phone, $otp_verification;
+    protected $name, $date, $description, $to, $clinicname, $clinicaddress, $clinicphone;
 
-    public function __construct($phone, $otp_verification)
+    public function __construct($name, $date, $description, $to, $clinicname, $clinicaddress, $clinicphone)
     {
-        $this->phone = $phone;
-        $this->otp_verification = $otp_verification;
+        $this->name = $name;
+        $this->date = $date;
+        $this->description = $description;
+        $this->to = $to;
+        $this->clinicname = $clinicname;
+        $this->clinicaddress = $clinicaddress;
+        $this->clinicphone = $clinicphone;
     }
 
     /**
@@ -33,7 +38,7 @@ class AppointmentWhatsapp extends Notification
 
     public function WhatsappContact()
     {
-        return $this->phone;
+        return $this->to;
     }
     /**
      * Get the mail representation of the notification.
@@ -43,19 +48,23 @@ class AppointmentWhatsapp extends Notification
      */
     public function WhatsappMessage($notifiable)
     {   
+        setlocale(LC_TIME, 'id_ID.utf8');
+        $day = strftime('%A', strtotime($this->date));
+        $date = strftime('%d %B %Y', strtotime($this->date));
+        $time = date('H:i A', strtotime($this->date));
         return (new WhatsappMessages())
             ->WhatsappContent("
-            Selamat Pagi Bpk / Ibu {{1}},
-            Kami ingin mengkonfirmasi janji untuk {{2}},
-            di {{3}} {{4}} Pada hari {{5}}, {{6}}.
-            Pukul {{7}}.
+            Selamat Pagi Bpk / Ibu {$this->name},
+            Kami ingin mengkonfirmasi janji untuk {$this->description},
+            di {$this->clinicname} {$this->clinicaddress} Pada hari {$day}, {$date}.
+            Pukul {$time}.
 
             Mohon untuk datang tepat pada waktu yang sudah ditentukan.
             Untuk informasi lebih lanjut silahkan menghubungi kami di No. Whatsapp
-            {{8}}
+            {$this->clinicphone}
 
             Salam sehat,
-            {{9}}.
+            {$this->clinicname}.
             ");
     }
 }

@@ -13,9 +13,13 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+    
     ];
 
+    public function scheduleTimezone()
+    {
+        return 'Asia/Jakarta';
+    }
     /**
      * Define the application's command schedule.
      *
@@ -24,6 +28,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        $schedule->command('appointment:whatsapp')->dailyAt('08:00')->appendOutputTo('scheduler.log')->onOneServer();
     }
 }
