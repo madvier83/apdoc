@@ -69,8 +69,8 @@ class DatabaseSeeder extends Seeder
 
         Access::create([
             'role_id'  => 2,
-            'accesses' => '[{"name":"admin","submenu":[{"name":"service","status":1},{"name":"outcome","status":1}]},{"name":"receptionist","submenu":[{"name":"patient","status":1},{"name":"queue","status":1}]}'
-            
+            'accesses' => '[{"name":"admin","submenu":[{"name":"service","status":1},{"name":"outcome","status":1}]},{"name":"receptionist","submenu":[{"name":"patient","status":1},{"name":"queue","status":1}]}',
+            'clinic_id'   => $clinic->id
         ]);
 
         // User::factory(10)->create();
