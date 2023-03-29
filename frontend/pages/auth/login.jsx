@@ -35,7 +35,7 @@ export default function Login() {
       });
       var payload = parseJwt(response.data.access_token);
 
-      if (payload.role == "client") {
+      if (payload.role_id == 2) {
         setCookie("token", response.data.access_token, {
           maxAge: 60 * 60 * 12,
         });

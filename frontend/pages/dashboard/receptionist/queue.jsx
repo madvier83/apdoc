@@ -747,7 +747,7 @@ export default function Queue() {
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </a>
                     <Link
-                      href={`/dashboard/doctor/patients/${selectedQueue.patient?.id}`}
+                      href={`/dashboard/receptionist/patient/${selectedQueue.patient?.id}`}
                       className={`btn btn-primary w-1/2`}
                     >
                       Records <i className="fas fa-heart-pulse ml-2"></i>

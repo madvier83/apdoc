@@ -306,12 +306,12 @@ export default function Sales() {
               <div className="mt-0 pb-8 flex justify-center items-center">
                 <Chart
                   className="w-full px-8"
-                  chartType="ColumnChart"
+                  chartType="AreaChart"
                   data={chartData}
                   options={{
                     legend: { position: "none", alignment: "center" },
                     chartArea: { width: "100%", height: "80%" },
-                    bar: { groupWidth: "60%" },
+                    // bar: { groupWidth: "60%" },
                     annotations: {
                       textStyle: {
                         fontSize: 0,
@@ -324,10 +324,11 @@ export default function Sales() {
                       },
                     },
                     lineWidth: 2,
-                    backgroundColor: { fill: "transparent" },
-                    pointSize: 10,
+                    // backgroundColor: { fill: "transparent" },
+                    pointSize: 8,
                     pointShape: "diamond",
-                    lineDashStyle: [14, 2, 7, 2],
+                    // lineDashStyle: [14, 2, 7, 2],
+                    smoothline: true,
                     colors: ["#f43f5e", "#6366f1"],
                   }}
                   width={"100%"}

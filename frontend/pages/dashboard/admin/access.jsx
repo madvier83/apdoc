@@ -16,36 +16,163 @@ export default function Access() {
 
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
+  const [access, setAccess] = useState([]);
+  const [accessLoading, setAccessLoading] = useState(true);
   const [positions, setPositions] = useState([]);
   const [positionsLoading, setPositionsLoading] = useState(true);
 
-  const initialEmployeeForm = {
+  const initialAccessForm = {
     id: "",
-    nik: "",
-    name: "",
-    phone: "",
-    address: "",
-    gender: "",
-    birth_date: "",
-    birth_place: "",
-    position_id: "",
+    role: "",
+    accesses: [
+      {
+        name: "admin",
+        route: "/dashboard/admin",
+        access: false,
+        submenu: [
+          { name: "user", route: "/dashboard/admin/user", access: false },
+          { name: "access", route: "/dashboard/admin/access", access: false },
+          {
+            name: "position",
+            route: "/dashboard/admin/position",
+            access: false,
+          },
+          {
+            name: "employee",
+            route: "/dashboard/admin/employee",
+            access: false,
+          },
+          { name: "service", route: "/dashboard/admin/service", access: false },
+          {
+            name: "diagnose",
+            route: "/dashboard/admin/diagnose",
+            access: false,
+          },
+          {
+            name: "category-payment",
+            route: "/dashboard/admin/category-payment",
+            access: false,
+          },
+          { name: "payment", route: "/dashboard/admin/payment", access: false },
+          {
+            name: "category-outcome",
+            route: "/dashboard/admin/category-outcome",
+            access: false,
+          },
+          { name: "outcome", route: "/dashboard/admin/outcome", access: false },
+          {
+            name: "promotion",
+            route: "/dashboard/admin/promotion",
+            access: false,
+          },
+        ],
+      },
+      {
+        name: "receptionist",
+        route: "/dashboard/receptionist",
+        access: false,
+        submenu: [
+          {
+            name: "patient",
+            route: "/dashboard/receptionist/patient",
+            access: false,
+          },
+          {
+            name: "appointment",
+            route: "/dashboard/receptionist/appointment",
+            access: false,
+          },
+          {
+            name: "queue",
+            route: "/dashboard/receptionist/queue",
+            access: false,
+          },
+        ],
+      },
+      {
+        name: "doctor",
+        route: "/dashboard/doctor",
+        access: false,
+        submenu: [
+          {
+            name: "patient",
+            route: "/dashboard/doctor/patient",
+            access: false,
+          },
+          { name: "queue", route: "/dashboard/doctor/queue", access: false },
+        ],
+      },
+      {
+        name: "pharmacy",
+        route: "/dashboard/pharmacy",
+        access: false,
+        submenu: [
+          {
+            name: "category-item",
+            route: "/dashboard/pharmacy/category-item",
+            access: false,
+          },
+          { name: "item", route: "/dashboard/pharmacy/item", access: false },
+          {
+            name: "item-supply",
+            route: "/dashboard/pharmacy/item-supply",
+            access: false,
+          },
+          {
+            name: "stock-adjustment",
+            route: "/dashboard/pharmacy/stock-adjustment",
+            access: false,
+          },
+        ],
+      },
+      {
+        name: "cashier",
+        route: "/dashboard/cashier",
+        access: false,
+        submenu: [
+          {
+            name: "transaction",
+            route: "/dashboard/cashier/transaction",
+            access: false,
+          },
+          {
+            name: "history",
+            route: "/dashboard/cashier/history",
+            access: false,
+          },
+        ],
+      },
+      {
+        name: "report",
+        route: "/dashboard/report",
+        access: false,
+        submenu: [
+          { name: "sales", route: "/dashboard/report/sales", access: false },
+          {
+            name: "commision",
+            route: "/dashboard/report/commision",
+            access: false,
+          },
+        ],
+      },
+    ],
   };
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialAccessForm
   );
   const [addFormError, setAddFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialAccessForm
   );
   const [putForm, setPutForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialAccessForm
   );
   const [putFormError, setPutFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    initialEmployeeForm
+    initialAccessForm
   );
 
   const handleAddInput = (event) => {
@@ -59,7 +186,7 @@ export default function Access() {
 
   async function getUser() {
     try {
-      const response = await axios.get("/users", {
+      const response = await axios.get("/access", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -71,85 +198,96 @@ export default function Access() {
     }
   }
 
-  async function getPositions() {
+  async function getAccess(id) {
+    // console.log(id);
     try {
-      const response = await axios.get("/positions", {
+      const response = await axios.get(`/role`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setPositions(response.data);
-      setPositionsLoading(false);
+      console.log(response);
+      setAccess(JSON.parse(response.data));
+      setAccessLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function addUser(e) {
+  function handleSelection(toggle) {
+    // console.log(toggle.submenu == null)
+    const prevAccess = addForm.accesses;
+    let newAccess = [];
+    let submenu = [];
+    // let trueCount = false;
+    if (toggle.submenu != null) {
+      submenu = [];
+      prevAccess.map((menu) => {
+        if (menu == toggle) {
+          menu.submenu.map((obj) => {
+            submenu.push({ ...obj, access: !menu.access });
+          });
+          // submenu = menu.submenu
+          newAccess.push({ ...menu, access: !menu.access, submenu: submenu });
+        } else {
+          newAccess.push(menu);
+        }
+      });
+    } else {
+      prevAccess.map((menu) => {
+        submenu = [];
+        // trueCount = false;
+        menu.submenu.map((obj) => {
+          if (obj == toggle) {
+            submenu.push({ ...obj, access: !obj.access });
+          } else {
+            submenu.push(obj);
+          }
+        });
+        newAccess.push({ ...menu, submenu });
+      });
+    }
+    // console.log(newAccess);
+    setAddForm({ accesses: newAccess });
+  }
+
+  async function addRole(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("/user", addForm, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        `/access`,
+        { ...addForm, accesses: JSON.stringify(addForm.accesses) },
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      // console.log(response);
+      setAddForm(initialAccessForm);
+      setAddFormError(initialAccessForm);
       addModalRef.current.click();
-      getUser();
-      setAddForm(initialEmployeeForm);
-      setAddFormError(initialEmployeeForm);
+      getAccess();
     } catch (err) {
-      setAddFormError(initialEmployeeForm);
       setAddFormError(err.response?.data);
-    }
-  }
-
-  async function putUser(e) {
-    e.preventDefault();
-    console.log(putForm);
-    try {
-      const response = await axios.put(`/user/${putForm.id}`, putForm, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
-      putModalRef.current.click();
-      getUser();
-      setPutForm(initialEmployeeForm);
-      setPutFormError(initialEmployeeForm);
-    } catch (err) {
-      setPutFormError(initialEmployeeForm);
-      setPutFormError(err.response?.data);
-    }
-  }
-
-  async function deleteUser(id) {
-    try {
-      const response = await axios.delete(`/user/${id}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      getUser();
-    } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
     getUser();
-    getPositions();
+    getAccess();
   }, []);
 
-  console.log(users);
+  // console.log(users);
+
   return (
     <>
       <DashboardLayout title="Access">
         <div className="flex gap-4">
           <div
             className={
-              "relative flex flex-col min-w-0 break-words w-2/3 mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
+              "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
             }
           >
             <div className="rounded-t mb-0 px-4 py-4 border-0">
@@ -160,13 +298,13 @@ export default function Access() {
                   </h3>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                  {/* <label
-                  className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
-                  htmlFor="modal-add"
-                >
-                  Add <i className="fas fa-add"></i>
-                </label> */}
+                  <label
+                    className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    htmlFor="modal-add"
+                  >
+                    Add <i className="fas fa-add"></i>
+                  </label>
                 </div>
               </div>
             </div>
@@ -179,17 +317,17 @@ export default function Access() {
                       #
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Name
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Email
+                      Role
                     </th>
                     {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Created At
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Updated At
-                  </th> */}
+                      Email
+                    </th> */}
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                      Created At
+                    </th>
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                      Updated At
+                    </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Actions
                     </th>
@@ -212,17 +350,19 @@ export default function Access() {
                           <span className={"ml-3 font-bold"}>{index + 1}</span>
                         </th>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span className={"font-bold"}>{obj.name || "-"}</span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span className={""}>{obj.email}</span>
+                          <span className={"font-bold"}>
+                            {obj.role?.name || "-"}
+                          </span>
                         </td>
                         {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {moment(obj.created_at).format("DD MMM YYYY")}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {moment(obj.updated_at).fromNow()}
-                      </td> */}
+                          <span className={""}>{obj.email}</span>
+                        </td> */}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {moment(obj.created_at).format("DD MMM YYYY")}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {moment(obj.updated_at).fromNow()}
+                        </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           {/* <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
@@ -231,7 +371,7 @@ export default function Access() {
                             htmlFor="modal-details"
                             onClick={() => {
                               setPutForm(obj);
-                              setPutFormError(initialEmployeeForm);
+                              setPutFormError(initialAccessForm);
                             }}
                           >
                             <i className="fas fa-eye"></i>
@@ -239,16 +379,13 @@ export default function Access() {
                         </div> */}
                           <div
                             className="tooltip tooltip-left"
-                            data-tip="Access"
+                            data-tip="Settings"
                           >
                             <label
                               className="bg-blue-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                               type="button"
                               htmlFor="modal-put"
-                              onClick={() => {
-                                setPutForm(obj);
-                                setPutFormError(initialEmployeeForm);
-                              }}
+                              onClick={() => getAccess(obj.id)}
                             >
                               <i className="fas fa-cog"></i>
                             </label>
@@ -271,529 +408,149 @@ export default function Access() {
             </div>
           </div>
 
-          <div className="bg-white w-1/3 min-h-[80vh] mt-6 rounded-md">
+          {/* <div className="bg-white w-1/2 min-h-[80vh] mt-6 rounded-md">
             <div className="rounded-t mb-0 px-4 py-4 border-0">
               <div className="flex flex-wrap items-center">
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                   <h3 className={"font-semibold text-lg "}>
-                    <i className="fas fa-cog mr-3"></i> Muhammad Advie Rifaldy Access
+                    <i className="fas fa-cog mr-3"></i>Access Settings
                   </h3>
                 </div>
               </div>
             </div>
-            <div className="min-h-[80vh] block w-full overflow-x-auto">
-              {/* Projects table */}
-              <table className="items-center w-full bg-transparent border-collapse">
-                <thead>
-
-                </thead>
-                <tbody>
-                  
-                </tbody>
-              </table>
+            <div className="h-[80vh] overflow-y-scroll">
+              <div className="block w-full h-min px-8 pb-8">
+                {accessDummy.map((menu) => {
+                  return (
+                    <div className="">
+                      <label
+                        htmlFor={menu.route}
+                        className="capitalize select-none cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between px-4">
+                          <h1 className="font-semibold py-4">{menu.name}</h1>
+                          <input
+                            type="checkbox"
+                            id={menu.route}
+                            className="focus:ring-0 focus:ring-offset-0"
+                          />
+                        </div>
+                        {menu.submenu.map((obj) => {
+                          return (
+                            <label
+                              htmlFor={obj.route}
+                              className="flex items-center justify-between border-t border-b px-4 hover:bg-emerald-100 duration-300 transition-all"
+                            >
+                              <h2 className="pl-8 py-2">{obj.name}</h2>
+                              <input
+                                type="checkbox"
+                                id={obj.route}
+                                className="focus:ring-0 focus:ring-offset-0"
+                              />
+                            </label>
+                          );
+                        })}
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </div> */}
         </div>
+      </DashboardLayout>
 
-        <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Access</h3>
-          <form onSubmit={addUser} autoComplete="off">
-            <input type="hidden" autoComplete="off" />
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">NIK</span>
-              </label>
-              <input
-                type="text"
-                name="nik"
-                value={addForm.nik}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.nik && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.nik}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={addForm.name}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Phone</span>
-              </label>
-              <input
-                type="number"
-                name="phone"
-                value={addForm.phone}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.phone && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.phone}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={addForm.address}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {addFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.address}
-                  </span>
-                </label>
-              )}
-
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Place</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="birth_place"
-                    value={addForm.birth_place}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.birth_place && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.birth_place}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Date</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    value={addForm.birth_date}
-                    onChange={(e) => handleAddInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {addFormError.birth_date && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.birth_date}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Gender</span>
-                  </label>
-                  <select
-                    name="gender"
-                    value={addForm.gender}
-                    onChange={(e) => handleAddInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  {addFormError.gender && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {addFormError.gender}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div>
-
-              <label className="label">
-                <span className="label-text">Position</span>
-              </label>
-              <select
-                name="position_id"
-                value={addForm.position_id}
-                onChange={(e) => handleAddInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {addFormError.position_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.position_id}
-                  </span>
-                </label>
-              )}
-            </div>
-            <div className="modal-action rounded-sm">
-              <label
-                htmlFor="modal-add"
-                ref={addModalRef}
-                className="btn btn-ghost rounded-md"
-              >
-                Cancel
-              </label>
-              <button className="btn btn-primary rounded-md">Add</button>
-            </div>
-          </form>
-        </ModalBox>
-
-        <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Edit Access</h3>
-          <form onSubmit={putUser} autoComplete="off">
-            <input type="hidden" autoComplete="off" />
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">NIK</span>
-              </label>
-              <input
-                type="text"
-                name="nik"
-                value={putForm.nik}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.nik && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.nik}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={putForm.name}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Phone</span>
-              </label>
-              <input
-                type="number"
-                name="phone"
-                value={putForm.phone}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.phone && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.phone}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={putForm.address}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {putFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.address}
-                  </span>
-                </label>
-              )}
-
-              <div className="flex gap-4 w-full">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Place</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="birth_place"
-                    value={putForm.birth_place}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.birth_place && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.birth_place}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Birth Date</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    value={putForm.birth_date}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.birth_date && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.birth_date}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Gender</span>
-                  </label>
-                  <select
-                    name="gender"
-                    value={putForm.gender}
-                    onChange={(e) => handlePutInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                  {putFormError.gender && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.gender}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div>
-
-              <label className="label">
-                <span className="label-text">Position</span>
-              </label>
-              <select
-                name="position_id"
-                value={putForm.position_id}
-                onChange={(e) => handlePutInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {putFormError.position_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.position_id}
-                  </span>
-                </label>
-              )}
-            </div>
-            <div className="modal-action rounded-sm">
-              <label
-                htmlFor="modal-put"
-                ref={putModalRef}
-                className="btn btn-ghost rounded-md"
-              >
-                Cancel
-              </label>
-              <button className="btn btn-success bg-success rounded-md">
-                Save
-              </button>
-            </div>
-          </form>
-        </ModalBox>
-
-        <ModalBox id="modal-details">
-          <h3 className="font-bold text-lg mb-4">Detail Access</h3>
-
+      <ModalBox id="modal-add">
+        <h3 className="font-bold text-lg mb-4">Add Access Role</h3>
+        <form onSubmit={addRole} autoComplete="off">
           <input type="hidden" autoComplete="off" />
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">NIK</span>
+              <span className="label-text">Role</span>
             </label>
             <input
               type="text"
-              value={putForm.nik}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+              name="role"
+              value={addForm.role}
+              onChange={(e) => handleAddInput(e)}
+              placeholder=""
+              className="input input-bordered input-primary border-slate-300 w-full"
             />
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.name}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Phone</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.phone}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Address</span>
-            </label>
-            <textarea
-              type="text"
-              rows={3}
-              value={putForm.address}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full h-16"
-            ></textarea>
-            <div className="flex gap-4 w-full">
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Place</span>
-                </label>
-                <input
-                  type="text"
-                  value={putForm.birth_place}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Date</span>
-                </label>
-                <input
-                  type="date"
-                  value={putForm.birth_date}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Gender</span>
-                </label>
-                <select
-                  name="gender"
-                  value={putForm.gender}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+            {addFormError.role && (
+              <label className="label">
+                <span className="label-text-alt text-rose-300">
+                  {addFormError.role}
+                </span>
+              </label>
+            )}
+          </div>
+          <h1 className="mt-4 mb-2">Access</h1>
+          {addForm.accesses.map((menu) => {
+            return (
+              <div className="mb-4" key={menu.route}>
+                <label
+                  htmlFor={menu.route}
+                  className="capitalize select-none cursor-pointer"
                 >
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
+                  <div className="flex items-center justify-between px-4">
+                    <h1 className="font-semibold py-4">{menu.name}</h1>
+                    <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                      {menu.route}
+                    </small>
+                    <input
+                      type="checkbox"
+                      checked={menu.access}
+                      onChange={() => {
+                        handleSelection(menu);
+                      }}
+                      id={menu.route}
+                      className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                    />
+                  </div>
+                  {menu.submenu.map((obj) => {
+                    return (
+                      <label
+                        key={obj.route}
+                        htmlFor={obj.route}
+                        className={`${
+                          menu.access == false || obj.access == false
+                            ? "opacity-25 cursor-pointer"
+                            : "cursor-pointer"
+                        } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
+                      >
+                        <h2 className="pl-4 py-2">{obj.name}</h2>
+                        <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                          {obj.route}
+                        </small>
+                        <input
+                          type="checkbox"
+                          checked={obj.access}
+                          onChange={() => {
+                            handleSelection(obj);
+                          }}
+                          disabled={menu.access == false}
+                          id={obj.route}
+                          className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                        />
+                      </label>
+                    );
+                  })}
+                </label>
               </div>
-            </div>
-
-            <label className="label">
-              <span className="label-text">Position</span>
-            </label>
-            <select
-              name="position_id"
-              value={putForm.position_id}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
-            >
-              <option value="">Unasigned</option>
-              {positions.map((obj) => {
-                return (
-                  <option key={obj.id} value={obj.id}>
-                    {obj.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+            );
+          })}
           <div className="modal-action rounded-sm">
-            <button
-              className="btn btn-ghost rounded-md"
-              onClick={() => {
-                detailModalRef.current.click();
-                setTimeout(() => putModalRef.current.click(), 120);
-              }}
-            >
-              Edit
-            </button>
             <label
-              htmlFor="modal-details"
-              ref={detailModalRef}
-              className="btn bg-slate-600 border-none text-white rounded-md"
+              htmlFor="modal-add"
+              ref={addModalRef}
+              className="btn btn-ghost rounded-md"
             >
-              Close
+              Cancel
             </label>
+            <button className="btn btn-primary rounded-md">Add</button>
           </div>
-        </ModalBox>
-      </DashboardLayout>
+        </form>
+      </ModalBox>
     </>
   );
 }

@@ -75,8 +75,8 @@ export default function Sidebar() {
       access: true,
       submenu: [
         { name: "user", route: "/dashboard/admin/user", access: true },
-        { name: "access", route: "/dashboard/admin/access", access: true },
         { name: "position", route: "/dashboard/admin/position", access: true },
+        { name: "access", route: "/dashboard/admin/access", access: true },
         { name: "employee", route: "/dashboard/admin/employee", access: true },
         { name: "service", route: "/dashboard/admin/service", access: true },
         { name: "diagnose", route: "/dashboard/admin/diagnose", access: true },
@@ -297,6 +297,7 @@ export default function Sidebar() {
                               }`}
                             >
                               <Link
+                                scroll={false}
                                 href={obj.route}
                                 className={
                                   "text-xs py-3 font-semibold block capitalize"

@@ -230,7 +230,7 @@ export default function Employee() {
 
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <a
-                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
+                          href={`https://wa.me/${obj.phone?.replace(/\D/g, "")}`}
                           target="_blank"
                           className={""}
                         >

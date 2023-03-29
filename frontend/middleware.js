@@ -13,7 +13,6 @@ export async function middleware(request) {
     const jwt = request.cookies.get("token")?.value;
     const secret =  new TextEncoder().encode(process.env.JWT_SECRET);
 
-    console.log(pathname)
     // console.log(pathname.startsWith("/auth"))
     // console.log(!jwt)
     // console.log(jwt)
@@ -22,11 +21,11 @@ export async function middleware(request) {
         if (!jwt) return NextResponse.next();
         try {
             const {payload} = await jwtVerify(jwt, secret);
-            if(payload.role == "client") {
+            if(payload.role_id == 2) {
                 url.pathname = "/dashboard";
                 return NextResponse.redirect(url);
             }
-            if(payload.role == "admin"){
+            if(payload.role_id == 1){
                 url.pathname = "/admin";
                 return NextResponse.redirect(url);
             }
@@ -43,11 +42,11 @@ export async function middleware(request) {
         } else {
             try {
                 const { payload } = await jwtVerify(jwt, secret)
-                if (payload.role == "client") {
+                if (payload.role_id == 2) {
                     url.pathname = "/dashboard"
                     return NextResponse.next()
                 }
-                if (payload.role == "admin") {
+                if (payload.role_id == 1) {
                     url.pathname = "/admin"
                     return NextResponse.redirect(url);
                 }
@@ -66,11 +65,11 @@ export async function middleware(request) {
         } else {
             try {
                 const { payload } = await jwtVerify(jwt, secret)
-                if (payload.role == "admin") {
+                if (payload.role_id == 1) {
                     url.pathname = "/admin"
                     return NextResponse.next()
                 }
-                if (payload.role == "client") {
+                if (payload.role_id == 2) {
                     url.pathname = "/dashboard"
                     return NextResponse.redirect(url);
                 }
@@ -89,11 +88,11 @@ export async function middleware(request) {
     //         try {
     //             const payload = await jwtVerify(jwt, secret);
     //             if(payload) {
-    //                 if(payload.role == "client") {
+    //                 if(payload.role_id == 2) {
     //                     url.pathname = "/dashboard";
     //                     return NextResponse.redirect(url);
     //                 }
-    //                 if(payload.role == "admin"){
+    //                 if(payload.role_id == 1){
     //                     url.pathname = "/admin";
     //                     return NextResponse.redirect(url);
     //                 }

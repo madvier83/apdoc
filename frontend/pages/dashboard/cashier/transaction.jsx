@@ -661,7 +661,7 @@ export default function Transaction() {
                               );
                             })}
                             {promotions?.length <= 0 && (
-                              <div className="btn btn-disabled bg-zinc-200 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                              <div className="btn btn-disabled bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                                 No Promotion
                               </div>
                             )}
@@ -669,6 +669,11 @@ export default function Transaction() {
                         </div>
                       </div>
                       <div className="bg-slate-800 rounded-md mt-4 min-h-[58vh]">
+                        {category.length <= 0 && (
+                          <div className="btn btn-disabled mx-4 mt-4 bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                            No Item
+                          </div>
+                        )}
                         {category?.map((obj, index) => {
                           return (
                             <div
