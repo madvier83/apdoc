@@ -102,7 +102,7 @@ export default function Account() {
     <>
       <DashboardLayout title="Account" headerStats={false}>
         <div className="flex flex-wrap mt-6">
-          <div className="w-full lg:w-8/12 max-w-7xl mt-1">
+          <div className="w-full lg:w-2/3 max-w-7xl mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-blueGray-100 border-0">
               {/* Personal detail form */}
               <form onSubmit={(e) => updateUser(e)}>
@@ -243,7 +243,7 @@ export default function Account() {
               </form>
             </div>
 
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-blueGray-100 border-0">
+            {/* <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-blueGray-100 border-0">
               <div className="rounded-t-md bg-white mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
                   <div className="flex">
@@ -434,7 +434,7 @@ export default function Account() {
                   </div>
                 </form>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

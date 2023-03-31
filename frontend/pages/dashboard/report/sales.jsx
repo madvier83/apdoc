@@ -364,7 +364,7 @@ export default function Sales() {
               <div className="mr-8 mt-8">
                 <select
                   onChange={(e) => setMenu(e.target.value)}
-                  className="select p-0 pl-4 select-bordered border-slate-500 rounded-sm select-sm w-48"
+                  className="p-0 pl-4 focus:ring-0 focus:ring-offset-0 ring-transparent select-bordered border-slate-500 rounded-md font-semibold select-sm w-48"
                 >
                   <option value={0}>Payment Methods</option>
                   <option value={1}>Service Sales</option>

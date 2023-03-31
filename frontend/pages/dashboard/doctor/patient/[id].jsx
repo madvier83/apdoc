@@ -977,6 +977,7 @@ export default function Patients() {
               <input
                 type="number"
                 name="height"
+                step=".01"
                 value={addGrowthForm.height}
                 onChange={(e) => handleAddGrowthInput(e)}
                 placeholder=""
@@ -997,6 +998,7 @@ export default function Patients() {
               <input
                 type="number"
                 name="weight"
+                step=".01"
                 value={addGrowthForm.weight}
                 onChange={(e) => handleAddGrowthInput(e)}
                 placeholder=""

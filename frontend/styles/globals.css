@@ -29,6 +29,13 @@
   .without-ring {
     @apply focus:ring-0 focus:ring-offset-0;
   }
+
+  .input {
+    @apply focus:ring-0 focus:ring-offset-0 !important;
+  }
+  .select {
+    @apply focus:ring-0 focus:ring-offset-0 !important;
+  }
 }
 
 @layer utilities {

@@ -11,7 +11,9 @@ export default function Access() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
+  const addModalScrollRef = useRef();
   const putModalRef = useRef();
+  const putModalScrollRef = useRef();
   const detailModalRef = useRef();
 
   const [users, setUsers] = useState([]);
@@ -22,7 +24,7 @@ export default function Access() {
   const [positionsLoading, setPositionsLoading] = useState(true);
 
   const initialAccessForm = {
-    id: "",
+    role_id: "",
     role: "",
     accesses: [
       {
@@ -198,22 +200,6 @@ export default function Access() {
     }
   }
 
-  async function getAccess(id) {
-    // console.log(id);
-    try {
-      const response = await axios.get(`/role`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      console.log(response);
-      setAccess(JSON.parse(response.data));
-      setAccessLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   function handleSelection(toggle) {
     // console.log(toggle.submenu == null)
     const prevAccess = addForm.accesses;
@@ -250,6 +236,42 @@ export default function Access() {
     // console.log(newAccess);
     setAddForm({ accesses: newAccess });
   }
+  function handlePutSelection(toggle) {
+    // console.log(toggle.submenu == null)
+    const prevAccess = putForm.accesses;
+    let newAccess = [];
+    let submenu = [];
+    // let trueCount = false;
+    if (toggle.submenu != null) {
+      submenu = [];
+      prevAccess.map((menu) => {
+        if (menu == toggle) {
+          menu.submenu.map((obj) => {
+            submenu.push({ ...obj, access: !menu.access });
+          });
+          // submenu = menu.submenu
+          newAccess.push({ ...menu, access: !menu.access, submenu: submenu });
+        } else {
+          newAccess.push(menu);
+        }
+      });
+    } else {
+      prevAccess.map((menu) => {
+        submenu = [];
+        // trueCount = false;
+        menu.submenu.map((obj) => {
+          if (obj == toggle) {
+            submenu.push({ ...obj, access: !obj.access });
+          } else {
+            submenu.push(obj);
+          }
+        });
+        newAccess.push({ ...menu, submenu });
+      });
+    }
+    // console.log(newAccess);
+    setPutForm({ accesses: newAccess });
+  }
 
   async function addRole(e) {
     e.preventDefault();
@@ -267,16 +289,39 @@ export default function Access() {
       setAddForm(initialAccessForm);
       setAddFormError(initialAccessForm);
       addModalRef.current.click();
-      getAccess();
+      getUser();
     } catch (err) {
       setAddFormError(err.response?.data);
       console.error(err);
     }
   }
 
+  async function putRole(e) {
+    console.log(putForm);
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `/access/${putForm.role_id}`,
+        { ...putForm, accesses: JSON.stringify(putForm.accesses) },
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      console.log(response);
+      setPutForm(initialAccessForm);
+      setPutFormError(initialAccessForm);
+      putModalRef.current.click();
+      getUser();
+    } catch (err) {
+      setPutFormError(err.response?.data);
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     getUser();
-    getAccess();
   }, []);
 
   // console.log(users);
@@ -302,6 +347,12 @@ export default function Access() {
                     className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     htmlFor="modal-add"
+                    onClick={() => {
+                      addModalScrollRef.current.scroll({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
                   >
                     Add <i className="fas fa-add"></i>
                   </label>
@@ -385,7 +436,17 @@ export default function Access() {
                               className="bg-blue-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                               type="button"
                               htmlFor="modal-put"
-                              onClick={() => getAccess(obj.id)}
+                              onClick={() => {
+                                setPutForm({
+                                  role_id: obj.id,
+                                  role: obj.role?.name,
+                                  accesses: JSON.parse(obj.accesses),
+                                });
+                                putModalScrollRef.current.scroll({
+                                  top: 0,
+                                  behavior: "smooth",
+                                });
+                              }}
                             >
                               <i className="fas fa-cog"></i>
                             </label>
@@ -460,85 +521,183 @@ export default function Access() {
         </div>
       </DashboardLayout>
 
-      <ModalBox id="modal-add">
-        <h3 className="font-bold text-lg mb-4">Add Access Role</h3>
-        <form onSubmit={addRole} autoComplete="off">
-          <input type="hidden" autoComplete="off" />
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Role</span>
-            </label>
-            <input
-              type="text"
-              name="role"
-              value={addForm.role}
-              onChange={(e) => handleAddInput(e)}
-              placeholder=""
-              className="input input-bordered input-primary border-slate-300 w-full"
-            />
-            {addFormError.role && (
+      <ModalBox id="modal-put">
+        <form onSubmit={putRole} autoComplete="off">
+          <div className="overflow-y-scroll h-[75vh]" ref={putModalScrollRef}>
+            <h3 className="font-bold text-lg mb-4">Edit Role Access</h3>
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
               <label className="label">
-                <span className="label-text-alt text-rose-300">
-                  {addFormError.role}
-                </span>
+                <span className="label-text">Role</span>
               </label>
-            )}
-          </div>
-          <h1 className="mt-4 mb-2">Access</h1>
-          {addForm.accesses.map((menu) => {
-            return (
-              <div className="mb-4" key={menu.route}>
-                <label
-                  htmlFor={menu.route}
-                  className="capitalize select-none cursor-pointer"
-                >
-                  <div className="flex items-center justify-between px-4">
-                    <h1 className="font-semibold py-4">{menu.name}</h1>
-                    <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                      {menu.route}
-                    </small>
-                    <input
-                      type="checkbox"
-                      checked={menu.access}
-                      onChange={() => {
-                        handleSelection(menu);
-                      }}
-                      id={menu.route}
-                      className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
-                    />
-                  </div>
-                  {menu.submenu.map((obj) => {
-                    return (
-                      <label
-                        key={obj.route}
-                        htmlFor={obj.route}
-                        className={`${
-                          menu.access == false || obj.access == false
-                            ? "opacity-25 cursor-pointer"
-                            : "cursor-pointer"
-                        } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
-                      >
-                        <h2 className="pl-4 py-2">{obj.name}</h2>
-                        <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                          {obj.route}
-                        </small>
-                        <input
-                          type="checkbox"
-                          checked={obj.access}
-                          onChange={() => {
-                            handleSelection(obj);
-                          }}
-                          disabled={menu.access == false}
-                          id={obj.route}
-                          className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
-                        />
-                      </label>
-                    );
-                  })}
+              <input
+                type="text"
+                name="role"
+                value={putForm.role}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.role && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.role}
+                  </span>
                 </label>
-              </div>
-            );
-          })}
+              )}
+            </div>
+            <h1 className="mt-4 mb-2">Access</h1>
+            {putForm.accesses?.map((menu) => {
+              return (
+                <div className="mb-4" key={menu.route}>
+                  <label
+                    htmlFor={menu.name}
+                    className="capitalize select-none cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between px-4">
+                      <h1 className="font-semibold py-4">{menu.name}</h1>
+                      <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                        {menu.route}
+                      </small>
+                      <input
+                        type="checkbox"
+                        checked={menu.access}
+                        onChange={() => {
+                          handlePutSelection(menu);
+                        }}
+                        id={menu.name}
+                        className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                      />
+                    </div>
+                    {menu.submenu.map((obj) => {
+                      return (
+                        <label
+                          key={obj.route}
+                          htmlFor={obj.route}
+                          className={`${
+                            menu.access == false || obj.access == false
+                              ? "opacity-25 cursor-pointer"
+                              : "cursor-pointer"
+                          } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
+                        >
+                          <h2 className="pl-4 py-2">{obj.name}</h2>
+                          <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                            {obj.route}
+                          </small>
+                          <input
+                            type="checkbox"
+                            checked={obj.access}
+                            onChange={() => {
+                              handlePutSelection(obj);
+                            }}
+                            disabled={menu.access == false}
+                            id={obj.route}
+                            className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                          />
+                        </label>
+                      );
+                    })}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+          <div className="modal-action rounded-sm">
+            <label
+              htmlFor="modal-put"
+              ref={putModalRef}
+              className="btn btn-ghost rounded-md"
+            >
+              Cancel
+            </label>
+            <button className="btn btn-success text-black rounded-md">
+              Save
+            </button>
+          </div>
+        </form>
+      </ModalBox>
+
+      <ModalBox id="modal-add">
+        <form onSubmit={addRole} autoComplete="off">
+          <div className="overflow-y-scroll h-[75vh]" ref={addModalScrollRef}>
+            <h3 className="font-bold text-lg mb-4">Add Role Access</h3>
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Role</span>
+              </label>
+              <input
+                type="text"
+                name="role"
+                value={addForm.role}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.role && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.role}
+                  </span>
+                </label>
+              )}
+            </div>
+            <h1 className="mt-4 mb-2">Access</h1>
+            {addForm.accesses?.map((menu) => {
+              return (
+                <div className="mb-4" key={menu.route}>
+                  <label
+                    htmlFor={menu.route}
+                    className="capitalize select-none cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between px-4">
+                      <h1 className="font-semibold py-4">{menu.name}</h1>
+                      <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                        {menu.route}
+                      </small>
+                      <input
+                        type="checkbox"
+                        checked={menu.access}
+                        onChange={() => {
+                          handleSelection(menu);
+                        }}
+                        id={menu.route}
+                        className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                      />
+                    </div>
+                    {menu.submenu.map((obj) => {
+                      return (
+                        <label
+                          key={obj.route}
+                          htmlFor={obj.route}
+                          className={`${
+                            menu.access == false || obj.access == false
+                              ? "opacity-25 cursor-pointer"
+                              : "cursor-pointer"
+                          } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
+                        >
+                          <h2 className="pl-4 py-2">{obj.name}</h2>
+                          <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                            {obj.route}
+                          </small>
+                          <input
+                            type="checkbox"
+                            checked={obj.access}
+                            onChange={() => {
+                              handleSelection(obj);
+                            }}
+                            disabled={menu.access == false}
+                            id={obj.route}
+                            className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                          />
+                        </label>
+                      );
+                    })}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
           <div className="modal-action rounded-sm">
             <label
               htmlFor="modal-add"
