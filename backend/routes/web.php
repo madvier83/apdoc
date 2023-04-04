@@ -37,12 +37,12 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
-	$router->get('/v1/users', 'UserController@index');
-	$router->get('/v1/user/{id}', 'UserController@show');
-	$router->post('/v1/user', 'UserController@create');
-	$router->post('/v1/user/slot', 'UserController@addSlot');
-	$router->put('/v1/user/{id}', 'UserController@update');
-	$router->delete('/v1/user/{id}', 'UserController@destroy');
+	$router->get('/v1/user-slots', 'UserSlotController@index');
+	$router->get('/v1/user-slot/{id}', 'UserSlotController@show');
+	$router->post('/v1/user-slot/add', 'UserSlotController@addSlot');
+	$router->post('/v1/user-slot/{id}', 'UserSlotController@create');
+	$router->put('/v1/user-slot/{id}', 'UserSlotController@update');
+	$router->delete('/v1/user-slot/{id}', 'UserSlotController@destroy');
 	
 	$router->get('/v1/access', 'AccessController@index');
 	$router->get('/v1/access/{role}/role', 'AccessController@getByRole');
@@ -119,6 +119,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
 
 	$router->get('/v1/queues', 'QueueController@index');
+	$router->post('/v1/queue/{patient}/appointment', 'QueueController@createFromAppointment');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
 
