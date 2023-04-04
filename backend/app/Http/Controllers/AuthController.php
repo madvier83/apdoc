@@ -13,8 +13,10 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
 use App\Models\Clinic;
 use App\Models\Employee;
+use App\Models\UserSlot;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Twilio\Rest\Client;
 
 class AuthController extends Controller
@@ -37,6 +39,8 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
         }
         try {
+            $apdoc_id = time() . 'AP' . User::latest()->first()->id + 1;
+
             $clinic = Clinic::create([
                 'name'        => null,
                 'address'     => null,
@@ -45,7 +49,7 @@ class AuthController extends Controller
                 'district'    => null,
                 'postal_code' => null,
                 'phone'       => null,
-                'apdoc_id'    => time() . 'AP' . User::latest()->first()->id + 1,
+                'apdoc_id'    => $apdoc_id,
             ]);
 
             $employee = Employee::create([
@@ -64,9 +68,17 @@ class AuthController extends Controller
             $user->email       = $request->email;
             $user->password    = app('hash')->make($request->password);
             $user->role_id     = 2;
-            $user->apdoc_id    = $clinic->apdoc_id;
+            $user->apdoc_id    = $apdoc_id;
             $user->employee_id = $employee->id;
             $user->save();
+
+            // free slot
+            for($i=0; $i<10; $i++) {
+                UserSlot::create([
+                    'apdoc_id' => $apdoc_id
+                ]);
+            }
+
             return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
@@ -108,7 +120,7 @@ class AuthController extends Controller
                 return $this->login($request);
             }
             return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success verification'], 200);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
@@ -145,7 +157,7 @@ class AuthController extends Controller
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
                 $data->update();
-                \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($request->phone, $data->otp_verification));
+                Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($request->phone, $data->otp_verification));
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200);
             } catch (\Throwable $e) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -166,8 +178,8 @@ class AuthController extends Controller
             Mail::to($data->email)->send(new VerifyEmail($data->email));
 
             return response()->json(['status' => 'success', 'message' => 'success send email'], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 
@@ -195,8 +207,8 @@ class AuthController extends Controller
             Mail::to($data->email)->send(new ForgotPasswordMail($data->email, $data->password_resets_token));
             
             return response()->json(['status' => 'success', 'message' => 'success send email'], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 
@@ -233,8 +245,8 @@ class AuthController extends Controller
                 $data->update();
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'success change password!'], 200);
             }   
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 
@@ -253,8 +265,8 @@ class AuthController extends Controller
             $data->update();
 
             return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'success verification'], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
     /**
@@ -298,8 +310,8 @@ class AuthController extends Controller
             if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'accesses' => $user->role->accesses[0]->accesses])->attempt($credentials)) {
                 return response()->json(['status'=> 'error', 'message' => 'unauthorized'], 401);
             }
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
         return $this->respondWithToken($token);
     }
@@ -319,8 +331,8 @@ class AuthController extends Controller
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60 * 12
             ]);
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 }

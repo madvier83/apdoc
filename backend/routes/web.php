@@ -40,13 +40,15 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/users', 'UserController@index');
 	$router->get('/v1/user/{id}', 'UserController@show');
 	$router->post('/v1/user', 'UserController@create');
+	$router->post('/v1/user/slot', 'UserController@addSlot');
 	$router->put('/v1/user/{id}', 'UserController@update');
 	$router->delete('/v1/user/{id}', 'UserController@destroy');
 	
 	$router->get('/v1/access', 'AccessController@index');
 	$router->get('/v1/access/{role}/role', 'AccessController@getByRole');
 	$router->post('/v1/access', 'AccessController@create');
-	$router->put('/v1/access/{role}', 'AccessController@update');
+	$router->put('/v1/access/{id}', 'AccessController@update');
+	$router->delete('/v1/access/{id}', 'AccessController@destroy');
 
 	$router->get('/v1/clinics', 'ClinicController@index');
 	$router->get('/v1/clinic/{id}', 'ClinicController@show');

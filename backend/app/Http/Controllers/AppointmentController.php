@@ -12,14 +12,14 @@ class AppointmentController extends Controller
     protected $tomorrow;
     
     public function __construct(){
-        $this->tomorrow = Carbon::tomorrow();
+        $tomorrow = Carbon::tomorrow();
     }
     
     public function index(){
         try {
             $data = Appointment::with('patient')->paginate(10);
             return response()->json($data);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
@@ -28,7 +28,7 @@ class AppointmentController extends Controller
         try {
             $data = Appointment::with('patient')->findOrFail($id);
             return response()->json($data);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
@@ -56,7 +56,7 @@ class AppointmentController extends Controller
                 'appointment_date' => $request->appointment_date
             ]);   
             return response()->json(['status'=> 'success','message' => 'success create appointment'], 201);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
@@ -65,7 +65,7 @@ class AppointmentController extends Controller
         try {
             Appointment::destroy($id);
             return response()->json(['status'=> 'success','message' => 'success delete appointment'], 200);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
