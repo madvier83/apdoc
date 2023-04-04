@@ -1,6 +1,6 @@
 import React, {
   useEffect,
-  useLayoutEffect,
+  // useLayoutEffect,
   useReducer,
   useRef,
   useState,
@@ -37,7 +37,7 @@ export default function Queue() {
   let infoRef = useRef();
   let serviceRef = useRef();
   const addServiceTL = useRef();
-  useLayoutEffect(() => {
+  useEffect(() => {
     addServiceTL.current = gsap.timeline({ paused: true });
     addServiceTL.current.to(infoRef.current, {
       duration: 0.25,

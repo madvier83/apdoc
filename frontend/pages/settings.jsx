@@ -2,9 +2,9 @@ import { deleteCookie, getCookie } from "cookies-next";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import axios from "../api/axios";
+import DashboardLayout from "../layouts/DashboardLayout";
+import ModalBox from "../components/Modals/ModalBox";
+import axios from "./api/axios";
 import moment from "moment";
 import numeral, { Numeral } from "numeral";
 import ReactToPrint from "react-to-print";
@@ -144,7 +144,7 @@ export default function Settings() {
         <div className="flex flex-row mt-6 gap-4">
           <div className="w-full lg:w-8/12 mt-1">
             <form onSubmit={(e) => updateSettings(e)}>
-              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-md bg-blueGray-100 border-0">
+              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-md bg-gray-100 border-0">
                 {/* Personal detail form */}
                 <div className="rounded-t-md bg-white mb-0 px-6 py-6">
                   <div className="text-center flex justify-between">

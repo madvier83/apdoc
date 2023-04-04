@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useReducer } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import jwt_decode from "jwt-decode";
 
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
 import ModalBox from "../Modals/ModalBox";
@@ -13,16 +12,14 @@ export default function Sidebar() {
   const pwdRef = useRef();
 
   const token = getCookie("token");
-  const [user, setUser] = useState(decodeUser);
-  function decodeUser() {
-    try {
-      const payload = jwt_decode(token);
-      return payload;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+  function parseJwt(token) {
+    return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }
+  const [user, setUser] = useState({email: ""});
+  useEffect(() => {
+    setUser(parseJwt(token))
+  }, [])
+
   async function sendChangePassword() {
     try {
       const res = await axios.post("/auth/email/send/forgot-password", {
@@ -328,7 +325,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <Link
-                    href="/dashboard/account"
+                    href="/account"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-user mr-2 text-sm "}></i> Account
@@ -341,7 +338,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <Link
-                    href="/dashboard/settings"
+                    href="/settings"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
                     <i className={"fas fa-gear mr-2 text-sm "}></i> Settings

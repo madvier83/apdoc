@@ -2,9 +2,9 @@ import { deleteCookie, getCookie } from "cookies-next";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
 
-import DashboardLayout from "../../layouts/DashboardLayout";
-import ModalBox from "../../components/Modals/ModalBox";
-import axios from "../api/axios";
+import DashboardLayout from "../layouts/DashboardLayout";
+import ModalBox from "../components/Modals/ModalBox";
+import axios from "./api/axios";
 
 export default function Account() {
   const userFormRef = useRef();
@@ -103,7 +103,7 @@ export default function Account() {
       <DashboardLayout title="Account" headerStats={false}>
         <div className="flex flex-wrap mt-6">
           <div className="w-full lg:w-2/3 max-w-7xl mt-1">
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-blueGray-100 border-0">
+            <div className="relative flex flex-col min-w-0 break-words w-full mb-4 shadow-lg rounded-md bg-zinc-100 border-0">
               {/* Personal detail form */}
               <form onSubmit={(e) => updateUser(e)}>
                 <div className="rounded-t-md bg-white mb-0 px-6 py-6">

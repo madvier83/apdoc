@@ -33,6 +33,7 @@ export default function Login() {
       const response = await axios.post("/auth/login", data, {
         "Content-Type": "application/json",
       });
+      console.log(response)
       var payload = parseJwt(response.data.access_token);
 
       if (payload.role_id == 2) {
@@ -45,6 +46,7 @@ export default function Login() {
       }
       // setLoading(false);
     } catch (e) {
+      console.log(e)
       setLoading(false);
       setLoginError("Login failed");
       if (e.response?.status == 403) {

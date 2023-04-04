@@ -1,6 +1,6 @@
 import React, {
   useEffect,
-  useLayoutEffect,
+  // useLayoutEffect,
   useReducer,
   useRef,
   useState,

@@ -142,7 +142,7 @@ export default function User() {
     getPositions();
   }, []);
 
-  console.log(users)
+  // console.log(users)
   return (
     <>
       <DashboardLayout title="Users">
