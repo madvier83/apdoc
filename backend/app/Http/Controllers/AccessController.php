@@ -44,9 +44,9 @@ class AccessController extends Controller
         return response()->json($access);
     }
 
-    public function update(Request $request, $role)
+    public function update(Request $request, $id)
     {
-        $access = Access::where('role_id', $role)->first();
+        $access = Access::where('id', $id)->first();
         
         if (!$access) {
             return response()->json(['message' => 'Access role not found!'], 404);
@@ -79,5 +79,19 @@ class AccessController extends Controller
         $access->save();
 
         return response()->json($access);
+    }
+
+    public function destroy($id)
+    {
+        $access = Access::find($id);
+
+        if (!$access) {
+            return response()->json(['message' => 'Access not found!'], 404);
+        }
+
+        $access->delete();
+        User::where('role_id', $id)->update(['role_id' => null]);
+
+        return response()->json(['message' => 'Access deleted successfully!']);
     }
 }

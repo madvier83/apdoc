@@ -17,14 +17,14 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->default(app('hash')->make('12345678'));
             $table->string('phone')->nullable()->unique();
             $table->integer('otp_verification')->nullable();
             $table->timestamp('created_at_otp')->nullable();
             $table->timestamp('expired_otp')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
-            $table->foreignId('role_id');
+            $table->foreignId('role_id')->nullable();
             $table->foreignId('employee_id')->nullable();
             $table->string('apdoc_id')->unique()->nullable();
             $table->boolean('is_verified')->default(0);

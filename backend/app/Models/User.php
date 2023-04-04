@@ -23,6 +23,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $guarded = ['id'];
     // RELATIONSHIPS
 
+    public function userSlots()
+    {
+        return $this->hasMany(UserSlot::class);
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);
