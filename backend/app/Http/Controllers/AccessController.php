@@ -51,8 +51,15 @@ class AccessController extends Controller
         if (!$access) {
             return response()->json(['message' => 'Access role not found!'], 404);
         }
+        
+        if ($id == 1 || $id == 2) {
+            return response()->json(['message' => 'Access role not found!'], 404);
+        }
+
+        return 'hai';
 
         $this->validate($request, [
+            'role'      =>  'required',
             'accesses'  =>  'required',
         ]);
 
@@ -77,6 +84,8 @@ class AccessController extends Controller
         $access->fill($data);
 
         $access->save();
+
+        Role::where('id', $access->role_id)->update(['name' => $request->role]);
 
         return response()->json($access);
     }
