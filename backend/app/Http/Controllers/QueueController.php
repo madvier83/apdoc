@@ -21,6 +21,33 @@ class QueueController extends Controller
 
     public function create($patient)
     {
+        try {
+            
+            $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
+
+            if ($queue) {
+                return response()->json(['message' => 'Patient already in queue'], 400);
+            }
+
+            $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
+
+            $data = [
+                'patient_id'    => $patient,
+                'queue_number'  => 'A'.$queue_number,
+                'status_id'     => 1
+            ];
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+
+            $queue = Queue::create($data);
+
+            return response()->json($queue);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function createFromAppointment($patient)
+    {
         $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
 
         if ($queue) {
@@ -31,7 +58,7 @@ class QueueController extends Controller
 
         $data = [
             'patient_id'    => $patient,
-            'queue_number'  => 'A'.$queue_number,
+            'queue_number'  => 'B'.$queue_number,
             'status_id'     => 1
         ];
         $data['clinic_id'] = auth()->user()->employee->clinic_id;
