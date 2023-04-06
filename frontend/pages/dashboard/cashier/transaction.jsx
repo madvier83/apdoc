@@ -606,7 +606,7 @@ export default function Transaction() {
                               )[0]
                             );
                           }}
-                          className={`input py-4 mt-1 h-full without-ring text-white ${
+                          className={`input border-none py-4 mt-1 h-full text-white ${
                             selectedQueue?.id ? "bg-indigo-600" : "bg-slate-800"
                           } w-full`}
                         >
@@ -668,7 +668,7 @@ export default function Transaction() {
                           </div>
                         </div>
                       </div>
-                      <div className="bg-slate-800 rounded-md mt-4 min-h-[58vh]">
+                      <div className="bg-slate-800 rounded-md mt-4 min-h-[32vh]">
                         {category.length <= 0 && (
                           <div className="btn btn-disabled mx-4 mt-4 bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                             No Item
@@ -756,7 +756,7 @@ export default function Transaction() {
                           <div
                             ref={queuesRef}
                             {...queuesEvents}
-                            className="overflow-y-scroll h-[51vh]"
+                            className="overflow-y-scroll h-[48vh]"
                           >
                             <div className="mt-4">
                               <small className="text-zinc-400">Services</small>{" "}
@@ -1037,7 +1037,19 @@ export default function Transaction() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between border-t-zinc-300 border-dashed border-t pt-2 w-full text-xl">
+                  <div className="flex justify-between w-full text-sm border-dashed border-t pt-2">
+                    <p className="font-semibold ml-1">Subtotal</p>
+                    <p className="font-semibold ml-1 text-right">
+                      {numeral(subtotal).format("0,0")}
+                    </p>
+                  </div>
+                  <div className="flex justify-between w-full text-sm">
+                    <p className="font-semibold ml-1">Total Discount</p>
+                    <p className="font-semibold ml-1 text-right">
+                      {numeral(totalDiscount).format("0,0")}
+                    </p>
+                  </div>
+                  <div className="flex justify-between border-t-zinc-300 border-dashed border-t pt-2 w-full text-xl mb-4">
                     <p className="font-semibold ml-1">Total</p>
                     <p className="font-semibold ml-1 text-right">
                       {numeral(total).format("0,0")}

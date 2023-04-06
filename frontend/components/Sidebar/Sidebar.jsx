@@ -15,10 +15,10 @@ export default function Sidebar() {
   function parseJwt(token) {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }
-  const [user, setUser] = useState({email: ""});
+  const [user, setUser] = useState({ email: "" });
   useEffect(() => {
-    setUser(parseJwt(token))
-  }, [])
+    setUser(parseJwt(token));
+  }, []);
 
   async function sendChangePassword() {
     try {
@@ -35,6 +35,7 @@ export default function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
 
   const initialSidebar = {
+    user: false,
     admin: false,
     receptionist: false,
     doctor: false,
@@ -71,20 +72,20 @@ export default function Sidebar() {
       route: "/dashboard/admin",
       access: true,
       submenu: [
-        { name: "user", route: "/dashboard/admin/user", access: true },
         { name: "position", route: "/dashboard/admin/position", access: true },
-        { name: "access", route: "/dashboard/admin/access", access: true },
         { name: "employee", route: "/dashboard/admin/employee", access: true },
         { name: "service", route: "/dashboard/admin/service", access: true },
         { name: "diagnose", route: "/dashboard/admin/diagnose", access: true },
         {
           name: "category-payment",
           route: "/dashboard/admin/category-payment",
+          access: true,
         },
         { name: "payment", route: "/dashboard/admin/payment", access: true },
         {
           name: "category-outcome",
           route: "/dashboard/admin/category-outcome",
+          access: true,
         },
         { name: "outcome", route: "/dashboard/admin/outcome", access: true },
         {
@@ -134,7 +135,7 @@ export default function Sidebar() {
         { name: "item", route: "/dashboard/pharmacy/item", access: true },
         {
           name: "item-supply",
-          route: "/dashboard/pharmacy/item-supply",
+          route: "/dashboard/pharmacy/supply",
           access: true,
         },
         {
@@ -234,15 +235,13 @@ export default function Sidebar() {
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 <li
                   className={`items-center ${
-                    router.pathname == "/dashboard" &&
-                    "text-emerald-500 animate-pulse"
+                    router.pathname == "/dashboard" && "text-emerald-500 "
                   }`}
                 >
                   <Link
                     href="/dashboard"
                     className={`text-xs py-3 font-bold block text-slate-500 ${
-                      router.pathname == "/dashboard" &&
-                      "text-emerald-500 animate-pulse"
+                      router.pathname == "/dashboard" && "text-emerald-500 "
                     }`}
                   >
                     <i className={"fas fa-chart-line mr-2 text-sm "}></i>{" "}
@@ -253,14 +252,86 @@ export default function Sidebar() {
 
               <hr className="my-4 md:min-w-full" />
 
+              <li
+                // key={index}
+                className={`items-center list-none ${
+                  router.pathname == "/" && "text-emerald-500 "
+                }`}
+              >
+                <button
+                  onClick={() => setSidebar({ user: !sidebar.user })}
+                  className={
+                    "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                  }
+                >
+                  <i
+                    className={`fas ${
+                      sidebar.user ? "fa-folder-open" : "fa-folder"
+                    }  mr-2 text-sm `}
+                  ></i>{" "}
+                  User
+                </button>
+
+                <ul
+                  className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                    sidebar.user == true ? "block" : "hidden"
+                  }`}
+                >
+                  <li
+                    // key={index}
+                    className={`items-center list-none ${
+                      router.pathname.startsWith("/owner/access") &&
+                      "text-emerald-500"
+                    }`}
+                  >
+                    <Link
+                      scroll={false}
+                      href={"/owner/access"}
+                      className={"text-xs py-3 font-semibold block capitalize"}
+                    >
+                      <i
+                        className={`fa-regular ${
+                          router.pathname.startsWith("/owner/access")
+                            ? "fa-folder-open"
+                            : "fa-folder"
+                        } mr-2 text-sm`}
+                      ></i>{" "}
+                      User Access
+                    </Link>
+                  </li>
+
+                  <li
+                    // key={index}
+                    className={`items-center list-none ${
+                      router.pathname.startsWith("/owner/slots") &&
+                      "text-emerald-500"
+                    }`}
+                  >
+                    <Link
+                      scroll={false}
+                      href={"/owner/slots"}
+                      className={"text-xs py-3 font-semibold block capitalize"}
+                    >
+                      <i
+                        className={`fa-regular ${
+                          router.pathname.startsWith("/owner/slots")
+                            ? "fa-folder-open"
+                            : "fa-folder"
+                        } mr-2 text-sm`}
+                      ></i>{" "}
+                      User Slots
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 {access.map((menu, index) => {
                   return (
                     <li
                       key={index}
                       className={`items-center ${
-                        router.pathname == "/" &&
-                        "text-emerald-500 animate-pulse"
+                        router.pathname == "/" && "text-emerald-500 "
                       }`}
                     >
                       <button
@@ -321,7 +392,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 "
                   }`}
                 >
                   <Link
@@ -334,7 +405,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 "
                   }`}
                 >
                   <Link
@@ -347,7 +418,7 @@ export default function Sidebar() {
 
                 <li
                   className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 "
                   }`}
                 >
                   <label
@@ -360,7 +431,7 @@ export default function Sidebar() {
                 </li>
                 <li
                   className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 animate-pulse"
+                    router.pathname == "/" && "text-emerald-500 "
                   }`}
                 >
                   <button

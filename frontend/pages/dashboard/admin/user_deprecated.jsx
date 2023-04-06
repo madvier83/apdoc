@@ -297,7 +297,7 @@ export default function User() {
                 value={addForm.nik}
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {addFormError.nik && (
                 <label className="label">
@@ -316,7 +316,7 @@ export default function User() {
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {addFormError.name && (
                 <label className="label">
@@ -334,7 +334,7 @@ export default function User() {
                 value={addForm.phone}
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {addFormError.phone && (
                 <label className="label">
@@ -353,7 +353,7 @@ export default function User() {
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {addFormError.address && (
                 <label className="label">
@@ -374,7 +374,7 @@ export default function User() {
                     value={addForm.birth_place}
                     onChange={(e) => handleAddInput(e)}
                     placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {addFormError.birth_place && (
                     <label className="label">
@@ -394,7 +394,7 @@ export default function User() {
                     value={addForm.birth_date}
                     onChange={(e) => handleAddInput(e)}
                     placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {addFormError.birth_date && (
                     <label className="label">
@@ -412,7 +412,7 @@ export default function User() {
                     name="gender"
                     value={addForm.gender}
                     onChange={(e) => handleAddInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   >
                     <option value="">Select</option>
                     <option value="male">Male</option>
@@ -435,7 +435,7 @@ export default function User() {
                 name="position_id"
                 value={addForm.position_id}
                 onChange={(e) => handleAddInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
                 {positions.map((obj) => {
@@ -481,7 +481,7 @@ export default function User() {
                 value={putForm.nik}
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {putFormError.nik && (
                 <label className="label">
@@ -500,7 +500,7 @@ export default function User() {
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 autoComplete="new-off"
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {putFormError.name && (
                 <label className="label">
@@ -518,7 +518,7 @@ export default function User() {
                 value={putForm.phone}
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               />
               {putFormError.phone && (
                 <label className="label">
@@ -537,7 +537,7 @@ export default function User() {
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {putFormError.address && (
                 <label className="label">
@@ -558,7 +558,7 @@ export default function User() {
                     value={putForm.birth_place}
                     onChange={(e) => handlePutInput(e)}
                     placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {putFormError.birth_place && (
                     <label className="label">
@@ -578,7 +578,7 @@ export default function User() {
                     value={putForm.birth_date}
                     onChange={(e) => handlePutInput(e)}
                     placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {putFormError.birth_date && (
                     <label className="label">
@@ -596,7 +596,7 @@ export default function User() {
                     name="gender"
                     value={putForm.gender}
                     onChange={(e) => handlePutInput(e)}
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   >
                     <option value="">Select</option>
                     <option value="male">Male</option>
@@ -619,7 +619,7 @@ export default function User() {
                 name="position_id"
                 value={putForm.position_id}
                 onChange={(e) => handlePutInput(e)}
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               >
                 <option value="">Unasigned</option>
                 {positions.map((obj) => {
@@ -664,7 +664,7 @@ export default function User() {
               value={putForm.nik}
               onChange={() => {}}
               disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
             />
             <label className="label">
               <span className="label-text">Name</span>
@@ -674,7 +674,7 @@ export default function User() {
               value={putForm.name}
               onChange={() => {}}
               disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
             />
             <label className="label">
               <span className="label-text">Phone</span>
@@ -684,7 +684,7 @@ export default function User() {
               value={putForm.phone}
               onChange={() => {}}
               disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
             />
             <label className="label">
               <span className="label-text">Address</span>
@@ -695,7 +695,7 @@ export default function User() {
               value={putForm.address}
               onChange={() => {}}
               disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full h-16"
+              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full h-16"
             ></textarea>
             <div className="flex gap-4 w-full">
               <div className="w-full">
@@ -707,7 +707,7 @@ export default function User() {
                   value={putForm.birth_place}
                   onChange={() => {}}
                   disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
                 />
               </div>
               <div className="w-full">
@@ -719,7 +719,7 @@ export default function User() {
                   value={putForm.birth_date}
                   onChange={() => {}}
                   disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
                 />
               </div>
               <div className="w-full">
@@ -731,7 +731,7 @@ export default function User() {
                   value={putForm.gender}
                   onChange={() => {}}
                   disabled
-                  className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
                 >
                   <option value="">Select</option>
                   <option value="male">Male</option>
@@ -748,7 +748,7 @@ export default function User() {
               value={putForm.position_id}
               onChange={() => {}}
               disabled
-              className="input input-bordered input-primary border-slate-100 bg-slate-200 cursor-text w-full"
+              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
             >
               <option value="">Unasigned</option>
               {positions.map((obj) => {

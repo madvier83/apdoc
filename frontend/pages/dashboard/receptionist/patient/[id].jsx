@@ -874,7 +874,7 @@ export default function Patients() {
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {addFormError.complaint && (
                 <label className="label">
@@ -893,7 +893,7 @@ export default function Patients() {
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {addFormError.inspection && (
                 <label className="label">
@@ -923,7 +923,7 @@ export default function Patients() {
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {addFormError.therapy && (
                 <label className="label">
@@ -980,7 +980,7 @@ export default function Patients() {
                 value={addGrowthForm.height}
                 onChange={(e) => handleAddGrowthInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               ></input>
               {addGrowthFormError.height && (
                 <label className="label">
@@ -1000,7 +1000,7 @@ export default function Patients() {
                 value={addGrowthForm.weight}
                 onChange={(e) => handleAddGrowthInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               ></input>
               {addGrowthFormError.weight && (
                 <label className="label">
@@ -1079,7 +1079,7 @@ export default function Patients() {
                     value={putForm.height}
                     onChange={(e) => handlePutInput(e)}
                     placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {putFormError.height && (
                     <label className="label">
@@ -1100,7 +1100,7 @@ export default function Patients() {
                     onChange={(e) => handlePutInput(e)}
                     placeholder=""
                     autoComplete="new-off"
-                    className="input input-bordered input-primary border-slate-300 w-full"
+                    className="input input-bordered border-slate-300 w-full"
                   />
                   {putFormError.weight && (
                     <label className="label">
@@ -1121,7 +1121,7 @@ export default function Patients() {
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {putFormError.complaint && (
                 <label className="label">
@@ -1140,7 +1140,7 @@ export default function Patients() {
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {putFormError.inspection && (
                 <label className="label">
@@ -1170,7 +1170,7 @@ export default function Patients() {
                 onChange={(e) => handlePutInput(e)}
                 placeholder=""
                 rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
+                className="input input-bordered border-slate-300 w-full h-16"
               ></textarea>
               {putFormError.therapy && (
                 <label className="label">
@@ -1228,7 +1228,7 @@ export default function Patients() {
                 value={putGrowthForm.height}
                 onChange={(e) => handlePutGrowthInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               ></input>
               {putGrowthFormError.height && (
                 <label className="label">
@@ -1248,7 +1248,7 @@ export default function Patients() {
                 value={putGrowthForm.weight}
                 onChange={(e) => handlePutGrowthInput(e)}
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
+                className="input input-bordered border-slate-300 w-full"
               ></input>
               {putGrowthFormError.weight && (
                 <label className="label">

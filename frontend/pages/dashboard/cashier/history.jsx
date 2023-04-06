@@ -24,7 +24,7 @@ export default function History() {
       });
       setItem(response.data);
       setItemLoading(false);
-      console.log(response.data)
+      console.log(response.data);
     } catch (err) {
       console.error(err);
     }
@@ -110,7 +110,7 @@ export default function History() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -558,11 +558,25 @@ export default function History() {
                 </div>
               </div>
 
-              <div className="flex justify-between border-t-zinc-300 border-dashed border-t pt-2 w-full text-xl">
-                <p className="font-semibold ml-1">Total</p>
-                <p className="font-semibold ml-1 text-right">
-                  {numeral(selectedQueue.total).format("0,0")}
-                </p>
+              <div className="h-min">
+                <div className="flex justify-between w-full text-sm border-dashed border-t pt-2">
+                  <p className="font-semibold ml-1">Subtotal</p>
+                  <p className="font-semibold ml-1 text-right">
+                    {numeral(selectedQueue.total + selectedQueue.discount).format("0,0")}
+                  </p>
+                </div>
+                <div className="flex justify-between w-full text-sm py-2">
+                  <p className="font-semibold ml-1">Total Discount</p>
+                  <p className="font-semibold ml-1 text-right">
+                    {numeral(selectedQueue.discount).format("0,0")}
+                  </p>
+                </div>
+                <div className="flex justify-between border-t-zinc-300 border-dashed border-t w-full text-xl pt-2">
+                  <p className="font-semibold ml-1">Total</p>
+                  <p className="font-semibold ml-1 text-right">
+                    {numeral(selectedQueue.total).format("0,0")}
+                  </p>
+                </div>
               </div>
             </div>
             <div

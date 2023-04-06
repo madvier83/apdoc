@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import axios from "../api/axios";
+import jwt_decode from "jwt-decode"
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -16,7 +17,9 @@ export default function Login() {
   const [loginError, setLoginError] = useState("");
 
   function parseJwt(token) {
-    return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+    // console.log(jwt_decode(token))
+    return jwt_decode(token);
+    // return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
   }
 
   async function handleLogin(e) {

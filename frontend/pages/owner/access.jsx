@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../../api/axios";
-import DashboardLayout from "../../../layouts/DashboardLayout";
-import ModalBox from "../../../components/Modals/ModalBox";
-import ModalDelete from "../../../components/Modals/ModalDelete";
+import axios from "../api/axios";
+import DashboardLayout from "../../layouts/DashboardLayout";
+import ModalBox from "../../components/Modals/ModalBox";
+import ModalDelete from "../../components/Modals/ModalDelete";
 
 export default function Access() {
   const token = getCookies("token");
@@ -33,7 +33,6 @@ export default function Access() {
         access: false,
         submenu: [
           { name: "user", route: "/dashboard/admin/user", access: false },
-          { name: "access", route: "/dashboard/admin/access", access: false },
           {
             name: "position",
             route: "/dashboard/admin/position",
@@ -309,10 +308,32 @@ export default function Access() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       setPutForm(initialAccessForm);
       setPutFormError(initialAccessForm);
       putModalRef.current.click();
+      getUser();
+    } catch (err) {
+      setPutFormError(err.response?.data);
+      console.error(err);
+    }
+  }
+
+  async function deleteRole(id) {
+    // console.log(putForm);
+    try {
+      const response = await axios.delete(
+        `/access/${id}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      console.log(response);
+      setPutForm(initialAccessForm);
+      setPutFormError(initialAccessForm);
+      // putModalRef.current.click();
       getUser();
     } catch (err) {
       setPutFormError(err.response?.data);
@@ -350,7 +371,7 @@ export default function Access() {
                     onClick={() => {
                       addModalScrollRef.current.scroll({
                         top: 0,
-                        behavior: "smooth",
+                        // behavior: "smooth",
                       });
                     }}
                   >
@@ -444,14 +465,14 @@ export default function Access() {
                                 });
                                 putModalScrollRef.current.scroll({
                                   top: 0,
-                                  behavior: "smooth",
+                                  // behavior: "smooth",
                                 });
                               }}
                             >
                               <i className="fas fa-cog"></i>
                             </label>
                           </div>
-                          {/* <div className="tooltip tooltip-left" data-tip="Delete">
+                          <div className="tooltip tooltip-left" data-tip="Delete">
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
@@ -459,7 +480,7 @@ export default function Access() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteUser(obj.id)} title={`Delete user?`}></ModalDelete> */}
+                        <ModalDelete id={obj.id} callback={() => deleteRole(obj.id)} title={`Delete role?`}></ModalDelete>
                         </td>
                       </tr>
                     );
@@ -669,7 +690,7 @@ export default function Access() {
                       return (
                         <label
                           key={obj.route}
-                          htmlFor={obj.route}
+                          htmlFor={obj.route+"add"}
                           className={`${
                             menu.access == false || obj.access == false
                               ? "opacity-25 cursor-pointer"
@@ -687,7 +708,7 @@ export default function Access() {
                               handleSelection(obj);
                             }}
                             disabled={menu.access == false}
-                            id={obj.route}
+                            id={obj.route+"add"}
                             className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
                           />
                         </label>

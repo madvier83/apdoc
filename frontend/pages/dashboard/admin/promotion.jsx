@@ -8,7 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Promotion() {
-  const token = getCookies("token");
+  const token = getCookies("token"); 
 
   const addModalRef = useRef();
   const putModalRef = useRef();

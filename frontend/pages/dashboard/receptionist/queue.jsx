@@ -336,7 +336,7 @@ export default function Queue() {
                     !isRegular && "opacity-30"
                   }`}
                 >
-                  Regular <i className="fa-regular fa-user ml-2"></i>
+                  Queue <i className="fa-regular fa-user ml-2"></i>
                   {/* {queues?.length > 0 && (
                     <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
                       {queues.length}
@@ -413,9 +413,7 @@ export default function Queue() {
                                         : "bg-indigo-900 font-bold text-lg w-[4.4rem]"
                                     } h-24 transition-all duration-500 flex items-center justify-center mr-4 ease-out`}
                                   >
-                                    <h1 className="mb-1">
-                                      {obj.queue_number}
-                                    </h1>
+                                    <h1 className="mb-1">{obj.queue_number}</h1>
                                   </div>
                                   <div className="ml-2">
                                     <h2 className="card-title lg:text-lg">
@@ -481,6 +479,20 @@ export default function Queue() {
                                       : "hidden"
                                   }`}
                                 ></div>
+                                {/* {obj.queues[0]?.status_id == 1 ? ( */}
+                                  {/* <button className="btn btn-xs btn-disabled bg-slate-100 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                    Already In Queue
+                                  </button> */}
+                                {/* ) : ( */}
+                                  <button
+                                    // htmlFor="addQueueModal"
+                                    // onClick={() => addToQueue(obj.id)}
+                                    className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  >
+                                    Add to queue{" "}
+                                    <i className="fas fa-add ml-2"></i>
+                                  </button>
+                                {/* )} */}
                               </div>
                             </div>
                           </div>
@@ -808,10 +820,10 @@ export default function Queue() {
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box px-0 pt-1 w-11/12 max-w-7xl">
+        <div className="modal-box px-0 pt-1 max-w-4xl">
           <div
             className={
-              "relative flex flex-col min-w-0 break-words w-full mb-32 min-h-fit rounded-md text-blueGray-700 bg-white"
+              "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
             }
           >
             <div className="rounded-t-md mb-0 px-4 py-4 border-0">
@@ -833,7 +845,7 @@ export default function Queue() {
                 </div>
               </div>
             </div>
-            <div className="min-h-[80vh] block w-full overflow-x-auto">
+            <div className="min-h-[65vh] block w-full overflow-x-auto">
               {/* Projects table */}
               <table className="items-center w-full bg-transparent border-collapse">
                 <thead>

@@ -9,7 +9,7 @@ import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Item() {
-  const token = getCookies("token");
+  const token = getCookies("token"); 
 
   const addModalRef = useRef();
   const putModalRef = useRef();

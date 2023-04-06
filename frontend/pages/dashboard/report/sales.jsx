@@ -14,7 +14,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
 
 export default function Sales() {
-  const token = getCookies("token");
+  const token = getCookies("token"); 
 
   const [chartData, setChartData] = useState([
     ["Date", "Gross Sales", "Net Sales"],

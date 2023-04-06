@@ -4,7 +4,7 @@ export default function ModalBox({id, children}) {
     return (
         <>
         <input type="checkbox" id={id} className="modal-toggle" />
-        <div className="modal modal-bottom sm:modal-middle rounded-lg">
+        <div className="modal modal-bottom sm:modal-middle">
             <div className="modal-box">
                 {children}
             </div>

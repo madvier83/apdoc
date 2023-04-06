@@ -8,7 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 
 export default function ItemSupply() {
-  const token = getCookies("token");
+  const token = getCookies("token"); 
 
   const addModalRef = useRef();
   const putModalRef = useRef();

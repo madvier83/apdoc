@@ -51,11 +51,32 @@ export async function middleware(req) {
         }
     }
 
+    if(pathname.startsWith("/owner")) {
+        if (jwt == undefined) {
+            url.pathname = "/auth/login"
+            return NextResponse.redirect(url);
+        } else {
+            try {
+                const { payload } = await jwtVerify(jwt, secret)
+                if(payload.role_id != 2) {
+                    url.pathname = "/dashboard";
+                    return NextResponse.redirect(url);
+                }else{
+                    return NextResponse.next()
+                }
+            } catch(e) {
+                req.cookies.set("token", "", { expires: new Date(Date.now()) });
+                url.pathname = "/auth/login"
+                return NextResponse.redirect(url);
+            }
+        }
+    }
+
     const dummyAccess = [
         {
         name: "admin",
         route: "/dashboard/admin",
-        access: false,
+        access: true,
         submenu: [
             { name: "user", route: "/dashboard/admin/user", access: true },
             { name: "position", route: "/dashboard/admin/position", access: true },
@@ -66,11 +87,13 @@ export async function middleware(req) {
             {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
+            access: true
             },
             { name: "payment", route: "/dashboard/admin/payment", access: true },
             {
             name: "category-outcome",
             route: "/dashboard/admin/category-outcome",
+            access: true
             },
             { name: "outcome", route: "/dashboard/admin/outcome", access: true },
             {
@@ -120,7 +143,7 @@ export async function middleware(req) {
             { name: "item", route: "/dashboard/pharmacy/item", access: true },
             {
             name: "item-supply",
-            route: "/dashboard/pharmacy/item-supply",
+            route: "/dashboard/pharmacy/supply",
             access: true,
             },
             {
@@ -158,8 +181,8 @@ export async function middleware(req) {
         },
     ];
 
-    console.log("=== NEXT =====================================================================")
-    console.log("pathname : " + pathname)
+    // console.log("=== NEXT =====================================================================")
+    // console.log("pathname : " + pathname)
     let isRouteAllowed = false;
     try {
         dummyAccess.map(menu => {
@@ -173,30 +196,30 @@ export async function middleware(req) {
                 })
             }
         })
-        console.log("isRouteAllowed" + isRouteAllowed)
-        console.log("Done")
+        // console.log("isRouteAllowed" + isRouteAllowed)
+        // console.log("Done")
     } catch(e) {
         req.cookies.set("token", "", { expires: new Date(Date.now()) });
         url.pathname = "/auth/login"
         return NextResponse.redirect(url);
     }
     
-    if(isRouteAllowed == false) {
-        return NextResponse.rewrite(
-            `${process.env.BASE_URL}403`,
-            {
-                status: 403,
-                headers: {
-                    "WWW-Authenticate": 'Basic realm="Secure Area"',
-                },
-            }
-        );
-    }
-
     // if(isRouteAllowed == false) {
-    //     url.pathname = "/dashboard"
-    //     return NextResponse.redirect(url);
+    //     return NextResponse.rewrite(
+    //         `${process.env.BASE_URL}403`,
+    //         {
+    //             status: 403,
+    //             headers: {
+    //                 "WWW-Authenticate": 'Basic realm="Secure Area"',
+    //             },
+    //         }
+    //     );
     // }
+
+    if(isRouteAllowed == false) {
+        url.pathname = "/dashboard"
+        return NextResponse.redirect(url);
+    }
 }
 
 export const config = { matcher: "/((?!.*\\.).*)" };
