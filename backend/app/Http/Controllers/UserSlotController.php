@@ -26,22 +26,15 @@ class UserSlotController extends Controller
     {
         // try {
             $this->validate($request, [
-                'name'      => 'required',
-                'email'     => 'required|email|unique:users',
-                'phone'     => 'required|unique:users',
-                'role_id'   => 'required|numeric|min:3',
-                'clinic_id' => 'required',
+                'name'        => 'required',
+                'email'       => 'required|email|unique:users',
+                'phone'       => 'required|unique:users',
+                'role_id'     => 'required|numeric|min:3',
+                'clinic_id'   => 'required',
+                'employee_id' => 'required|numeric|min:2'
             ]);
 
-            $employee = Employee::create([
-                'nik'         => null,
-                'name'        => $request->name,
-                'birth_place' => null,
-                'birth_date'  => null,
-                'gender'      => null,
-                'address'     => null,
-                'phone'       => $request->phone,
-                'position_id' => null,
+            Employee::where('id', $request->employee_id)->update([
                 'clinic_id'   => $request->clinic_id
             ]);
     
@@ -55,7 +48,7 @@ class UserSlotController extends Controller
                 'expired_otp'       => Carbon::now(),
                 'phone_verified_at' => Carbon::now(),
                 'is_verified'       => 1,
-                'employee_id'       => $employee->id
+                'employee_id'       => $request->employee_id
             ];
     
             $user = User::create($data);
