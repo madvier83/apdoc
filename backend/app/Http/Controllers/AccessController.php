@@ -12,7 +12,7 @@ class AccessController extends Controller
 {
     public function index()
     {
-        $access = Access::with('role')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+        $access = Access::with('role')->where('id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
         return response()->json($access);
     }
 
@@ -56,26 +56,10 @@ class AccessController extends Controller
             return response()->json(['message' => 'Access role not found!'], 404);
         }
 
-        return 'hai';
-
         $this->validate($request, [
             'role'      =>  'required',
             'accesses'  =>  'required',
         ]);
-
-        // if (!$access) {
-        //     $data = [
-        //         'role_id'   => $role,
-        //         'accesses'  => $request->accesses
-        //     ];
-        //     Access::create($data);
-
-        //     $response = [
-        //         'role_id'   => $role,
-        //         'accesses'  => $request->accesses
-        //     ];
-        //     return response()->json($response);
-        // }
 
         $data = [
             'accesses'  => $request->accesses
