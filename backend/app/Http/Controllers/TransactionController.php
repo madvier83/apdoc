@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Item;
 use App\Models\ItemSupply;
 use App\Models\Promotion;
@@ -152,6 +153,7 @@ class TransactionController extends Controller
 
         Transaction::where('id', $transaction->id)->update(['discount' => $totalDiscount, 'total' => $totalPayment]);
         Queue::where('patient_id', $request->patient_id)->update(['status_id' => 3]);
+        Appointment::where('patient_id', $request->patient_id)->where('status_id', 2)->update(['status_id' => 3]);
 
         return response()->json(Transaction::find($transaction->id));
     }

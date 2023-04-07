@@ -119,7 +119,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
 
 	$router->get('/v1/queues', 'QueueController@index');
-	$router->post('/v1/queue/{patient}/appointment', 'QueueController@createFromAppointment');
+	$router->post('/v1/queue/{appointment}/appointment', 'QueueController@createFromAppointment');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
 
