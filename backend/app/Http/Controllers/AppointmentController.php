@@ -48,7 +48,7 @@ class AppointmentController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
             }
         try {
-            return $data = Appointment::updateOrCreate([
+            $data = Appointment::updateOrCreate([
                 'id' => $id
             ],[
                 'patient_id' => $request->patient_id,

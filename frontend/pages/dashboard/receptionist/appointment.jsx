@@ -83,19 +83,24 @@ export default function Appointment() {
   async function addItem(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("appointment", addForm, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(
+        `appointment/${addForm.patient_id}`,
+        addForm,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
       setAddFormError(initialItemForm);
     } catch (err) {
+      console.log(err);
       setAddFormError(initialItemForm);
-      setAddFormError(err.response?.data);
+      setAddFormError(err.response?.data?.errors);
     }
   }
 
@@ -115,7 +120,7 @@ export default function Appointment() {
       setPutFormError(initialItemForm);
     } catch (err) {
       setPutFormError(initialItemForm);
-      setPutFormError(err.response?.data);
+      setPutFormError(err.response?.data?.errors);
     }
   }
 
@@ -178,13 +183,10 @@ export default function Appointment() {
                     Description
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Appointment
+                    Status
                   </th>
                   <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Date
-                  </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Time
+                    Date Time
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -224,20 +226,35 @@ export default function Appointment() {
                         <span className={"font-bold"}>{obj.patient?.name}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.description.slice(0, 40)} ...</span>
+                        <span>{obj.description.slice(0, 40)}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="ml-2">
-                          {moment(obj.appointment_date).fromNow()}
+                        <span className="">
+                          {obj.status_id == 1 && (
+                            <button className="btn-primary bg-indigo-100 text-indigo-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                              Pending
+                            </button>
+                          )}
+                          {obj.status_id == 2 && (
+                            <button className="btn-disabled ml-auto bg-slate-100 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                              In Queue
+                            </button>
+                          )}
+                          {obj.status_id == 3 && (
+                            <button className="btn-disabled ml-auto bg-emerald-100 text-emerald-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                              Completed
+                            </button>
+                          )}
+                          {obj.status_id == 4 && (
+                            <button className="btn-disabled ml-auto bg-rose-100 text-rose-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                              Cancelled
+                            </button>
+                          )}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span>
-                          {moment(obj.appointment_date).format("DD MMM YYYY")}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>
+                          {moment(obj.appointment_date).format("DD MMM YYYY")} -{" "}
                           {moment(obj.appointment_date).format("h:mm A")}
                         </span>
                       </td>

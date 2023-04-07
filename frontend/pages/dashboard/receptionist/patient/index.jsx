@@ -77,6 +77,7 @@ export default function Patients() {
           "Content-Type": "application/json",
         },
       });
+      // console.log(response)
       addModalRef.current.click();
       getPatients();
       setAddForm(initialPatientForm);

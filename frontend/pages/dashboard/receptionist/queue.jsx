@@ -106,6 +106,26 @@ export default function Queue() {
       console.error(err);
     }
   }
+  async function addToQueueAppointment(id) {
+    try {
+      const response = await axios.post(
+        `queue/${id}/appointment`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setIsRegular(true);
+      // getQueues();
+      // getAppointment()
+      // getPatients();
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   async function cancelQueue(id) {
     try {
@@ -121,6 +141,7 @@ export default function Queue() {
       );
       // console.log(response);
       getQueues();
+      getAppointment();
       getPatients();
     } catch (err) {
       console.error(err);
@@ -212,13 +233,6 @@ export default function Queue() {
       console.error(err);
     }
   }
-
-  useEffect(() => {
-    getQueues();
-    getServices();
-    getEmployees();
-    getAppointment();
-  }, []);
 
   const initialServiceForm = {
     queue_id: "",
@@ -321,6 +335,15 @@ export default function Queue() {
     }
   }, [isRegular]);
 
+  useEffect(() => {
+    getQueues();
+    getServices();
+    getEmployees();
+    getAppointment();
+  }, [isRegular]);
+
+  // console.log(appointment)
+
   return (
     <>
       <DashboardLayout title="Queue List">
@@ -329,7 +352,7 @@ export default function Queue() {
             className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
           >
             <div className="w-1/2">
-              <div className="tabs bg-gray-900 rounded-md">
+              <div className="tabs bg-gray-900 rounded-t-md">
                 <span
                   onClick={() => setIsRegular(true)}
                   className={`relative text-sm pt-6 rounded-t-md pl-7 pr-4 bg-gray-900 text-white cursor-pointer ${
@@ -337,14 +360,6 @@ export default function Queue() {
                   }`}
                 >
                   Queue <i className="fa-regular fa-user ml-2"></i>
-                  {/* {queues?.length > 0 && (
-                    <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
-                      {queues.length}
-                    </div>
-                  )} */}
-                  <div
-                    className={`bg-gray-900 rounded-b-md rounded-r-md w-8 h-8 absolute left-0`}
-                  ></div>
                 </span>
                 <span
                   onClick={() => setIsRegular(false)}
@@ -410,10 +425,11 @@ export default function Queue() {
                                     className={`${
                                       obj.id == selectedQueue.id
                                         ? "bg-indigo-900 font-bold text-2xl w-24"
-                                        : "bg-indigo-900 font-bold text-lg w-[4.4rem]"
-                                    } h-24 transition-all duration-500 flex items-center justify-center mr-4 ease-out`}
+                                        : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
+                                    } h-24 transition-all flex items-center justify-center mr-4 ease-out`}
                                   >
                                     <h1 className="mb-1">{obj.queue_number}</h1>
+                                    {/* <h1 className="mb-1">A199</h1> */}
                                   </div>
                                   <div className="ml-2">
                                     <h2 className="card-title lg:text-lg">
@@ -427,10 +443,10 @@ export default function Queue() {
                                     </small>
                                   </div>
                                   <label
-                                    className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 bg-indigo-900 bg-opacity-10 cursor-pointer duration-500 ${
+                                    className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-rose-500 bg-indigo-900 bg-opacity-10 cursor-pointer ${
                                       obj.id == selectedQueue.id
-                                        ? "w-16 text-lg"
-                                        : "w-10 opacity-60"
+                                        ? "w-16 px-3 text-lg"
+                                        : "w-12 px-3 opacity-60 text-lg"
                                     } ease-out`}
                                     htmlFor={obj.queue_number}
                                   >
@@ -460,7 +476,7 @@ export default function Queue() {
                                 : "bg-slate-800"
                             } bg-opacity-70 rounded-md shadow-md mb-4`}
                           >
-                            <div className="card-body h-24 py-5">
+                            <div className="card-body h-24 py-5 px-6">
                               <div className="flex items-center">
                                 <div className="">
                                   <h2 className="card-title text-base lg:text-lg text-primary-content">
@@ -479,20 +495,33 @@ export default function Queue() {
                                       : "hidden"
                                   }`}
                                 ></div>
-                                {/* {obj.queues[0]?.status_id == 1 ? ( */}
-                                  {/* <button className="btn btn-xs btn-disabled bg-slate-100 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                                    Already In Queue
-                                  </button> */}
-                                {/* ) : ( */}
+                                {obj.status_id == 1 && (
                                   <button
                                     // htmlFor="addQueueModal"
-                                    // onClick={() => addToQueue(obj.id)}
-                                    className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                    onClick={() =>
+                                      addToQueueAppointment(obj.id)
+                                    }
+                                    className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 ml-auto rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                   >
                                     Add to queue{" "}
                                     <i className="fas fa-add ml-2"></i>
                                   </button>
-                                {/* )} */}
+                                )}
+                                {obj.status_id == 2 && (
+                                  <button className="btn btn-xs btn-disabled ml-auto bg-slate-100 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                    In Queue
+                                  </button>
+                                )}
+                                {obj.status_id == 3 && (
+                                  <button className="btn btn-xs btn-disabled ml-auto bg-emerald-100 text-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                    Completed
+                                  </button>
+                                )}
+                                {obj.status_id == 4 && (
+                                  <button className="btn btn-xs btn-disabled ml-auto bg-rose-100 text-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                    Cancelled
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -820,7 +849,7 @@ export default function Queue() {
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box px-0 pt-1 max-w-4xl">
+        <div className="modal-box px-0 pt-1 max-w-6xl">
           <div
             className={
               "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
@@ -927,7 +956,7 @@ export default function Queue() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {obj.queues[0]?.status_id == 1 ? (
                             <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                              Already In Queue
+                              In Queue
                             </button>
                           ) : (
                             <button
