@@ -6,13 +6,19 @@ use App\Models\Appointment;
 use App\Models\Queue;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Throwable;
 
 class QueueController extends Controller
 {
     public function index()
     {
-        $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient', 'queueDetails', 'queueDetails.employee', 'queueDetails.service'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($queue);
+        try {
+            $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient', 'queueDetails', 'queueDetails.employee', 'queueDetails.service'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($queue);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
@@ -22,14 +28,13 @@ class QueueController extends Controller
 
     public function create($patient)
     {
+        $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
+
+        if ($queue) {
+            return response()->json(['message' => 'Patient already in queue'], 400);
+        }
+
         try {
-            
-            $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
-
-            if ($queue) {
-                return response()->json(['message' => 'Patient already in queue'], 400);
-            }
-
             $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
 
             $data = [
@@ -38,12 +43,11 @@ class QueueController extends Controller
                 'status_id'     => 1
             ];
             $data['clinic_id'] = auth()->user()->employee->clinic_id;
-
             $queue = Queue::create($data);
 
             return response()->json($queue);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 
@@ -61,21 +65,25 @@ class QueueController extends Controller
             return response()->json(['message' => 'Patient already in queue'], 400);
         }
 
-        $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
-
-        $data = [
-            'patient_id'    => $appoint->patient_id,
-            'queue_number'  => 'B'.$queue_number,
-            'status_id'     => 1
-        ];
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-
-        $queue = Queue::create($data);
-
-        $appoint->fill(['status_id' => 2]);
-        $appoint->save();
-
-        return response()->json($queue);
+        try {
+            $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
+    
+            $data = [
+                'patient_id'    => $appoint->patient_id,
+                'queue_number'  => 'B'.$queue_number,
+                'status_id'     => 1
+            ];
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+    
+            $queue = Queue::create($data);
+    
+            $appoint->fill(['status_id' => 2]);
+            $appoint->save();
+    
+            return response()->json($queue);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update($id, $status)
@@ -86,23 +94,27 @@ class QueueController extends Controller
             return response()->json(['message' => 'Queue not found!'], 404);
         }
 
-        $appointment = Appointment::where('patient_id', $queue->patient_id)->where('status_id', 2)->first();
-
-        $data = [
-            'status_id' => $status
-        ];
-
-        $queue->fill($data);
-        $queue->save();
-
-        $codeQueue = $queue->queue_number[0];
-
-        if($status == 3 && $codeQueue == 'B') {
-            $appointment->fill(['status_id' => 1]);
-            $appointment->save();
+        try {
+            $appointment = Appointment::where('patient_id', $queue->patient_id)->where('status_id', 2)->first();
+    
+            $data = [
+                'status_id' => $status
+            ];
+    
+            $queue->fill($data);
+            $queue->save();
+    
+            $codeQueue = $queue->queue_number[0];
+    
+            if($status == 3 && $codeQueue == 'B') {
+                $appointment->fill(['status_id' => 1]);
+                $appointment->save();
+            }
+    
+            return response()->json($queue);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
-
-        return response()->json($queue);
     }
 
     public function destroy($id)

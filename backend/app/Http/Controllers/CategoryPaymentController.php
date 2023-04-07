@@ -5,19 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\CategoryPayment;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Throwable;
 
 class CategoryPaymentController extends Controller
 {
     public function index()
     {
-        $category = CategoryPayment::with('payments')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($category);
+        try {
+            $category = CategoryPayment::with('payments')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $category = CategoryPayment::with('payments')->find($id);
-        return response()->json($category);
+        try {
+            $category = CategoryPayment::with('payments')->find($id);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,15 @@ class CategoryPaymentController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $category = CategoryPayment::create($data);
-
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $category = CategoryPayment::create($data);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -45,12 +60,15 @@ class CategoryPaymentController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-
-        $category->fill($data);
-
-        $category->save();
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $category->fill($data);
+            $category->save();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -61,8 +79,13 @@ class CategoryPaymentController extends Controller
             return response()->json(['message' => 'Category not found!'], 404);
         }
 
-        $category->delete();
-        Payment::where('category_payment_id', $id)->update(['category_payment_id' => null]);
-        return response()->json(['message' => 'Category deleted successfully!']);
+        try {
+            $category->delete();
+            Payment::where('category_payment_id', $id)->update(['category_payment_id' => null]);
+    
+            return response()->json(['message' => 'Category deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

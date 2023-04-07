@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Diagnose;
 use Illuminate\Http\Request;
+use Throwable;
 
 class DiagnoseController extends Controller
 {
     public function index()
     {
-        $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($diagnose);
+        try {
+            $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($diagnose);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $diagnose = Diagnose::find($id);
-        return response()->json($diagnose);
+        try {
+            $diagnose = Diagnose::find($id);
+    
+            return response()->json($diagnose);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,15 @@ class DiagnoseController extends Controller
             'description' => 'required|string',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $diagnose = Diagnose::create($data);
-
-        return response()->json($diagnose);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $diagnose = Diagnose::create($data);
+    
+            return response()->json($diagnose);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -46,12 +61,15 @@ class DiagnoseController extends Controller
             'description' => 'required|string',
         ]);
 
-        $data = $request->all();
-
-        $diagnose->fill($data);
-
-        $diagnose->save();
-        return response()->json($diagnose);
+        try {
+            $data = $request->all();
+            $diagnose->fill($data);
+            $diagnose->save();
+    
+            return response()->json($diagnose);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -62,7 +80,12 @@ class DiagnoseController extends Controller
             return response()->json(['message' => 'Diagnose not found!'], 404);
         }
 
-        $diagnose->delete();
-        return response()->json(['message' => 'Diagnose deleted successfully!']);
+        try {
+            $diagnose->delete();
+    
+            return response()->json(['message' => 'Diagnose deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

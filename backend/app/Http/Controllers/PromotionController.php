@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Promotion;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PromotionController extends Controller
 {
     public function index()
     {
-        $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($promotion);
+        try {
+            $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($promotion);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $promotion = Promotion::find($id);
-        return response()->json($promotion);
+        try {
+            $promotion = Promotion::find($id);
+    
+            return response()->json($promotion);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,15 @@ class PromotionController extends Controller
             'discount' => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $promotion = Promotion::create($data);
-
-        return response()->json($promotion);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $promotion = Promotion::create($data);
+    
+            return response()->json($promotion);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -46,12 +61,15 @@ class PromotionController extends Controller
             'discount' => 'required',
         ]);
 
-        $data = $request->all();
-
-        $promotion->fill($data);
-
-        $promotion->save();
-        return response()->json($promotion);
+        try {
+            $data = $request->all();
+            $promotion->fill($data);
+            $promotion->save();
+    
+            return response()->json($promotion);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -62,7 +80,12 @@ class PromotionController extends Controller
             return response()->json(['message' => 'Promotion not found!'], 404);
         }
 
-        $promotion->delete();
-        return response()->json(['message' => 'Promotion deleted successfully!']);
+        try {
+            $promotion->delete();
+    
+            return response()->json(['message' => 'Promotion deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

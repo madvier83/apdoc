@@ -7,32 +7,43 @@ use App\Models\User;
 use App\Models\UserSlot;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Throwable;
 
 class UserSlotController extends Controller
 {
     public function index()
     {
-        $user = UserSlot::with(['user', 'user.employee'])->where('apdoc_id', auth()->user()->apdoc_id)->get();
-        return response()->json($user);
+        try {
+            $user = UserSlot::with(['user', 'user.employee'])->where('apdoc_id', auth()->user()->apdoc_id)->get();
+    
+            return response()->json($user);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $user = UserSlot::with(['user', 'user.employee'])->find($id);
-        return response()->json($user);
+        try {
+            $user = UserSlot::with(['user', 'user.employee'])->find($id);
+    
+            return response()->json($user);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request, $id)
     {
-        // try {
-            $this->validate($request, [
-                'email'       => 'required|email|unique:users',
-                'phone'       => 'required|unique:users',
-                'role_id'     => 'required|numeric|min:3',
-                'clinic_id'   => 'required',
-                'employee_id' => 'required|numeric|min:2'
-            ]);
+        $this->validate($request, [
+            'email'       => 'required|email|unique:users',
+            'phone'       => 'required|unique:users',
+            'role_id'     => 'required|numeric|min:3',
+            'clinic_id'   => 'required',
+            'employee_id' => 'required|numeric|min:2'
+        ]);
 
+        try {
             $employee = Employee::find($request->employee_id);
 
             Employee::where('id', $request->employee_id)->update([
@@ -57,9 +68,9 @@ class UserSlotController extends Controller
             UserSlot::where('id', $id)->update(['user_id' => $user->id]);
     
             return response()->json($user);
-        // } catch (\Throwable $e) {
-        //     return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        // }
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -83,29 +94,31 @@ class UserSlotController extends Controller
             'clinic_id' => 'required',
         ]);
 
-        $data = $request->all();
-
-        $user->fill($data);
-
-        $user->save();
-
-        Employee::where('id', $user->employee_id)->update(['clinic_id' => $request->clinic_id]);
-
-        return response()->json(UserSlot::with(['user', 'user.employee'])->find($id));
+        try {
+            $data = $request->all();
+            $user->fill($data);
+            $user->save();
+    
+            Employee::where('id', $user->employee_id)->update(['clinic_id' => $request->clinic_id]);
+    
+            return response()->json(UserSlot::with(['user', 'user.employee'])->find($id));
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function addSlot(Request $request)
     {
-        // try {
+        try {
             $user = UserSlot::create([
                 'apdoc_id' => auth()->user()->apdoc_id,
                 'status'    => 'purchased'
             ]);
-
+    
             return response()->json($user);
-        // } catch (\Throwable $e) {
-        //     return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        // }
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -116,11 +129,15 @@ class UserSlotController extends Controller
             return response()->json(['message' => 'User not found!'], 404);
         }
 
-        Employee::where('id', $slot->user->employee_id)->delete();
-        User::where('id', $slot->user_id)->delete();
-        $slot->fill(['user_id' => null]);
-        $slot->save();
-        
-        return response()->json(['message' => 'User deleted successfully!']);
+        try {
+            Employee::where('id', $slot->user->employee_id)->delete();
+            User::where('id', $slot->user_id)->delete();
+            $slot->fill(['user_id' => null]);
+            $slot->save();
+            
+            return response()->json(['message' => 'User deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

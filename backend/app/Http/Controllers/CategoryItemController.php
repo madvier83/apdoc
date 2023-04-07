@@ -5,19 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\CategoryItem;
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Throwable;
 
 class CategoryItemController extends Controller
 {
     public function index()
     {
-        $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($category);
+        try {
+            $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $category = CategoryItem::find($id);
-        return response()->json($category);
+        try {
+            $category = CategoryItem::find($id);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,15 @@ class CategoryItemController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $category = CategoryItem::create($data);
-
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $category = CategoryItem::create($data);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -45,12 +60,15 @@ class CategoryItemController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-
-        $category->fill($data);
-
-        $category->save();
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $category->fill($data);
+            $category->save();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -61,8 +79,13 @@ class CategoryItemController extends Controller
             return response()->json(['message' => 'Category not found!'], 404);
         }
 
-        $category->delete();
-        Item::where('category_item_id', $id)->update(['category_item_id' => null]);
-        return response()->json(['message' => 'Category deleted successfully!']);
+        try {
+            $category->delete();
+            Item::where('category_item_id', $id)->update(['category_item_id' => null]);
+    
+            return response()->json(['message' => 'Category deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

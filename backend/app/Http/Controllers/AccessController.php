@@ -7,19 +7,30 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Menu;
 use App\Models\Access;
+use Throwable;
 
 class AccessController extends Controller
 {
     public function index()
     {
-        $access = Access::with('role')->where('id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($access);
+        try {
+            $access = Access::with('role')->where('id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($access);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function getByRole($role)
     {
-        $access = Access::where('role_id', $role)->get();
-        return response()->json($access);
+        try {
+            $access = Access::where('role_id', $role)->get();
+    
+            return response()->json($access);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -29,19 +40,22 @@ class AccessController extends Controller
             'accesses'  =>  'required',
         ]);
 
-        $role = Role::create([
-            'name' => $request->role
-        ]);
-
-        $data = [
-            'role_id'   => $role->id,
-            'accesses'  => $request->accesses,
-            'clinic_id' => auth()->user()->employee->clinic_id
-        ];
-
-        $access = Access::create($data);
-
-        return response()->json($access);
+        try {
+            $role = Role::create([
+                'name' => $request->role
+            ]);
+    
+            $data = [
+                'role_id'   => $role->id,
+                'accesses'  => $request->accesses,
+                'clinic_id' => auth()->user()->employee->clinic_id
+            ];
+            $access = Access::create($data);
+    
+            return response()->json($access);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -61,17 +75,19 @@ class AccessController extends Controller
             'accesses'  =>  'required',
         ]);
 
-        $data = [
-            'accesses'  => $request->accesses
-        ];
-
-        $access->fill($data);
-
-        $access->save();
-
-        Role::where('id', $access->role_id)->update(['name' => $request->role]);
-
-        return response()->json($access);
+        try {
+            $data = [
+                'accesses'  => $request->accesses
+            ];
+            $access->fill($data);
+            $access->save();
+    
+            Role::where('id', $access->role_id)->update(['name' => $request->role]);
+    
+            return response()->json($access);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -82,9 +98,13 @@ class AccessController extends Controller
             return response()->json(['message' => 'Access not found!'], 404);
         }
 
-        $access->delete();
-        User::where('role_id', $id)->update(['role_id' => null]);
-
-        return response()->json(['message' => 'Access deleted successfully!']);
+        try {
+            $access->delete();
+            User::where('role_id', $id)->update(['role_id' => null]);
+    
+            return response()->json(['message' => 'Access deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

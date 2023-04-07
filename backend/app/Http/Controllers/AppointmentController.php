@@ -17,7 +17,7 @@ class AppointmentController extends Controller
     
     public function index(){
         try {
-            $data = Appointment::with('patient')->paginate(10);
+            $data = Appointment::with('patient')->orderBy('appointment_date')->paginate(10);
             return response()->json($data);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);

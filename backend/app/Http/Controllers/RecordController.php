@@ -9,13 +9,19 @@ use App\Models\RecordFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Throwable;
 
 class RecordController extends Controller
 {
     public function index()
     {
-        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($record);
+        try {
+            $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($record);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function addImageRecord(Request $request, $record)
@@ -30,20 +36,24 @@ class RecordController extends Controller
             'files' => 'required|image',
         ]);
 
-        if ($request->file('files')) {
-            $patient = Patient::find($record->patient_id);
-
-            $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-            $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
-            $request->file('files')->move($path, $recordFileName);
-
-            $recordFile = [
-                'record_id' => $record->id,
-                'file'      => $path . '/' . $recordFileName
-            ];
-
-            $recordFile = RecordFile::create($recordFile);
-            return response()->json($recordFile);
+        try {
+            if ($request->file('files')) {
+                $patient = Patient::find($record->patient_id);
+    
+                $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
+                $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                $request->file('files')->move($path, $recordFileName);
+    
+                $recordFile = [
+                    'record_id' => $record->id,
+                    'file'      => $path . '/' . $recordFileName
+                ];
+    
+                $recordFile = RecordFile::create($recordFile);
+                return response()->json($recordFile);
+            }
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
     }
 
@@ -55,9 +65,14 @@ class RecordController extends Controller
             return response()->json(['message' => 'Record file not found!'], 404);
         }
 
-        $recordFile->delete();
-        File::delete($recordFile->file);
-        return response()->json(['message' => 'Image deleted successfully!']);
+        try {
+            $recordFile->delete();
+            File::delete($recordFile->file);
+    
+            return response()->json(['message' => 'Image deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($patient)
@@ -76,45 +91,49 @@ class RecordController extends Controller
             'therapy'    => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $data['employee_id'] = auth()->user()->employee_id ?? null;
-
-        $record = Record::create($data);
-
-        // Record File
-        if ($request->file('files')) {
-            $patient = Patient::find($request->patient_id);
-
-            // foreach ($request->file('files') as $data) {
-                $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-                $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
-                $request->file('files')->move($path, $recordFileName);
-
-                $recordFile = [
-                    'record_id' => $record->id,
-                    'file'      => $path . '/' . $recordFileName
-                ];
-
-                RecordFile::create($recordFile);
-            // }
-        }
-        
-        // Record Diagnosa
-        if ($request->diagnoses) {
-            $diagnose = json_decode($request->diagnoses);
-            for ($i = 0; $i < count($diagnose); $i++) {
-                if ($diagnose[$i]) {
-                    $data = [
-                        'record_id'     => $record->id,
-                        'diagnose_id'  => $diagnose[$i],
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['employee_id'] = auth()->user()->employee_id ?? null;
+    
+            $record = Record::create($data);
+    
+            // Record File
+            if ($request->file('files')) {
+                $patient = Patient::find($request->patient_id);
+    
+                // foreach ($request->file('files') as $data) {
+                    $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
+                    $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                    $request->file('files')->move($path, $recordFileName);
+    
+                    $recordFile = [
+                        'record_id' => $record->id,
+                        'file'      => $path . '/' . $recordFileName
                     ];
-                    RecordDiagnose::create($data);
+    
+                    RecordFile::create($recordFile);
+                // }
+            }
+            
+            // Record Diagnosa
+            if ($request->diagnoses) {
+                $diagnose = json_decode($request->diagnoses);
+                for ($i = 0; $i < count($diagnose); $i++) {
+                    if ($diagnose[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'diagnose_id'  => $diagnose[$i],
+                        ];
+                        RecordDiagnose::create($data);
+                    }
                 }
             }
+    
+            return response()->json($record);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
-
-        return response()->json($record);
     }
 
     public function update(Request $request, $id)
@@ -133,53 +152,57 @@ class RecordController extends Controller
             'therapy'    => 'required',
         ]);
 
-        $data = $request->all();
-        $data['employee_id'] = auth()->user()->employee_id ?? null;
-
-        $record->fill($data);
-        $record->save();
-
-        // Record File
-        if ($request->file('files')) {
-            foreach ($record->recordFiles as $rf) {
-                File::delete($rf->file);
-            }
-            RecordFile::where('record_id', $record->id)->delete();
-
-            $patient = Patient::find($request->patient_id);
-
-            // foreach ($request->file('files') as $data) {
-                $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
-                $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
-                $request->file('files')->move($path, $recordFileName);
-
-                $recordFile = [
-                    'record_id' => $record->id,
-                    'file'      => $path . '/' . $recordFileName
-                ];
-
-                RecordFile::create($recordFile);
-            // }
-        }
-
-        // Record Diagnosa
-        if ($request->diagnoses) {
-            RecordDiagnose::where('record_id', $record->id)->delete();
-            $diagnose = json_decode($request->diagnoses);
-            for ($i = 0; $i < count($diagnose); $i++) {
-                if ($diagnose[$i]) {
-                    $data = [
-                        'record_id'     => $record->id,
-                        'diagnose_id'  => $diagnose[$i],
-                    ];
-                    RecordDiagnose::create($data);
+        try {
+            $data = $request->all();
+            $data['employee_id'] = auth()->user()->employee_id ?? null;
+    
+            $record->fill($data);
+            $record->save();
+    
+            // Record File
+            if ($request->file('files')) {
+                foreach ($record->recordFiles as $rf) {
+                    File::delete($rf->file);
                 }
+                RecordFile::where('record_id', $record->id)->delete();
+    
+                $patient = Patient::find($request->patient_id);
+    
+                // foreach ($request->file('files') as $data) {
+                    $recordFileName = time() . '_' . $request->file('files')->getClientOriginalName();
+                    $path = 'img/record/recordFile/' . $patient->nik . '/' . Carbon::now()->format('Y-m-d');
+                    $request->file('files')->move($path, $recordFileName);
+    
+                    $recordFile = [
+                        'record_id' => $record->id,
+                        'file'      => $path . '/' . $recordFileName
+                    ];
+    
+                    RecordFile::create($recordFile);
+                // }
             }
-        } else {
-            RecordDiagnose::where('record_id', $record->id)->delete();
+    
+            // Record Diagnosa
+            if ($request->diagnoses) {
+                RecordDiagnose::where('record_id', $record->id)->delete();
+                $diagnose = json_decode($request->diagnoses);
+                for ($i = 0; $i < count($diagnose); $i++) {
+                    if ($diagnose[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'diagnose_id'  => $diagnose[$i],
+                        ];
+                        RecordDiagnose::create($data);
+                    }
+                }
+            } else {
+                RecordDiagnose::where('record_id', $record->id)->delete();
+            }
+    
+            return response()->json($record);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
-
-        return response()->json($record);
     }
 
     public function updateEditable($id)
@@ -190,9 +213,14 @@ class RecordController extends Controller
             return response()->json(['message' => 'Record not found!'], 404);
         }
 
-        $record->fill(['is_editable' => ($record->is_editable == 0) ? 1 : 0]);
-        $record->save();
-        return response()->json(['message' => 'Record updated successfully!']);
+        try {
+            $record->fill(['is_editable' => ($record->is_editable == 0) ? 1 : 0]);
+            $record->save();
+    
+            return response()->json(['message' => 'Record updated successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -203,12 +231,13 @@ class RecordController extends Controller
             return response()->json(['message' => 'Record not found!'], 404);
         }
 
-        // foreach($record->recordFiles as $rf) {
-        //     File::delete($rf->file);
-        // }
-
-        $record->fill(['is_delete' => true]);
-        $record->save();
-        return response()->json(['message' => 'Record deleted successfully!']);
+        try {
+            $record->fill(['is_delete' => true]);
+            $record->save();
+    
+            return response()->json(['message' => 'Record deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

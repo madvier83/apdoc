@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Throwable;
 
 class EmployeeController extends Controller
 {
     public function index()
     {
-        $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($employee);
+        try {
+            $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($employee);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $employee = Employee::with('position')->find($id);
-        return response()->json($employee);
+        try {
+            $employee = Employee::with('position')->find($id);
+    
+            return response()->json($employee);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -32,11 +43,15 @@ class EmployeeController extends Controller
             'position_id'       => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $employee = Employee::create($data);
-
-        return response()->json($employee);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $employee = Employee::create($data);
+    
+            return response()->json($employee);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -58,12 +73,15 @@ class EmployeeController extends Controller
             'position_id'       => 'required',
         ]);
 
-        $data = $request->all();
-
-        $employee->fill($data);
-
-        $employee->save();
-        return response()->json($employee);
+        try {
+            $data = $request->all();
+            $employee->fill($data);
+            $employee->save();
+    
+            return response()->json($employee);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -74,7 +92,12 @@ class EmployeeController extends Controller
             return response()->json(['message' => 'Employee not found!'], 404);
         }
 
-        $employee->delete();
-        return response()->json(['message' => 'Employee deleted successfully!']);
+        try {
+            $employee->delete();
+    
+            return response()->json(['message' => 'Employee deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

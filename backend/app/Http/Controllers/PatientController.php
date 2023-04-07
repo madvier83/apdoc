@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PatientController extends Controller
 {
     public function index()
     {
-        $patient = Patient::with('queues')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($patient);
+        try {
+            $patient = Patient::with('queues')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($patient);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $patient = Patient::find($id);
-        return response()->json($patient);
+        try {
+            $patient = Patient::find($id);
+    
+            return response()->json($patient);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -31,11 +42,15 @@ class PatientController extends Controller
             'phone'             => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $patient = Patient::create($data);
-
-        return response()->json($patient);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $patient = Patient::create($data);
+    
+            return response()->json($patient);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -56,12 +71,15 @@ class PatientController extends Controller
             'phone'             => 'required',
         ]);
 
-        $data = $request->all();
-
-        $patient->fill($data);
-
-        $patient->save();
-        return response()->json($patient);
+        try {
+            $data = $request->all();
+            $patient->fill($data);
+            $patient->save();
+    
+            return response()->json($patient);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -72,7 +90,12 @@ class PatientController extends Controller
             return response()->json(['message' => 'Patient not found!'], 404);
         }
 
-        $patient->delete();
-        return response()->json(['message' => 'Patient deleted successfully!']);
+        try {
+            $patient->delete();
+    
+            return response()->json(['message' => 'Patient deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

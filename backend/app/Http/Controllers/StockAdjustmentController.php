@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\ItemSupply;
 use App\Models\StockAdjustment;
 use Illuminate\Http\Request;
+use Throwable;
 
 class StockAdjustmentController extends Controller
 {
     public function index()
     {
-        $itemSupply = StockAdjustment::orderBy('created_at', 'desc')->with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($itemSupply);
+        try {
+            $itemSupply = StockAdjustment::orderBy('created_at', 'desc')->with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($itemSupply);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
@@ -26,23 +32,26 @@ class StockAdjustmentController extends Controller
             'adjustment'     => 'required|numeric',
         ]);
 
-        $before = ItemSupply::where('id', $request->item_supply_id)->first();
-
-        $data = [
-            'item_supply_id' => $request->item_supply_id,
-            'adjustment'    => $request->adjustment,
-            'note'          => $request->note ?? '-',
-            'before'        => $before->stock,
-            'difference'    => $request->adjustment - $before->stock,
-        ];
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-
-        $adjustment = StockAdjustment::create($data);
-
-        // Adjustment stock
-        ItemSupply::where('id', $request->item_supply_id)->update(['stock' => $request->adjustment]);
-
-        return response()->json($adjustment);
+        try {
+            $before = ItemSupply::where('id', $request->item_supply_id)->first();
+    
+            $data = [
+                'item_supply_id' => $request->item_supply_id,
+                'adjustment'    => $request->adjustment,
+                'note'          => $request->note ?? '-',
+                'before'        => $before->stock,
+                'difference'    => $request->adjustment - $before->stock,
+            ];
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $adjustment = StockAdjustment::create($data);
+    
+            // Adjustment stock
+            ItemSupply::where('id', $request->item_supply_id)->update(['stock' => $request->adjustment]);
+    
+            return response()->json($adjustment);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)

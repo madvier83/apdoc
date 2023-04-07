@@ -5,19 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\CategoryOutcome;
 use App\Models\Outcome;
 use Illuminate\Http\Request;
+use Throwable;
 
 class CategoryOutcomeController extends Controller
 {
     public function index()
     {
-        $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($category);
+        try {
+            $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $category = CategoryOutcome::with('outcomes')->find($id);
-        return response()->json($category);
+        try {
+            $category = CategoryOutcome::with('outcomes')->find($id);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,15 @@ class CategoryOutcomeController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $category = CategoryOutcome::create($data);
-
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $category = CategoryOutcome::create($data);
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -45,12 +60,15 @@ class CategoryOutcomeController extends Controller
             'name' => 'required|string',
         ]);
 
-        $data = $request->all();
-
-        $category->fill($data);
-
-        $category->save();
-        return response()->json($category);
+        try {
+            $data = $request->all();
+            $category->fill($data);
+            $category->save();
+    
+            return response()->json($category);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -61,8 +79,13 @@ class CategoryOutcomeController extends Controller
             return response()->json(['message' => 'Category not found!'], 404);
         }
 
-        $category->delete();
-        Outcome::where('category_outcome_id', $id)->update(['category_outcome_id' => null]);
-        return response()->json(['message' => 'Category deleted successfully!']);
+        try {
+            $category->delete();
+            Outcome::where('category_outcome_id', $id)->update(['category_outcome_id' => null]);
+    
+            return response()->json(['message' => 'Category deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

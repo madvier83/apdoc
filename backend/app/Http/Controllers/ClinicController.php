@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Clinic;
 use Illuminate\Http\Request;
+use Throwable;
 
 class ClinikController extends Controller
 {
     public function index()
     {
-        $clinic = Clinic::all();
-        return response()->json($clinic);
+        try {
+            $clinic = Clinic::all();
+    
+            return response()->json($clinic);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $clinic = Clinic::find($id);
-        return response()->json($clinic);
+        try {
+            $clinic = Clinic::find($id);
+
+            return response()->json($clinic);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -31,10 +42,14 @@ class ClinikController extends Controller
             'phone'       => 'required|string',
         ]);
 
-        $data = $request->all();
-        $clinic = Clinic::create($data);
-
-        return response()->json($clinic);
+        try {
+            $data = $request->all();
+            $clinic = Clinic::create($data);
+    
+            return response()->json($clinic);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -55,12 +70,15 @@ class ClinikController extends Controller
             'phone'       => 'required|string',
         ]);
 
-        $data = $request->all();
-
-        $clinic->fill($data);
-
-        $clinic->save();
-        return response()->json($clinic);
+        try {
+            $data = $request->all();
+            $clinic->fill($data);
+            $clinic->save();
+    
+            return response()->json($clinic);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -71,7 +89,12 @@ class ClinikController extends Controller
             return response()->json(['message' => 'Clinic not found!'], 404);
         }
 
-        $clinic->delete();
-        return response()->json(['message' => 'Clinic deleted successfully!']);
+        try {
+            $clinic->delete();
+    
+            return response()->json(['message' => 'Clinic deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

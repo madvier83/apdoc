@@ -4,19 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Throwable;
 
 class ItemController extends Controller
 {
     public function index()
     {
-        $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($item);
+        try {
+            $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+    
+            return response()->json($item);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $item = Item::with('categoryItem')->find($id);
-        return response()->json($item);
+        try {
+            $item = Item::with('categoryItem')->find($id);
+    
+            return response()->json($item);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -31,11 +42,15 @@ class ItemController extends Controller
             'distributor'       => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $item = Item::create($data);
-
-        return response()->json($item);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $item = Item::create($data);
+    
+            return response()->json($item);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -56,12 +71,15 @@ class ItemController extends Controller
             'distributor'       => 'required',
         ]);
 
-        $data = $request->all();
-
-        $item->fill($data);
-
-        $item->save();
-        return response()->json($item);
+        try {
+            $data = $request->all();
+            $item->fill($data);
+            $item->save();
+    
+            return response()->json($item);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -72,7 +90,12 @@ class ItemController extends Controller
             return response()->json(['message' => 'Item not found!'], 404);
         }
 
-        $item->delete();
-        return response()->json(['message' => 'Item deleted successfully!']);
+        try {
+            $item->delete();
+    
+            return response()->json(['message' => 'Item deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

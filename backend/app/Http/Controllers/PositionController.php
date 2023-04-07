@@ -5,19 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PositionController extends Controller
 {
     public function index()
     {
-        $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($position);
+        try {
+            $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+
+            return response()->json($position);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $position = Position::find($id);
-        return response()->json($position);
+        try {
+            $position = Position::find($id);
+
+            return response()->json($position);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -26,11 +37,16 @@ class PositionController extends Controller
             'name' => 'required|string|max:32',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $position = Position::create($data);
-
-        return response()->json($position);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $position = Position::create($data);
+    
+            return response()->json($position);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+        
     }
 
     public function update(Request $request, $id)
@@ -45,12 +61,15 @@ class PositionController extends Controller
             'name' => ($request->name == $position->name) ? 'required|string' : 'required|string',
         ]);
 
-        $data = $request->all();
+        try {
+            $data = $request->all();
+            $position->fill($data);
+            $position->save();
 
-        $position->fill($data);
-
-        $position->save();
-        return response()->json($position);
+            return response()->json($position);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -61,8 +80,13 @@ class PositionController extends Controller
             return response()->json(['message' => 'Position not found!'], 404);
         }
 
-        $position->delete();
-        Employee::where('position_id', $id)->update(['position_id' => null]);
-        return response()->json(['message' => 'Position deleted successfully!']);
+        try {
+            $position->delete();
+            Employee::where('position_id', $id)->update(['position_id' => null]);
+            
+            return response()->json(['message' => 'Position deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }

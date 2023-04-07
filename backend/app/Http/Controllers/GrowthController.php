@@ -5,31 +5,52 @@ namespace App\Http\Controllers;
 use App\Models\Growth;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Throwable;
 
 class GrowthController extends Controller
 {
     public function index()
     {
-        $growth = Growth::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-        return response()->json($growth);
+        try {
+            $growth = Growth::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function show($id)
     {
-        $growth = Growth::find($id);
-        return response()->json($growth);
+        try {
+            $growth = Growth::find($id);
+    
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function getLatest()
     {
-        $growth = Growth::latest()->first();
-        return response()->json($growth);
+        try {
+            $growth = Growth::latest()->first();
+    
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function getByPatient($patient)
     {
-        $growth = Growth::where('patient_id', $patient)->get();
-        return response()->json($growth);
+        try {
+            $growth = Growth::where('patient_id', $patient)->get();
+    
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function create(Request $request)
@@ -40,11 +61,15 @@ class GrowthController extends Controller
             'weight'        => 'required',
         ]);
 
-        $data = $request->all();
-        $data['clinic_id'] = auth()->user()->employee->clinic_id;
-        $growth = Growth::create($data);
-
-        return response()->json($growth);
+        try {
+            $data = $request->all();
+            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $growth = Growth::create($data);
+    
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, $id)
@@ -61,12 +86,15 @@ class GrowthController extends Controller
             'weight'        => 'required',
         ]);
 
-        $data = $request->all();
-
-        $growth->fill($data);
-
-        $growth->save();
-        return response()->json($growth);
+        try {
+            $data = $request->all();
+            $growth->fill($data);
+            $growth->save();
+    
+            return response()->json($growth);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -77,7 +105,12 @@ class GrowthController extends Controller
             return response()->json(['message' => 'Growth not found!'], 404);
         }
 
-        $growth->delete();
-        return response()->json(['message' => 'Growth deleted successfully!']);
+        try {
+            $growth->delete();
+    
+            return response()->json(['message' => 'Growth deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
     }
 }
