@@ -75,12 +75,12 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
         // Clinic::factory(10)->create();
-        // Employee::factory(10)->create();
-        // Position::factory(10)->create();
-        // Diagnose::factory(10)->create();
-        // Service::factory(10)->create();
-        // Patient::factory(10)->create();
-        // CategoryItem::factory(10)->create();
-        // Item::factory(10)->create();
+        Employee::factory(10)->create();
+        Position::factory(10)->create();
+        Diagnose::factory(10)->create();
+        Service::factory(10)->create();
+        Patient::factory(10)->create();
+        CategoryItem::factory(10)->create();
+        Item::factory(10)->create();
     }
 }

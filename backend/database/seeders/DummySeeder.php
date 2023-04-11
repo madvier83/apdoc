@@ -16,59 +16,72 @@ class DummySeeder extends Seeder
 	public function run()
 	{
 		CategoryOutcome::create([
-			'name' => 'Salary'
+			'name' => 'Salary',
+            'clinic_id' => 2
 		]);
 		CategoryOutcome::create([
-			'name' => 'Other'
+			'name' => 'Other',
+            'clinic_id' => 2
 		]);
 
         Outcome::create([
 			'category_outcome_id' 	=> 1,
             'nominal'      			=> '4000000',
-			'note'					=> 'lorem ipsum dolor sit amet.'
+			'note'					=> 'lorem ipsum dolor sit amet.',
+            'clinic_id' => 2
 		]);
 		Outcome::create([
 			'category_outcome_id' 	=> 1,
             'nominal'      			=> '4000000',
-			'note'					=> 'lorem ipsum dolor sit amet.'
+			'note'					=> 'lorem ipsum dolor sit amet.',
+            'clinic_id' => 2
 		]);
 		Outcome::create([
 			'category_outcome_id' 	=> 2,
             'nominal'      			=> '20000',
-			'note'					=> 'lorem ipsum dolor sit amet.'
+			'note'					=> 'lorem ipsum dolor sit amet.',
+            'clinic_id' => 2
 		]);
 
 		CategoryPayment::create([
-			'name' => 'EDC'
+			'name' => 'EDC',
+            'clinic_id' => 2
 		]);
 		CategoryPayment::create([
-			'name' => 'Other'
+			'name' => 'Other',
+            'clinic_id' => 2
 		]);
 
         Payment::create([
 			'category_payment_id' => 1,
-            'name'        => 'BCA'
+            'name'        => 'BCA',
+            'clinic_id' => 2
 		]);
 		Payment::create([
 			'category_payment_id' => 1,
-            'name'        => 'Permata'
+            'name'        => 'Permata',
+            'clinic_id' => 2
 		]);
 		Payment::create([
 			'category_payment_id' => 2,
-            'name'        => 'QRIS'
+            'name'        => 'QRIS',
+            'clinic_id' => 2
 		]);
 
         Promotion::create([
             'name'     => 'Hari Kemerdekaan',
 			'discount' => 17,
+            'clinic_id' => 2
 		]);
 		Promotion::create([
             'name'     => 'Pembelian Pertama',
 			'discount' => 50,
+            'clinic_id' => 2
 		]);
 		Promotion::create([
             'name'     => 'Sebelas Sebelas',
 			'discount' => 11.11,
+            'clinic_id' => 2
 		]);
 
 		ItemSupply::create([
@@ -79,7 +92,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 2,
@@ -89,7 +102,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 3,
@@ -99,7 +112,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 4,
@@ -109,7 +122,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 5,
@@ -119,7 +132,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);ItemSupply::create([
 			'item_id' 		=> 6,
 			'total' 		=> 500,
@@ -128,7 +141,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 7,
@@ -138,7 +151,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 8,
@@ -148,7 +161,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 9,
@@ -158,7 +171,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 		ItemSupply::create([
 			'item_id' 		=> 10,
@@ -168,7 +181,7 @@ class DummySeeder extends Seeder
 			'manufacturing' => '2023-02-05',
 			'expired' 		=> '2024-02-05',
 			'stock' 		=> 500,
-			'clinic_id'		=> null
+			'clinic_id'		=> 2
 		]);
 
 		Setting::create([
@@ -179,6 +192,7 @@ class DummySeeder extends Seeder
             'city'        => 'Bandung',
             'country'     => 'Jawa Barat',
             'postal_code' => '40228',
+            'clinic_id' => 2
 		]);
 	}
 }

@@ -29,6 +29,7 @@ class PatientFactory extends Factory
             'gender'      => $this->faker->randomElement(['male', 'female']),
             'address'     => $this->faker->address(),
             'phone'       => $this->faker->unique()->phoneNumber,
+            'clinic_id'   => 2
         ];
     }
 }

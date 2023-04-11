@@ -25,6 +25,7 @@ class ServiceFactory extends Factory
             'name'       => $this->faker->name,
             'price'      => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
             'commission' => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
+            'clinic_id' => 2
         ];
     }
 }

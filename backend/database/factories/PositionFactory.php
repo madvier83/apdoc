@@ -22,7 +22,8 @@ class PositionFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->jobTitle
+            'name' => $this->faker->unique()->jobTitle,
+            'clinic_id' => 2
         ];
     }
 }
