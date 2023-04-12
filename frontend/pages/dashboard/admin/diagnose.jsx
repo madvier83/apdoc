@@ -51,12 +51,12 @@ export default function Diagnose() {
 
   async function getDiagnosis() {
     try {
-      const response = await axios.get("diagnoses", {
+      const response = await axios.get("diagnoses/250", {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      setDiagnosis(response.data);
+      setDiagnosis(response.data.data);
       setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);

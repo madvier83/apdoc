@@ -8,10 +8,20 @@ use Throwable;
 
 class DiagnoseController extends Controller
 {
-    public function index($perPage)
+    public function index($perPage, $keyword=null)
     {
         try {
-            $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->paginate($perPage);
+            if ($keyword == null) {
+                $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('code', 'like', '%'.$keyword.'%')
+                    ->orWhere('description', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($diagnose);
         } catch (Throwable $e) {

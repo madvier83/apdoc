@@ -69,6 +69,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->delete('/v1/employee/{id}', 'EmployeeController@destroy');
 
 	$router->get('/v1/diagnoses/{perPage}', 'DiagnoseController@index');
+	$router->get('/v1/diagnoses/{perPage}/{keyword}', 'DiagnoseController@index');
 	$router->get('/v1/diagnose/{id}', 'DiagnoseController@show');
 	$router->post('/v1/diagnose', 'DiagnoseController@create');
 	$router->put('/v1/diagnose/{id}', 'DiagnoseController@update');
