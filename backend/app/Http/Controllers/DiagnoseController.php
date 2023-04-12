@@ -8,10 +8,10 @@ use Throwable;
 
 class DiagnoseController extends Controller
 {
-    public function index()
+    public function index($perPage)
     {
         try {
-            $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->paginate($perPage);
     
             return response()->json($diagnose);
         } catch (Throwable $e) {

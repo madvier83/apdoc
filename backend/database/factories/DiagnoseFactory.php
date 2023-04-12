@@ -22,8 +22,8 @@ class DiagnoseFactory extends Factory
     public function definition()
     {
         return [
-            'code'        => 'A' . mt_rand(1, 99),
-            'description' => $this->faker->name,
+            'code'        => 'A' . mt_rand(1, 40000),
+            'description' => $this->faker->unique()->word(),
             'clinic_id' => 2
         ];
     }
