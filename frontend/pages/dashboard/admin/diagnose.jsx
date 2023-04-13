@@ -14,6 +14,10 @@ export default function Diagnose() {
   const addModalRef = useRef();
   const putModalRef = useRef();
 
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
   const [diagnosis, setDiagnosis] = useState([]);
   const [diagnosisLoading, setDiagnosisLoading] = useState(true);
 
@@ -50,13 +54,18 @@ export default function Diagnose() {
   };
 
   async function getDiagnosis() {
+    console.log(`diagnoses/${perpage}?page=${page}/${search}`);
     try {
-      const response = await axios.get("diagnoses/250", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      setDiagnosis(response.data.data);
+      const response = await axios.get(
+        `diagnoses/${perpage}${search && "/" + search}?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      // console.log(response);
+      setDiagnosis(response.data);
       setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
@@ -74,6 +83,8 @@ export default function Diagnose() {
       });
       addModalRef.current.click();
       getDiagnosis();
+      setPage(1)
+      setSearch("")
       setAddForm(initialDiagnosisForm);
       setAddFormError(initialDiagnosisForm);
     } catch (err) {
@@ -116,25 +127,44 @@ export default function Diagnose() {
   }
 
   useEffect(() => {
-    getDiagnosis();
-  }, []);
+    const getData = setTimeout(() => {
+      getDiagnosis();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
 
   return (
     <>
       <DashboardLayout title="Diagnose">
         <div
           className={
-            "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
+            "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 pb-4 bg-white"
           }
         >
           <div className="rounded-t mb-0 px-4 py-4 border-0">
-            <div className="flex flex-wrap items-center">
-              <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 className={"font-semibold text-lg "}>
+            <div className="flex">
+              <div className="relative w-full px-4">
+                <h3 className={"font-semibold text-lg truncate"}>
                   <i className="fas fa-filter mr-3"></i> Diagnose Table
                 </h3>
               </div>
-              <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => {
+                    setPage(1);
+                    setSearch(e.target.value);
+                  }}
+                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0"
+                />
+                <i onClick={()=>setSearch("")} className={`fas ${!search ? "fa-search" : "fa-x"} absolute text-slate-400 right-4 top-[6px] text-xs`}></i>
+              </div>
+
+              <div className="relative w-full px-4 text-right">
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -145,7 +175,7 @@ export default function Diagnose() {
               </div>
             </div>
           </div>
-          <div className="min-h-[80vh] block w-full overflow-x-auto">
+          <div className="min-h-[78vh] w-full overflow-x-auto flex flex-col justify-between">
             {/* Projects table */}
             <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead>
@@ -159,14 +189,14 @@ export default function Diagnose() {
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Description
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Updated At
-                  </th>
+                  </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -180,21 +210,37 @@ export default function Diagnose() {
                     </td>
                   </tr>
                 )}
-                {diagnosis?.map((obj, index) => {
+                {!diagnosisLoading && diagnosis.data?.length <= 0 && (
+                  <tr>
+                    <td colSpan={99}>
+                      <div className="flex w-full justify-center mt-48">
+                        <div className="text-center">
+                          <h1 className="text-xl">No data found</h1>
+                          <small>Data is empty or try adjusting your filter</small>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {diagnosis?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
-                        <span className={"ml-3 font-bold"}>{index + 1}</span>
+                        <span className={"ml-3 font-bold"}>
+                          {index + diagnosis.from}
+                        </span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
-                        <span className={"font-bold ml-3 text-xl"}>
-                          {obj.code}
-                        </span>
-                      </td>
-                      <td className="border-t-0 pr-6 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <label htmlFor={`detail-${obj.id}`}>
-                          <span>{obj.description.slice(0, 40)} ...</span>
+                          <span className={"font-bold ml-3 text-xl"}>
+                            {obj.code}
+                          </span>
                         </label>
+                      </td>
+                      <td className="border-t-0 pr-6 pl-6 w-2/3 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <div className="w-full whitespace-pre-wrap line-clamp-3">
+                          <span>{obj.description}</span>
+                        </div>
                         <input
                           type="checkbox"
                           id={`detail-${obj.id}`}
@@ -205,22 +251,22 @@ export default function Diagnose() {
                           className="modal cursor-pointer"
                         >
                           <label
-                            className="modal-box px-16 py-8 bg-primary text-primary-content max-w-md relative"
+                            className="modal-box px-16 py-16 bg-indigo-600 text-primary-content max-w-md relative"
                             htmlFor=""
                           >
-                            <h3 className="text-3xl font-bold">{obj.code}</h3>
-                            <p className="py-4 opacity-90 text-base whitespace-pre-wrap">
+                            <h3 className="text-4xl font-bold">{obj.code}</h3>
+                            <p className="py-4 opacity-90 text-base text-justify whitespace-pre-wrap">
                               {obj.description}
                             </p>
                           </label>
                         </label>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
-                      </td>
+                      </td> */}
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
@@ -251,15 +297,82 @@ export default function Diagnose() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                        <ModalDelete id={obj.id} callback={() => deleteDiagnosis(obj.id)} title={`Delete diagnosis?`}></ModalDelete>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteDiagnosis(obj.id)}
+                          title={`Delete diagnosis?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+            <div className="flex w-full my-2 gap-8 justify-center bottom-0 items-center align-bottom select-none">
+              <small className="w-44 text-right truncate">
+                Results {diagnosis.from}-{diagnosis.to} of {diagnosis.total}
+              </small>
+              <div className="flex text-xs justify-center items-center">
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-white"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage(1);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-left"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-white"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev - 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-left"></i>
+                </button>
+                <p className="font-bold w-8 text-center">{page}</p>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-white"
+                  disabled={page >= diagnosis.last_page ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev + 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-right"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-white"
+                  disabled={page >= diagnosis.last_page ? true : false}
+                  onClick={() => {
+                    setPage(diagnosis.last_page);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-right"></i>
+                </button>
+              </div>
+              <div className="flex items-center text-xs w-44">
+                <p className="truncate">Number of rows</p>
+                <select
+                  className="input text-xs input-sm py-0  input-bordered without-ring input-primary border-white w-14"
+                  name="perpage"
+                  id=""
+                  onChange={(e) => {
+                    setPerpage(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="py-16"></div>
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4">Add Diagnose</h3>
@@ -368,7 +481,9 @@ export default function Diagnose() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">Update</button>
+              <button className="btn btn-success bg-success rounded-md">
+                Update
+              </button>
             </div>
           </form>
         </ModalBox>

@@ -14,7 +14,7 @@ class UserSlotController extends Controller
     public function index()
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee'])->where('apdoc_id', auth()->user()->apdoc_id)->get();
+            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('apdoc_id', auth()->user()->apdoc_id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {
@@ -88,7 +88,7 @@ class UserSlotController extends Controller
         }
 
         $this->validate($request, [
-            'name'      => 'required',
+            // 'name'      => 'required',
             'phone'     => $user->phone == $request->phone ? 'required' : 'required|unique:users',
             'role_id'   => 'required|numeric|min:3',
             'clinic_id' => 'required',

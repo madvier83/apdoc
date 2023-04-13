@@ -191,9 +191,9 @@ export default function Appointment() {
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Updated At
-                  </th>
+                  </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Actions
                   </th>
@@ -261,9 +261,9 @@ export default function Appointment() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
-                      </td>
+                      </td> */}
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
@@ -339,15 +339,15 @@ export default function Appointment() {
               <label className="label">
                 <span className="label-text">Description</span>
               </label>
-              <input
+              <textarea
                 type="text"
                 name="description"
                 value={addForm.description}
                 onChange={(e) => handleAddInput(e)}
                 required
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
+                className="input input-bordered input-primary border-slate-300 w-full h-24"
+              ></textarea>
               {addFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -422,15 +422,15 @@ export default function Appointment() {
               <label className="label">
                 <span className="label-text">Description</span>
               </label>
-              <input
+              <textarea
                 type="text"
                 name="description"
                 value={putForm.description}
                 onChange={(e) => handlePutInput(e)}
                 required
                 placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
+                className="input input-bordered input-primary border-slate-300 w-full h-24"
+              ></textarea>
               {putFormError.description && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">

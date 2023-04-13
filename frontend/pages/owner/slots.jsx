@@ -25,11 +25,11 @@ export default function Slots() {
 
   const initialForm = {
     id: "",
-    name: "",
+    // name: "",
     email: "",
     phone: "",
     role_id: "",
-    clinic_id: "1",
+    clinic_id: "2",
     employee_id: "",
   };
 
@@ -111,12 +111,12 @@ export default function Slots() {
         },
       });
       // console.log(response);
-      setPutForm(initialForm);
-      setPutFormError(initialForm);
+      setAddForm(initialForm);
+      setAddFormError(initialForm);
       addModalRef.current.click();
       getUser();
     } catch (err) {
-      setPutFormError(err.response?.data);
+      setAddFormError(err.response?.data);
       console.error(err);
     }
   }
@@ -263,25 +263,13 @@ export default function Slots() {
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span
-                            className={``}
-                          >
-                            -
-                          </span>
+                          <span className={``}>-</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span
-                            className={``}
-                          >
-                            -
-                          </span>
+                          <span className={``}>-</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span
-                            className={``}
-                          >
-                            -
-                          </span>
+                          <span className={``}>-</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           <span className={"font-bold capitalize"}>
@@ -318,10 +306,11 @@ export default function Slots() {
                                 type="button"
                                 htmlFor="modal-put"
                                 onClick={() => {
-                                  console.log(obj);
+                                  // console.log(obj);
+                                  setPutFormError(initialForm);
                                   setPutForm({
                                     id: obj.id,
-                                    name: obj.user.name,
+                                    // name: obj.user.name,
                                     email: obj.user.email,
                                     phone: obj.user.phone,
                                     role_id: obj.user.role_id,
@@ -338,6 +327,7 @@ export default function Slots() {
                                 htmlFor="modal-add"
                                 onClick={() => {
                                   setAddForm(initialForm);
+                                  setAddForm({ initialForm, id: obj.id });
                                 }}
                               >
                                 <i className="fas fa-cog"></i>
@@ -403,7 +393,7 @@ export default function Slots() {
                   </span>
                 </label>
               )}
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -420,7 +410,7 @@ export default function Slots() {
                     {putFormError.name}
                   </span>
                 </label>
-              )}
+              )} */}
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
@@ -460,7 +450,7 @@ export default function Slots() {
               )}
 
               <label className="label">
-                <span className="label-text">Role</span>
+                <span className="label-text">Access</span>
               </label>
               <select
                 name="role_id"
@@ -546,7 +536,7 @@ export default function Slots() {
                   </span>
                 </label>
               )}
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -563,7 +553,7 @@ export default function Slots() {
                     {addFormError.name}
                   </span>
                 </label>
-              )}
+              )} */}
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
@@ -602,7 +592,7 @@ export default function Slots() {
               )}
 
               <label className="label">
-                <span className="label-text">Role</span>
+                <span className="label-text">Access</span>
               </label>
               <select
                 name="role_id"

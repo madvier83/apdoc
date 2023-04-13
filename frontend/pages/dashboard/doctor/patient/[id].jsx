@@ -183,12 +183,13 @@ export default function Patients() {
 
   async function getDiagnosis() {
     try {
-      const response = await axios.get(`/diagnoses`, {
+      const response = await axios.get(`diagnoses/10`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
       });
-      const data = response?.data?.map((obj) => {
+      console.log(response)
+      const data = response?.data?.data?.map((obj) => {
         return {
           label: obj.code,
           value: obj.id,
