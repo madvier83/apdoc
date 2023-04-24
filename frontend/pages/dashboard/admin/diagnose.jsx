@@ -54,10 +54,11 @@ export default function Diagnose() {
   };
 
   async function getDiagnosis() {
-    console.log(`diagnoses/${perpage}?page=${page}/${search}`);
     try {
       const response = await axios.get(
-        `diagnoses/${perpage}${search && "/" + search}?page=${page}`,
+        `diagnoses/${perpage}${
+          search && "/" + search.split(" ").join("%")
+        }?page=${page}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -83,8 +84,8 @@ export default function Diagnose() {
       });
       addModalRef.current.click();
       getDiagnosis();
-      setPage(1)
-      setSearch("")
+      setPage(1);
+      setSearch("");
       setAddForm(initialDiagnosisForm);
       setAddFormError(initialDiagnosisForm);
     } catch (err) {
@@ -130,6 +131,11 @@ export default function Diagnose() {
     const getData = setTimeout(() => {
       getDiagnosis();
     }, 500);
+    
+    if (page > diagnosis?.last_page) {
+      setPage(diagnosis.last_page);
+    }
+
     return () => clearTimeout(getData);
   }, [page, perpage, search]);
 
@@ -154,6 +160,7 @@ export default function Diagnose() {
                   type="text"
                   name="search"
                   placeholder="Search..."
+                  maxLength={32}
                   value={search}
                   onChange={(e) => {
                     setPage(1);
@@ -161,7 +168,15 @@ export default function Diagnose() {
                   }}
                   className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0"
                 />
-                <i onClick={()=>setSearch("")} className={`fas ${!search ? "fa-search" : "fa-x"} absolute text-slate-400 right-4 top-[6px] text-xs`}></i>
+                <i
+                  onClick={() => {
+                    setSearch("");
+                    setPage(1);
+                  }}
+                  className={`fas ${
+                    !search ? "fa-search" : "fa-x"
+                  } absolute text-slate-400 right-4 top-[6px] text-xs`}
+                ></i>
               </div>
 
               <div className="relative w-full px-4 text-right">
@@ -216,7 +231,9 @@ export default function Diagnose() {
                       <div className="flex w-full justify-center mt-48">
                         <div className="text-center">
                           <h1 className="text-xl">No data found</h1>
-                          <small>Data is empty or try adjusting your filter</small>
+                          <small>
+                            Data is empty or try adjusting your filter
+                          </small>
                         </div>
                       </div>
                     </td>
@@ -225,16 +242,14 @@ export default function Diagnose() {
                 {diagnosis?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs text-left">
                         <span className={"ml-3 font-bold"}>
                           {index + diagnosis.from}
                         </span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
                         <label htmlFor={`detail-${obj.id}`}>
-                          <span className={"font-bold ml-3 text-xl"}>
-                            {obj.code}
-                          </span>
+                          <span className={"font-bold ml-3"}>{obj.code}</span>
                         </label>
                       </td>
                       <td className="border-t-0 pr-6 pl-6 w-2/3 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -331,7 +346,16 @@ export default function Diagnose() {
                 >
                   <i className="fa-solid fa-angle-left"></i>
                 </button>
-                <p className="font-bold w-8 text-center">{page}</p>
+                <input
+                  type="number"
+                  name="number"
+                  className="input input-xs w-12 text-center text-xs px-0 font-bold border-none"
+                  value={page}
+                  min={1}
+                  max={diagnosis.last_page}
+                  onChange={(e) => setPage(e.target.value)}
+                />
+                {/* <p className="font-bold w-8 text-center">{page}</p> */}
                 <button
                   className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-white"
                   disabled={page >= diagnosis.last_page ? true : false}

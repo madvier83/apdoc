@@ -20,6 +20,13 @@ export default function Patients() {
   const addFileModalRef = useRef();
   const putModalRef = useRef();
   const putGrowthModalRef = useRef();
+  const diagnoseRef = useRef();
+
+  const [perpage, setPerpage] = useState(5);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const [refresher, setRefresher] = useState(true);
 
   const [isRecord, setIsRecord] = useState(true);
   const [isGrowth, setIsGrowth] = useState(false);
@@ -183,20 +190,24 @@ export default function Patients() {
 
   async function getDiagnosis() {
     try {
-      const response = await axios.get(`diagnoses/10`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      console.log(response)
-      const data = response?.data?.data?.map((obj) => {
-        return {
-          label: obj.code,
-          value: obj.id,
-        };
-      });
-      // console.log(data);
-      setDiagnosis(data);
+      const response = await axios.get(
+        `diagnoses/${perpage}${
+          search && "/" + search.split(" ").join("%")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      // console.log(response.data);
+      // const data = response?.data?.data?.map((obj) => {
+      //   return {
+      //     label: obj.code,
+      //     value: obj.id,
+      //   };
+      // });
+      setDiagnosis(response.data);
       setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
@@ -383,13 +394,6 @@ export default function Patients() {
     }
   }
 
-  function putSelectedDiagnosis(obj) {
-    let data = obj.record_diagnoses?.map((obj) => {
-      return { label: obj.diagnose?.code, value: obj.diagnose?.id };
-    });
-    setSelectedDiagnosis(data);
-  }
-
   const onSelectFile = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setFiles([]);
@@ -398,6 +402,28 @@ export default function Patients() {
     // I've kept this example simple by using the first image instead of multiple
     setFiles(e.target.files);
   };
+
+  function addMultiD(obj) {
+    let multi = selectedDiagnosis;
+    // console.log(multi)
+    if (
+      multi.filter((e) => {
+        return e.id == obj.id;
+      }).length == 0
+    ) {
+      multi.push(obj);
+      setSelectedDiagnosis(multi);
+    } else {
+      let newMulti = [];
+      multi.map((e) => {
+        if (e.id != obj.id) {
+          newMulti.push(e);
+        }
+      });
+      setSelectedDiagnosis(newMulti);
+    }
+    setRefresher((prev) => !prev);
+  }
 
   useEffect(() => {
     if (router.isReady) {
@@ -416,12 +442,20 @@ export default function Patients() {
 
   useEffect(() => {
     let data = selectedDiagnosis.map((obj) => {
-      return obj.value;
+      return obj.id;
     });
     setAddForm({ diagnoses: data });
     setPutForm({ diagnoses: data });
-  }, [selectedDiagnosis]);
+  }, [selectedDiagnosis, refresher]);
 
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getDiagnosis();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
+
+  // console.log(selectedDiagnosis);
   return (
     <>
       <DashboardLayout title="Patient Records">
@@ -724,7 +758,12 @@ export default function Patients() {
                                       className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
-                                        putSelectedDiagnosis(obj);
+                                        let arr = obj.record_diagnoses.map(
+                                          (e) => {
+                                            return e.diagnose;
+                                          }
+                                        );
+                                        setSelectedDiagnosis(arr);
                                         setPutForm(obj);
                                       }}
                                     >
@@ -766,9 +805,9 @@ export default function Patients() {
                                       {obj.record_diagnoses?.length > 0 ? (
                                         obj.record_diagnoses.map((obj) => {
                                           return (
-                                            <p className="" key={obj.id}>
-                                              {obj.diagnose.code} -{" "}
-                                              {obj.diagnose.description}
+                                            <p className="text-justify mb-2 p-4 bg-slate-50 rounded-md" key={obj.id}>
+                                              <b>{obj.diagnose?.code}</b> -{" "}
+                                              {obj.diagnose?.description}
                                             </p>
                                           );
                                         })
@@ -795,7 +834,7 @@ export default function Patients() {
                                   return (
                                     <React.Fragment key={obj.id}>
                                       <label className="relative group">
-                                        <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-white border border-gray-400 w-28 h-28 my-4">
+                                        <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-slate-50 border border-gray-400 w-28 h-28 my-4">
                                           <img
                                             className="object-cover grayscale opacity-80"
                                             src={`http://localhost:8000/${obj.file}`}
@@ -903,17 +942,83 @@ export default function Patients() {
                   </span>
                 </label>
               )}
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Diagnosa</span>
               </label>
-              {/* <pre>{JSON.stringify(selectedDiagnosis)}</pre> */}
-              {/* <p>{JSON.stringify(selectedDiagnosis)}</p> */}
               <MultiSelect
                 options={diagsosis || []}
                 value={selectedDiagnosis}
                 onChange={setSelectedDiagnosis}
                 hasSelectAll={false}
-              />
+              /> */}
+              <div className="dropdown">
+                <label className="label">
+                  <span className="label-text">Diagnosa</span>
+                </label>
+                <div className="mb-2">
+                  {selectedDiagnosis.length > 0 &&
+                    selectedDiagnosis?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal justify-start p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiD(obj);
+                            }}
+                          >
+                            <div className="flex justify-end font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex transition-all text-rose-600"></i>
+                            </div>
+                            <b>{obj.code}</b>
+                            {" - " + obj.description}{" "}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <input
+                  tabIndex={0}
+                  ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search diagnosa ..."
+                  className="input input-bordered border-slate-300 w-full"
+                />
+                {search && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!diagsosis?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {diagsosis?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiD(obj);
+                              setSearch("");
+                            }}
+                          >
+                            {obj.code +
+                              " - " +
+                              obj.description.substring(0, 50)}{" "}
+                            {obj.description.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
               <label className="label">
                 <span className="label-text">Therapy</span>
               </label>
@@ -1071,49 +1176,6 @@ export default function Patients() {
           <form onSubmit={(e) => putRecord(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              {/* <div className="flex gap-4">
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Height</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="height"
-                    value={putForm.height}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.height && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.height}
-                      </span>
-                    </label>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label className="label">
-                    <span className="label-text">Weight</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="weight"
-                    value={putForm.weight}
-                    onChange={(e) => handlePutInput(e)}
-                    placeholder=""
-                    autoComplete="new-off"
-                    className="input input-bordered input-primary border-slate-300 w-full"
-                  />
-                  {putFormError.weight && (
-                    <label className="label">
-                      <span className="label-text-alt text-rose-300">
-                        {putFormError.weight}
-                      </span>
-                    </label>
-                  )}
-                </div>
-              </div> */}
               <label className="label">
                 <span className="label-text">Complaint</span>
               </label>
@@ -1152,17 +1214,75 @@ export default function Patients() {
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Diagnosa</span>
-              </label>
-              {/* <pre>{JSON.stringify(selectedDiagnosis)}</pre> */}
-              {/* <p>{JSON.stringify(selectedDiagnosis)}</p> */}
-              <MultiSelect
-                options={diagsosis || []}
-                value={selectedDiagnosis}
-                onChange={setSelectedDiagnosis}
-                hasSelectAll={false}
-              />
+
+              <div className="dropdown">
+                <label className="label">
+                  <span className="label-text">Diagnosa</span>
+                </label>
+                <div className="mb-2">
+                  {selectedDiagnosis.length > 0 &&
+                    selectedDiagnosis?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal justify-start p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiD(obj);
+                            }}
+                          >
+                            <div className="flex justify-end font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex transition-all text-rose-600"></i>
+                            </div>
+                            <b>{obj.code}</b>
+                            {" - " + obj.description}{" "}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <input
+                  tabIndex={0}
+                  ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search diagnosa ..."
+                  className="input input-bordered border-slate-300 w-full"
+                />
+                {search && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!diagsosis?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {diagsosis?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiD(obj);
+                              setSearch("");
+                            }}
+                          >
+                            {obj.code +
+                              " - " +
+                              obj.description.substring(0, 50)}{" "}
+                            {obj.description.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
               <label className="label">
                 <span className="label-text">Therapy</span>
               </label>
@@ -1228,6 +1348,7 @@ export default function Patients() {
               <input
                 type="number"
                 name="height"
+                step=".01"
                 value={putGrowthForm.height}
                 onChange={(e) => handlePutGrowthInput(e)}
                 placeholder=""
@@ -1248,6 +1369,7 @@ export default function Patients() {
               <input
                 type="number"
                 name="weight"
+                step=".01"
                 value={putGrowthForm.weight}
                 onChange={(e) => handlePutGrowthInput(e)}
                 placeholder=""
