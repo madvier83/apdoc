@@ -8,10 +8,21 @@ use Throwable;
 
 class PaymentController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $payment = Payment::with('categoryPayment')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $payment = Payment::with('categoryPayment')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $payment = Payment::with('categoryPayment')
+                    ->orWhereRelation('categoryPayment', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($payment);
         } catch (Throwable $e) {

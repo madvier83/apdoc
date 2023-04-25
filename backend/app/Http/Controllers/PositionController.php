@@ -9,10 +9,20 @@ use Throwable;
 
 class PositionController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $position = Position::
+                      orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
 
             return response()->json($position);
         } catch (Throwable $e) {

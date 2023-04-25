@@ -13,10 +13,26 @@ use Throwable;
 
 class RecordController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
             $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+
+            if ($keyword == null) {
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')
+                    ->orWhereRelation('recordDiagnoses.diagnose', 'code', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('recordDiagnoses.diagnose', 'description', 'like', '%'.$keyword.'%')
+                    ->orWhere('complaint', 'like', '%'.$keyword.'%')
+                    ->orWhere('inspection', 'like', '%'.$keyword.'%')
+                    ->orWhere('therapy', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($record);
         } catch (Throwable $e) {

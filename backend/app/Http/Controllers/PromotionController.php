@@ -8,10 +8,21 @@ use Throwable;
 
 class PromotionController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $promotion = Promotion::
+                      orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('discount', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($promotion);
         } catch (Throwable $e) {

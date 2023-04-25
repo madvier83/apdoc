@@ -14,11 +14,12 @@ class DiagnoseController extends Controller
             if ($keyword == null) {
                 $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $diagnose = Diagnose::where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('code', 'like', '%'.$keyword.'%')
+                $diagnose = Diagnose::
+                      orWhere('code', 'like', '%'.$keyword.'%')
                     ->orWhere('description', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

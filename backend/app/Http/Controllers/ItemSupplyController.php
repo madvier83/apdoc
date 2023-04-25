@@ -8,10 +8,28 @@ use Throwable;
 
 class ItemSupplyController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $itemSupply = ItemSupply::orderBy('created_at', 'desc')->with('item')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $itemSupply = ItemSupply::orderBy('created_at', 'desc')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+
+            if ($keyword == null) {
+                $itemSupply = ItemSupply::with('item')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $itemSupply = ItemSupply::with('item')
+                    ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('total', 'like', '%'.$keyword.'%')
+                    ->orWhere('before', 'like', '%'.$keyword.'%')
+                    ->orWhere('after', 'like', '%'.$keyword.'%')
+                    ->orWhere('manufacturing', 'like', '%'.$keyword.'%')
+                    ->orWhere('expired', 'like', '%'.$keyword.'%')
+                    ->orWhere('stock', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($itemSupply);
         } catch (Throwable $e) {
