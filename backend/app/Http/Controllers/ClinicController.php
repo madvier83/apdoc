@@ -6,12 +6,12 @@ use App\Models\Clinic;
 use Illuminate\Http\Request;
 use Throwable;
 
-class ClinikController extends Controller
+class ClinicController extends Controller
 {
     public function index()
     {
         try {
-            $clinic = Clinic::all();
+            $clinic = Clinic::where('apdoc_id', auth()->user()->apdoc_id)->get();
     
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -33,17 +33,18 @@ class ClinikController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name'        => 'required|string',
-            'address'     => 'required|string',
-            'province'    => 'required|string',
-            'city'        => 'required|string',
-            'district'    => 'required|string',
-            'postal_code' => 'required|string',
-            'phone'       => 'required|string',
+            'name'        => 'required',
+            'address'     => 'required',
+            'province'    => 'required',
+            'city'        => 'required',
+            'district'    => 'required',
+            'postal_code' => 'required',
+            'phone'       => 'required',
         ]);
 
         try {
             $data = $request->all();
+            $data['apdoc_id'] = auth()->user()->apdoc_id;
             $clinic = Clinic::create($data);
     
             return response()->json($clinic);
@@ -61,13 +62,13 @@ class ClinikController extends Controller
         }
 
         $this->validate($request, [
-            'name'        => 'required|string',
-            'address'     => 'required|string',
-            'province'    => 'required|string',
-            'city'        => 'required|string',
-            'district'    => 'required|string',
-            'postal_code' => 'required|string',
-            'phone'       => 'required|string',
+            'name'        => 'required',
+            'address'     => 'required',
+            'province'    => 'required',
+            'city'        => 'required',
+            'district'    => 'required',
+            'postal_code' => 'required',
+            'phone'       => 'required',
         ]);
 
         try {
