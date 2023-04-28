@@ -9,10 +9,20 @@ use Throwable;
 
 class CategoryOutcomeController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $category = CategoryOutcome::with('outcomes')
+                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($category);
         } catch (Throwable $e) {

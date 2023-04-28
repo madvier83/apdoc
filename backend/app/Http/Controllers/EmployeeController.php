@@ -8,10 +8,27 @@ use Throwable;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $employee = Employee::with('position')
+                    ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('nik', 'like', '%'.$keyword.'%')
+                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('birth_place', 'like', '%'.$keyword.'%')
+                    ->orWhere('birth_date', 'like', '%'.$keyword.'%')
+                    ->orWhere('gender', 'like', '%'.$keyword.'%')
+                    ->orWhere('address', 'like', '%'.$keyword.'%')
+                    ->orWhere('phone', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($employee);
         } catch (Throwable $e) {

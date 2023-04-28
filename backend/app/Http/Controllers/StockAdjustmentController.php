@@ -9,10 +9,26 @@ use Throwable;
 
 class StockAdjustmentController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
             $itemSupply = StockAdjustment::orderBy('created_at', 'desc')->with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+
+            if ($keyword == null) {
+                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])
+                    ->orWhereRelation('itemSupply.item', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('adjustment', 'like', '%'.$keyword.'%')
+                    ->orWhere('before', 'like', '%'.$keyword.'%')
+                    ->orWhere('difference', 'like', '%'.$keyword.'%')
+                    ->orWhere('note', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($itemSupply);
         } catch (Throwable $e) {

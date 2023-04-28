@@ -8,10 +8,26 @@ use Throwable;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            if ($keyword == null) {
+                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $item = Item::with(['categoryItem', 'itemSupplys'])
+                    ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('unit', 'like', '%'.$keyword.'%')
+                    ->orWhere('sell_price', 'like', '%'.$keyword.'%')
+                    ->orWhere('buy_price', 'like', '%'.$keyword.'%')
+                    ->orWhere('factory', 'like', '%'.$keyword.'%')
+                    ->orWhere('distributor', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($item);
         } catch (Throwable $e) {

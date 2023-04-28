@@ -56,13 +56,15 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/clinic/{id}', 'ClinicController@update');
 	$router->delete('/v1/clinic/{id}', 'ClinicController@destroy');
 
-	$router->get('/v1/positions', 'PositionController@index');
+	$router->get('/v1/positions/{perPage}', 'PositionController@index');
+	$router->get('/v1/positions/{perPage}/{keyword}', 'PositionController@index');
 	$router->get('/v1/position/{id}', 'PositionController@show');
 	$router->post('/v1/position', 'PositionController@create');
 	$router->put('/v1/position/{id}', 'PositionController@update');
 	$router->delete('/v1/position/{id}', 'PositionController@destroy');
 
-	$router->get('/v1/employees', 'EmployeeController@index');
+	$router->get('/v1/employees/{perPage}', 'EmployeeController@index');
+	$router->get('/v1/employees/{perPage}/{keyword}', 'EmployeeController@index');
 	$router->get('/v1/employee/{id}', 'EmployeeController@show');
 	$router->post('/v1/employee', 'EmployeeController@create');
 	$router->put('/v1/employee/{id}', 'EmployeeController@update');
@@ -75,31 +77,36 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/diagnose/{id}', 'DiagnoseController@update');
 	$router->delete('/v1/diagnose/{id}', 'DiagnoseController@destroy');
 
-	$router->get('/v1/services', 'ServiceController@index');
+	$router->get('/v1/services/{perPage}', 'ServiceController@index');
+	$router->get('/v1/services/{perPage}/{keyword}', 'ServiceController@index');
 	$router->get('/v1/service/{id}', 'ServiceController@show');
 	$router->post('/v1/service', 'ServiceController@create');
 	$router->put('/v1/service/{id}', 'ServiceController@update');
 	$router->delete('/v1/service/{id}', 'ServiceController@destroy');
 
-	$router->get('/v1/category-payments', 'CategoryPaymentController@index');
+	$router->get('/v1/category-payments/{perPage}', 'CategoryPaymentController@index');
+	$router->get('/v1/category-payments/{perPage}/{keyword}', 'CategoryPaymentController@index');
 	$router->get('/v1/category-payment/{id}', 'CategoryPaymentController@show');
 	$router->post('/v1/category-payment', 'CategoryPaymentController@create');
 	$router->put('/v1/category-payment/{id}', 'CategoryPaymentController@update');
 	$router->delete('/v1/category-payment/{id}', 'CategoryPaymentController@destroy');
 
-	$router->get('/v1/payments', 'PaymentController@index');
+	$router->get('/v1/payments/{perPage}', 'PaymentController@index');
+	$router->get('/v1/payments/{perPage}/{keyword}', 'PaymentController@index');
 	$router->get('/v1/payment/{id}', 'PaymentController@show');
 	$router->post('/v1/payment', 'PaymentController@create');
 	$router->put('/v1/payment/{id}', 'PaymentController@update');
 	$router->delete('/v1/payment/{id}', 'PaymentController@destroy');
 
-	$router->get('/v1/category-outcomes', 'CategoryOutcomeController@index');
+	$router->get('/v1/category-outcomes/{perPage}', 'CategoryOutcomeController@index');
+	$router->get('/v1/category-outcomes/{perPage}/{keyword}', 'CategoryOutcomeController@index');
 	$router->get('/v1/category-outcome/{id}', 'CategoryOutcomeController@show');
 	$router->post('/v1/category-outcome', 'CategoryOutcomeController@create');
 	$router->put('/v1/category-outcome/{id}', 'CategoryOutcomeController@update');
 	$router->delete('/v1/category-outcome/{id}', 'CategoryOutcomeController@destroy');
 
-	$router->get('/v1/outcomes', 'OutcomeController@index');
+	$router->get('/v1/outcomes/{perPage}', 'OutcomeController@index');
+	$router->get('/v1/outcomes/{perPage}/{keyword}', 'OutcomeController@index');
 	$router->get('/v1/outcome/{id}', 'OutcomeController@show');
 	$router->post('/v1/outcome', 'OutcomeController@create');
 	$router->put('/v1/outcome/{id}', 'OutcomeController@update');
@@ -113,7 +120,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/appointment', 'AppointmentController@store');
 	$router->delete('/v1/appointment/{id}','AppointmentController@destroy');
 
-	$router->get('/v1/patients', 'PatientController@index');
+	$router->get('/v1/patients/{perPage}', 'PatientController@index');
+	$router->get('/v1/patients/{perPage}/{keyword}', 'PatientController@index');
 	$router->get('/v1/patient/{id}', 'PatientController@show');
 	$router->post('/v1/patient', 'PatientController@create');
 	$router->put('/v1/patient/{id}', 'PatientController@update');
@@ -131,28 +139,33 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// PHARMACY
 	
-	$router->get('/v1/category-items', 'CategoryItemController@index');
+	$router->get('/v1/category-items/{perPage}', 'CategoryItemController@index');
+	$router->get('/v1/category-items/{perPage}/{keyword}', 'CategoryItemController@index');
 	$router->get('/v1/category-item/{id}', 'CategoryItemController@show');
 	$router->post('/v1/category-item', 'CategoryItemController@create');
 	$router->put('/v1/category-item/{id}', 'CategoryItemController@update');
 	$router->delete('/v1/category-item/{id}', 'CategoryItemController@destroy');
 
-	$router->get('/v1/items', 'ItemController@index');
+	$router->get('/v1/items/{perPage}', 'ItemController@index');
+	$router->get('/v1/items/{perPage}/{keyword}', 'ItemController@index');
 	$router->get('/v1/item/{id}', 'ItemController@show');
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
 	
-	$router->get('/v1/item-supplys', 'ItemSupplyController@index');
+	$router->get('/v1/item-supplys/{perPage}', 'ItemSupplyController@index');
+	$router->get('/v1/item-supplys/{perPage}/{keyword}', 'ItemSupplyController@index');
 	$router->get('/v1/item-supply/{item}', 'ItemSupplyController@show');
 	$router->post('/v1/item-supply', 'ItemSupplyController@create');
 
-	$router->get('/v1/stock-adjustments', 'StockAdjustmentController@index');
+	$router->get('/v1/stock-adjustments/{perPage}', 'StockAdjustmentController@index');
+	$router->get('/v1/stock-adjustments/{perPage}/{keyword}', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
 	
 	// PROMOTION
 	
-	$router->get('/v1/promotions', 'PromotionController@index');
+	$router->get('/v1/promotions/{perPage}', 'PromotionController@index');
+	$router->get('/v1/promotions/{perPage}/{keyword}', 'PromotionController@index');
 	$router->get('/v1/promotion/{id}', 'PromotionController@show');
 	$router->post('/v1/promotion', 'PromotionController@create');
 	$router->put('/v1/promotion/{id}', 'PromotionController@update');
@@ -174,7 +187,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// DOCTOR
 
-	$router->get('/v1/records', 'RecordController@index');
+	$router->get('/v1/records/{perPage}', 'RecordController@index');
+	$router->get('/v1/records/{perPage}/{keyword}', 'RecordController@index');
 	$router->get('/v1/record/{patient}', 'RecordController@show');
 	$router->post('/v1/record', 'RecordController@create');
 	$router->post('/v1/record/{id}', 'RecordController@update');
