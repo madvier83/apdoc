@@ -7,8 +7,8 @@ export default function Navbar({title}) {
   return (
     <>
       {/* Navbar */}
-      <nav className="top-0 left-0 w-full z-10  md:flex-row md:flex-nowrap md:justify-start flex items-center p-4">
-        <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap px-4 pt-3">
+      <nav className="top-0 left-0 w-full z-10  md:flex-row md:flex-nowrap md:justify-start flex items-center pt-6 pb-4 px-8">
+        <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap">
           {/* Brand */}
           <Link
             className="text-white text-lg uppercase hidden lg:inline-block font-semibold ml-3"

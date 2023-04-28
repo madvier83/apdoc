@@ -805,7 +805,10 @@ export default function Patients() {
                                       {obj.record_diagnoses?.length > 0 ? (
                                         obj.record_diagnoses.map((obj) => {
                                           return (
-                                            <p className="text-justify mb-2 p-4 bg-slate-50 rounded-md" key={obj.id}>
+                                            <p
+                                              className="text-justify mb-2 p-4 bg-slate-50 rounded-md"
+                                              key={obj.id}
+                                            >
                                               <b>{obj.diagnose?.code}</b> -{" "}
                                               {obj.diagnose?.description}
                                             </p>
@@ -821,73 +824,83 @@ export default function Patients() {
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.therapy}</td>
                                   </tr>
+                                  <tr className="text-sm text-zinc-500 align-text-top">
+                                    <td className="w-24 align-top">Files</td>
+                                    <td className="w-4 align-top">:</td>
+                                    <td className="py-2 flex gap-2">
+                                        {obj.record_files?.length > 0 &&
+                                          obj.record_files?.map((obj) => {
+                                            return (
+                                              <React.Fragment key={obj.id}>
+                                                <label className="relative group">
+                                                  <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-slate-50 border border-gray-400 w-28 h-28">
+                                                    <img
+                                                      className="object-cover grayscale opacity-80"
+                                                      src={`http://localhost:8000/${obj.file}`}
+                                                      alt=""
+                                                    />
+                                                  </div>
+                                                  <div className="absolute opacity-0 group-hover:opacity-100 duration-300 top-[35%] left-[11%]">
+                                                    <div className="flex">
+                                                      <label
+                                                        htmlFor={
+                                                          "fileNo" + obj.id
+                                                        }
+                                                        className="btn btn-sm w-10 h-10 px-0 py-0 bg-rose-400 border-none"
+                                                      >
+                                                        <i className="fas fa-trash text-sm"></i>
+                                                      </label>
+                                                      <label
+                                                        htmlFor={
+                                                          `filePreview` + obj.id
+                                                        }
+                                                        className="btn btn-sm w-10 h-10 px-0 py-0 ml-2 bg-indigo-500 border-none"
+                                                      >
+                                                        <i className="fas fa-eye text-sm"></i>
+                                                      </label>
+                                                    </div>
+                                                  </div>
+                                                </label>
+                                                <ModalDelete
+                                                  id={"fileNo" + obj.id}
+                                                  callback={() =>
+                                                    deleteFile(obj.id)
+                                                  }
+                                                  title={`Delete File?`}
+                                                ></ModalDelete>
+                                                <ModalBox
+                                                  id={`filePreview` + obj.id}
+                                                >
+                                                  <img
+                                                    src={`http://localhost:8000/${obj.file}`}
+                                                    alt=""
+                                                  />
+                                                  <div className="modal-action pt-0 mt-0">
+                                                    <label
+                                                      className="btn mt-2"
+                                                      htmlFor={
+                                                        `filePreview` + obj.id
+                                                      }
+                                                    >
+                                                      Close
+                                                    </label>
+                                                  </div>
+                                                </ModalBox>
+                                              </React.Fragment>
+                                            );
+                                          })}
+                                        <label
+                                          htmlFor="modal-add-files"
+                                          onClick={() => setPutForm(obj)}
+                                        >
+                                          <div className="btn flex items-center justify-center rounded-md overflow-hidden border border-gray-400 border-dashed bg-gray-50 text-gray-500 w-28 bg-cover h-28">
+                                            <i className="fas fa-plus"></i>
+                                          </div>
+                                        </label>
+                                    </td>
+                                  </tr>
                                 </tbody>
                               </table>
-                            </div>
-
-                            <div className="text-zinc-500 text-sm ml-[2px]">
-                              Files
-                            </div>
-                            <div className="flex gap-2 mb-4">
-                              {obj.record_files?.length > 0 &&
-                                obj.record_files?.map((obj) => {
-                                  return (
-                                    <React.Fragment key={obj.id}>
-                                      <label className="relative group">
-                                        <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-slate-50 border border-gray-400 w-28 h-28 my-4">
-                                          <img
-                                            className="object-cover grayscale opacity-80"
-                                            src={`http://localhost:8000/${obj.file}`}
-                                            alt=""
-                                          />
-                                        </div>
-                                        <div className="absolute opacity-0 group-hover:opacity-100 duration-300 top-[35%] left-[11%]">
-                                          <div className="flex">
-                                            <label
-                                              htmlFor={"fileNo" + obj.id}
-                                              className="btn btn-sm w-10 h-10 px-0 py-0 bg-rose-400 border-none"
-                                            >
-                                              <i className="fas fa-trash text-sm"></i>
-                                            </label>
-                                            <label
-                                              htmlFor={`filePreview` + obj.id}
-                                              className="btn btn-sm w-10 h-10 px-0 py-0 ml-2 bg-indigo-500 border-none"
-                                            >
-                                              <i className="fas fa-eye text-sm"></i>
-                                            </label>
-                                          </div>
-                                        </div>
-                                      </label>
-                                      <ModalDelete
-                                        id={"fileNo" + obj.id}
-                                        callback={() => deleteFile(obj.id)}
-                                        title={`Delete File?`}
-                                      ></ModalDelete>
-                                      <ModalBox id={`filePreview` + obj.id}>
-                                        <img
-                                          src={`http://localhost:8000/${obj.file}`}
-                                          alt=""
-                                        />
-                                        <div className="modal-action pt-0 mt-0">
-                                          <label
-                                            className="btn mt-2"
-                                            htmlFor={`filePreview` + obj.id}
-                                          >
-                                            Close
-                                          </label>
-                                        </div>
-                                      </ModalBox>
-                                    </React.Fragment>
-                                  );
-                                })}
-                              <label
-                                htmlFor="modal-add-files"
-                                onClick={() => setPutForm(obj)}
-                              >
-                                <div className="btn flex items-center justify-center rounded-md overflow-hidden border border-gray-400 border-dashed bg-gray-50 text-gray-500 w-28 bg-cover h-28 my-4">
-                                  <i className="fas fa-plus"></i>
-                                </div>
-                              </label>
                             </div>
                           </div>
                         );
