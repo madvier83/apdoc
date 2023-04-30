@@ -16,6 +16,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import axios from "../../api/axios";
 import Link from "next/link";
 import ModalDelete from "../../../components/Modals/ModalDelete";
+import Highlighter from "react-highlight-words";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -32,6 +33,11 @@ export default function Queue() {
   const [isAddService, setIsAddService] = useState(false);
   const [addServiceError, setAddServiceError] = useState("");
   const [isRegular, setIsRegular] = useState(true);
+  const tableRef = useRef();
+
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   // open service form ref
   let infoRef = useRef();
@@ -73,11 +79,16 @@ export default function Queue() {
 
   async function getPatients() {
     try {
-      const response = await axios.get("patients", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `/patients/${perpage}${
+          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setPatients(response.data);
       setPatientsLoading(false);
     } catch (err) {
@@ -342,7 +353,23 @@ export default function Queue() {
     getAppointment();
   }, [isRegular]);
 
-  // console.log(appointment)
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getPatients();
+    }, 300);
+
+    if (page > patients?.last_page) {
+      setPage(patients.last_page);
+    }
+
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
+
+  useEffect(() => {
+    tableRef.current.scroll({
+      top: 0,
+    });
+  }, [patients]);
 
   return (
     <>
@@ -849,7 +876,7 @@ export default function Queue() {
       {/* Patients Modal */}
       <input type="checkbox" id="addQueueModal" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box px-0 pt-1 max-w-6xl">
+        <div className="modal-box px-0 p-0 max-w-6xl">
           <div
             className={
               "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
@@ -861,6 +888,29 @@ export default function Queue() {
                   <h3 className={"font-semibold text-lg "}>
                     <i className="fas fa-filter mr-3"></i> Patients Table
                   </h3>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="search"
+                    placeholder="Search..."
+                    maxLength={32}
+                    value={search}
+                    onChange={(e) => {
+                      setPage(1);
+                      setSearch(e.target.value);
+                    }}
+                    className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0"
+                  />
+                  <i
+                    onClick={() => {
+                      setSearch("");
+                      setPage(1);
+                    }}
+                    className={`fas ${
+                      !search ? "fa-search" : "fa-x"
+                    } absolute text-slate-400 right-4 top-[6px] text-xs`}
+                  ></i>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                   <label
@@ -874,10 +924,13 @@ export default function Queue() {
                 </div>
               </div>
             </div>
-            <div className="min-h-[65vh] block w-full overflow-x-auto">
+            <div
+              ref={tableRef}
+              className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between"
+            >
               {/* Projects table */}
-              <table className="items-center w-full bg-transparent border-collapse">
-                <thead>
+              <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                <thead className="sticky top-0">
                   <tr>
                     <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       #
@@ -912,11 +965,11 @@ export default function Queue() {
                       </td>
                     </tr>
                   )}
-                  {patients?.map((obj, index) => {
+                  {patients?.data?.map((obj, index) => {
                     return (
                       <tr key={obj.id} className="hover:bg-zinc-50">
                         <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
-                          <span className={"ml-3 font-bold "}>{index + 1}</span>
+                          <span className={"ml-3 font-bold "}>{index + patients.from}</span>
                         </th>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <i
@@ -926,7 +979,14 @@ export default function Queue() {
                                 : "text-pink-400 fas fa-venus"
                             }`}
                           ></i>{" "}
-                          <span className={"font-bold"}>{obj.name}</span>
+                          <span className={"font-bold"}>
+                          <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={search.split()}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <span className={"capitalize"}>
@@ -961,7 +1021,10 @@ export default function Queue() {
                           ) : (
                             <button
                               // htmlFor="addQueueModal"
-                              onClick={() => addToQueue(obj.id)}
+                              onClick={() => {
+                                addToQueue(obj.id);
+                                setSearch("");
+                              }}
                               className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             >
                               Add to queue <i className="fas fa-add ml-2"></i>
@@ -973,6 +1036,80 @@ export default function Queue() {
                   })}
                 </tbody>
               </table>
+            </div>
+
+            <div className="flex">
+              <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
+                <small className="w-44 text-right truncate">
+                  Results {patients.from}-{patients.to} of {patients.total}
+                </small>
+                <div className="flex text-xs justify-center items-center">
+                  <button
+                    className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                    disabled={page <= 1 ? true : false}
+                    onClick={() => {
+                      setPage(1);
+                    }}
+                  >
+                    <i className="fa-solid fa-angles-left"></i>
+                  </button>
+                  <button
+                    className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                    disabled={page <= 1 ? true : false}
+                    onClick={() => {
+                      setPage((prev) => prev - 1);
+                    }}
+                  >
+                    <i className="fa-solid fa-angle-left"></i>
+                  </button>
+                  <input
+                    type="number"
+                    name="number"
+                    className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
+                    value={page}
+                    min={1}
+                    max={patients.last_page}
+                    onChange={(e) => setPage(e.target.value)}
+                  />
+                  {/* <p className="font-bold w-8 text-center">{page}</p> */}
+                  <button
+                    className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                    disabled={page >= patients.last_page ? true : false}
+                    onClick={() => {
+                      setPage((prev) => prev + 1);
+                    }}
+                  >
+                    <i className="fa-solid fa-angle-right"></i>
+                  </button>
+                  <button
+                    className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                    disabled={page >= patients.last_page ? true : false}
+                    onClick={() => {
+                      setPage(patients.last_page);
+                    }}
+                  >
+                    <i className="fa-solid fa-angles-right"></i>
+                  </button>
+                </div>
+                <div className="flex items-center text-xs w-44">
+                  <p className="truncate">Number of rows</p>
+                  <select
+                    className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
+                    name="perpage"
+                    id=""
+                    onChange={(e) => {
+                      setPerpage(e.target.value);
+                      setPage(1);
+                    }}
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>

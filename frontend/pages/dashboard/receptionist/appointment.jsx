@@ -13,14 +13,20 @@ export default function Appointment() {
 
   const addModalRef = useRef();
   const putModalRef = useRef();
+  const tableRef = useRef();
+
+  const [perpage, setPerpage] = useState(9);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
+  const [selectedPatient, setSelectedPatient] = useState();
 
   const initialItemForm = {
-    patient_id: "",
+    patient_id: null,
     description: "",
     appointment_date: "",
   };
@@ -58,7 +64,7 @@ export default function Appointment() {
           Authorization: "Bearer" + token.token,
         },
       });
-      console.log(response.data.data);
+      // console.log(response.data.data);
       setItem(response.data.data);
       setItemLoading(false);
     } catch (err) {
@@ -68,11 +74,16 @@ export default function Appointment() {
 
   async function getPatients() {
     try {
-      const response = await axios.get("patients", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `patients/${perpage}${
+          search && "/" + search.split(" ").join("%")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setPatients(response.data);
       setPatientsLoading(false);
     } catch (err) {
@@ -97,6 +108,7 @@ export default function Appointment() {
       getItem();
       setAddForm(initialItemForm);
       setAddFormError(initialItemForm);
+      setSelectedPatient({});
     } catch (err) {
       console.log(err);
       setAddFormError(initialItemForm);
@@ -106,7 +118,6 @@ export default function Appointment() {
 
   async function putItem(e) {
     e.preventDefault();
-    console.log(putForm);
     try {
       const response = await axios.put(`appointment/${putForm.id}`, putForm, {
         headers: {
@@ -141,6 +152,17 @@ export default function Appointment() {
     getItem();
     getPatients();
   }, []);
+
+  useEffect(() => {
+    setAddForm({ patien_id: selectedPatient?.id || null });
+  }, [selectedPatient]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getPatients();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
 
   return (
     <>
@@ -310,32 +332,76 @@ export default function Appointment() {
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Patients</span>
-              </label>
-              <select
-                name="patient_id"
-                onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.patient_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {patients?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="dropdown">
+                <label className="label">
+                  <span className="label-text">Patient</span>
+                </label>
+                {selectedPatient?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedPatient({});
+                        setAddForm({ patient_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <p className="text-sm font-semibold">{selectedPatient.name}</p>
+                    </div>
+                  </div>
+                )}
+                {!selectedPatient?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search patient ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!patients?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {patients?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedPatient(obj);
+                                setAddForm({ patient_id: obj.id });
+                                setSearch("");
+                              }}
+                            >
+                              {obj.name}
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               {addFormError.patient_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {addFormError.patient_id}
                   </span>
                 </label>
-              )}
+              )} 
+
               <label className="label">
                 <span className="label-text">Description</span>
               </label>
@@ -393,7 +459,7 @@ export default function Appointment() {
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Patients</span>
               </label>
               <select
@@ -418,7 +484,15 @@ export default function Appointment() {
                     {putFormError.patient_id}
                   </span>
                 </label>
-              )}
+              )} */}
+              <label className="label">
+                <span className="label-text">Patients</span>
+              </label>
+              <div className="p-0 overflow-hidden mb-1">
+                <div className="group font-semibold justify-start p-4 normal-case text-justify transition-all text-sm bg-slate-50 rounded-md cursor-pointer">
+                  <p>{putForm?.patient?.name || ""}</p>
+                </div>
+              </div>
               <label className="label">
                 <span className="label-text">Description</span>
               </label>

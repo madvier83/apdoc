@@ -192,7 +192,7 @@ export default function Patients() {
     try {
       const response = await axios.get(
         `diagnoses/${perpage}${
-          search && "/" + search.split(" ").join("%")
+          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
         }?page=${page}`,
         {
           headers: {

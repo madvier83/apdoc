@@ -60,7 +60,7 @@ export default function Diagnose() {
     try {
       const response = await axios.get(
         `diagnoses/${perpage}${
-          search && "/" + search.split(" ").join("%")
+          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
         }?page=${page}`,
         {
           headers: {
@@ -259,7 +259,6 @@ export default function Diagnose() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
                         <label htmlFor={`detail-${obj.id}`}>
                           <span className={"font-bold ml-3"}>
-                            {/* {obj.code} */}
                             <Highlighter
                               highlightClassName="bg-emerald-200"
                               searchWords={[search]}
@@ -271,7 +270,6 @@ export default function Diagnose() {
                       </td>
                       <td className="border-t-0 pr-6 pl-6 w-2/3 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <div className="w-full whitespace-pre-wrap line-clamp-2">
-                          {/* <span>{obj.description}</span> */}
                           <Highlighter
                             highlightClassName="bg-emerald-200"
                             searchWords={[search]}
