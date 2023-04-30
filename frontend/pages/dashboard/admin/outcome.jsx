@@ -13,6 +13,14 @@ export default function Outcome() {
 
   const addModalRef = useRef();
   const putModalRef = useRef();
+  const tableRef = useRef();
+
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const [searchCategory, setSearchCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -53,11 +61,21 @@ export default function Outcome() {
 
   async function getItem() {
     try {
-      const response = await axios.get("outcomes", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `outcomes/${perpage}${
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setItem(response.data);
       setItemLoading(false);
     } catch (err) {
@@ -67,11 +85,21 @@ export default function Outcome() {
 
   async function getCategory() {
     try {
-      const response = await axios.get("category-outcomes", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `category-outcomes/${perpage}${
+          searchCategory &&
+          "/" +
+            searchCategory
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setCategory(response.data);
       setCategoryLoading(false);
     } catch (err) {
@@ -136,6 +164,31 @@ export default function Outcome() {
     getCategory();
   }, []);
 
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getItem();
+    }, 300);
+
+    if (page > item?.last_page) {
+      setPage(item.last_page);
+    }
+
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
+
+  useEffect(() => {
+    tableRef.current.scroll({
+      top: 0,
+    });
+  }, [item]);
+  
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getCategory();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchCategory]);
+
   return (
     <>
       <DashboardLayout title="Outcome">
@@ -151,21 +204,52 @@ export default function Outcome() {
                   <i className="fas fa-filter mr-3"></i> Outcome Table
                 </h3>
               </div>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  maxLength={32}
+                  value={search}
+                  onChange={(e) => {
+                    setPage(1);
+                    setSearch(e.target.value);
+                  }}
+                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0 font-semibold"
+                />
+                <i
+                  onClick={() => {
+                    setSearch("");
+                    setPage(1);
+                  }}
+                  className={`fas ${
+                    !search ? "fa-search" : "fa-x"
+                  } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
+                ></i>
+              </div>
+
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
+                  onClick={() => {
+                    setSelectedCategory(null);
+                  }}
                 >
                   Add <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
           </div>
-          <div className="min-h-[80vh] block w-full overflow-x-auto">
+          <div
+            ref={tableRef}
+            className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between"
+          >
             {/* Projects table */}
             <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-              <thead>
+              <thead className="sticky top-0">
                 <tr>
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
@@ -186,7 +270,7 @@ export default function Outcome() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -200,23 +284,39 @@ export default function Outcome() {
                     </td>
                   </tr>
                 )}
-                {item?.map((obj, index) => {
+                {!itemLoading && item.data?.length <= 0 && (
+                  <tr>
+                    <td colSpan={99}>
+                      <div className="flex w-full justify-center mt-48">
+                        <div className="text-center">
+                          <h1 className="text-xl">No data found</h1>
+                          <small>
+                            Data is empty or try adjusting your filter
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {item?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + 1}</span>
+                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category_outcome?.name}</span>
+                        <span>{obj.category_outcome?.name || "-"}</span>
                       </td>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <span className={"ml-3"}>{obj.note}</span>
                       </td>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3"}>{numeral(obj.nominal).format("0,0")}</span>
+                        <span className={"ml-3"}>
+                          {numeral(obj.nominal).format("0,0")}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                      {moment(obj.created_at).format("DD MMM YYYY")}
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
@@ -224,7 +324,7 @@ export default function Outcome() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                        {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -232,20 +332,25 @@ export default function Outcome() {
                             onClick={() => {
                               setPutForm(obj);
                               setPutFormError("");
+                              setSelectedCategory(obj.category_outcome);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
+                        {/* </div> */}
+                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
                           </label>
-                        </div>
-                      <ModalDelete id={obj.id} callback={() => deleteItem(obj.id)} title={`Delete outcome?`}></ModalDelete>
+                        {/* </div> */}
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deleteItem(obj.id)}
+                          title={`Delete outcome?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
@@ -253,57 +358,176 @@ export default function Outcome() {
               </tbody>
             </table>
           </div>
+
+          <div className="flex">
+            <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
+              <small className="w-44 text-right truncate">
+                Results {item.from}-{item.to} of {item.total}
+              </small>
+              <div className="flex text-xs justify-center items-center">
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage(1);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-left"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev - 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-left"></i>
+                </button>
+                <input
+                  type="number"
+                  name="number"
+                  className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
+                  value={page}
+                  min={1}
+                  max={item.last_page}
+                  onChange={(e) => setPage(e.target.value)}
+                />
+                {/* <p className="font-bold w-8 text-center">{page}</p> */}
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page >= item.last_page ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev + 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-right"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page >= item.last_page ? true : false}
+                  onClick={() => {
+                    setPage(item.last_page);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-right"></i>
+                </button>
+              </div>
+              <div className="flex items-center text-xs w-44">
+                <p className="truncate">Number of rows</p>
+                <select
+                  className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
+                  name="perpage"
+                  id=""
+                  onChange={(e) => {
+                    setPerpage(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4">Add Outcome</h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
+            <label className="label">
+              <span className="label-text">Category</span>
+            </label>
+            <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ category_outcome_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search service ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setAddForm({ category_outcome_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+            {addFormError.category_outcome_id && (
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text-alt text-rose-300">
+                  {addFormError.category_outcome_id}
+                </span>
               </label>
-              <select
-                name="category_outcome_id"
-                onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.category_outcome_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Select</option>
-                {category?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {addFormError.category_outcome_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.category_outcome_id}
-                  </span>
-                </label>
-              )}
+            )}
+            <label className="label">
+              <span className="label-text">Nominal</span>
+            </label>
+            <input
+              type="number"
+              name="nominal"
+              value={addForm.nominal}
+              onChange={(e) => handleAddInput(e)}
+              required
+              placeholder=""
+              className="input input-bordered input-primary border-slate-300 w-full"
+            />
+            {addFormError.nominal && (
               <label className="label">
-                <span className="label-text">Nominal</span>
+                <span className="label-text-alt text-rose-300">
+                  {addFormError.nominal}
+                </span>
               </label>
-              <input
-                type="number"
-                name="nominal"
-                value={addForm.nominal}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.nominal && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.nominal}
-                  </span>
-                </label>
-              )}
+            )}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Note</span>
@@ -343,25 +567,71 @@ export default function Outcome() {
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-            <label className="label">
+              <label className="label">
                 <span className="label-text">Category</span>
               </label>
-              <select
-                name="category_outcome_id"
-                onChange={(e) => handlePutInput(e)}
-                required
-                value={putForm.category_outcome_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Select</option>
-                {category?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+              
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ category_outcome_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search service ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setPutForm({ category_outcome_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               {putFormError.category_outcome_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -388,27 +658,27 @@ export default function Outcome() {
                   </span>
                 </label>
               )}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Note</span>
-              </label>
-              <input
-                type="text"
-                name="note"
-                value={putForm.note}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.note && (
+              <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.note}
-                  </span>
+                  <span className="label-text">Note</span>
                 </label>
-              )}
-            </div>
+                <input
+                  type="text"
+                  name="note"
+                  value={putForm.note}
+                  onChange={(e) => handlePutInput(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {putFormError.note && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.note}
+                    </span>
+                  </label>
+                )}
+              </div>
             </div>
             <div className="modal-action rounded-sm">
               <label

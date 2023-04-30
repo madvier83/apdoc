@@ -175,7 +175,7 @@ export default function Diagnose() {
                     setPage(1);
                     setSearch(e.target.value);
                   }}
-                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0"
+                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0 font-semibold"
                 />
                 <i
                   onClick={() => {
@@ -184,7 +184,7 @@ export default function Diagnose() {
                   }}
                   className={`fas ${
                     !search ? "fa-search" : "fa-x"
-                  } absolute text-slate-400 right-4 top-[6px] text-xs`}
+                  } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
                 ></i>
               </div>
 
@@ -204,22 +204,22 @@ export default function Diagnose() {
             <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead className="sticky top-0">
                 <tr>
-                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     #
                   </th>
-                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Code
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Description
                   </th>
-                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Created At
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Updated At
                   </th> */}
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-gray-50 text-gray-600">
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Actions
                   </th>
                 </tr>
@@ -228,7 +228,7 @@ export default function Diagnose() {
                 {diagnosisLoading && (
                   <tr>
                     <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
+                      <div className="flex w-full justify-center my-6">
                         <img src="/loading.svg" alt="now loading" />
                       </div>
                     </td>
@@ -303,7 +303,7 @@ export default function Diagnose() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-[10px]">
                         {/* <div className="tooltip tooltip-left " data-tip="Detail"> */}
                           <label
                             htmlFor={`detail-${obj.id}`}

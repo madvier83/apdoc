@@ -39,6 +39,11 @@ export default function Queue() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const [selectedService, setSelectedService] = useState();
+  const [selectedEmployee, setSelectedEmployee] = useState();
+  const [searchService, setSearchService] = useState("");
+  const [searchEmployee, setSearchEmployee] = useState("");
+
   // open service form ref
   let infoRef = useRef();
   let serviceRef = useRef();
@@ -81,7 +86,12 @@ export default function Queue() {
     try {
       const response = await axios.get(
         `/patients/${perpage}${
-          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
         }?page=${page}`,
         {
           headers: {
@@ -218,11 +228,21 @@ export default function Queue() {
   const [services, setServices] = useState();
   async function getServices() {
     try {
-      const response = await axios.get(`services`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `services/${perpage}${
+          searchService &&
+          "/" +
+            searchService
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       // console.log(response.data);
       setServices(response.data);
     } catch (err) {
@@ -233,12 +253,21 @@ export default function Queue() {
   const [employees, setEmployees] = useState();
   async function getEmployees() {
     try {
-      const response = await axios.get(`employees`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
+      const response = await axios.get(
+        `employees/${perpage}${
+          searchEmployee &&
+          "/" +
+            searchEmployee
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setEmployees(response.data);
     } catch (err) {
       console.error(err);
@@ -254,12 +283,14 @@ export default function Queue() {
     (state, newState) => ({ ...state, ...newState }),
     initialServiceForm
   );
-  const handleServiceInput = (event) => {
-    const { name, value } = event.target;
-    setServiceForm({ [name]: value });
-  };
-  // console.log(serviceForm)
+
   async function addService() {
+    if (!serviceForm.service_id) {
+      return setAddServiceError("Select service");
+    }
+    if (!serviceForm.employee_id) {
+      return setAddServiceError("Select employee");
+    }
     try {
       const response = await axios.post(
         `queue-detail/${selectedQueue?.id}/${serviceForm.employee_id}/${serviceForm.service_id}`,
@@ -275,9 +306,11 @@ export default function Queue() {
       getQueues();
       setIsAddService(false);
       setServiceForm(initialServiceForm);
+      setSelectedService({});
+      setSelectedEmployee({});
     } catch (err) {
       console.error(err);
-      setAddServiceError(err.response?.data?.message);
+      setAddServiceError(err.response.data.message);
     }
   }
   async function cancelService(id) {
@@ -332,6 +365,8 @@ export default function Queue() {
   useEffect(() => {
     setAddServiceError("");
     setServiceForm(initialServiceForm);
+    setSelectedEmployee({});
+    setSelectedService({});
   }, [isAddService]);
 
   useEffect(() => {
@@ -364,6 +399,20 @@ export default function Queue() {
 
     return () => clearTimeout(getData);
   }, [page, perpage, search]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getServices();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchService]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getEmployees();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchEmployee]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -751,22 +800,76 @@ export default function Queue() {
                           Service
                         </small>
                       </label>
-                      <select
-                        name="service_id"
-                        onChange={(e) => handleServiceInput(e)}
-                        value={serviceForm.service_id}
-                        required
-                        className="input input-bordered without-ring input-primary border-slate-300 w-full"
-                      >
-                        <option value="">Select service</option>
-                        {services?.map((obj) => {
-                          return (
-                            <option key={obj.id} value={obj.id}>
-                              {obj.name} - {numeral(obj.price).format("0,0")}
-                            </option>
-                          );
-                        })}
-                      </select>
+                      <div className="dropdown w-full">
+                        {selectedService?.id && (
+                          <div className="p-0 overflow-hidden mb-1">
+                            <div
+                              className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                              onClick={() => {
+                                setSelectedService({});
+                                setServiceForm({ service_id: null });
+                              }}
+                            >
+                              <div className="flex justify-end font-bold">
+                                <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                              </div>
+                              <div className="text-sm font-semibold flex">
+                                <p className="text-left">{selectedService.name}</p>
+                                <p className="text-right group-hover:pr-4">
+                                  Rp. {numeral(selectedService.price).format("0,0")}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {!selectedService?.id && (
+                          <>
+                            <input
+                              tabIndex={0}
+                              type="text"
+                              name="searchAdd"
+                              value={searchService}
+                              onChange={(e) => setSearchService(e.target.value)}
+                              placeholder="Search service ..."
+                              className="input input-bordered border-slate-300 w-full"
+                            />
+                            <ul
+                              tabIndex={0}
+                              className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                            >
+                              {!services?.data?.length && (
+                                <li className="rounded-sm text-sm">
+                                  <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                                    No data found
+                                  </div>
+                                </li>
+                              )}
+                              {services?.data?.map((obj) => {
+                                return (
+                                  <li
+                                    key={obj.id}
+                                    className="p-0 overflow-hidden"
+                                  >
+                                    <div
+                                      className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                                      onClick={() => {
+                                        setSelectedService(obj);
+                                        setServiceForm({ service_id: obj.id });
+                                        setSearchService("");
+                                      }}
+                                    >
+                                      <p className="text-left">{obj.name}</p>
+                                      <p className="text-right pr-4">
+                                        Rp. {numeral(obj.price).format("0,0")}
+                                      </p>
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </>
+                        )}
+                      </div>
                     </div>
                     <div className="w-auto">
                       <label className="label ml-0 pl-0">
@@ -774,23 +877,73 @@ export default function Queue() {
                           Employee
                         </small>
                       </label>
-                      <select
-                        name="employee_id"
-                        onChange={(e) => handleServiceInput(e)}
-                        value={serviceForm.employee_id}
-                        required
-                        className="input input-bordered without-ring input-primary border-slate-300 w-full"
-                      >
-                        <option value="">Unasigned</option>
-                        {employees?.map((obj) => {
-                          return (
-                            <option key={obj.id} value={obj.id}>
-                              {obj.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <p className="text-rose-400 text-sm mt-2">
+                      <div className="dropdown w-full">
+                        {selectedEmployee?.id && (
+                          <div className="p-0 overflow-hidden mb-1">
+                            <div
+                              className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                              onClick={() => {
+                                setSelectedEmployee({});
+                                setServiceForm({ employee_id: null });
+                              }}
+                            >
+                              <div className="flex justify-end font-bold">
+                                <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                              </div>
+                              <p className="text-sm font-semibold">
+                                {selectedEmployee.name}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        {!selectedEmployee?.id && (
+                          <>
+                            <input
+                              tabIndex={0}
+                              type="text"
+                              name="searchAdd"
+                              value={searchEmployee}
+                              onChange={(e) =>
+                                setSearchEmployee(e.target.value)
+                              }
+                              placeholder="Search employee ..."
+                              className="input input-bordered border-slate-300 w-full"
+                            />
+                            <ul
+                              tabIndex={0}
+                              className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                            >
+                              {!employees?.data?.length && (
+                                <li className="rounded-sm text-sm">
+                                  <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                                    No data found
+                                  </div>
+                                </li>
+                              )}
+                              {employees?.data?.map((obj) => {
+                                return (
+                                  <li
+                                    key={obj.id}
+                                    className="p-0 overflow-hidden"
+                                  >
+                                    <div
+                                      className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                                      onClick={() => {
+                                        setSelectedEmployee(obj);
+                                        setServiceForm({ employee_id: obj.id });
+                                        setSearchEmployee("");
+                                      }}
+                                    >
+                                      {obj.name}
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </>
+                        )}
+                      </div>
+                      <p className="text-rose-400 text-sm mt-4">
                         {addServiceError}
                       </p>
                     </div>
@@ -900,7 +1053,7 @@ export default function Queue() {
                       setPage(1);
                       setSearch(e.target.value);
                     }}
-                    className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0"
+                    className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0 font-semibold"
                   />
                   <i
                     onClick={() => {
@@ -909,7 +1062,7 @@ export default function Queue() {
                     }}
                     className={`fas ${
                       !search ? "fa-search" : "fa-x"
-                    } absolute text-slate-400 right-4 top-[6px] text-xs`}
+                    } absolute text-slate-400 right-4 pr-4 cursor-pointer top-[6px] text-xs`}
                   ></i>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -969,7 +1122,9 @@ export default function Queue() {
                     return (
                       <tr key={obj.id} className="hover:bg-zinc-50">
                         <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
-                          <span className={"ml-3 font-bold "}>{index + patients.from}</span>
+                          <span className={"ml-3 font-bold "}>
+                            {index + patients.from}
+                          </span>
                         </th>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <i
@@ -980,7 +1135,7 @@ export default function Queue() {
                             }`}
                           ></i>{" "}
                           <span className={"font-bold"}>
-                          <Highlighter
+                            <Highlighter
                               highlightClassName="bg-emerald-200"
                               searchWords={search.split()}
                               autoEscape={true}

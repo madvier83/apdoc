@@ -8,10 +8,15 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 
 export default function Promotion() {
-  const token = getCookies("token"); 
+  const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
+  const tableRef = useRef();
+
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const [promotion, setPromotion] = useState([]);
   const [promotionLoading, setPromotionLoading] = useState(true);
@@ -49,11 +54,21 @@ export default function Promotion() {
 
   async function getPromotion() {
     try {
-      const response = await axios.get("promotions", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `promotions/${perpage}${
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setPromotion(response.data);
       setPromotionLoading(false);
     } catch (err) {
@@ -117,6 +132,24 @@ export default function Promotion() {
     getPromotion();
   }, []);
 
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getPromotion();
+    }, 300);
+
+    if (page > promotion?.last_page) {
+      setPage(promotion.last_page);
+    }
+
+    return () => clearTimeout(getData);
+  }, [page, perpage, search]);
+
+  useEffect(() => {
+    tableRef.current.scroll({
+      top: 0,
+    });
+  }, [promotion]);
+
   return (
     <>
       <DashboardLayout title="Promotion">
@@ -132,6 +165,31 @@ export default function Promotion() {
                   <i className="fas fa-filter mr-3"></i> Promotion Table
                 </h3>
               </div>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  maxLength={32}
+                  value={search}
+                  onChange={(e) => {
+                    setPage(1);
+                    setSearch(e.target.value);
+                  }}
+                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0 font-semibold"
+                />
+                <i
+                  onClick={() => {
+                    setSearch("");
+                    setPage(1);
+                  }}
+                  className={`fas ${
+                    !search ? "fa-search" : "fa-x"
+                  } absolute text-slate-400 right-0 pr-4 cursor-pointer  top-[6px] text-xs`}
+                ></i>
+              </div>
+
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -143,10 +201,13 @@ export default function Promotion() {
               </div>
             </div>
           </div>
-          <div className="min-h-[80vh] block w-full overflow-x-auto">
+          <div
+            ref={tableRef}
+            className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between"
+          >
             {/* Projects table */}
             <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-              <thead>
+              <thead className="sticky top-0">
                 <tr>
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
@@ -164,7 +225,7 @@ export default function Promotion() {
                     Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Actions
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -178,7 +239,21 @@ export default function Promotion() {
                     </td>
                   </tr>
                 )}
-                {promotion?.map((obj, index) => {
+                {!promotionLoading && promotion.data?.length <= 0 && (
+                  <tr>
+                    <td colSpan={99}>
+                      <div className="flex w-full justify-center mt-48">
+                        <div className="text-center">
+                          <h1 className="text-xl">No data found</h1>
+                          <small>
+                            Data is empty or try adjusting your filter
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {promotion?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
@@ -188,10 +263,12 @@ export default function Promotion() {
                         <span className={"ml-4 font-bold"}>{obj.name}</span>
                       </td>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-4 font-bold"}>{obj.discount}%</span>
+                        <span className={"ml-4 font-bold"}>
+                          {obj.discount}%
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                      {moment(obj.created_at).format("DD MMM YYYY")}
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
@@ -220,13 +297,91 @@ export default function Promotion() {
                             <i className="fas fa-trash"></i>
                           </label>
                         </div>
-                      <ModalDelete id={obj.id} callback={() => deletePromotion(obj.id)} title={`Delete promotion?`}></ModalDelete>
+                        <ModalDelete
+                          id={obj.id}
+                          callback={() => deletePromotion(obj.id)}
+                          title={`Delete promotion?`}
+                        ></ModalDelete>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+          </div>
+
+          <div className="flex">
+            <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
+              <small className="w-44 text-right truncate">
+                Results {promotion.from}-{promotion.to} of {promotion.total}
+              </small>
+              <div className="flex text-xs justify-center items-center">
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage(1);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-left"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page <= 1 ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev - 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-left"></i>
+                </button>
+                <input
+                  type="number"
+                  name="number"
+                  className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
+                  value={page}
+                  min={1}
+                  max={promotion.last_page}
+                  onChange={(e) => setPage(e.target.value)}
+                />
+                {/* <p className="font-bold w-8 text-center">{page}</p> */}
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page >= promotion.last_page ? true : false}
+                  onClick={() => {
+                    setPage((prev) => prev + 1);
+                  }}
+                >
+                  <i className="fa-solid fa-angle-right"></i>
+                </button>
+                <button
+                  className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                  disabled={page >= promotion.last_page ? true : false}
+                  onClick={() => {
+                    setPage(promotion.last_page);
+                  }}
+                >
+                  <i className="fa-solid fa-angles-right"></i>
+                </button>
+              </div>
+              <div className="flex items-center text-xs w-44">
+                <p className="truncate">Number of rows</p>
+                <select
+                  className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
+                  name="perpage"
+                  id=""
+                  onChange={(e) => {
+                    setPerpage(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
