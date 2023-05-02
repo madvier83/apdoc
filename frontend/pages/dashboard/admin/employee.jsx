@@ -20,6 +20,9 @@ export default function Employee() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const [searchPosition, setSearchPosition] = useState("");
+  const [selectedPositions, setSelectedPositions] = useState({});
+
   const [employees, setEmployees] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(true);
   const [positions, setPositions] = useState([]);
@@ -89,11 +92,21 @@ export default function Employee() {
 
   async function getPositions() {
     try {
-      const response = await axios.get("/positions", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `positions/${perpage}${
+          searchPosition &&
+          "/" +
+            searchPosition
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setPositions(response.data);
       setPositionsLoading(false);
     } catch (err) {
@@ -175,6 +188,14 @@ export default function Employee() {
       top: 0,
     });
   }, [employees]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getPositions();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchPosition]);
+
   return (
     <>
       <DashboardLayout title="Employees">
@@ -220,6 +241,9 @@ export default function Employee() {
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
+                  onClick={() => {
+                    setSelectedPositions({});
+                  }}
                 >
                   Add <i className="fas fa-add"></i>
                 </label>
@@ -285,7 +309,9 @@ export default function Employee() {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
-                        <span className={"ml-3 font-bold"}>{index + employees.from}</span>
+                        <span className={"ml-3 font-bold"}>
+                          {index + employees.from}
+                        </span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <span className={"font-bold"}>
@@ -344,25 +370,26 @@ export default function Employee() {
                           </label>
                         </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError(initialEmployeeForm);
-                            }}
-                          >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
+                        <label
+                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          htmlFor="modal-put"
+                          onClick={() => {
+                            setPutForm(obj);
+                            setPutFormError(initialEmployeeForm);
+                            setSelectedPositions(obj.position)
+                          }}
+                        >
+                          <i className="fas fa-pen-to-square"></i>
+                        </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
+                        <label
+                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          htmlFor={obj.id}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </label>
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}
@@ -600,21 +627,69 @@ export default function Employee() {
               <label className="label">
                 <span className="label-text">Position</span>
               </label>
-              <select
-                name="position_id"
-                value={addForm.position_id}
-                onChange={(e) => handleAddInput(e)}
-                className="input input-bordered border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedPositions?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedPositions({});
+                        setAddForm({ position_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedPositions.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedPositions?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchPosition}
+                      onChange={(e) => setSearchPosition(e.target.value)}
+                      placeholder="Search position ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!positions?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {positions?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedPositions(obj);
+                                setAddForm({ position_id: obj.id });
+                                setSearchPosition("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+
               {addFormError.position_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -784,21 +859,69 @@ export default function Employee() {
               <label className="label">
                 <span className="label-text">Position</span>
               </label>
-              <select
-                name="position_id"
-                value={putForm.position_id}
-                onChange={(e) => handlePutInput(e)}
-                className="input input-bordered border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {positions.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedPositions?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedPositions({});
+                        setPutForm({ position_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedPositions.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedPositions?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchPosition}
+                      onChange={(e) => setSearchPosition(e.target.value)}
+                      placeholder="Search position ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!positions?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {positions?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedPositions(obj);
+                                setPutForm({ position_id: obj.id });
+                                setSearchPosition("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+
               {putFormError.position_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -822,7 +945,7 @@ export default function Employee() {
           </form>
         </ModalBox>
 
-        <ModalBox id="modal-details">
+        {/* <ModalBox id="modal-details">
           <h3 className="font-bold text-lg mb-4">Detail Employee</h3>
 
           <input type="hidden" autoComplete="off" />
@@ -914,22 +1037,68 @@ export default function Employee() {
             <label className="label">
               <span className="label-text">Position</span>
             </label>
-            <select
-              name="position_id"
-              value={putForm.position_id}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-            >
-              <option value="">Unasigned</option>
-              {positions.map((obj) => {
-                return (
-                  <option key={obj.id} value={obj.id}>
-                    {obj.name}
-                  </option>
-                );
-              })}
-            </select>
+            
+            <div className="dropdown w-full">
+                {selectedPositions?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ position_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedPositions.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedPositions?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchPosition}
+                      onChange={(e) => setSearchPosition(e.target.value)}
+                      placeholder="Search service ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!positions?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {positions?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedPositions(obj);
+                                setAddForm({ position_id: obj.id });
+                                setSearchPosition("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
           </div>
           <div className="modal-action rounded-sm">
             <button
@@ -949,7 +1118,7 @@ export default function Employee() {
               Close
             </label>
           </div>
-        </ModalBox>
+        </ModalBox> */}
       </DashboardLayout>
     </>
   );
