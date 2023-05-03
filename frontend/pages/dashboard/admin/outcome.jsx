@@ -69,6 +69,7 @@ export default function Outcome() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -93,6 +94,7 @@ export default function Outcome() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -181,7 +183,7 @@ export default function Outcome() {
       top: 0,
     });
   }, [item]);
-  
+
   useEffect(() => {
     const getData = setTimeout(() => {
       getCategory();
@@ -302,7 +304,9 @@ export default function Outcome() {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
+                        <span className={"ml-3 font-bold"}>
+                          {index + item.from}
+                        </span>
                       </th>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span>{obj.category_outcome?.name || "-"}</span>
@@ -325,26 +329,26 @@ export default function Outcome() {
                         {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
                         {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError("");
-                              setSelectedCategory(obj.category_outcome);
-                            }}
-                          >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
+                        <label
+                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          htmlFor="modal-put"
+                          onClick={() => {
+                            setPutForm(obj);
+                            setPutFormError("");
+                            setSelectedCategory(obj.category_outcome);
+                          }}
+                        >
+                          <i className="fas fa-pen-to-square"></i>
+                        </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
+                        <label
+                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          htmlFor={obj.id}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </label>
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}
@@ -442,66 +446,66 @@ export default function Outcome() {
               <span className="label-text">Category</span>
             </label>
             <div className="dropdown w-full">
-                {selectedCategory?.id && (
-                  <div className="p-0 overflow-hidden mb-1">
-                    <div
-                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
-                      onClick={() => {
-                        setSelectedCategory({});
-                        setAddForm({ category_outcome_id: null });
-                      }}
-                    >
-                      <div className="flex justify-end font-bold">
-                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
-                      </div>
-                      <div className="text-sm font-semibold flex">
-                        <p className="text-left">{selectedCategory.name}</p>
-                      </div>
+              {selectedCategory?.id && (
+                <div className="p-0 overflow-hidden mb-1">
+                  <div
+                    className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                    onClick={() => {
+                      setSelectedCategory({});
+                      setAddForm({ category_outcome_id: null });
+                    }}
+                  >
+                    <div className="flex justify-end font-bold">
+                      <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                    </div>
+                    <div className="text-sm font-semibold flex">
+                      <p className="text-left">{selectedCategory.name}</p>
                     </div>
                   </div>
-                )}
-                {!selectedCategory?.id && (
-                  <>
-                    <input
-                      tabIndex={0}
-                      type="text"
-                      name="searchAdd"
-                      value={searchCategory}
-                      onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search service ..."
-                      className="input input-bordered border-slate-300 w-full"
-                    />
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
-                    >
-                      {!category?.data?.length && (
-                        <li className="rounded-sm text-sm">
-                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
-                            No data found
+                </div>
+              )}
+              {!selectedCategory?.id && (
+                <>
+                  <input
+                    tabIndex={0}
+                    type="text"
+                    name="searchAdd"
+                    value={searchCategory}
+                    onChange={(e) => setSearchCategory(e.target.value)}
+                    placeholder="Search service ..."
+                    className="input input-bordered border-slate-300 w-full"
+                  />
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!category?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {category?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              setSelectedCategory(obj);
+                              setAddForm({ category_outcome_id: obj.id });
+                              setSearchCategory("");
+                            }}
+                          >
+                            <p className="text-left">{obj.name}</p>
                           </div>
                         </li>
-                      )}
-                      {category?.data?.map((obj) => {
-                        return (
-                          <li key={obj.id} className="p-0 overflow-hidden">
-                            <div
-                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
-                              onClick={() => {
-                                setSelectedCategory(obj);
-                                setAddForm({ category_outcome_id: obj.id });
-                                setSearchCategory("");
-                              }}
-                            >
-                              <p className="text-left">{obj.name}</p>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </>
-                )}
-              </div>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </div>
             {addFormError.category_outcome_id && (
               <label className="label">
                 <span className="label-text-alt text-rose-300">
@@ -570,7 +574,7 @@ export default function Outcome() {
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
-              
+
               <div className="dropdown w-full">
                 {selectedCategory?.id && (
                   <div className="p-0 overflow-hidden mb-1">

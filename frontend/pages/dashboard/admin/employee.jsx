@@ -76,6 +76,7 @@ export default function Employee() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -100,6 +101,7 @@ export default function Employee() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -377,7 +379,7 @@ export default function Employee() {
                           onClick={() => {
                             setPutForm(obj);
                             setPutFormError(initialEmployeeForm);
-                            setSelectedPositions(obj.position)
+                            setSelectedPositions(obj.position);
                           }}
                         >
                           <i className="fas fa-pen-to-square"></i>

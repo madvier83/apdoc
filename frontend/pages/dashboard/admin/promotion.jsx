@@ -62,6 +62,7 @@ export default function Promotion() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {

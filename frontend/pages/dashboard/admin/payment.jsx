@@ -67,7 +67,7 @@ export default function Payment() {
             search
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
         }?page=${page}`,
         {
           headers: {
@@ -91,7 +91,7 @@ export default function Payment() {
             searchCategory
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
         }?page=${page}`,
         {
           headers: {

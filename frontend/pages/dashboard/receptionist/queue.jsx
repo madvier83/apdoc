@@ -92,6 +92,7 @@ export default function Queue() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".","")
         }?page=${page}`,
         {
           headers: {
@@ -236,6 +237,7 @@ export default function Queue() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -261,6 +263,7 @@ export default function Queue() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -814,9 +817,12 @@ export default function Queue() {
                                 <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
                               </div>
                               <div className="text-sm font-semibold flex">
-                                <p className="text-left">{selectedService.name}</p>
+                                <p className="text-left">
+                                  {selectedService.name}
+                                </p>
                                 <p className="text-right group-hover:pr-4">
-                                  Rp. {numeral(selectedService.price).format("0,0")}
+                                  Rp.{" "}
+                                  {numeral(selectedService.price).format("0,0")}
                                 </p>
                               </div>
                             </div>
@@ -1062,7 +1068,7 @@ export default function Queue() {
                     }}
                     className={`fas ${
                       !search ? "fa-search" : "fa-x"
-                    } absolute text-slate-400 right-4 pr-4 cursor-pointer top-[6px] text-xs`}
+                    } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
                   ></i>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">

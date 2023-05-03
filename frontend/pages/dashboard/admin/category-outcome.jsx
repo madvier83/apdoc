@@ -60,7 +60,7 @@ export default function CategoryOutcome() {
             search
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
         }?page=${page}`,
         {
           headers: {

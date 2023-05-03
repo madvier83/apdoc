@@ -76,7 +76,13 @@ export default function Appointment() {
     try {
       const response = await axios.get(
         `patients/${perpage}${
-          search && "/" + search.split(" ").join("%")
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {

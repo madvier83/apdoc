@@ -60,7 +60,13 @@ export default function Diagnose() {
     try {
       const response = await axios.get(
         `diagnoses/${perpage}${
-          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -146,7 +152,7 @@ export default function Diagnose() {
     tableRef.current.scroll({
       top: 0,
     });
-  }, [diagnosis])
+  }, [diagnosis]);
 
   return (
     <>
@@ -199,7 +205,10 @@ export default function Diagnose() {
               </div>
             </div>
           </div>
-          <div  ref={tableRef} className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between">
+          <div
+            ref={tableRef}
+            className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between"
+          >
             {/* Projects table */}
             <table className="items-center w-full bg-transparent border-collapse overflow-auto">
               <thead className="sticky top-0">
@@ -305,33 +314,33 @@ export default function Diagnose() {
                       </td> */}
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-[10px]">
                         {/* <div className="tooltip tooltip-left " data-tip="Detail"> */}
-                          <label
-                            htmlFor={`detail-${obj.id}`}
-                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </label>
+                        <label
+                          htmlFor={`detail-${obj.id}`}
+                          className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        >
+                          <i className="fas fa-eye"></i>
+                        </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left " data-tip="Edit"> */}
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError(initialDiagnosisForm);
-                            }}
-                          >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
+                        <label
+                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          htmlFor="modal-put"
+                          onClick={() => {
+                            setPutForm(obj);
+                            setPutFormError(initialDiagnosisForm);
+                          }}
+                        >
+                          <i className="fas fa-pen-to-square"></i>
+                        </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
+                        <label
+                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          htmlFor={obj.id}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </label>
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}

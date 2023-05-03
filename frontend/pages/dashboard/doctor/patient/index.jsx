@@ -24,7 +24,13 @@ export default function Patients() {
     try {
       const response = await axios.get(
         `/patients/${perpage}${
-          search && "/" + search.split(" ").join("%").replace( /[^a-zA-Z0-9]/ , "")
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -60,7 +66,7 @@ export default function Patients() {
       top: 0,
     });
   }, [patients]);
-  
+
   return (
     <>
       <DashboardLayout title="Patient Records">
