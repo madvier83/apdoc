@@ -52,6 +52,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->delete('/v1/access/{id}', 'AccessController@destroy');
 
 	$router->get('/v1/clinics', 'ClinicController@index');
+	$router->get('/v1/clinic/{id}/apdoc', 'ClinicController@getByApdocId');
 	$router->get('/v1/clinic/{id}', 'ClinicController@show');
 	$router->post('/v1/clinic', 'ClinicController@create');
 	$router->put('/v1/clinic/{id}', 'ClinicController@update');
