@@ -22,6 +22,17 @@ class UserSlotController extends Controller
         }
     }
 
+    public function getByApdocId($id)
+    {
+        try {
+            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('apdoc_id', $id)->get();
+    
+            return response()->json($user);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+
     public function show($id)
     {
         try {
