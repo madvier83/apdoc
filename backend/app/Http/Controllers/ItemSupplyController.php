@@ -16,9 +16,8 @@ class ItemSupplyController extends Controller
             if ($keyword == null) {
                 $itemSupply = ItemSupply::with('item')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $itemSupply = ItemSupply::with('item')
-                    ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%')
-                    ->orWhere('total', 'like', '%'.$keyword.'%')
+                $itemSupply = ItemSupply::with('item')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('total', 'like', '%'.$keyword.'%')
                     ->orWhere('before', 'like', '%'.$keyword.'%')
                     ->orWhere('after', 'like', '%'.$keyword.'%')
                     ->orWhere('manufacturing', 'like', '%'.$keyword.'%')
@@ -26,7 +25,7 @@ class ItemSupplyController extends Controller
                     ->orWhere('stock', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%')
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

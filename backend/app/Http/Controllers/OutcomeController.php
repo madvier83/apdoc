@@ -14,13 +14,12 @@ class OutcomeController extends Controller
             if ($keyword == null) {
                 $outcome = Outcome::with('categoryOutcome')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $outcome = Outcome::with('categoryOutcome')
-                    ->orWhereRelation('categoryOutcome' ,'name', 'like', '%'.$keyword.'%')
-                    ->orWhere('nominal', 'like', '%'.$keyword.'%')
+                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('nominal', 'like', '%'.$keyword.'%')
                     ->orWhere('note', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orWhereRelation('categoryOutcome' ,'name', 'like', '%'.$keyword.'%')
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

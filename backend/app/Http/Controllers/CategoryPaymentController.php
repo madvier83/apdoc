@@ -15,11 +15,10 @@ class CategoryPaymentController extends Controller
             if ($keyword == null) {
                 $category = CategoryPayment::with('payments')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $category = CategoryPayment::with('payments')
-                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                $category = CategoryPayment::with('payments')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

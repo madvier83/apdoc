@@ -15,11 +15,10 @@ class CategoryOutcomeController extends Controller
             if ($keyword == null) {
                 $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $category = CategoryOutcome::with('outcomes')
-                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                $category = CategoryOutcome::with('outcomes')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

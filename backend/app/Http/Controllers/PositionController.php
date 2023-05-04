@@ -15,11 +15,10 @@ class PositionController extends Controller
             if ($keyword == null) {
                 $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $position = Position::
-                      orWhere('name', 'like', '%'.$keyword.'%')
+                $position = Position::where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

@@ -15,11 +15,10 @@ class CategoryItemController extends Controller
             if ($keyword == null) {
                 $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $category = CategoryItem::with('items')
-                    ->orWhere('name', 'like', '%'.$keyword.'%')
+                $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

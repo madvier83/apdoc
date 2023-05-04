@@ -21,15 +21,14 @@ class RecordController extends Controller
             if ($keyword == null) {
                 $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')
-                    ->orWhereRelation('recordDiagnoses.diagnose', 'code', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('recordDiagnoses.diagnose', 'description', 'like', '%'.$keyword.'%')
-                    ->orWhere('complaint', 'like', '%'.$keyword.'%')
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('complaint', 'like', '%'.$keyword.'%')
                     ->orWhere('inspection', 'like', '%'.$keyword.'%')
                     ->orWhere('therapy', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orWhereRelation('recordDiagnoses.diagnose', 'code', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('recordDiagnoses.diagnose', 'description', 'like', '%'.$keyword.'%')
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

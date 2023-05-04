@@ -14,9 +14,8 @@ class EmployeeController extends Controller
             if ($keyword == null) {
                 $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $employee = Employee::with('position')
-                    ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%')
-                    ->orWhere('nik', 'like', '%'.$keyword.'%')
+                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('nik', 'like', '%'.$keyword.'%')
                     ->orWhere('name', 'like', '%'.$keyword.'%')
                     ->orWhere('birth_place', 'like', '%'.$keyword.'%')
                     ->orWhere('birth_date', 'like', '%'.$keyword.'%')
@@ -25,7 +24,7 @@ class EmployeeController extends Controller
                     ->orWhere('phone', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%')
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

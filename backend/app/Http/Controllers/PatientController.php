@@ -14,8 +14,8 @@ class PatientController extends Controller
             if ($keyword == null) {
                 $patient = Patient::with('queues')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $patient = Patient::with('queues')
-                    ->orWhere('nik', 'like', '%'.$keyword.'%')
+                $patient = Patient::with('queues')->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('nik', 'like', '%'.$keyword.'%')
                     ->orWhere('name', 'like', '%'.$keyword.'%')
                     ->orWhere('birth_place', 'like', '%'.$keyword.'%')
                     ->orWhere('birth_date', 'like', '%'.$keyword.'%')
@@ -24,7 +24,6 @@ class PatientController extends Controller
                     ->orWhere('phone', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
