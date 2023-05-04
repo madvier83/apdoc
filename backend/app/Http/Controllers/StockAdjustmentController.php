@@ -17,15 +17,14 @@ class StockAdjustmentController extends Controller
             if ($keyword == null) {
                 $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])
-                    ->orWhereRelation('itemSupply.item', 'name', 'like', '%'.$keyword.'%')
-                    ->orWhere('adjustment', 'like', '%'.$keyword.'%')
+                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('adjustment', 'like', '%'.$keyword.'%')
                     ->orWhere('before', 'like', '%'.$keyword.'%')
                     ->orWhere('difference', 'like', '%'.$keyword.'%')
                     ->orWhere('note', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->orWhereRelation('itemSupply.item', 'name', 'like', '%'.$keyword.'%')
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

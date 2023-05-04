@@ -37,7 +37,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
-	$router->get('/v1/user-clients', 'UserController@getClient');
+	$router->get('/v1/user-clients/{perPage}', 'UserController@getClient');
+	$router->get('/v1/user-clients/{perPage}/{keyword}', 'UserController@getClient');
+
 	$router->get('/v1/user-slots', 'UserSlotController@index');
 	$router->get('/v1/user-slot/{id}', 'UserSlotController@show');
 	$router->post('/v1/user-slot/add', 'UserSlotController@addSlot');
@@ -176,7 +178,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	
 	// CASHIER
 	
-	$router->get('/v1/transactions', 'TransactionController@index');
+	$router->get('/v1/transactions/{perPage}', 'TransactionController@index');
+	$router->get('/v1/transactions/{perPage}/{keyword}', 'TransactionController@index');
 	$router->get('/v1/transaction/{cancelled}/status', 'TransactionController@status');
 	$router->get('/v1/transaction/code', 'TransactionController@code');
 	$router->post('/v1/transaction', 'TransactionController@create');

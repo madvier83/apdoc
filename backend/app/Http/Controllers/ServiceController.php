@@ -16,13 +16,12 @@ class ServiceController extends Controller
             if ($keyword == null) {
                 $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $service = Service::
-                      orWhere('name', 'like', '%'.$keyword.'%')
+                $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('price', 'like', '%'.$keyword.'%')
                     ->orWhere('commission', 'like', '%'.$keyword.'%')
                     ->orWhere('created_at', 'like', '%'.$keyword.'%')
                     ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

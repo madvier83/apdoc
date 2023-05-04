@@ -17,11 +17,27 @@ use Throwable;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index($perPage, $keyword=null)
     {
         try {
-            $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $transaction = Transaction::where('clinic_id', auth()->user()->employee->clinic_id)->get();
     
+            if ($keyword == null) {
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)
+                    ->where('discount', 'like', '%'.$keyword.'%')
+                    ->orWhere('total', 'like', '%'.$keyword.'%')
+                    ->orWhere('payment', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('patient', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('payment', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('employee', 'name', 'like', '%'.$keyword.'%')
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
+
             return response()->json($transaction);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);

@@ -13,10 +13,25 @@ class UserController extends Controller
         //
     }
 
-    public function getClient()
+    public function getClient($perPage, $keyword=null)
     {
         try {
-            $user = User::where('role_id', 2)->get();
+            $user = User::where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+
+            if ($keyword == null) {
+                $user = User::where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $user = User::
+                      where('name', 'like', '%'.$keyword.'%')
+                    ->orWhere('email', 'like', '%'.$keyword.'%')
+                    ->orWhere('phone', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('role', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhereRelation('employee', 'name', 'like', '%'.$keyword.'%')
+                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
     
             return response()->json($user);
         } catch (Throwable $e) {
