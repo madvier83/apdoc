@@ -2,154 +2,180 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import axios from "../api/axios";
+import jwt_decode from "jwt-decode"
 
 import Link from "next/link";
-import Head from "next/head";
+import AuthLayout from "../../layouts/AuthLayout";
 
 export default function Login() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
+  const [credential, setCredential] = useState("");
   const [pwd, setPwd] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   function parseJwt(token) {
-    return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+    // console.log(jwt_decode(token))
+    return jwt_decode(token);
+    // return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
   }
 
   async function handleLogin(e) {
     e.preventDefault();
-    if (!email && !pwd) return;
+    if (!credential && !pwd) return;
 
     setLoading(true);
 
     const data = {
-      email: email,
+      credential: credential,
       password: pwd,
     };
     try {
       const response = await axios.post("/auth/login", data, {
         "Content-Type": "application/json",
       });
+      console.log(response)
       var payload = parseJwt(response.data.access_token);
 
-      if (payload.role == "admin") {
+      if (payload.role_id == 1) {
         setCookie("token", response.data.access_token, {
           maxAge: 60 * 60 * 12,
         });
-        setEmail("");
-        setPwd("");
+        // setCredential("");
+        // setPwd("");
         router.push("/admin");
-      } else {
+      }else{
         router.push("/auth/login")
       }
-      setLoading(false);
+      // setLoading(false);
     } catch (e) {
-      console.error(e.message);
+      console.log(e)
+      setLoading(false);
+      setLoginError("Login failed");
+      // if (e.response?.status == 403) {
+      //   router.push(
+      //     {
+      //       pathname: "/auth/verify",
+      //       query: { email: credential },
+      //     },
+      //     "/auth/verify"
+      //   );
+      // }
     }
   }
 
   return (
     <>
-      <Head>
-        <title>{`APDOC | Login Admin`}</title>
-      </Head>
-      <main>
-        <section
-          className={`relative w-full h-full py-40 min-h-screen bg-zinc-900`}
-        >
-          <div
-            className="absolute top-0 w-full h-full bg-no-repeat bg-full hidden md:block"
-            // /login.svg
-            style={{
-              // backgroundImage: "url('/img/register_bg_2.png')",
-              backgroundSize: "cover",
-            }}
-          ></div>
-          <div className="container mx-auto px-4 h-[60vh]">
-            <div className="flex content-center items-center justify-center h-full">
-              <div className="w-full lg:w-4/12 px-4">
-                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 rounded-lg border-0">
-                  <div className="rounded-t mb-0 px-6 py-6">
-                    <div className="text-center mb-3">
-                      <h6 className="text-white text-4xl mt-4 font-bold">
-                        APDOC
-                      </h6>
-                    </div>
+      <AuthLayout title={"APDOC | Login Admin"}>
+        <div className="container mx-auto px-4 h-[60vh]">
+          <div className="flex content-center items-center justify-center h-full">
+            <div className="w-full lg:w-4/12 px-4">
+              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 rounded-lg border-0">
+                <div className="rounded-t mb-0 px-6 py-6">
+                  <div className="text-center mb-3">
+                    <h6 className="text-white text-4xl mt-4 font-bold">
+                      APDOC
+                    </h6>
                   </div>
-                  <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                    <form>
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block text-zinc-500 text-xs font-bold mb-2"
-                          htmlFor="email"
-                        >
-                          Email
-                        </label>
-                        <input
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          type="email"
-                          className="input w-full"
-                          placeholder="Email"
-                          id="email"
-                        />
-                      </div>
+                </div>
+                <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+                  <form>
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block text-zinc-500 text-xs font-bold mb-2"
+                        htmlFor="email"
+                      >
+                        Email or phone
+                      </label>
+                      <input
+                        value={credential}
+                        onChange={(e) => setCredential(e.target.value)}
+                        type="text"
+                        name="email"
+                        className="input w-full"
+                        id="credential"
+                      />
+                    </div>
 
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block text-zinc-500 text-xs font-bold mb-2"
-                          htmlFor="password"
-                        >
-                          Password
-                        </label>
-                        <input
-                          value={pwd}
-                          onChange={(e) => setPwd(e.target.value)}
-                          type="password"
-                          className="input w-full"
-                          placeholder="Password"
-                          id="password"
-                        />
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="block text-zinc-500 text-xs font-bold mb-2"
+                        htmlFor="password"
+                      >
+                        Password
+                      </label>
+                      <input
+                        value={pwd}
+                        onChange={(e) => setPwd(e.target.value)}
+                        type={showPwd ? "text" : "password"}
+                        className="input w-full"
+                        id="password"
+                      />
+                      <div
+                        onClick={() => setShowPwd((prev) => !prev)}
+                        className="flex justify-center items-center absolute top-8 right-2 h-8 w-8"
+                      >
+                        <i
+                          className={`${
+                            !showPwd ? "fa-regular fa-eye-slash" : "fas fa-eye"
+                          } opacity-40 hover:opacity-60 transition-all duration-300 text-rose-600`}
+                        ></i>
                       </div>
-                      <div className="">
-                        <Link
-                          href="/auth/forgotPassword"
-                          className="text-slate-500"
-                        >
-                          {/* <small className="text-slate-400 font-bold text-xs">
+                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                        {loginError}
+                      </label>
+                    </div>
+                    <div className="">
+                      <Link
+                        href="/auth/forgotPassword"
+                        className="text-slate-500"
+                      >
+                        <small className="text-zinc-500 font-bold text-xs">
                           Forgot password?
-                        </small> */}
-                        </Link>
-                      </div>
+                        </small>
+                      </Link>
+                    </div>
 
-                      <div className="text-center mt-6">
+                    <div className="text-center mt-6">
+                      {loading ? (
+                        <div
+                          className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                          disabled
+                        >
+                          Loading ...
+                        </div>
+                      ) : (
                         <button
-                          className="bg-rose-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                          className="bg-rose-600 text-white active:bg-rose-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           onClick={handleLogin}
                         >
                           Login As Administrator
                         </button>
-                      </div>
-                    </form>
-                  </div>
+                      )}
+                    </div>
+                  </form>
                 </div>
-                <div className="flex flex-wrap mt-6 relative w-full">
+              </div>
+              <div className="flex flex-wrap justify-center mt-6 relative">
+                <div className="">
                   <Link
-                    href="/auth/login"
-                    className="text-blueGray-200 mx-auto"
+                    href="/"
+                    // onClick={(e) => e.preventDefault()}
+                    className="text-gray-400"
                   >
                     <small>
-                      <i className="fas fa-arrow-left mr-2"></i> Login as user
+                      <i className="fas fa-arrow-left mr-2"></i> Back to landing
+                      page
                     </small>
                   </Link>
                 </div>
               </div>
             </div>
           </div>
-          {/* <FooterSmall absolute /> */}
-        </section>
-      </main>
+        </div>
+      </AuthLayout>
     </>
   );
 }

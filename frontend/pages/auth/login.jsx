@@ -161,7 +161,7 @@ export default function Login() {
                   <Link
                     href="/"
                     // onClick={(e) => e.preventDefault()}
-                    className="text-blueGray-200"
+                    className="text-gray-400"
                   >
                     <small>
                       <i className="fas fa-arrow-left mr-2"></i> Back to landing
@@ -170,7 +170,7 @@ export default function Login() {
                   </Link>
                 </div>
                 <div className="w-1/2 text-right">
-                  <Link href="/auth/register" className="text-blueGray-200">
+                  <Link href="/auth/register" className="text-gray-400">
                     <small>
                       Create new account{" "}
                       <i className="fas fa-arrow-right ml-2"></i>

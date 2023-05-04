@@ -1246,16 +1246,18 @@ export default function Patients() {
                       return (
                         <div key={obj.id} className="p-0 overflow-hidden mb-1">
                           <div
-                            className="group font-normal justify-start p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
                             onClick={() => {
                               addMultiD(obj);
                             }}
                           >
-                            <div className="flex justify-end font-bold">
-                              <i className="fas fa-x collapse hidden group-hover:flex transition-all text-rose-600"></i>
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.description}{" "}
                             </div>
-                            <b>{obj.code}</b>
-                            {" - " + obj.description}{" "}
+                            <div className="flex justify-end font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
                           </div>
                         </div>
                       );

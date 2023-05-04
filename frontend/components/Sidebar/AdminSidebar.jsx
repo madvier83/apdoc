@@ -34,7 +34,7 @@ export default function AdminSidebar() {
           {/* Brand */}
           <Link
             href="/"
-            className="md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
+            className="md:block text-4xl text-rose-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
             APDOC
           </Link>
@@ -80,7 +80,7 @@ export default function AdminSidebar() {
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 <li className="items-center">
                   <Link
-                    href="/dashboard"
+                    href="/admin"
                     className={"text-xs py-3 font-bold block text-slate-500"}
                   >
                     <i className={"fas fa-chart-line mr-2 text-sm "}></i>{" "}
@@ -97,308 +97,18 @@ export default function AdminSidebar() {
                     onClick={() => setAdminMenu((p) => !p)}
                     className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
                   >
-                    <i className={"fas fa-user mr-2 text-sm "}></i> Admin
+                    <i className={"fas fa-user mr-2 text-sm "}></i> Clients
                   </button>
 
                   {adminMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
-                          href="/dashboard/user"
+                          href="/admin/clients"
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          User
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Access
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Employee
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Jabatan
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Service
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Diagnosa
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Payment Method
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Kategori Outcome
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Outcome
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setReceptionistMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-newspaper mr-2 text-sm"}></i>{" "}
-                    Receptionist
-                  </button>
-
-                  {receptionistMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Patients
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Appointment
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Queue
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setDoctorMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-user-doctor mr-2 text-sm "}></i>{" "}
-                    Doctor
-                  </button>
-
-                  {doctorMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Patient
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Queue
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setPharmacyMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-mortar-pestle mr-2 text-sm "}></i>{" "}
-                    Pharmacy
-                  </button>
-                    
-                  {pharmacyMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Category Item
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Item
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Item Masuk
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setPromotionMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-tag mr-2 text-sm "}></i> Promotion
-                  </button>
-
-                  
-                  {promotionMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Manage Data
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setCashierMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-money-bill mr-2 text-sm "}></i>{" "}
-                    Cashier
-                  </button>
-                  
-                  {cashierMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Transaction
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          History
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* end submenu */}
-                </li>
-
-                <li className="items-center">
-                  <button
-                    onClick={() => setReportsMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
-                  >
-                    <i className={"fas fa-file mr-2 text-sm "}></i> Reports
-                  </button>
-
-                  {reportsMenu && (
-                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Sales
-                        </Link>
-                      </li>
-                      <li className="items-center">
-                        <Link
-                          href="#pablo"
-                          className={"text-xs py-3 font-bold block "}
-                        >
-                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                          Commision
+                            Clients
                         </Link>
                       </li>
                     </ul>
@@ -409,7 +119,7 @@ export default function AdminSidebar() {
 
                 <hr className="my-4 md:min-w-full" />
 
-                <li className="items-center">
+                {/* <li className="items-center">
                   <Link
                     href="#pablo"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
@@ -426,7 +136,7 @@ export default function AdminSidebar() {
                   >
                     <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
                   </Link>
-                </li>
+                </li> */}
 
                 <li className="items-center">
                   <button

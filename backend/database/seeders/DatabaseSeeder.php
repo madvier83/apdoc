@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'email'             => 'cursor.id',
             'password'          => app('hash')->make('Cursor123'),
-            'role_id'           => 2,
+            'role_id'           => 1,
             'phone'             => '+6289518223591',
             'otp_verification'  => '750587',
             'created_at_otp'    => Carbon::now(),

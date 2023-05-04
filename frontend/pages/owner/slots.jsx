@@ -16,6 +16,13 @@ export default function Slots() {
   const putModalScrollRef = useRef();
   const detailModalRef = useRef();
 
+  const [perpage, setPerpage] = useState(10);
+  // const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const [searchEmployees, setSearchEmployees] = useState("");
+  const [selectedEmployees, setSelectedEmployees] = useState({});
+
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [roles, setRoles] = useState([]);
@@ -89,11 +96,22 @@ export default function Slots() {
 
   async function getEmployee() {
     try {
-      const response = await axios.get("/employees", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `employees/${perpage}${
+          searchEmployees &&
+          "/" +
+            searchEmployees
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setEmployee(response.data);
       setEmployeeLoading(false);
     } catch (err) {
@@ -121,7 +139,6 @@ export default function Slots() {
     }
   }
   async function putRole(e) {
-    console.log(putForm);
     e.preventDefault();
     try {
       const response = await axios.put(`/user-slot/${putForm.id}`, putForm, {
@@ -165,7 +182,12 @@ export default function Slots() {
     getEmployee();
   }, []);
 
-  console.log(users);
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getEmployee();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchEmployees]);
 
   return (
     <>
@@ -187,11 +209,10 @@ export default function Slots() {
                   <label
                     className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    htmlFor="modal-add"
+                    htmlFor="modal-put"
                     onClick={() => {
-                      addModalScrollRef.current.scroll({
+                      putModalScrollRef.current.scroll({
                         top: 0,
-                        // behavior: "smooth",
                       });
                     }}
                   >
@@ -370,22 +391,69 @@ export default function Slots() {
               <label className="label">
                 <span className="label-text">Employee</span>
               </label>
-              <select
-                name="employee_id"
-                onChange={(e) => handlePutInput(e)}
-                // required
-                value={putForm.employee_id}
-                className="input input-bordered without-ring border-slate-300 w-full"
-              >
-                <option value="">Select</option>
-                {employee?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedEmployees?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedEmployees({});
+                        setPutForm({ employee_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedEmployees.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedEmployees?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchEmployees}
+                      onChange={(e) => setSearchEmployees(e.target.value)}
+                      placeholder="Search position ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!employee?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {employee?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedEmployees(obj);
+                                setPutForm({ employee_id: obj.id });
+                                setSearchEmployees("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+
               {putFormError.employee_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -504,7 +572,7 @@ export default function Slots() {
         title={`Deactivate User?`}
       ></ModalDelete>
 
-      <ModalBox id="modal-add">
+      {/* <ModalBox id="modal-add">
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll" ref={addModalScrollRef}>
             <h3 className="font-bold text-lg mb-4">Assign Slot</h3>
@@ -536,24 +604,6 @@ export default function Slots() {
                   </span>
                 </label>
               )}
-              {/* <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={addForm.name}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
-                  </span>
-                </label>
-              )} */}
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
@@ -632,7 +682,7 @@ export default function Slots() {
             </button>
           </div>
         </form>
-      </ModalBox>
+      </ModalBox> */}
     </>
   );
 }

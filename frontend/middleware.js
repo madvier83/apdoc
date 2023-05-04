@@ -42,7 +42,14 @@ export async function middleware(req) {
         } else {
             try {
                 const { payload } = await jwtVerify(jwt, secret)
-                return NextResponse.next()
+                if(payload.role_id == 2) {
+                    return NextResponse.next()
+                }else if(payload.role_id == 1) {
+                    url.pathname = "/admin"
+                    return NextResponse.redirect(url)
+                }else{
+                    return NextResponse.next()
+                }
             } catch(e) {
                 req.cookies.set("token", "", { expires: new Date(Date.now()) });
                 url.pathname = "/auth/login"
@@ -67,6 +74,27 @@ export async function middleware(req) {
             } catch(e) {
                 req.cookies.set("token", "", { expires: new Date(Date.now()) });
                 url.pathname = "/auth/login"
+                return NextResponse.redirect(url);
+            }
+        }
+    }
+
+    if(pathname.startsWith("/admin")) {
+        if (jwt == undefined) {
+            url.pathname = "/auth/admin"
+            return NextResponse.redirect(url);
+        } else {
+            try {
+                const { payload } = await jwtVerify(jwt, secret)
+                if(payload.role_id != 1) {
+                    url.pathname = "/dashboard";
+                    return NextResponse.redirect(url);
+                }else{
+                    return NextResponse.next()
+                }
+            } catch(e) {
+                req.cookies.set("token", "", { expires: new Date(Date.now()) });
+                url.pathname = "/auth/admin"
                 return NextResponse.redirect(url);
             }
         }
