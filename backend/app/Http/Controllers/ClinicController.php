@@ -19,6 +19,17 @@ class ClinicController extends Controller
         }
     }
 
+    public function getByApdocId($id)
+    {
+        try {
+            $clinic = Clinic::where('apdoc_id', $id)->get();
+    
+            return response()->json($clinic);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+
     public function show($id)
     {
         try {

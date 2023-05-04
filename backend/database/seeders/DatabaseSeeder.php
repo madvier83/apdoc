@@ -12,6 +12,7 @@ use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\UserSlot;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -103,6 +104,13 @@ class DatabaseSeeder extends Seeder
             'apdoc_id'          => $clinic->apdoc_id,
             'employee_id'       => $employee->id
         ]);
+
+        // free slot
+        for($i=0; $i<10; $i++) {
+            UserSlot::create([
+                'apdoc_id' => $clinic->apdoc_id
+            ]);
+        }
 
         Access::create([
             'role_id'  => 2,

@@ -37,6 +37,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
+	$router->get('/v1/user-clients', 'UserController@getClient');
 	$router->get('/v1/user-slots', 'UserSlotController@index');
 	$router->get('/v1/user-slot/{id}', 'UserSlotController@show');
 	$router->post('/v1/user-slot/add', 'UserSlotController@addSlot');
@@ -51,6 +52,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->delete('/v1/access/{id}', 'AccessController@destroy');
 
 	$router->get('/v1/clinics', 'ClinicController@index');
+	$router->get('/v1/clinic/{id}/apdoc', 'ClinicController@getByApdocId');
 	$router->get('/v1/clinic/{id}', 'ClinicController@show');
 	$router->post('/v1/clinic', 'ClinicController@create');
 	$router->put('/v1/clinic/{id}', 'ClinicController@update');
