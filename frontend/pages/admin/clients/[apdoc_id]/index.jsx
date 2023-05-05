@@ -23,7 +23,7 @@ export default function Client() {
   async function getSlots() {
     try {
       const response = await axios.get(
-        `/user-slots/${router.query.apdoc_id}/apdoc`,
+        `/clinic/${router.query.apdoc_id}/apdoc`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -66,9 +66,10 @@ export default function Client() {
     });
   }, [clients]);
 
+  console.log(clients)
   return (
     <>
-      <AdminLayout title="Slots">
+      <AdminLayout title="Clinics">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -78,7 +79,7 @@ export default function Client() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Slots Table
+                  <i className="fas fa-filter mr-3"></i> Clinics Table
                 </h3>
               </div>
               {/* <div className="relative">
@@ -122,19 +123,10 @@ export default function Client() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Role
+                    Created At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Clinic
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Expiration Date
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Slot Status
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Employee Status
+                    Updated At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Actions
@@ -170,9 +162,6 @@ export default function Client() {
                     <tr
                       key={obj.id}
                       className="hover:bg-zinc-50 cursor-pointer"
-                      onClick={() => {
-                        router.push(`/dashboard/doctor/patient/${obj.id}`);
-                      }}
                     >
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
                         <span className={"ml-3 font-bold "}>{index + 1}</span>
@@ -180,58 +169,32 @@ export default function Client() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <span
                           className={`${
-                            !obj.user?.name ? "opacity-40" : "font-bold"
+                            !obj.name ? "opacity-40" : "font-bold"
                           }`}
                         >
-                          {obj.user?.name || "Unasigned"}
+                          {obj?.name || "Unasigned"}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          <span>{obj.user?.role?.name}</span>
-                        </span>
+                        {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          <span>{""}</span>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          <span>{""}</span>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize font-bold"}>
-                          {obj.status || "-"}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span
-                          className={`${
-                            obj.user?.is_verified == 1
-                              ? "font-bold text-emerald-500"
-                              : "opacity-40"
-                          }`}
-                        >
-                          {obj.user?.is_verified == 1
-                            ? "Verified"
-                            : "Unverified"}
-                        </span>
+                        {moment(obj.updated_at).fromNow()}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <div
                           className="tooltip tooltip-left"
                           data-tipClients"
                         > */}
+
                         <label
-                          className="bg-gray-200 text-white active:bg-gray-200 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
                           onClick={() => {
-                            router.push(`/dashboard/doctor/patient/${obj.id}`);
+                            router.push(`/admin/clients/${router.query.apdoc_id}/${obj.id}`);
                           }}
                         >
-                          <i className="fa-solid fa-circle-dollar-to-slot"></i>{" "}
+                          <i className="fa-solid fa-house-chimney-medical"></i>
                         </label>
                         {/* </div> */}
                       </td>

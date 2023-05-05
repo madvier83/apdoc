@@ -24,7 +24,7 @@ class DiagnoseFactory extends Factory
         return [
             'code'        => 'A' . mt_rand(1, 40000),
             'description' => $this->faker->word(),
-            'clinic_id' => 2
+            'clinic_id'   => mt_rand(2, 3)
         ];
     }
 }

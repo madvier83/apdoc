@@ -69,14 +69,25 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $clinic = Clinic::create([
-            'name'        => 'M Advie Rifaldy',
+            'name'        => 'Ngafee',
+            'address'     => 'Jl. Dalem Kaum no. 112',
+            'province'    => 'Jawa Barat',
+            'city'        => 'Kota Bandung',
+            'district'    => 'Lengkong',
+            'postal_code' => '40261',
+            'phone'       => '628995754988',
+            'apdoc_id'    => time() . 'AP2',
+        ]);
+
+        $clinic = Clinic::create([
+            'name'        => 'Umanis Klinik',
             'address'     => null,
             'province'    => null,
             'city'        => null,
             'district'    => null,
             'postal_code' => null,
             'phone'       => null,
-            'apdoc_id'    => time() . 'AP2',
+            'apdoc_id'    => $clinic->apdoc_id,
         ]);
 
         $employee = Employee::create([
@@ -122,7 +133,7 @@ class DatabaseSeeder extends Seeder
         // Clinic::factory(10)->create();
         Employee::factory(100)->create();
         Position::factory(100)->create();
-        Diagnose::factory(100)->create();
+        Diagnose::factory(200)->create();
         Service::factory(100)->create();
         Patient::factory(100)->create();
         CategoryItem::factory(100)->create();

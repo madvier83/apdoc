@@ -22,10 +22,10 @@ class UserSlotController extends Controller
         }
     }
 
-    public function getByApdocId($id)
+    public function getByClinicId($id)
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('apdoc_id', $id)->get();
+            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->whereRelation('user.employee', 'clinic_id', $id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {

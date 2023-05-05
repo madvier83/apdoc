@@ -2,13 +2,13 @@ import React from "react";
 
 // components
 
-import AdminNavbar from "../components/Navbars/AdminNavbar";
+import DashboardNavbar from "../components/Navbars/DashboardNavbar"
 import Sidebar from "../components/Sidebar/Sidebar";
 import HeaderStats from "../components/Headers/HeaderStats";
 import FooterAdmin from "../components/Footers/FooterAdmin";
 import Head from "next/head";
 
-export default function DashboardLayout({ title, children, headerStats }) {
+export default function DashboardLayout({ title, children, headerStats, clinic, setClinic }) {
     return (
         <>
         <Head>
@@ -16,7 +16,7 @@ export default function DashboardLayout({ title, children, headerStats }) {
         </Head>
         <Sidebar />
         <div className="relative md:ml-64 bg-gray-800 min-h-screen">
-            <AdminNavbar title={title} />
+            <DashboardNavbar title={title} clinic={clinic} setClinic={setClinic}/>
             {/* Header */}
             <HeaderStats headerStats={headerStats}/>
             <div className="px-4 md:px-10 mx-auto w-full -m-24">

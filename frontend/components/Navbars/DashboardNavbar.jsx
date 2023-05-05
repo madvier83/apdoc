@@ -9,62 +9,76 @@ import { getCookie, setCookie } from "cookies-next";
 export default function Navbar({ title, clinic, setClinic }) {
   const router = useRouter();
 
-  // const [clinics, setClinics] = useState();
-  // const [clinicsLoading, setClinicsLoading] = useState();
-  // const [apdoc, setApdoc] = useState();
+  const [clinics, setClinics] = useState();
+  const [clinicsLoading, setClinicsLoading] = useState();
+  const [apdoc, setApdoc] = useState();
 
-  // if (setClinic) {
-  //   const token = getCookie("token");
-  //   function parseJwt(token) {
-  //     return JSON.parse(
-  //       Buffer?.from(token?.split(".")[1], "base64").toString()
-  //     );
-  //   }
+  if (setClinic) {
+    const token = getCookie("token");
+    function parseJwt(token) {
+      return JSON.parse(
+        Buffer?.from(token?.split(".")[1], "base64").toString()
+      );
+    }
 
-  //   async function getClinics() {
-  //     try {
-  //       const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
-  //         headers: {
-  //           Authorization: "Bearer" + token,
-  //         },
-  //       });
-  //       setClinics(response.data);
-  //       setClinicsLoading(false);
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   }
+    async function getClinics() {
+      setClinicsLoading(true)
+      try {
+        const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        });
+        setClinics(response.data);
+        setClinicsLoading(false);
+        
+        let clinicCookie = getCookie("clinic");
+        if(clinicCookie == "") {
+          setClinic(response.data[0]?.id)
+        }
 
-  //   const initialClinic = "";
-  //   // const [clinic, setClinic] = useState("");
-  //   const [cookieCheck, setCookieCheck] = useState(false);
-  //   useEffect(() => {
-  //     try {
-  //       let clinicCookie = getCookie("clinic");
-  //       setClinic(clinicCookie);
-  //       setCookieCheck(true);
-  //     } catch (e) {
-  //       console.error(e);
-  //       setCookie("clinic", "");
-  //       setCookieCheck(true);
-  //     }
-  //   }, []);
-  //   useEffect(() => {
-  //     if (cookieCheck) {
-  //       setCookie("clinic", clinic);
-  //     }
-  //   }, [clinic]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-  //   useEffect(() => {
-  //     setApdoc(parseJwt(token));
-  //   }, []);
+    // const initialClinic = "";
+    // const [clinic, setClinic] = useState("");
+    const [cookieCheck, setCookieCheck] = useState(false);
+    useEffect(() => {
+      try {
+        let clinicCookie = getCookie("clinic");
+        setClinic(clinicCookie);
+        setCookieCheck(true);
+      } catch (e) {
+        console.error(e);
+        setCookie("clinic", "");
+        setCookieCheck(true);
+      }
+    }, []);
+    useEffect(() => {
+      let clinicCookie = getCookie("clinic");
+      if(clinicCookie == "" && clinics) {
+        setCookie("clinic", clinics[0].id)
+      }
+    }, []);
 
-  //   useEffect(() => {
-  //     if (apdoc?.apdoc_id && token) {
-  //       getClinics();
-  //     }
-  //   }, [apdoc]);
-  // }
+    useEffect(() => {
+      if (cookieCheck) {
+        setCookie("clinic", clinic);
+      }
+    }, [clinic]);
+
+    useEffect(() => {
+      setApdoc(parseJwt(token));
+    }, []);
+
+    useEffect(() => {
+      if (apdoc?.apdoc_id && token) {
+        getClinics();
+      }
+    }, [apdoc]);
+  }
 
   return (
     <>
@@ -80,7 +94,7 @@ export default function Navbar({ title, clinic, setClinic }) {
             >
               {title}
             </Link>
-            {/* <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
+            <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
               <i className="fas fa-hospital"> </i>
               <div className="">
                 <select
@@ -104,7 +118,7 @@ export default function Navbar({ title, clinic, setClinic }) {
                     })}
                 </select>
               </div>
-            </div> */}
+            </div>
           </div>
           <div className="flex ml-20">
             <button

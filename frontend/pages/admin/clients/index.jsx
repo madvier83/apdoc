@@ -223,21 +223,12 @@ export default function Clients() {
                           className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
                           onClick={() => {
-                            router.push(`/admin/clients/slots/${obj.apdoc_id}`);
-                          }}
-                        >
-                          <i className="fa-solid fa-address-card"></i>{" "}
-                        </label>
-                        <label
-                          className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          onClick={() => {
                             router.push(
-                              `/admin/clients/clinics/${obj.apdoc_id}`
+                              `/admin/clients/${obj.apdoc_id}`
                             );
                           }}
                         >
-                          <i class="fa-solid fa-house-chimney-medical"></i>
+                          <i className="fa-solid fa-house-chimney-medical"></i>
                         </label>
                         {/* </div> */}
                       </td>

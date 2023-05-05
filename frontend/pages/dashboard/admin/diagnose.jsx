@@ -21,6 +21,8 @@ export default function Diagnose() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const [clinic, setClinic] = useState("");
+
   const [diagnosis, setDiagnosis] = useState([]);
   const [diagnosisLoading, setDiagnosisLoading] = useState(true);
 
@@ -59,7 +61,7 @@ export default function Diagnose() {
   async function getDiagnosis() {
     try {
       const response = await axios.get(
-        `diagnoses/${perpage}${
+        `diagnoses/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -105,7 +107,7 @@ export default function Diagnose() {
 
   async function putDiagnosis(e) {
     e.preventDefault();
-    console.log(putForm);
+    // console.log(putForm);
     try {
       const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
         headers: {
@@ -146,7 +148,7 @@ export default function Diagnose() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -156,7 +158,7 @@ export default function Diagnose() {
 
   return (
     <>
-      <DashboardLayout title="Diagnose">
+      <DashboardLayout title="Diagnose" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
