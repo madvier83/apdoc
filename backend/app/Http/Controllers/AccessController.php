@@ -100,7 +100,8 @@ class AccessController extends Controller
 
         try {
             $access->delete();
-            User::where('role_id', $id)->update(['role_id' => null]);
+            Role::where('id', $access->role_id)->delete();
+            User::where('role_id', $access->role_id)->update(['role_id' => null]);
     
             return response()->json(['message' => 'Access deleted successfully!']);
         } catch (Throwable $e) {

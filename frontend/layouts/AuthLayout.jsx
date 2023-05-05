@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 export default function Auth({ children, title, isAdmin }) {
   const route = useRouter()
-  console.log(route.pathname)
+  // console.log(route.pathname)
   return (
     <>
       <Head>

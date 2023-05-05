@@ -189,6 +189,7 @@ export default function Slots() {
     return () => clearTimeout(getData);
   }, [searchEmployees]);
 
+  console.log(users)
   return (
     <>
       <DashboardLayout title="User Slots">
@@ -284,7 +285,7 @@ export default function Slots() {
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span className={``}>-</span>
+                          <span>{obj.user?.role?.name}</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           <span className={``}>-</span>
@@ -530,7 +531,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.id} value={obj.id}>
+                    <option key={obj.role_id} value={obj.role_id}>
                       {obj.role.name}
                     </option>
                   );
@@ -572,7 +573,7 @@ export default function Slots() {
         title={`Deactivate User?`}
       ></ModalDelete>
 
-      {/* <ModalBox id="modal-add">
+      <ModalBox id="modal-add">
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll" ref={addModalScrollRef}>
             <h3 className="font-bold text-lg mb-4">Assign Slot</h3>
@@ -581,29 +582,68 @@ export default function Slots() {
               <label className="label">
                 <span className="label-text">Employee</span>
               </label>
-              <select
-                name="employee_id"
-                onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.employee_id}
-                className="input input-bordered without-ring border-slate-300 w-full"
-              >
-                <option value="">Select</option>
-                {employee?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {addFormError.employee_id && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.employee_id}
-                  </span>
-                </label>
-              )}
+
+              <div className="dropdown w-full">
+                {selectedEmployees?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedEmployees({});
+                        setAddForm({ employee_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedEmployees.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedEmployees?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchEmployees}
+                      onChange={(e) => setSearchEmployees(e.target.value)}
+                      placeholder="Search position ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!employee?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {employee?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedEmployees(obj);
+                                setAddForm({ employee_id: obj.id });
+                                setSearchEmployees("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
@@ -682,7 +722,7 @@ export default function Slots() {
             </button>
           </div>
         </form>
-      </ModalBox> */}
+      </ModalBox>
     </>
   );
 }

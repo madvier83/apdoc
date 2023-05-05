@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import axios from "../api/axios";
-import jwt_decode from "jwt-decode"
+import jwt_decode from "jwt-decode";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -36,7 +36,7 @@ export default function Login() {
       const response = await axios.post("/auth/login", data, {
         "Content-Type": "application/json",
       });
-      console.log(response)
+      console.log(response);
       var payload = parseJwt(response.data.access_token);
 
       if (payload.role_id == 1) {
@@ -46,12 +46,12 @@ export default function Login() {
         // setCredential("");
         // setPwd("");
         router.push("/admin");
-      }else{
-        router.push("/auth/login")
+      } else {
+        router.push("/auth/login");
       }
       // setLoading(false);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       setLoading(false);
       setLoginError("Login failed");
       // if (e.response?.status == 403) {
@@ -76,7 +76,7 @@ export default function Login() {
                 <div className="rounded-t mb-0 px-6 py-6">
                   <div className="text-center mb-3">
                     <h6 className="text-white text-4xl mt-4 font-bold">
-                      APDOC
+                      APDOC <br /><small className="uppercase tracking-widest text-zinc-500 text-2xl">administrator</small>
                     </h6>
                   </div>
                 </div>
@@ -87,7 +87,7 @@ export default function Login() {
                         className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="email"
                       >
-                        Email or phone
+                        Username
                       </label>
                       <input
                         value={credential}
@@ -128,14 +128,14 @@ export default function Login() {
                       </label>
                     </div>
                     <div className="">
-                      <Link
+                      {/* <Link
                         href="/auth/forgotPassword"
                         className="text-slate-500"
                       >
                         <small className="text-zinc-500 font-bold text-xs">
                           Forgot password?
                         </small>
-                      </Link>
+                      </Link> */}
                     </div>
 
                     <div className="text-center mt-6">

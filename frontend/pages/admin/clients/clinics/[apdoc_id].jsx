@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import moment from "moment/moment";
 
-import axios from "../api/axios";
-import AdminLayout from "../../layouts/AdminLayout";
+import axios from "../../../api/axios";
+import AdminLayout from "../../../../layouts/AdminLayout";
 import { useRouter } from "next/router";
 import Highlighter from "react-highlight-words";
 
-export default function Patients() {
+export default function Client() {
   const token = getCookies("token");
   const router = useRouter();
 
@@ -17,59 +17,58 @@ export default function Patients() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [patients, setPatients] = useState([]);
-  const [patientsLoading, setPatientsLoading] = useState(true);
+  const [clients, setClients] = useState([]);
+  const [clientLoading, setClientLoading] = useState(true);
 
-  async function getPatients() {
+  async function getSlots() {
     try {
       const response = await axios.get(
-        `/patients/${perpage}${
-          search &&
-          "/" +
-            search
-              .split(" ")
-              .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".", "")
-        }?page=${page}`,
+        `/clinic/${router.query.apdoc_id}/apdoc`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
           },
         }
       );
-      setPatients(response.data);
-      setPatientsLoading(false);
+      console.log(response);
+      setClients(response.data);
+      setClientLoading(false);
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getPatients();
-  }, []);
+    if (router.isReady) {
+      getSlots();
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
+    if (router.isReady) {
+      return;
+    }
+
     const getData = setTimeout(() => {
-      getPatients();
+      getSlots();
     }, 300);
 
-    if (page > patients?.last_page) {
-      setPage(patients.last_page);
+    if (page > clients?.last_page) {
+      setPage(clients.last_page);
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, router.isReady]);
 
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
     });
-  }, [patients]);
+  }, [clients]);
 
   return (
     <>
-      <AdminLayout title="Patient Records">
+      <AdminLayout title="Clinics">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -79,10 +78,10 @@ export default function Patients() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Patients Table
+                  <i className="fas fa-filter mr-3"></i> Clinics Table
                 </h3>
               </div>
-              <div className="relative">
+              {/* <div className="relative">
                 <input
                   type="text"
                   name="search"
@@ -104,7 +103,7 @@ export default function Patients() {
                     !search ? "fa-search" : "fa-x"
                   } absolute text-slate-400 right-4 top-[6px] text-xs`}
                 ></i>
-              </div>
+              </div> */}
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right"></div>
             </div>
           </div>
@@ -123,12 +122,6 @@ export default function Patients() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Birth
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Phone
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
@@ -140,7 +133,7 @@ export default function Patients() {
                 </tr>
               </thead>
               <tbody>
-                {patientsLoading && (
+                {clientLoading && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center my-4">
@@ -149,7 +142,7 @@ export default function Patients() {
                     </td>
                   </tr>
                 )}
-                {!patientsLoading && patients?.data?.length <= 0 && (
+                {!clientLoading && clients?.length <= 0 && (
                   <tr>
                     <td colSpan={99}>
                       <div className="flex w-full justify-center mt-48">
@@ -163,7 +156,7 @@ export default function Patients() {
                     </td>
                   </tr>
                 )}
-                {patients?.data?.map((obj, index) => {
+                {clients?.map((obj, index) => {
                   return (
                     <tr
                       key={obj.id}
@@ -173,45 +166,19 @@ export default function Patients() {
                       }}
                     >
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold "}>
-                          {index + patients.from}
-                        </span>
+                        <span className={"ml-3 font-bold "}>{index + 1}</span>
                       </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        <span
+                          className={`${
+                            !obj.name ? "opacity-40" : "font-bold"
                           }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                          {obj.birth_place}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <a
-                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
-                          target="_blank"
-                          className={""}
                         >
-                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                          {obj.phone}
-                        </a>
+                          {obj?.name || "Unasigned"}
+                        </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.created_at).format("DD MMM YYYY")}
+                      {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
@@ -219,16 +186,16 @@ export default function Patients() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <div
                           className="tooltip tooltip-left"
-                          data-tip="Records"
+                          data-tipClients"
                         > */}
                         <label
-                          className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          className="bg-gray-200 text-white active:bg-gray-200 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
                           onClick={() => {
                             router.push(`/dashboard/doctor/patient/${obj.id}`);
                           }}
                         >
-                          <i className="fa-solid fa-heart-pulse"></i>{" "}
+                          <i className="fa-solid fa-circle-dollar-to-slot"></i>{" "}
                         </label>
                         {/* </div> */}
                       </td>
@@ -239,10 +206,10 @@ export default function Patients() {
             </table>
           </div>
 
-          <div className="flex">
+          {/* <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {patients.from}-{patients.to} of {patients.total}
+                Results {clients.from}-{clients.to} of {clients.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -269,13 +236,12 @@ export default function Patients() {
                   className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
                   value={page}
                   min={1}
-                  max={patients.last_page}
+                  max={clients.last_page}
                   onChange={(e) => setPage(e.target.value)}
                 />
-                {/* <p className="font-bold w-8 text-center">{page}</p> */}
                 <button
                   className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
-                  disabled={page >= patients.last_page ? true : false}
+                  disabled={page >= clients.last_page ? true : false}
                   onClick={() => {
                     setPage((prev) => prev + 1);
                   }}
@@ -284,9 +250,9 @@ export default function Patients() {
                 </button>
                 <button
                   className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
-                  disabled={page >= patients.last_page ? true : false}
+                  disabled={page >= clients.last_page ? true : false}
                   onClick={() => {
-                    setPage(patients.last_page);
+                    setPage(clients.last_page);
                   }}
                 >
                   <i className="fa-solid fa-angles-right"></i>
@@ -311,7 +277,7 @@ export default function Patients() {
                 </select>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </AdminLayout>
     </>

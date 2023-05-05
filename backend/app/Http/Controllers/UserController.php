@@ -16,13 +16,13 @@ class UserController extends Controller
     public function getClient($perPage, $keyword=null)
     {
         try {
-            $user = User::where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+            $user = User::with('employee')->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
 
             if ($keyword == null) {
-                $user = User::where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $user = User::with('employee')->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $user = User::
-                      where('name', 'like', '%'.$keyword.'%')
+                $user = User::with('employee')->where('role_id', 2)
+                    ->where('name', 'like', '%'.$keyword.'%')
                     ->orWhere('email', 'like', '%'.$keyword.'%')
                     ->orWhere('phone', 'like', '%'.$keyword.'%')
                     ->orWhereRelation('role', 'name', 'like', '%'.$keyword.'%')
