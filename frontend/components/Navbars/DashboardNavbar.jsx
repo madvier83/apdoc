@@ -22,7 +22,7 @@ export default function Navbar({ title, clinic, setClinic }) {
     }
 
     async function getClinics() {
-      setClinicsLoading(true)
+      setClinicsLoading(true);
       try {
         const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
           headers: {
@@ -31,12 +31,11 @@ export default function Navbar({ title, clinic, setClinic }) {
         });
         setClinics(response.data);
         setClinicsLoading(false);
-        
-        let clinicCookie = getCookie("clinic");
-        if(clinicCookie == "") {
-          setClinic(response.data[0]?.id)
-        }
 
+        let clinicCookie = getCookie("clinic");
+        if (clinicCookie == "") {
+          setClinic(response.data[0]?.id);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -58,8 +57,8 @@ export default function Navbar({ title, clinic, setClinic }) {
     }, []);
     useEffect(() => {
       let clinicCookie = getCookie("clinic");
-      if(clinicCookie == "" && clinics) {
-        setCookie("clinic", clinics[0].id)
+      if (clinicCookie == "" && clinics) {
+        setCookie("clinic", clinics[0].id);
       }
     }, []);
 
@@ -94,31 +93,33 @@ export default function Navbar({ title, clinic, setClinic }) {
             >
               {title}
             </Link>
-            <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
-              <i className="fas fa-hospital"> </i>
-              <div className="">
-                <select
-                  className="p-0 pl-4 pr-0 focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md select- w-48"
-                  onChange={(e) => {
-                    setClinic(e.target.value);
-                  }}
-                  value={clinic}
-                >
-                  {!clinicsLoading &&
-                    clinics?.map((obj) => {
-                      return (
-                        <option
-                          key={obj.id}
-                          className={"text-black"}
-                          value={obj.id}
-                        >
-                          {obj.name}
-                        </option>
-                      );
-                    })}
-                </select>
+            {setClinic && (
+              <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
+                <i className="fas fa-hospital"> </i>
+                <div className="">
+                  <select
+                    className="p-0 pl-4 pr-0 focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md select- w-48"
+                    onChange={(e) => {
+                      setClinic(e.target.value);
+                    }}
+                    value={clinic}
+                  >
+                    {!clinicsLoading &&
+                      clinics?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className={"text-black"}
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
               </div>
-            </div>
+            )}
           </div>
           <div className="flex ml-20">
             <button

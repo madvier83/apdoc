@@ -10,6 +10,8 @@ import ModalDelete from "../../components/Modals/ModalDelete";
 export default function Slots() {
   const token = getCookies("token");
 
+  const [clinic, setClinic] = useState();
+
   const addModalRef = useRef();
   const addModalScrollRef = useRef();
   const putModalRef = useRef();
@@ -120,7 +122,7 @@ export default function Slots() {
   }
 
   async function addRole(e) {
-    console.log(putForm);
+    console.log(addForm);
     e.preventDefault();
     try {
       const response = await axios.post(`/user-slot/${addForm.id}`, addForm, {
@@ -139,6 +141,7 @@ export default function Slots() {
     }
   }
   async function putRole(e) {
+    // console.log();
     e.preventDefault();
     try {
       const response = await axios.put(`/user-slot/${putForm.id}`, putForm, {
@@ -146,7 +149,6 @@ export default function Slots() {
           Authorization: "Bearer" + token.token,
         },
       });
-      // console.log(response);
       setPutForm(initialForm);
       setPutFormError(initialForm);
       putModalRef.current.click();
@@ -192,7 +194,7 @@ export default function Slots() {
   console.log(users)
   return (
     <>
-      <DashboardLayout title="User Slots">
+      <DashboardLayout title="User Slots" clinic={clinic} setClinic={setClinic}>
         <div className="flex gap-4">
           <div
             className={
@@ -338,6 +340,7 @@ export default function Slots() {
                                     role_id: obj.user.role_id,
                                     employee_id: obj.user.employee.id,
                                   });
+                                  setSelectedEmployees(obj.user.employee)
                                 }}
                               >
                                 <i className="fas fa-cog"></i>
@@ -349,7 +352,8 @@ export default function Slots() {
                                 htmlFor="modal-add"
                                 onClick={() => {
                                   setAddForm(initialForm);
-                                  setAddForm({ initialForm, id: obj.id });
+                                  setAddForm({ ...initialForm, id: obj.id });
+                                  setSelectedEmployees({})
                                 }}
                               >
                                 <i className="fas fa-cog"></i>
@@ -397,14 +401,14 @@ export default function Slots() {
                 {selectedEmployees?.id && (
                   <div className="p-0 overflow-hidden mb-1">
                     <div
-                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
-                      onClick={() => {
-                        setSelectedEmployees({});
-                        setPutForm({ employee_id: null });
-                      }}
+                      className="group font-normal justify-start p-3 bg-zinc-200 opacity-70 cursor-not-allowed normal-case text-justify transition-all text-xs border border-slate-300 rounded-md"
+                      // onClick={() => {
+                      //   setSelectedEmployees({});
+                      //   setPutForm({ employee_id: null });
+                      // }}
                     >
                       <div className="flex justify-end font-bold">
-                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                        <i className="fas fa-x absolute collapse hidden mt-1 transition-all text-rose-600"></i>
                       </div>
                       <div className="text-sm font-semibold flex">
                         <p className="text-left">{selectedEmployees.name}</p>
@@ -420,7 +424,7 @@ export default function Slots() {
                       name="searchAdd"
                       value={searchEmployees}
                       onChange={(e) => setSearchEmployees(e.target.value)}
-                      placeholder="Search position ..."
+                      placeholder="Search employee ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -462,24 +466,6 @@ export default function Slots() {
                   </span>
                 </label>
               )}
-              {/* <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={putForm.name}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {putFormError.name && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
-                  </span>
-                </label>
-              )} */}
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
@@ -610,7 +596,7 @@ export default function Slots() {
                       name="searchAdd"
                       value={searchEmployees}
                       onChange={(e) => setSearchEmployees(e.target.value)}
-                      placeholder="Search position ..."
+                      placeholder="Search employee ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul

@@ -14,7 +14,7 @@ class UserSlotController extends Controller
     public function index()
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('apdoc_id', auth()->user()->apdoc_id)->get();
+            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {
@@ -25,7 +25,7 @@ class UserSlotController extends Controller
     public function getByClinicId($id)
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->whereRelation('user.employee', 'clinic_id', $id)->get();
+            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('clinic_id', $id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {
@@ -46,6 +46,12 @@ class UserSlotController extends Controller
 
     public function create(Request $request, $id)
     {
+        $employee = Employee::find($request->employee_id);
+
+        if ($employee) {
+            return response()->json(['message' => 'Employee already registered!'], 404);
+        }
+
         $this->validate($request, [
             'email'       => 'required|email|unique:users',
             'phone'       => 'required|unique:users',
@@ -96,6 +102,12 @@ class UserSlotController extends Controller
 
         if (!$user) {
             return response()->json(['message' => 'User not found!'], 404);
+        }
+
+        $employee = Employee::find($request->employee_id);
+
+        if ($employee) {
+            return response()->json(['message' => 'Employee already registered!'], 404);
         }
 
         $this->validate($request, [

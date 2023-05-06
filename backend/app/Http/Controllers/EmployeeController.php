@@ -12,7 +12,7 @@ class EmployeeController extends Controller
     {
         try {
             if ($keyword == null) {
-                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->doesntHave('users')->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
                 $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)
                     ->where('nik', 'like', '%'.$keyword.'%')

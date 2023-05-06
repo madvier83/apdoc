@@ -75,7 +75,7 @@ class AuthController extends Controller
             // free slot
             for($i=0; $i<10; $i++) {
                 UserSlot::create([
-                    'apdoc_id' => $apdoc_id
+                    'clinic_id' => $clinic->id
                 ]);
             }
 

@@ -197,13 +197,13 @@ export default function Diagnose() {
               </div>
 
               <div className="relative w-full px-4 text-right">
-                <label
+                {/* <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
                 >
                   Add <i className="fas fa-add"></i>
-                </label>
+                </label> */}
               </div>
             </div>
           </div>
@@ -314,7 +314,7 @@ export default function Diagnose() {
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-[10px]">
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
                         {/* <div className="tooltip tooltip-left " data-tip="Detail"> */}
                         <label
                           htmlFor={`detail-${obj.id}`}
@@ -324,7 +324,7 @@ export default function Diagnose() {
                         </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left " data-tip="Edit"> */}
-                        <label
+                        {/* <label
                           className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
                           htmlFor="modal-put"
@@ -334,21 +334,21 @@ export default function Diagnose() {
                           }}
                         >
                           <i className="fas fa-pen-to-square"></i>
-                        </label>
+                        </label> */}
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
+                        {/* <label
                           className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           htmlFor={obj.id}
                         >
                           <i className="fas fa-trash"></i>
-                        </label>
+                        </label> */}
                         {/* </div> */}
-                        <ModalDelete
+                        {/* <ModalDelete
                           id={obj.id}
                           callback={() => deleteDiagnosis(obj.id)}
                           title={`Delete diagnosis?`}
-                        ></ModalDelete>
+                        ></ModalDelete> */}
                       </td>
                     </tr>
                   );

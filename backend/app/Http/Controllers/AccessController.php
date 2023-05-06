@@ -14,7 +14,7 @@ class AccessController extends Controller
     public function index()
     {
         try {
-            $access = Access::with('role')->where('id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $access = Access::with('role')->where('role_id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
     
             return response()->json($access);
         } catch (Throwable $e) {

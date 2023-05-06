@@ -15,7 +15,7 @@ class CreateUserSlotsTable extends Migration
     {
         Schema::create('user_slots', function (Blueprint $table) {
             $table->id();
-            $table->string('apdoc_id');
+            $table->string('clinic_id');
             $table->foreignId('user_id')->nullable();
             $table->string('status')->default('free');
             $table->timestamps();

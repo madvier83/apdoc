@@ -21,4 +21,9 @@ class Employee extends Model
     {
         return $this->hasMany(QueueDetail::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

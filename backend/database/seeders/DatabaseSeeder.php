@@ -79,6 +79,13 @@ class DatabaseSeeder extends Seeder
             'apdoc_id'    => time() . 'AP2',
         ]);
 
+        // free slot
+        for($i=0; $i<10; $i++) {
+            UserSlot::create([
+                'clinic_id' => $clinic->id
+            ]);
+        }
+
         $clinic = Clinic::create([
             'name'        => 'Umanis Klinik',
             'address'     => null,
@@ -89,6 +96,13 @@ class DatabaseSeeder extends Seeder
             'phone'       => null,
             'apdoc_id'    => $clinic->apdoc_id,
         ]);
+
+        // free slot
+        for($i=0; $i<10; $i++) {
+            UserSlot::create([
+                'clinic_id' => $clinic->id
+            ]);
+        }
 
         $employee = Employee::create([
             'nik'         => null,
@@ -115,13 +129,6 @@ class DatabaseSeeder extends Seeder
             'apdoc_id'          => $clinic->apdoc_id,
             'employee_id'       => $employee->id
         ]);
-
-        // free slot
-        for($i=0; $i<10; $i++) {
-            UserSlot::create([
-                'apdoc_id' => $clinic->apdoc_id
-            ]);
-        }
 
         Access::create([
             'role_id'  => 2,
