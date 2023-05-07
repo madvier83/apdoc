@@ -46,7 +46,7 @@ class UserSlotController extends Controller
 
     public function create(Request $request, $id)
     {
-        $employee = Employee::find($request->employee_id);
+        $employee = UserSlot::whereRelation('user', 'employee_id', $request->employee_id)->first();
 
         if ($employee) {
             return response()->json(['message' => 'Employee already registered!'], 404);

@@ -37,6 +37,12 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// ADMIN
+	$router->get('/v1/users', 'UserController@index');
+	$router->get('/v1/user/{id}', 'UserController@show');
+	$router->post('/v1/user', 'UserController@create');
+	$router->put('/v1/user/{id}', 'UserController@update');
+	$router->delete('/v1/user/{id}', 'UserController@destroy');
+
 	$router->get('/v1/user-clients/{perPage}', 'UserController@getClient');
 	$router->get('/v1/user-clients/{perPage}/{keyword}', 'UserController@getClient');
 
