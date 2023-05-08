@@ -15,10 +15,24 @@ class AppointmentController extends Controller
         $tomorrow = Carbon::tomorrow();
     }
     
-    public function index(){
+    public function index($clinic, $perPage, $keyword=null){
         try {
-            $data = Appointment::with('patient')->orderBy('appointment_date')->paginate(10);
-            return response()->json($data);
+            if ($keyword == null) {
+                $appointment = Appointment::with('patient')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+            } else {
+                $appointment = Appointment::with('patient')->where(function($query) use ($keyword) {
+                    $query->where('appointment_date', 'like', '%'.$keyword.'%')
+                        ->orWhere('description', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('patient' ,'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
+            }
+    
+            return response()->json($appointment);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }

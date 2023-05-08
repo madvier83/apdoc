@@ -8,18 +8,20 @@ use Throwable;
 
 class OutcomeController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('nominal', 'like', '%'.$keyword.'%')
-                    ->orWhere('note', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('categoryOutcome' ,'name', 'like', '%'.$keyword.'%')
+                $outcome = Outcome::with('categoryOutcome')->where(function($query) use ($keyword) {
+                    $query->where('nominal', 'like', '%'.$keyword.'%')
+                        ->orWhere('note', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('categoryOutcome' ,'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

@@ -8,17 +8,19 @@ use Throwable;
 
 class PromotionController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $promotion = Promotion::where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $promotion = Promotion::where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('name', 'like', '%'.$keyword.'%')
-                    ->orWhere('discount', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                $promotion = Promotion::where(function($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('discount', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
