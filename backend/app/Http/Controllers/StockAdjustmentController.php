@@ -57,7 +57,7 @@ class StockAdjustmentController extends Controller
                 'before'        => $before->stock,
                 'difference'    => $request->adjustment - $before->stock,
             ];
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $adjustment = StockAdjustment::create($data);
     
             // Adjustment stock

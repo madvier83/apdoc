@@ -132,7 +132,7 @@ class TransactionController extends Controller
                 'payment'       => $request->payment,
                 'employee_id'   => auth()->user()->employees->id ?? null
             ];
-            $dataTransaction['clinic_id'] = auth()->user()->employee->clinic_id;
+            $dataTransaction['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $transaction = Transaction::create($dataTransaction);
             
             $items = collect($request->items);

@@ -108,7 +108,7 @@ class RecordController extends Controller
 
         try {
             $data = $request->all();
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $data['employee_id'] = auth()->user()->employee_id ?? null;
     
             $record = Record::create($data);

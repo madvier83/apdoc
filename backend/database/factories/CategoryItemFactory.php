@@ -23,7 +23,7 @@ class CategoryItemFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->word(),
-            'clinic_id' => 2
+            'clinic_id' => mt_rand(2, 3)
         ];
     }
 }

@@ -69,7 +69,7 @@ class ItemSupplyController extends Controller
                 'note'          => $request->note ?? '-',
                 'stock'         => $request->total,
             ];
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $itemSupply = ItemSupply::create($data);
     
             return response()->json($itemSupply);

@@ -48,7 +48,7 @@ class AccessController extends Controller
             $data = [
                 'role_id'   => $role->id,
                 'accesses'  => $request->accesses,
-                'clinic_id' => auth()->user()->employee->clinic_id
+                'clinic_id' => $request->clinic_id ?? auth()->user()->employee->clinic_id
             ];
             $access = Access::create($data);
     

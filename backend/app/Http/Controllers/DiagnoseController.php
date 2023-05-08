@@ -51,7 +51,7 @@ class DiagnoseController extends Controller
 
         try {
             $data = $request->all();
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $diagnose = Diagnose::create($data);
     
             return response()->json($diagnose);

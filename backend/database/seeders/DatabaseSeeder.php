@@ -140,7 +140,7 @@ class DatabaseSeeder extends Seeder
         // Clinic::factory(10)->create();
         Employee::factory(100)->create();
         Position::factory(100)->create();
-        Diagnose::factory(200)->create();
+        Diagnose::factory(100)->create();
         Service::factory(100)->create();
         Patient::factory(100)->create();
         CategoryItem::factory(100)->create();

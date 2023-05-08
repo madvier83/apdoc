@@ -29,7 +29,7 @@ class ItemFactory extends Factory
             'buy_price'         => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
             'factory'           => 'PT. Oasis Mitra Trinunggal',
             'distributor'       => 'Cursor ID',
-            'clinic_id'         => 2
+            'clinic_id'         => mt_rand(2, 3)
         ];
     }
 }
