@@ -148,7 +148,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/appointment', 'AppointmentController@store');
 	$router->delete('/v1/appointment/{id}','AppointmentController@destroy');
 
-	$router->get('/v1/queues', 'QueueController@index');
+	$router->get('/v1/queues/{clinic}', 'QueueController@index');
 	$router->post('/v1/queue/{appointment}/appointment', 'QueueController@createFromAppointment');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
@@ -225,7 +225,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// SETTING
 	
-	$router->get('/v1/setting/{id}', 'SettingController@show');
+	$router->get('/v1/setting/{clinic}', 'SettingController@show');
 	$router->post('/v1/setting', 'SettingController@create');
+	$router->post('/v1/setting/{id}', 'SettingController@create');
 	
 });
