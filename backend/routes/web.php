@@ -160,8 +160,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	
 	// DOCTOR
 
-	$router->get('/v1/records/{perPage}', 'RecordController@index');
-	$router->get('/v1/records/{perPage}/{keyword}', 'RecordController@index');
+	$router->get('/v1/records/{clinic}/{perPage}', 'RecordController@index');
+	$router->get('/v1/records/{clinic}/{perPage}/{keyword}', 'RecordController@index');
 	$router->get('/v1/record/{patient}', 'RecordController@show');
 	$router->post('/v1/record', 'RecordController@create');
 	$router->post('/v1/record/{id}', 'RecordController@update');
@@ -181,27 +181,27 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// PHARMACY
 	
-	$router->get('/v1/category-items/{perPage}', 'CategoryItemController@index');
-	$router->get('/v1/category-items/{perPage}/{keyword}', 'CategoryItemController@index');
+	$router->get('/v1/category-items/{clinic}/{perPage}', 'CategoryItemController@index');
+	$router->get('/v1/category-items/{clinic}/{perPage}/{keyword}', 'CategoryItemController@index');
 	$router->get('/v1/category-item/{id}', 'CategoryItemController@show');
 	$router->post('/v1/category-item', 'CategoryItemController@create');
 	$router->put('/v1/category-item/{id}', 'CategoryItemController@update');
 	$router->delete('/v1/category-item/{id}', 'CategoryItemController@destroy');
 
-	$router->get('/v1/items/{perPage}', 'ItemController@index');
-	$router->get('/v1/items/{perPage}/{keyword}', 'ItemController@index');
+	$router->get('/v1/items/{clinic}/{perPage}', 'ItemController@index');
+	$router->get('/v1/items/{clinic}/{perPage}/{keyword}', 'ItemController@index');
 	$router->get('/v1/item/{id}', 'ItemController@show');
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
 	
-	$router->get('/v1/item-supplys/{perPage}', 'ItemSupplyController@index');
-	$router->get('/v1/item-supplys/{perPage}/{keyword}', 'ItemSupplyController@index');
+	$router->get('/v1/item-supplys/{clinic}/{perPage}', 'ItemSupplyController@index');
+	$router->get('/v1/item-supplys/{clinic}/{perPage}/{keyword}', 'ItemSupplyController@index');
 	$router->get('/v1/item-supply/{item}', 'ItemSupplyController@show');
 	$router->post('/v1/item-supply', 'ItemSupplyController@create');
 
-	$router->get('/v1/stock-adjustments/{perPage}', 'StockAdjustmentController@index');
-	$router->get('/v1/stock-adjustments/{perPage}/{keyword}', 'StockAdjustmentController@index');
+	$router->get('/v1/stock-adjustments/{clinic}/{perPage}', 'StockAdjustmentController@index');
+	$router->get('/v1/stock-adjustments/{clinic}/{perPage}/{keyword}', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
 	
 	// CASHIER

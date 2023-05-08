@@ -8,24 +8,24 @@ use Throwable;
 
 class ItemSupplyController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
-            $itemSupply = ItemSupply::orderBy('created_at', 'desc')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-
             if ($keyword == null) {
-                $itemSupply = ItemSupply::with('item')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $itemSupply = ItemSupply::with('item')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $itemSupply = ItemSupply::with('item')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('total', 'like', '%'.$keyword.'%')
-                    ->orWhere('before', 'like', '%'.$keyword.'%')
-                    ->orWhere('after', 'like', '%'.$keyword.'%')
-                    ->orWhere('manufacturing', 'like', '%'.$keyword.'%')
-                    ->orWhere('expired', 'like', '%'.$keyword.'%')
-                    ->orWhere('stock', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%')
+                $itemSupply = ItemSupply::with('item')->where(function($query) use ($keyword) {
+                    $query->where('total', 'like', '%'.$keyword.'%')
+                        ->orWhere('before', 'like', '%'.$keyword.'%')
+                        ->orWhere('after', 'like', '%'.$keyword.'%')
+                        ->orWhere('manufacturing', 'like', '%'.$keyword.'%')
+                        ->orWhere('expired', 'like', '%'.$keyword.'%')
+                        ->orWhere('stock', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
