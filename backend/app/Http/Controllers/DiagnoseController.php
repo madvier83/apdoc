@@ -14,28 +14,16 @@ class DiagnoseController extends Controller
             if ($keyword == null) {
                 $diagnose = Diagnose::where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $diagnose = Diagnose::where('clinic_id', $clinic)
-                    ->where(function($query) use ($keyword) {
-                        $query->where('code', 'like', '%'.$keyword.'%')
-                            ->orWhere('description', 'like', '%'.$keyword.'%')
-                            ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                            ->orWhere('updated_at', 'like', '%'.$keyword.'%');
+                $diagnose = Diagnose::where(function($query) use ($keyword) {
+                    $query->where('code', 'like', '%'.$keyword.'%')
+                        ->orWhere('description', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
-
-            // if ($keyword == null) {
-            //     $diagnose = Diagnose::where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
-            // } else {
-            //     $diagnose = Diagnose::whereHas($clinic, function ($keyword){
-            //             $keyword->where('code', 'LIKE', '%'.$keyword.'%')
-            //             ->where('description', 'LIKE', '%'.$keyword.'%')
-            //             ->orWhere('created_at', 'LIKE', '%'.$keyword.'%')
-            //             ->orWhere('updated_at', 'LIKE', '%'.$keyword.'%')
-            //             ->orderBy('updated_at', 'desc');
-            //         })->paginate($perPage);
-            // }
     
             return response()->json($diagnose);
         } catch (Throwable $e) {

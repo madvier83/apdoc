@@ -8,23 +8,25 @@ use Throwable;
 
 class EmployeeController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)->doesntHave('users')->orderBy('updated_at', 'desc')->paginate($perPage);
+                $employee = Employee::with('position')->where('clinic_id', $clinic)->doesntHave('users')->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $employee = Employee::with('position')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('nik', 'like', '%'.$keyword.'%')
-                    ->orWhere('name', 'like', '%'.$keyword.'%')
-                    ->orWhere('birth_place', 'like', '%'.$keyword.'%')
-                    ->orWhere('birth_date', 'like', '%'.$keyword.'%')
-                    ->orWhere('gender', 'like', '%'.$keyword.'%')
-                    ->orWhere('address', 'like', '%'.$keyword.'%')
-                    ->orWhere('phone', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%')
+                $employee = Employee::with('position')->where(function($query) use ($keyword) {
+                    $query->where('nik', 'like', '%'.$keyword.'%')
+                        ->orWhere('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('birth_place', 'like', '%'.$keyword.'%')
+                        ->orWhere('birth_date', 'like', '%'.$keyword.'%')
+                        ->orWhere('gender', 'like', '%'.$keyword.'%')
+                        ->orWhere('address', 'like', '%'.$keyword.'%')
+                        ->orWhere('phone', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

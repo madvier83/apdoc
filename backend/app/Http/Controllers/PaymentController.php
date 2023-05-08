@@ -8,17 +8,19 @@ use Throwable;
 
 class PaymentController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $payment = Payment::with('categoryPayment')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $payment = Payment::with('categoryPayment')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $payment = Payment::with('categoryPayment')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('name', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('categoryPayment', 'name', 'like', '%'.$keyword.'%')
+                $payment = Payment::with('categoryPayment')->where(function($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('categoryPayment', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

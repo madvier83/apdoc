@@ -8,20 +8,20 @@ use Throwable;
 
 class ServiceController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
-            $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-
             if ($keyword == null) {
-                $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $service = Service::where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $service = Service::where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('name', 'like', '%'.$keyword.'%')
-                    ->orWhere('price', 'like', '%'.$keyword.'%')
-                    ->orWhere('commission', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                $service = Service::where(function($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('price', 'like', '%'.$keyword.'%')
+                        ->orWhere('commission', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
