@@ -131,6 +131,7 @@ export default function Position() {
   useEffect(() => {
     setSearch("");
     setPage(1);
+    setPostionsLoading(true)
   }, [clinic]);
 
   useEffect(() => {
@@ -239,7 +240,7 @@ export default function Position() {
                     </td>
                   </tr>
                 )}
-                {positions?.data?.map((obj, index) => {
+                {!positionsLoading && positions?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">

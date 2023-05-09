@@ -70,7 +70,7 @@ export default function Sidebar() {
     }
   }, [sidebar]);
 
-  console.log(accesses);
+  // console.log(accesses);
 
   return (
     <>
@@ -344,6 +344,7 @@ export default function Sidebar() {
                 >
                   <button
                     onClick={() => {
+                      deleteCookie("clinic");
                       deleteCookie("token");
                       router.push("/auth/login");
                     }}

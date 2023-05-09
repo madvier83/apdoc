@@ -35,7 +35,8 @@ export default function Navbar({ title, clinic, setClinic }) {
           setClinicsLoading(false);
 
           let clinicCookie = getCookie("clinic");
-          if (clinicCookie == "") {
+          // console.log(clinicCookie)
+          if (!clinicCookie) {
             setClinic(response.data[0]?.id);
           }
         } catch (err) {
@@ -63,7 +64,7 @@ export default function Navbar({ title, clinic, setClinic }) {
       if (clinicCookie == "" && clinics) {
         setCookie("clinic", clinics[0].id);
       }
-    }, []);
+    }, [router.isReady]);
 
     useEffect(() => {
       if (cookieCheck) {
@@ -100,11 +101,11 @@ export default function Navbar({ title, clinic, setClinic }) {
               {title}
             </Link>
             {setClinic && (
-              <div className={`${apdoc?.role_id == 2 ? "block" : "hidden"} flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1`}>
-                <i className="fas fa-hospital"> </i>
+              <div className={`${apdoc?.role_id == 2 ? "block" : "hidden"} flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}>
+                <i className="fas fa-house-chimney-medical ml-1 text-emerald-400"> </i>
                 <div className="">
                   <select
-                    className="p-0 pl-4 pr-0 focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md select- w-48"
+                    className="p-0 pl-0 pr-8 tracking-wider appearance-none text-emerald-400 text-center focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md w-48"
                     onChange={(e) => {
                       setClinic(e.target.value);
                     }}

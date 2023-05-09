@@ -132,9 +132,12 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
   async function getQueues() {
+    if (!clinic) {
+      return;
+    }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues`, {
+      const response = await axios.get(`queues/${clinic && clinic + "/"}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -165,7 +168,7 @@ export default function Queue() {
   const [appointmentLoading, setAppointmentLoading] = useState(true);
   async function getAppointment() {
     try {
-      const response = await axios.get("appointments", {
+      const response = await axios.get(`appointments/${clinic && clinic + "/"}${999999}?page=${1}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -185,40 +188,8 @@ export default function Queue() {
     }
   }
 
-  const [services, setServices] = useState();
-  async function getServices() {
-    try {
-      const response = await axios.get(`services`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setServices(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const [employees, setEmployees] = useState();
-  async function getEmployees() {
-    try {
-      const response = await axios.get(`employees`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setEmployees(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   useEffect(() => {
     getQueues();
-    // getServices();
-    // getEmployees();
     getAppointment();
   }, []);
 
@@ -255,24 +226,6 @@ export default function Queue() {
     } catch (err) {
       console.error(err);
       setAddServiceError(err.response?.data?.message);
-    }
-  }
-  async function cancelService(id) {
-    try {
-      const response = await axios.put(
-        `queue-detail/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer" + token.token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log(response);
-      getQueues();
-    } catch (err) {
-      console.error(err);
     }
   }
 
@@ -322,6 +275,11 @@ export default function Queue() {
       setSelectedQueue(queues[0]);
     }
   }, [isRegular]);
+
+  useEffect(() => {
+    getQueues()
+    getAppointment()
+  }, [clinic]);
 
   return (
     <>
@@ -693,13 +651,13 @@ export default function Queue() {
                         className="input input-bordered without-ring input-primary border-slate-300 w-full"
                       >
                         <option value="">Select service</option>
-                        {services?.map((obj) => {
+                        {/* {services?.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
                               {obj.name} - {numeral(obj.price).format("0,0")}
                             </option>
                           );
-                        })}
+                        })} */}
                       </select>
                     </div>
                     <div className="w-auto">
@@ -716,13 +674,13 @@ export default function Queue() {
                         className="input input-bordered without-ring input-primary border-slate-300 w-full"
                       >
                         <option value="">Unasigned</option>
-                        {employees?.map((obj) => {
+                        {/* {employees?.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
                               {obj.name}
                             </option>
                           );
-                        })}
+                        })} */}
                       </select>
                       <p className="text-rose-400 text-sm mt-2">
                         {addServiceError}

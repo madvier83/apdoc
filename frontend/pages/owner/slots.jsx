@@ -82,8 +82,11 @@ export default function Slots() {
   }
 
   async function getRole() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("/access", {
+      const response = await axios.get(`accesses/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -181,6 +184,14 @@ export default function Slots() {
   }
 
   useEffect(() => {
+    getUser()
+    getRole()
+    getEmployee()
+    setSearchEmployees("")
+    setSelectedEmployees({})
+  }, [clinic]);
+
+  useEffect(() => {
     getUser();
     getRole();
     getEmployee();
@@ -211,7 +222,7 @@ export default function Slots() {
                   </h3>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                  <label
+                  {/* <label
                     className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     htmlFor="modal-put"
@@ -222,7 +233,7 @@ export default function Slots() {
                     }}
                   >
                     Add slot <i className="fas fa-add"></i>
-                  </label>
+                  </label> */}
                 </div>
               </div>
             </div>
@@ -519,7 +530,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.id} value={Number(obj.id)}>
+                    <option key={obj.id} value={Number(obj.role_id)}>
                       {obj.role.name}
                     </option>
                   );
@@ -682,7 +693,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.id} value={Number(obj.id)}>
+                    <option key={obj.id} value={Number(obj.role_id)}>
                       {obj.role.name}
                     </option>
                   );

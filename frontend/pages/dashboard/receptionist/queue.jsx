@@ -178,9 +178,12 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
   async function getQueues() {
+    if (!clinic) {
+      return;
+    }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues`, {
+      const response = await axios.get(`queues/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -214,11 +217,14 @@ export default function Queue() {
       return;
     }
     try {
-      const response = await axios.get("appointments", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `appointments/${clinic && clinic + "/"}${999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setAppointment(response.data.data);
       setAppointmentLoading(false);
 
@@ -419,10 +425,12 @@ export default function Queue() {
 
   useEffect(() => {
     setSearch("");
-    setSearchService("")
-    setSearchEmployee("")
+    setSearchService("");
+    setSearchEmployee("");
     setPage(1);
-    setIsAddService(false)
+    setIsAddService(false);
+    getQueues();
+    getAppointment()
   }, [clinic]);
 
   useEffect(() => {

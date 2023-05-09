@@ -142,7 +142,7 @@ export default function Account() {
 
   return (
     <>
-      <DashboardLayout title="Account" headerStats={false}>
+      <DashboardLayout title="Account">
         <div className="flex flex-wrap mt-6">
           <div className="w-full mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 bg-gray-900 rounded-md border-0">
@@ -201,7 +201,7 @@ export default function Account() {
                           <input
                             type="text"
                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={userForm.name}
+                            value={userForm.name || ""}
                             disabled={!isEditUser}
                             ref={userFormRef}
                             name="name"
@@ -307,7 +307,7 @@ export default function Account() {
                 <div className="flex flex-col gap-4 mt-8 mb-4">
                   {clinics?.map((obj) => {
                     return (
-                      <div className="card text-black bg-base-100 rounded-md w-full">
+                      <div key={obj.id} className="card text-black bg-base-100 rounded-md w-full">
                         <div className="card-body">
                           <h2 className="card-title">
                             <i className="fas fa-house-chimney-medical"></i>{" "}

@@ -159,10 +159,10 @@ export default function Patients() {
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic]);
 
-  useEffect(()=> {
-    setSearch("")
-    setPage(1)
-  }, [clinic])
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
