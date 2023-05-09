@@ -34,11 +34,10 @@ export default function Slots() {
 
   const initialForm = {
     id: "",
-    // name: "",
     email: "",
     phone: "",
     role_id: "",
-    clinic_id: "2",
+    clinic_id: clinic,
     employee_id: "",
   };
 
@@ -97,9 +96,12 @@ export default function Slots() {
   }
 
   async function getEmployee() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `employees/${perpage}${
+        `employees/${clinic && clinic + "/"}${perpage}${
           searchEmployees &&
           "/" +
             searchEmployees
@@ -122,7 +124,7 @@ export default function Slots() {
   }
 
   async function addRole(e) {
-    console.log(addForm);
+    // console.log(addForm);
     e.preventDefault();
     try {
       const response = await axios.post(`/user-slot/${addForm.id}`, addForm, {
@@ -189,9 +191,9 @@ export default function Slots() {
       getEmployee();
     }, 500);
     return () => clearTimeout(getData);
-  }, [searchEmployees]);
+  }, [searchEmployees, clinic]);
 
-  console.log(users)
+  // console.log(roles)
   return (
     <>
       <DashboardLayout title="User Slots" clinic={clinic} setClinic={setClinic}>
@@ -517,7 +519,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.role_id} value={obj.role_id}>
+                    <option key={obj.id} value={Number(obj.id)}>
                       {obj.role.name}
                     </option>
                   );
@@ -680,7 +682,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.id} value={obj.id}>
+                    <option key={obj.id} value={Number(obj.id)}>
                       {obj.role.name}
                     </option>
                   );

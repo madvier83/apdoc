@@ -32,7 +32,6 @@ export default function Access() {
         route: "/dashboard/admin",
         access: false,
         submenu: [
-          { name: "user", route: "/dashboard/admin/user", access: false },
           {
             name: "position",
             route: "/dashboard/admin/position",

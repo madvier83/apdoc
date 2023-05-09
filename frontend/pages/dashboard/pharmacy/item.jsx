@@ -16,6 +16,11 @@ export default function Item() {
   const putModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
+  const [searchCategory, setSearchCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -62,15 +67,19 @@ export default function Item() {
   };
 
   async function getItem() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `items/${perpage}${
+        `items/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
               .split(" ")
               .join("%")
-              .replace(/[a-zA-Z0-9]/, "").replace(".","")
+              .replace(/[a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -86,12 +95,26 @@ export default function Item() {
   }
 
   async function getCategory() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("category-items", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `category-items/${clinic && clinic + "/"}${perpage}${
+          searchCategory &&
+          "/" +
+            searchCategory
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setCategory(response.data);
       setCategoryLoading(false);
     } catch (err) {
@@ -159,6 +182,7 @@ export default function Item() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getItem();
+      getCategory()
     }, 300);
 
     if (page > item?.last_page) {
@@ -166,7 +190,14 @@ export default function Item() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(() => {
+    setSearch("");
+    setSearchCategory("")
+    setPage(1);
+    setAddForm(initialItemForm)
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -174,9 +205,16 @@ export default function Item() {
     });
   }, [item]);
 
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getCategory();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchCategory, clinic]);
+
   return (
     <>
-      <DashboardLayout title="Item">
+      <DashboardLayout title="Item" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -218,6 +256,9 @@ export default function Item() {
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
+                  onClick={() => {
+                    setSelectedCategory(null);
+                  }}
                 >
                   Add <i className="fas fa-add"></i>
                 </label>
@@ -338,6 +379,7 @@ export default function Item() {
                             onClick={() => {
                               setPutForm(obj);
                               setPutFormError("");
+                              setSelectedCategory(obj.category_item);
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -466,22 +508,68 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
-              <select
-                name="category_item_id"
-                onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.category_item_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {category?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ category_item_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search service ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setAddForm({ category_item_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               {addFormError.category_item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -625,22 +713,68 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
-              <select
-                name="category_item_id"
-                onChange={(e) => handlePutInput(e)}
-                required
-                value={putForm.category_item_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Unasigned</option>
-                {category?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setPutForm({ category_item_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search service ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setPutForm({ category_item_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               {putFormError.category_item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">

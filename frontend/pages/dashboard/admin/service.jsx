@@ -15,6 +15,8 @@ export default function Service() {
   const addModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
+  
+  const [clinic, setClinic] = useState()
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
@@ -57,9 +59,12 @@ export default function Service() {
   };
 
   async function getServices() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `services/${perpage}${
+        `services/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -147,7 +152,12 @@ export default function Service() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(()=> {
+    setSearch("")
+    setPage(1)
+  }, [clinic])
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -157,7 +167,7 @@ export default function Service() {
 
   return (
     <>
-      <DashboardLayout title="Services">
+      <DashboardLayout title="Services" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
