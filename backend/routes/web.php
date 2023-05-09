@@ -55,7 +55,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/user-slot/{id}', 'UserSlotController@update');
 	$router->delete('/v1/user-slot/{id}', 'UserSlotController@destroy');
 	
-	$router->get('/v1/access', 'AccessController@index');
+	$router->get('/v1/accesses/{clinic}', 'AccessController@index');
 	$router->get('/v1/access/{role}/role', 'AccessController@getByRole');
 	$router->post('/v1/access', 'AccessController@create');
 	$router->put('/v1/access/{id}', 'AccessController@update');
@@ -206,22 +206,22 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	
 	// CASHIER
 	
-	$router->get('/v1/transactions/{perPage}', 'TransactionController@index');
-	$router->get('/v1/transactions/{perPage}/{keyword}', 'TransactionController@index');
+	$router->get('/v1/transactions/{clinic}/{perPage}', 'TransactionController@index');
+	$router->get('/v1/transactions/{clinic}/{perPage}/{keyword}', 'TransactionController@index');
 	$router->get('/v1/transaction/{cancelled}/status', 'TransactionController@status');
 	$router->get('/v1/transaction/code', 'TransactionController@code');
 	$router->post('/v1/transaction', 'TransactionController@create');
 	$router->put('/v1/transaction/{id}', 'TransactionController@update');
 
 	//  REPORT
-	$router->get('/v1/report-sales/summary/{from}/{to}', 'ReportSalesController@summary');
-	$router->get('/v1/report-sales/gross/{from}/{to}', 'ReportSalesController@gross');
-	$router->get('/v1/report-sales/payment/{from}/{to}', 'ReportSalesController@payment');
-	$router->get('/v1/report-sales/service/{from}/{to}', 'ReportSalesController@service');
-	$router->get('/v1/report-sales/item/{from}/{to}', 'ReportSalesController@item');
-	$router->get('/v1/report-sales/category/{from}/{to}', 'ReportSalesController@category');
-	$router->get('/v1/report-sales/promotion/{from}/{to}', 'ReportSalesController@promotion');
-	$router->get('/v1/report-sales/collected/{from}/{to}', 'ReportSalesController@collected');
+	$router->get('/v1/report-sales/summary/{clinic}/{from}/{to}', 'ReportSalesController@summary');
+	$router->get('/v1/report-sales/gross/{clinic}/{from}/{to}', 'ReportSalesController@gross');
+	$router->get('/v1/report-sales/payment/{clinic}/{from}/{to}', 'ReportSalesController@payment');
+	$router->get('/v1/report-sales/service/{clinic}/{from}/{to}', 'ReportSalesController@service');
+	$router->get('/v1/report-sales/item/{clinic}/{from}/{to}', 'ReportSalesController@item');
+	$router->get('/v1/report-sales/category/{clinic}/{from}/{to}', 'ReportSalesController@category');
+	$router->get('/v1/report-sales/promotion/{clinic}/{from}/{to}', 'ReportSalesController@promotion');
+	$router->get('/v1/report-sales/collected/{clinic}/{from}/{to}', 'ReportSalesController@collected');
 
 	// SETTING
 	
