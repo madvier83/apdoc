@@ -68,8 +68,11 @@ export default function Slots() {
   };
 
   async function getUser() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("/user-slots", {
+      const response = await axios.get(`/user-slots/${clinic && clinic}/clinic`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },

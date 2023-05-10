@@ -23,6 +23,7 @@ class CreateClinicsTable extends Migration
             $table->string('postal_code')->nullable();
             $table->string('phone')->nullable();
             $table->string('apdoc_id')->nullable();
+            $table->string('status')->default('pending')->nullable();
             $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });

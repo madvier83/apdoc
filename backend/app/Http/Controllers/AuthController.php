@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Notifications\OTPWhatsapp;
 use App\Events\VerifyEmail;
-use Illuminate\Contracts\Encryption\DecryptException;
 use App\Events\ForgotPasswordMail;
 use App\Models\Clinic;
 use App\Models\Employee;
@@ -17,7 +16,6 @@ use App\Models\UserSlot;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Twilio\Rest\Client;
 
 class AuthController extends Controller
 {
@@ -50,6 +48,7 @@ class AuthController extends Controller
                 'postal_code' => null,
                 'phone'       => null,
                 'apdoc_id'    => $apdoc_id,
+                'status'      => 'active'
             ]);
 
             $employee = Employee::create([

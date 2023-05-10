@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
             'postal_code' => '40261',
             'phone'       => '628995754988',
             'apdoc_id'    => time() . 'AP2',
+            'status'      => 'active'
         ]);
 
         // free slot
@@ -95,6 +96,7 @@ class DatabaseSeeder extends Seeder
             'postal_code' => null,
             'phone'       => null,
             'apdoc_id'    => $clinic->apdoc_id,
+            'status'      => 'active'
         ]);
 
         // free slot
@@ -132,7 +134,7 @@ class DatabaseSeeder extends Seeder
 
         Access::create([
             'role_id'  => 2,
-            'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":true,"submenu":[{"name":"position","route":"/dashboard/admin/position","access":true},{"name":"employee","route":"/dashboard/admin/employee","access":true},{"name":"service","route":"/dashboard/admin/service","access":true},{"name":"diagnose","route":"/dashboard/admin/diagnose","access":true},{"name":"category-payment","route":"/dashboard/admin/category-payment","access":true},{"name":"payment","route":"/dashboard/admin/payment","access":true},{"name":"category-outcome","route":"/dashboard/admin/category-outcome","access":true},{"name":"outcome","route":"/dashboard/admin/outcome","access":true},{"name":"promotion","route":"/dashboard/admin/promotion","access":true}]},{"name":"receptionist","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"patient","route":"/dashboard/receptionist/patient","access":true},{"name":"appointment","route":"/dashboard/receptionist/appointment","access":true},{"name":"queue","route":"/dashboard/receptionist/queue","access":true}]},{"name":"doctor","route":"/dashboard/doctor","access":true,"submenu":[{"name":"patient","route":"/dashboard/doctor/patient","access":true},{"name":"queue","route":"/dashboard/doctor/queue","access":true}]},{"name":"pharmacy","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"category-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"item-supply","route":"/dashboard/pharmacy/item-supply","access":true},{"name":"stock-adjustment","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"cashier","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaction","route":"/dashboard/cashier/transaction","access":true},{"name":"history","route":"/dashboard/cashier/history","access":true}]},{"name":"report","route":"/dashboard/report","access":true,"submenu":[{"name":"sales","route":"/dashboard/report/sales","access":true},{"name":"commision","route":"/dashboard/report/commision","access":true}]}]',
+            'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":true,"submenu":[{"name":"position","route":"/dashboard/admin/position","access":true},{"name":"employee","route":"/dashboard/admin/employee","access":true},{"name":"service","route":"/dashboard/admin/service","access":true},{"name":"diagnose","route":"/dashboard/admin/diagnose","access":true},{"name":"category-payment","route":"/dashboard/admin/category-payment","access":true},{"name":"payment","route":"/dashboard/admin/payment","access":true},{"name":"category-outcome","route":"/dashboard/admin/category-outcome","access":true},{"name":"outcome","route":"/dashboard/admin/outcome","access":true},{"name":"promotion","route":"/dashboard/admin/promotion","access":true}]},{"name":"receptionist","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"patient","route":"/dashboard/receptionist/patient","access":true},{"name":"appointment","route":"/dashboard/receptionist/appointment","access":true},{"name":"queue","route":"/dashboard/receptionist/queue","access":true}]},{"name":"doctor","route":"/dashboard/doctor","access":true,"submenu":[{"name":"patient","route":"/dashboard/doctor/patient","access":true},{"name":"queue","route":"/dashboard/doctor/queue","access":true}]},{"name":"pharmacy","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"category-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"item-supply","route":"/dashboard/pharmacy/item-supply","access":true},{"name":"stock-adjustment","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"cashier","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaction","route":"/dashboard/cashier/transaction","access":true},{"name":"history","route":"/dashboard/cashier/history","access":true}]},{"name":"report","route":"/dashboard/report","access":true,"submenu":[{"name":"sales","route":"/dashboard/report/sales","access":true}]}]',
             'clinic_id'   => $clinic->id
         ]);
 
