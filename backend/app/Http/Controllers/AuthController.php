@@ -39,47 +39,15 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
         }
         try {
-            $apdoc_id = time() . 'AP' . User::latest()->first()->id + 1;
-
-            $clinic = Clinic::create([
-                'name'        => null,
-                'address'     => null,
-                'province'    => null,
-                'city'        => null,
-                'district'    => null,
-                'postal_code' => null,
-                'phone'       => null,
-                'apdoc_id'    => $apdoc_id,
-            ]);
-
-            $employee = Employee::create([
-                'nik'         => null,
-                'name'        => null,
-                'birth_place' => null,
-                'birth_date'  => null,
-                'gender'      => null,
-                'address'     => null,
-                'phone'       => null,
-                'position_id' => null,
-                'clinic_id'   => $clinic->id,
-            ]);
-
             $user = new User();
+            $user->name        = $request->name;
             $user->email       = $request->email;
             $user->password    = app('hash')->make($request->password);
             $user->role_id     = 2;
-            $user->apdoc_id    = $apdoc_id;
-            $user->employee_id = $employee->id;
             $user->save();
-
-            // free slot
-            for($i=0; $i<10; $i++) {
-                UserSlot::create([
-                    'clinic_id' => $clinic->id
-                ]);
-            }
-
-            return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);
+            // SEND EMAIL VERIFICATION
+            return $this->send_email($request);
+            // return response()->json(['status' => 'OK', 'data' => $user, 'message' => 'Success register!'], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -107,18 +75,21 @@ class AuthController extends Controller
             $expired = Carbon::parse($data->expired_otp)->toString();
             $now = Carbon::now()->toString();
             if ($data->is_verified == 1) {
-                return response()->json(['status' => 'error', 'message' => 'Account was verified'], 200);
+                return response()->json(['status' => 'failed', 'message' => 'Account was verified'], 422);
             }
             if ($expired < $now) {
                 return response()->json(['status' => 'failed', 'message' => 'Verification OTP expired!'], 422);
+            }
+            if($data->email_verified_at == 0){
+                return response()->json(['status' => 'failed', 'message' => 'Please verify ur email first'], 422);
             }
             $data->phone = $request->phone;
             $data->is_verified = 1;
             $data->phone_verified_at = Carbon::now();
             $data->save();
-            if ($request->password) {
-                return $this->login($request);
-            }
+            // if ($request->password) {
+            //     return $this->login($request);
+            // }
             return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success verification'], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
@@ -175,9 +146,14 @@ class AuthController extends Controller
             if ($data->email_verified_at) {
                 return response()->json(['status' => 'error', 'message' => 'email was verified'], 200);
             }
-            Mail::to($data->email)->send(new VerifyEmail($data->email));
+            $token = Str::random(8);
+            $data->email_token_verification =  $token;
+            $data->created_email_token = Carbon::now();
+            $data->expired_email_token = Carbon::parse($data->created_email_token)->addHour(1);
+            $data->update();
+            Mail::to($data->email)->send(new VerifyEmail($data->email, $token));
 
-            return response()->json(['status' => 'success', 'message' => 'success send email'], 200);
+            return response()->json(['status' => 'success', 'message' => 'Success register please check your email'], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -253,21 +229,82 @@ class AuthController extends Controller
     public function verification_email(Request $request)
     {
         try {
-            $data = User::where('email', $request->email)->first();
+            $data = User::where('email', $request->email)->where('email_token_verification', decrypt($request->token))->first();
+            // Check email and token
             if (!$data) {
-                return response()->json(['status' => 'failed', 'message' => 'user not found'], 404);
+                return response()->json(['status' => 'error', 'message' => 'unvalid token data'], 422);
             }
+            // Check Email Verification
             if ($data->email_verified_at) {
-                return response()->json(['status' => 'error', 'message' => 'email was verified'], 422);
+                return response()->json(['status' => 'failed', 'message' => 'email was verified'], 422);
             }
-
-            $data->email_verified_at = Carbon::now();
-            $data->update();
-
-            return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'success verification'], 200);
+            $now = Carbon::now()->toString();
+            $expired = Carbon::parse($data->expired_email_token)->toString();
+            // Check Expired token
+            if($now > $expired){
+                return response()->json(['status' => 'failed', 'message' => 'link was expired'], 422);
+            }
+            $payload = ['email' => $data->email, 'email_token_verification' => encrypt($data->email_token_verification)];
+            return response(['status'=>'success','payload' => $payload], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
+    }
+
+    public function registration(Request $request){
+        
+        $validator = Validator::make($request->all(), [
+            'clinic_name','clinic_address','province',
+            'city','district','clinic_phone',
+            'nik','owner_name','birth_place',
+            'birth_date','gender','owner_address' => 'required',
+            'postal_code','nik' => 'numeric',
+        ]);
+        if($validator->fails()){
+            return response()->json(['status' => 'error', 'message' => 'error', 'errors' => $validator->errors()], 422);
+        }
+        try {
+            $data = User::where('email', $request->email)->where('email_token_verification', decrypt($request->email_token_verification))->first();
+            
+            $apdoc_id = time() . 'AP' . User::latest()->first()->id + 1;
+            
+            $clinic = Clinic::create([
+                'name'        => $request->clinic_name,
+                'address'     => $request->clinic_address,
+                'province'    => $request->province,
+                'city'        => $request->city,
+                'district'    => $request->district,
+                'postal_code' => $request->postal_code,
+                'phone'       => $request->clinic_phone,
+                'apdoc_id'    => $apdoc_id,
+            ]);
+            $employee = Employee::create([
+                'nik'         => $request->nik,
+                'name'        => $data->name,
+                'birth_place' => $request->birth_place,
+                'birth_date'  => $request->birth_date,
+                'gender'      => $request->gender,
+                'address'     => $request->owner_address,
+                'phone'       => null,
+                'position_id' => null,
+                'clinic_id'   => $clinic->id,
+            ]);
+            // free slot
+            for($i=0; $i<10; $i++) {
+                UserSlot::create([
+                    'clinic_id' => $clinic->id
+                ]);
+            }
+            $data->apdoc_id    = $apdoc_id;
+            $data->employee_id = $employee->id;
+            $data->email_verified_at = Carbon::now();
+            $data->update();
+
+            return response()->json(['status' => 'success', 'message' => 'success create account'], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        
     }
     /**
      * Log the user out (Invalidate the token).
@@ -304,7 +341,7 @@ class AuthController extends Controller
                 'phone' => $user->phone,
                 'password' => $request->password
             ];
-            if ($user->is_verified == 0) {
+            if ($user->email_verified_at == 0) {
                 return response()->json(['status' => 'error', 'message' => 'user not verified'], 403);
             }
             if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'apdoc_id' => $user->apdoc_id ?? '', 'clinic_id' => $user->employee->clinic_id ?? '', 'accesses' => ($user->role_id == 1) ? "" : $user->role->accesses[0]->accesses])->attempt($credentials)) {

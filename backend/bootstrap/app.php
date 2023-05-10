@@ -25,6 +25,7 @@ $app = new Laravel\Lumen\Application(
 
 $app->withFacades(true, [
     'Illuminate\Support\Facades\Notification' => 'Notification',
+    'Laravolt\Indonesia\Facade' => 'Indonesia'
 ]);
 
 $app->configure('mail');
@@ -72,7 +73,7 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 | the default version. You may register other files below as needed.
 |
 */
-
+$app->configure('laravolt');
 $app->configure('auth');
 
 /*
@@ -92,6 +93,7 @@ $app->configure('auth');
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'access' => App\Http\Middleware\AccessMiddleware::class
 ]);
 
 $app->middleware([
@@ -115,6 +117,7 @@ $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Laravolt\Indonesia\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

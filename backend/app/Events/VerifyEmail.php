@@ -16,10 +16,11 @@ class VerifyEmail extends Mailable
      *
      * @return void
      */
-    protected $email;
-    public function __construct( $email)
+    protected $email, $token;
+    public function __construct( $email, $token)
     {
         $this->email = $email;
+        $this->token = $token;
     }
 
     /**
@@ -33,7 +34,8 @@ class VerifyEmail extends Mailable
         ->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'))
         ->subject('APP Doc - Verification')
         ->view('mails.verification', [
-            'email' => $this->email
+            'email' => $this->email,
+            'token' => encrypt($this->token)
         ]);
     }
 }

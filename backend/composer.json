@@ -11,6 +11,7 @@
         "illuminate/notifications": "*",
         "illuminate/support": "*",
         "laravel/lumen-framework": "^8.3.1",
+        "laravolt/indonesia": "^0.34.0",
         "nesbot/carbon": "^2.64",
         "twilio/sdk": "^6.44",
         "tymon/jwt-auth": "^1.0"

@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('password')->default(app('hash')->make('12345678'));
             $table->string('phone')->nullable()->unique();
             $table->integer('otp_verification')->nullable();
+            $table->string('email_token_verification')->nullable();
+            $table->timestamp('created_email_token')->nullable();
+            $table->timestamp('expired_email_token')->nullable();
             $table->timestamp('created_at_otp')->nullable();
             $table->timestamp('expired_otp')->nullable();
             $table->timestamp('email_verified_at')->nullable();

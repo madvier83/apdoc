@@ -15,6 +15,11 @@ use App\Models\User;
 use App\Models\UserSlot;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+// Laravolt Package Location Services
+use Laravolt\Indonesia\Seeds\CitiesSeeder;
+use Laravolt\Indonesia\Seeds\VillagesSeeder;
+use Laravolt\Indonesia\Seeds\DistrictsSeeder;
+use Laravolt\Indonesia\Seeds\ProvincesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,6 +34,10 @@ class DatabaseSeeder extends Seeder
             DummySeeder::class,
             RoleSeeder::class,
             StatusSeeder::class,
+            ProvincesSeeder::class,
+            CitiesSeeder::class,
+            DistrictsSeeder::class,
+            VillagesSeeder::class,
         ]);
 
         $clinic = Clinic::create([
