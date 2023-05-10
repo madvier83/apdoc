@@ -34,11 +34,10 @@ export default function Slots() {
 
   const initialForm = {
     id: "",
-    // name: "",
     email: "",
     phone: "",
     role_id: "",
-    clinic_id: "2",
+    clinic_id: clinic,
     employee_id: "",
   };
 
@@ -69,8 +68,11 @@ export default function Slots() {
   };
 
   async function getUser() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("/user-slots", {
+      const response = await axios.get(`/user-slots/${clinic && clinic}/clinic`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -83,8 +85,11 @@ export default function Slots() {
   }
 
   async function getRole() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("/access", {
+      const response = await axios.get(`accesses/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -97,9 +102,12 @@ export default function Slots() {
   }
 
   async function getEmployee() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `employees/${perpage}${
+        `employees/${clinic && clinic + "/"}${perpage}${
           searchEmployees &&
           "/" +
             searchEmployees
@@ -122,7 +130,7 @@ export default function Slots() {
   }
 
   async function addRole(e) {
-    console.log(addForm);
+    // console.log(addForm);
     e.preventDefault();
     try {
       const response = await axios.post(`/user-slot/${addForm.id}`, addForm, {
@@ -179,6 +187,14 @@ export default function Slots() {
   }
 
   useEffect(() => {
+    getUser()
+    getRole()
+    getEmployee()
+    setSearchEmployees("")
+    setSelectedEmployees({})
+  }, [clinic]);
+
+  useEffect(() => {
     getUser();
     getRole();
     getEmployee();
@@ -189,9 +205,9 @@ export default function Slots() {
       getEmployee();
     }, 500);
     return () => clearTimeout(getData);
-  }, [searchEmployees]);
+  }, [searchEmployees, clinic]);
 
-  console.log(users)
+  // console.log(roles)
   return (
     <>
       <DashboardLayout title="User Slots" clinic={clinic} setClinic={setClinic}>
@@ -209,7 +225,7 @@ export default function Slots() {
                   </h3>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                  <label
+                  {/* <label
                     className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     htmlFor="modal-put"
@@ -220,7 +236,7 @@ export default function Slots() {
                     }}
                   >
                     Add slot <i className="fas fa-add"></i>
-                  </label>
+                  </label> */}
                 </div>
               </div>
             </div>
@@ -517,7 +533,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.role_id} value={obj.role_id}>
+                    <option key={obj.id} value={Number(obj.role_id)}>
                       {obj.role.name}
                     </option>
                   );
@@ -680,7 +696,7 @@ export default function Slots() {
                 <option value="">Select</option>
                 {roles?.map((obj) => {
                   return (
-                    <option key={obj.id} value={obj.id}>
+                    <option key={obj.id} value={Number(obj.role_id)}>
                       {obj.role.name}
                     </option>
                   );

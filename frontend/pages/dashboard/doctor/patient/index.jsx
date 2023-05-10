@@ -13,6 +13,8 @@ export default function Patients() {
 
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState()
+  
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -21,9 +23,12 @@ export default function Patients() {
   const [patientsLoading, setPatientsLoading] = useState(true);
 
   async function getPatients() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `/patients/${perpage}${
+        `/patients/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -59,8 +64,13 @@ export default function Patients() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
 
+  useEffect(()=> {
+    setSearch("")
+    setPage(1)
+  }, [clinic])
+  
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
@@ -69,7 +79,7 @@ export default function Patients() {
 
   return (
     <>
-      <DashboardLayout title="Patient Records">
+      <DashboardLayout title="Patient Records" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"

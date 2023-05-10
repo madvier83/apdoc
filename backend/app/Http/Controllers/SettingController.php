@@ -15,10 +15,11 @@ class SettingController extends Controller
         //
     }
 
-    public function show($id)
+    public function show($clinic)
     {
         try {
             $setting = Setting::first();
+            // $setting = Setting::where('clinic_id', $clinic)->first();
     
             return response()->json($setting);
         } catch (Throwable $e) {
@@ -26,9 +27,10 @@ class SettingController extends Controller
         }
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $id)
     {
         $setting = Setting::first();
+        // $setting = Setting::find($id);
 
         if (!$setting) {
             return response()->json(['message' => 'Setting not found!'], 404);

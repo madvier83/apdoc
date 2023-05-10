@@ -55,7 +55,7 @@ class UserSlotController extends Controller
         $this->validate($request, [
             'email'       => 'required|email|unique:users',
             'phone'       => 'required|unique:users',
-            'role_id'     => 'required|numeric|min:3',
+            'role_id'     => 'required|numeric|min:2',
             'clinic_id'   => 'required',
             'employee_id' => 'required|numeric|min:2'
         ]);
@@ -113,7 +113,7 @@ class UserSlotController extends Controller
         $this->validate($request, [
             // 'name'      => 'required',
             'phone'     => $user->phone == $request->phone ? 'required' : 'required|unique:users',
-            'role_id'   => 'required|numeric|min:3',
+            'role_id'   => 'required|numeric|min:2',
             'clinic_id' => 'required',
         ]);
 

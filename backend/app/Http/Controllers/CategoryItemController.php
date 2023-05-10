@@ -9,16 +9,18 @@ use Throwable;
 
 class CategoryItemController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $category = CategoryItem::with('items')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $category = CategoryItem::with('items')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('name', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                $category = CategoryItem::with('items')->where(function($query) use ($keyword) {
+                    $query->where('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
@@ -48,7 +50,7 @@ class CategoryItemController extends Controller
 
         try {
             $data = $request->all();
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $category = CategoryItem::create($data);
     
             return response()->json($category);

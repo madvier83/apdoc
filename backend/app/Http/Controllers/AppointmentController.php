@@ -68,7 +68,7 @@ class AppointmentController extends Controller
                 'patient_id' => $request->patient_id,
                 'description' => $request->description,
                 'appointment_date' => $request->appointment_date,
-                'clinic_id' => auth()->user()->employee->clinic_id
+                'clinic_id' => $request->clinic_id ?? auth()->user()->employee->clinic_id
             ]);   
             return response()->json(['status'=> 'success','message' => 'success create appointment'], 201);
         } catch (\Throwable $e) {

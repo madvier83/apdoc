@@ -15,6 +15,8 @@ import { DateRangePicker } from "react-date-range";
 
 export default function Sales() {
   const token = getCookies("token"); 
+  
+  const [clinic, setClinic] = useState();
 
   const [chartData, setChartData] = useState([
     ["Date", "Gross Sales", "Net Sales"],
@@ -80,9 +82,12 @@ export default function Sales() {
   }
 
   async function getSummary() {
+    if (!clinic) {
+      return;
+    }
     try {
       let response = await axios.get(
-        `/report-sales/summary/${moment(selectionRange.startDate).format(
+        `/report-sales/summary/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -103,9 +108,12 @@ export default function Sales() {
   }
 
   async function getPayment() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/payment/${moment(selectionRange.startDate).format(
+        `/report-sales/payment/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -122,9 +130,12 @@ export default function Sales() {
     }
   }
   async function getService() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/service/${moment(selectionRange.startDate).format(
+        `/report-sales/service/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -141,9 +152,12 @@ export default function Sales() {
     }
   }
   async function getItem() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/item/${moment(selectionRange.startDate).format(
+        `/report-sales/item/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -160,9 +174,12 @@ export default function Sales() {
     }
   }
   async function getCategory() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/category/${moment(selectionRange.startDate).format(
+        `/report-sales/category/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -179,9 +196,12 @@ export default function Sales() {
     }
   }
   async function getPromotion() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/promotion/${moment(selectionRange.startDate).format(
+        `/report-sales/promotion/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -198,9 +218,12 @@ export default function Sales() {
     }
   }
   async function getCollected() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/collected/${moment(selectionRange.startDate).format(
+        `/report-sales/collected/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
           "YYYY-MM-DD"
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
@@ -227,11 +250,11 @@ export default function Sales() {
       getPromotion();
       getCollected();
     }
-  }, [selectionRange]);
+  }, [selectionRange, clinic]);
 
   return (
     <>
-      <DashboardLayout title="Sales">
+      <DashboardLayout title="Sales" clinic={clinic} setClinic={setClinic}>
         <div className="flex gap-4">
           <div
             className={

@@ -35,6 +35,8 @@ export default function Queue() {
   const [isRegular, setIsRegular] = useState(true);
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -83,16 +85,19 @@ export default function Queue() {
   const [patientsLoading, setPatientsLoading] = useState(true);
 
   async function getPatients() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/patients/${perpage}${
+        `/patients/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".","")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -173,9 +178,12 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
   async function getQueues() {
+    if (!clinic) {
+      return;
+    }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues`, {
+      const response = await axios.get(`queues/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -205,12 +213,18 @@ export default function Queue() {
   const [appointment, setAppointment] = useState();
   const [appointmentLoading, setAppointmentLoading] = useState(true);
   async function getAppointment() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("appointments", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `appointments/${clinic && clinic + "/"}${999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setAppointment(response.data.data);
       setAppointmentLoading(false);
 
@@ -228,9 +242,12 @@ export default function Queue() {
 
   const [services, setServices] = useState();
   async function getServices() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `services/${perpage}${
+        `services/${clinic && clinic + "/"}${perpage}${
           searchService &&
           "/" +
             searchService
@@ -254,9 +271,12 @@ export default function Queue() {
 
   const [employees, setEmployees] = useState();
   async function getEmployees() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `employees/${perpage}${
+        `employees/${clinic && clinic + "/"}${perpage}${
           searchEmployee &&
           "/" +
             searchEmployee
@@ -401,21 +421,31 @@ export default function Queue() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(() => {
+    setSearch("");
+    setSearchService("");
+    setSearchEmployee("");
+    setPage(1);
+    setIsAddService(false);
+    getQueues();
+    getAppointment()
+  }, [clinic]);
 
   useEffect(() => {
     const getData = setTimeout(() => {
       getServices();
     }, 500);
     return () => clearTimeout(getData);
-  }, [searchService]);
+  }, [searchService, clinic]);
 
   useEffect(() => {
     const getData = setTimeout(() => {
       getEmployees();
     }, 500);
     return () => clearTimeout(getData);
-  }, [searchEmployee]);
+  }, [searchEmployee, clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -425,7 +455,7 @@ export default function Queue() {
 
   return (
     <>
-      <DashboardLayout title="Queue List">
+      <DashboardLayout title="Queue List" clinic={clinic} setClinic={setClinic}>
         <div className="mt-6">
           <div
             className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
@@ -1120,6 +1150,20 @@ export default function Queue() {
                       <td colSpan={99}>
                         <div className="flex w-full justify-center my-4">
                           <img src="/loading.svg" alt="now loading" />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {!patientsLoading && patients.data?.length <= 0 && (
+                    <tr>
+                      <td colSpan={99}>
+                        <div className="flex w-full justify-center mt-48">
+                          <div className="text-center">
+                            <h1 className="text-xl">No data found</h1>
+                            <small>
+                              Data is empty or try adjusting your filter
+                            </small>
+                          </div>
                         </div>
                       </td>
                     </tr>

@@ -11,10 +11,10 @@ use Throwable;
 
 class AccessController extends Controller
 {
-    public function index()
+    public function index($clinic)
     {
         try {
-            $access = Access::with('role')->where('role_id', '>', 2)->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $access = Access::with('role')->where('role_id', '>', 2)->where('clinic_id', $clinic)->get();
     
             return response()->json($access);
         } catch (Throwable $e) {
@@ -48,7 +48,7 @@ class AccessController extends Controller
             $data = [
                 'role_id'   => $role->id,
                 'accesses'  => $request->accesses,
-                'clinic_id' => auth()->user()->employee->clinic_id
+                'clinic_id' => $request->clinic_id ?? auth()->user()->employee->clinic_id
             ];
             $access = Access::create($data);
     

@@ -15,6 +15,8 @@ export default function Payment() {
   const putModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState()
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -59,9 +61,12 @@ export default function Payment() {
   };
 
   async function getItem() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `payments/${perpage}${
+        `payments/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -83,9 +88,12 @@ export default function Payment() {
   }
 
   async function getCategory() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `category-payments/${perpage}${
+        `category-payments/${clinic && clinic + "/"}${perpage}${
           searchCategory &&
           "/" +
             searchCategory
@@ -166,6 +174,7 @@ export default function Payment() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getItem();
+      getCategory()
     }, 300);
 
     if (page > item?.last_page) {
@@ -173,7 +182,13 @@ export default function Payment() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+  
+  useEffect(()=> {
+    setSearch("")
+    setSearchCategory("")
+    setPage(1)
+  }, [clinic])
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -190,7 +205,7 @@ export default function Payment() {
 
   return (
     <>
-      <DashboardLayout title="Payment">
+      <DashboardLayout title="Payment" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"

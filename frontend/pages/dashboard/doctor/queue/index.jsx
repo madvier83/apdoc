@@ -32,6 +32,8 @@ export default function Queue() {
   const [isAddService, setIsAddService] = useState(false);
   const [addServiceError, setAddServiceError] = useState("");
   const [isRegular, setIsRegular] = useState(true);
+  
+  const [clinic, setClinic] = useState()
 
   // open service form ref
   let infoRef = useRef();
@@ -130,9 +132,12 @@ export default function Queue() {
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
   async function getQueues() {
+    if (!clinic) {
+      return;
+    }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues`, {
+      const response = await axios.get(`queues/${clinic && clinic + "/"}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -163,7 +168,7 @@ export default function Queue() {
   const [appointmentLoading, setAppointmentLoading] = useState(true);
   async function getAppointment() {
     try {
-      const response = await axios.get("appointments", {
+      const response = await axios.get(`appointments/${clinic && clinic + "/"}${999999}?page=${1}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -183,40 +188,8 @@ export default function Queue() {
     }
   }
 
-  const [services, setServices] = useState();
-  async function getServices() {
-    try {
-      const response = await axios.get(`services`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setServices(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const [employees, setEmployees] = useState();
-  async function getEmployees() {
-    try {
-      const response = await axios.get(`employees`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setEmployees(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   useEffect(() => {
     getQueues();
-    getServices();
-    getEmployees();
     getAppointment();
   }, []);
 
@@ -253,24 +226,6 @@ export default function Queue() {
     } catch (err) {
       console.error(err);
       setAddServiceError(err.response?.data?.message);
-    }
-  }
-  async function cancelService(id) {
-    try {
-      const response = await axios.put(
-        `queue-detail/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: "Bearer" + token.token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log(response);
-      getQueues();
-    } catch (err) {
-      console.error(err);
     }
   }
 
@@ -321,9 +276,14 @@ export default function Queue() {
     }
   }, [isRegular]);
 
+  useEffect(() => {
+    getQueues()
+    getAppointment()
+  }, [clinic]);
+
   return (
     <>
-      <DashboardLayout title="Queue List">
+      <DashboardLayout title="Queue List" clinic={clinic} setClinic={setClinic}>
         <div className="mt-6">
           <div
             className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
@@ -410,8 +370,8 @@ export default function Queue() {
                                     className={`${
                                       obj.id == selectedQueue.id
                                         ? "bg-indigo-900 font-bold text-2xl w-24"
-                                        : "bg-indigo-900 font-bold text-lg w-[4.4rem]"
-                                    } h-24 transition-all duration-500 flex items-center justify-center mr-4 ease-out`}
+                                        : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
+                                    } h-24 transition-all duration-200 flex items-center justify-center mr-4 ease-out`}
                                   >
                                     <h1 className="mb-1">{obj.queue_number}</h1>
                                   </div>
@@ -691,13 +651,13 @@ export default function Queue() {
                         className="input input-bordered without-ring input-primary border-slate-300 w-full"
                       >
                         <option value="">Select service</option>
-                        {services?.map((obj) => {
+                        {/* {services?.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
                               {obj.name} - {numeral(obj.price).format("0,0")}
                             </option>
                           );
-                        })}
+                        })} */}
                       </select>
                     </div>
                     <div className="w-auto">
@@ -714,13 +674,13 @@ export default function Queue() {
                         className="input input-bordered without-ring input-primary border-slate-300 w-full"
                       >
                         <option value="">Unasigned</option>
-                        {employees?.map((obj) => {
+                        {/* {employees?.map((obj) => {
                           return (
                             <option key={obj.id} value={obj.id}>
                               {obj.name}
                             </option>
                           );
-                        })}
+                        })} */}
                       </select>
                       <p className="text-rose-400 text-sm mt-2">
                         {addServiceError}
@@ -798,138 +758,6 @@ export default function Queue() {
           </div>
         </div>
       </DashboardLayout>
-
-      {/* Patients Modal */}
-      <input type="checkbox" id="addQueueModal" className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box px-0 pt-1 w-11/12 max-w-7xl">
-          <div
-            className={
-              "relative flex flex-col min-w-0 break-words w-full mb-32 min-h-fit rounded-md text-blueGray-700 bg-white"
-            }
-          >
-            <div className="rounded-t-md mb-0 px-4 py-4 border-0">
-              <div className="flex flex-wrap items-center">
-                <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                  <h3 className={"font-semibold text-lg "}>
-                    <i className="fas fa-filter mr-3"></i> Patients Table
-                  </h3>
-                </div>
-                <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                  <label
-                    className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    ref={queueAddedRef}
-                    htmlFor="addQueueModal"
-                  >
-                    <i className="fas fa-x"></i>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="min-h-[80vh] block w-full overflow-x-auto">
-              {/* Projects table */}
-              <table className="items-center w-full bg-transparent border-collapse">
-                <thead>
-                  <tr>
-                    <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      #
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Name
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Birth
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Phone
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Created At
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Updated At
-                    </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patientsLoading && (
-                    <tr>
-                      <td colSpan={99}>
-                        <div className="flex w-full justify-center my-4">
-                          <img src="/loading.svg" alt="now loading" />
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {patients?.map((obj, index) => {
-                    return (
-                      <tr key={obj.id} className="hover:bg-zinc-50">
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
-                          <span className={"ml-3 font-bold "}>{index + 1}</span>
-                        </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <i
-                            className={`text-md mr-2 ${
-                              obj.gender == "male"
-                                ? "text-blue-400 fas fa-mars"
-                                : "text-pink-400 fas fa-venus"
-                            }`}
-                          ></i>{" "}
-                          <span className={"font-bold"}>{obj.name}</span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <span className={"capitalize"}>
-                            {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                            {obj.birth_place}
-                          </span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <a
-                            href={`https://wa.me/${obj.phone.replace(
-                              /\D/g,
-                              ""
-                            )}`}
-                            target="_blank"
-                            className={""}
-                          >
-                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                            {obj.phone}
-                          </a>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          {moment(obj.created_at).format("DD MMM YYYY")}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          {moment(obj.updated_at).fromNow()}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          {obj.queues[0]?.status_id == 1 ? (
-                            <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                              Already In Queue
-                            </button>
-                          ) : (
-                            <button
-                              // htmlFor="addQueueModal"
-                              onClick={() => addToQueue(obj.id)}
-                              className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            >
-                              Add to queue <i className="fas fa-add ml-2"></i>
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

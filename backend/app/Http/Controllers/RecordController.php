@@ -13,22 +13,22 @@ use Throwable;
 
 class RecordController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
-            $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-
             if ($keyword == null) {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('complaint', 'like', '%'.$keyword.'%')
-                    ->orWhere('inspection', 'like', '%'.$keyword.'%')
-                    ->orWhere('therapy', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('recordDiagnoses.diagnose', 'code', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('recordDiagnoses.diagnose', 'description', 'like', '%'.$keyword.'%')
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where(function($query) use ($keyword) {
+                    $query->where('complaint', 'like', '%'.$keyword.'%')
+                        ->orWhere('inspection', 'like', '%'.$keyword.'%')
+                        ->orWhere('therapy', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('recordDiagnoses.diagnose', 'code', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('recordDiagnoses.diagnose', 'description', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
@@ -108,7 +108,7 @@ class RecordController extends Controller
 
         try {
             $data = $request->all();
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $data['employee_id'] = auth()->user()->employee_id ?? null;
     
             $record = Record::create($data);

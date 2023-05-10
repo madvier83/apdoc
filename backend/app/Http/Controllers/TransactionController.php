@@ -17,23 +17,23 @@ use Throwable;
 
 class TransactionController extends Controller
 {
-    public function index($perPage, $keyword=null)
+    public function index($clinic, $perPage, $keyword=null)
     {
         try {
-            $transaction = Transaction::where('clinic_id', auth()->user()->employee->clinic_id)->get();
-    
             if ($keyword == null) {
-                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
-                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', auth()->user()->employee->clinic_id)
-                    ->where('discount', 'like', '%'.$keyword.'%')
-                    ->orWhere('total', 'like', '%'.$keyword.'%')
-                    ->orWhere('payment', 'like', '%'.$keyword.'%')
-                    ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                    ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('patient', 'name', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('payment', 'name', 'like', '%'.$keyword.'%')
-                    ->orWhereRelation('employee', 'name', 'like', '%'.$keyword.'%')
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where(function($query) use ($keyword) {
+                    $query->where('discount', 'like', '%'.$keyword.'%')
+                        ->orWhere('total', 'like', '%'.$keyword.'%')
+                        ->orWhere('payment', 'like', '%'.$keyword.'%')
+                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('patient', 'name', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('payment', 'name', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('employee', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }
@@ -132,7 +132,7 @@ class TransactionController extends Controller
                 'payment'       => $request->payment,
                 'employee_id'   => auth()->user()->employees->id ?? null
             ];
-            $dataTransaction['clinic_id'] = auth()->user()->employee->clinic_id;
+            $dataTransaction['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $transaction = Transaction::create($dataTransaction);
             
             $items = collect($request->items);

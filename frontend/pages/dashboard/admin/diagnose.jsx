@@ -125,18 +125,18 @@ export default function Diagnose() {
     }
   }
 
-  async function deleteDiagnosis(id) {
-    try {
-      const response = await axios.delete(`diagnose/${id}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      getDiagnosis();
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  // async function deleteDiagnosis(id) {
+  //   try {
+  //     const response = await axios.delete(`diagnose/${id}`, {
+  //       headers: {
+  //         Authorization: "Bearer" + token.token,
+  //       },
+  //     });
+  //     getDiagnosis();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
   useEffect(() => {
     const getData = setTimeout(() => {

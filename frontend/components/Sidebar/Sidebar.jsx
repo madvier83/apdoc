@@ -10,6 +10,7 @@ import axios from "../../pages/api/axios";
 export default function Sidebar() {
   const router = useRouter();
   const pwdRef = useRef();
+  const [accesses, setAccesses] = useState([]);
 
   const token = getCookie("token");
   function parseJwt(token) {
@@ -17,7 +18,10 @@ export default function Sidebar() {
   }
   const [user, setUser] = useState({ email: "" });
   useEffect(() => {
-    setUser(parseJwt(token));
+    let jwt = parseJwt(token);
+    // console.log(JSON.parse(jwt.accesses))
+    setAccesses(JSON.parse(jwt.accesses));
+    setUser(jwt);
   }, []);
 
   async function sendChangePassword() {
@@ -66,113 +70,7 @@ export default function Sidebar() {
     }
   }, [sidebar]);
 
-  const access = [
-    {
-      name: "admin",
-      route: "/dashboard/admin",
-      access: true,
-      submenu: [
-        { name: "position", route: "/dashboard/admin/position", access: true },
-        { name: "employee", route: "/dashboard/admin/employee", access: true },
-        { name: "service", route: "/dashboard/admin/service", access: true },
-        { name: "diagnose", route: "/dashboard/admin/diagnose", access: true },
-        {
-          name: "category-payment",
-          route: "/dashboard/admin/category-payment",
-          access: true,
-        },
-        { name: "payment", route: "/dashboard/admin/payment", access: true },
-        {
-          name: "category-outcome",
-          route: "/dashboard/admin/category-outcome",
-          access: true,
-        },
-        { name: "outcome", route: "/dashboard/admin/outcome", access: true },
-        {
-          name: "promotion",
-          route: "/dashboard/admin/promotion",
-          access: true,
-        },
-      ],
-    },
-    {
-      name: "receptionist",
-      route: "/dashboard/receptionist",
-      access: true,
-      submenu: [
-        {
-          name: "patient",
-          route: "/dashboard/receptionist/patient",
-          access: true,
-        },
-        {
-          name: "appointment",
-          route: "/dashboard/receptionist/appointment",
-          access: true,
-        },
-        { name: "queue", route: "/dashboard/receptionist/queue", access: true },
-      ],
-    },
-    {
-      name: "doctor",
-      route: "/dashboard/doctor",
-      access: true,
-      submenu: [
-        { name: "patient", route: "/dashboard/doctor/patient", access: true },
-        { name: "queue", route: "/dashboard/doctor/queue", access: true },
-      ],
-    },
-    {
-      name: "pharmacy",
-      route: "/dashboard/pharmacy",
-      access: true,
-      submenu: [
-        {
-          name: "category-item",
-          route: "/dashboard/pharmacy/category-item",
-          access: true,
-        },
-        { name: "item", route: "/dashboard/pharmacy/item", access: true },
-        {
-          name: "item-supply",
-          route: "/dashboard/pharmacy/supply",
-          access: true,
-        },
-        {
-          name: "stock-adjustment",
-          route: "/dashboard/pharmacy/stock-adjustment",
-          access: true,
-        },
-      ],
-    },
-    {
-      name: "cashier",
-      route: "/dashboard/cashier",
-      access: true,
-      submenu: [
-        {
-          name: "transaction",
-          route: "/dashboard/cashier/transaction",
-          access: true,
-        },
-        { name: "history", route: "/dashboard/cashier/history", access: true },
-      ],
-    },
-    {
-      name: "report",
-      route: "/dashboard/report",
-      access: true,
-      submenu: [
-        { name: "sales", route: "/dashboard/report/sales", access: true },
-        {
-          name: "commision",
-          route: "/dashboard/report/commision",
-          access: true,
-        },
-      ],
-    },
-  ];
-  // console.log(sidebar);
+  // console.log(accesses);
 
   return (
     <>
@@ -252,140 +150,150 @@ export default function Sidebar() {
 
               <hr className="my-4 md:min-w-full" />
 
-              <li
-                // key={index}
-                className={`items-center list-none ${
-                  router.pathname == "/" && "text-emerald-500 "
-                }`}
-              >
-                <button
-                  onClick={() => setSidebar({ user: !sidebar.user })}
-                  className={
-                    "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
-                  }
-                >
-                  <i
-                    className={`fas ${
-                      sidebar.user ? "fa-folder-open" : "fa-folder"
-                    }  mr-2 text-sm `}
-                  ></i>{" "}
-                  User
-                </button>
-
-                <ul
-                  className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
-                    sidebar.user == true ? "block" : "hidden"
+              {user?.role_id == 2 && (
+                <li
+                  // key={index}
+                  className={`items-center list-none ${
+                    router.pathname == "/" && "text-emerald-500 "
                   }`}
                 >
-                  <li
-                    // key={index}
-                    className={`items-center list-none ${
-                      router.pathname.startsWith("/owner/access") &&
-                      "text-emerald-500"
+                  <button
+                    onClick={() => setSidebar({ user: !sidebar.user })}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                    }
+                  >
+                    <i
+                      className={`fas ${
+                        sidebar.user ? "fa-folder-open" : "fa-folder"
+                      }  mr-2 text-sm `}
+                    ></i>{" "}
+                    User
+                  </button>
+
+                  <ul
+                    className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                      sidebar.user == true ? "block" : "hidden"
                     }`}
                   >
-                    <Link
-                      scroll={false}
-                      href={"/owner/access"}
-                      className={"text-xs py-3 font-semibold block capitalize"}
-                    >
-                      <i
-                        className={`fa-regular ${
-                          router.pathname.startsWith("/owner/access")
-                            ? "fa-folder-open"
-                            : "fa-folder"
-                        } mr-2 text-sm`}
-                      ></i>{" "}
-                      User Access
-                    </Link>
-                  </li>
-
-                  <li
-                    // key={index}
-                    className={`items-center list-none ${
-                      router.pathname.startsWith("/owner/slots") &&
-                      "text-emerald-500"
-                    }`}
-                  >
-                    <Link
-                      scroll={false}
-                      href={"/owner/slots"}
-                      className={"text-xs py-3 font-semibold block capitalize"}
-                    >
-                      <i
-                        className={`fa-regular ${
-                          router.pathname.startsWith("/owner/slots")
-                            ? "fa-folder-open"
-                            : "fa-folder"
-                        } mr-2 text-sm`}
-                      ></i>{" "}
-                      User Slots
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-
-              <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-                {access.map((menu, index) => {
-                  return (
                     <li
-                      key={index}
-                      className={`items-center ${
-                        router.pathname == "/" && "text-emerald-500 "
+                      // key={index}
+                      className={`items-center list-none ${
+                        router.pathname.startsWith("/owner/access") &&
+                        "text-emerald-500"
                       }`}
                     >
-                      <button
-                        onClick={() =>
-                          setSidebar({ [menu.name]: !sidebar[menu.name] })
-                        }
+                      <Link
+                        scroll={false}
+                        href={"/owner/access"}
                         className={
-                          "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                          "text-xs py-3 font-semibold block capitalize"
                         }
                       >
                         <i
-                          className={`fas ${
-                            sidebar[menu.name] ? "fa-folder-open" : "fa-folder"
-                          }  mr-2 text-sm `}
+                          className={`fa-regular ${
+                            router.pathname.startsWith("/owner/access")
+                              ? "fa-folder-open"
+                              : "fa-folder"
+                          } mr-2 text-sm`}
                         ></i>{" "}
-                        {menu.name}
-                      </button>
+                        User Access
+                      </Link>
+                    </li>
 
-                      <ul
-                        className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
-                          sidebar[menu.name] == true ? "block" : "hidden"
+                    <li
+                      // key={index}
+                      className={`items-center list-none ${
+                        router.pathname.startsWith("/owner/slots") &&
+                        "text-emerald-500"
+                      }`}
+                    >
+                      <Link
+                        scroll={false}
+                        href={"/owner/slots"}
+                        className={
+                          "text-xs py-3 font-semibold block capitalize"
+                        }
+                      >
+                        <i
+                          className={`fa-regular ${
+                            router.pathname.startsWith("/owner/slots")
+                              ? "fa-folder-open"
+                              : "fa-folder"
+                          } mr-2 text-sm`}
+                        ></i>{" "}
+                        User Slots
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              )}
+              
+              <ul className="md:flex-col md:min-w-full flex flex-col list-none">
+                {accesses?.map((menu, index) => {
+                  if (menu.access) {
+                    return (
+                      <li
+                        key={index}
+                        className={`items-center ${
+                          router.pathname == "/" && "text-emerald-500 "
                         }`}
                       >
-                        {menu.submenu.map((obj, index) => {
-                          return (
-                            <li
-                              key={index}
-                              className={`items-center ${
-                                router.pathname.startsWith(obj.route) &&
-                                "text-emerald-500"
-                              }`}
-                            >
-                              <Link
-                                scroll={false}
-                                href={obj.route}
-                                className={
-                                  "text-xs py-3 font-semibold block capitalize"
-                                }
+                        <button
+                          onClick={() =>
+                            setSidebar({ [menu.name]: !sidebar[menu.name] })
+                          }
+                          className={
+                            "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                          }
+                        >
+                          <i
+                            className={`fas ${
+                              sidebar[menu.name]
+                                ? "fa-folder-open"
+                                : "fa-folder"
+                            }  mr-2 text-sm `}
+                          ></i>{" "}
+                          {menu.name}
+                        </button>
+
+                        <ul
+                          className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                            sidebar[menu.name] == true ? "block" : "hidden"
+                          }`}
+                        >
+                          {menu.submenu.map((obj, index) => {
+                            return (
+                              <li
+                                key={index}
+                                className={`items-center ${
+                                  router.pathname.startsWith(obj.route) &&
+                                  "text-emerald-500"
+                                }`}
                               >
-                                <i
-                                  className={`fa-regular ${
-                                    router.pathname.startsWith(obj.route)
-                                      ? "fa-folder-open"
-                                      : "fa-folder"
-                                  } mr-2 text-sm`}
-                                ></i>{" "}
-                                {obj.name.replace("-", " ")}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </li>
-                  );
+                                <Link
+                                  scroll={false}
+                                  href={obj.route}
+                                  className={
+                                    "text-xs py-3 font-semibold block capitalize"
+                                  }
+                                >
+                                  <i
+                                    className={`fa-regular ${
+                                      router.pathname.startsWith(obj.route)
+                                        ? "fa-folder-open"
+                                        : "fa-folder"
+                                    } mr-2 text-sm`}
+                                  ></i>{" "}
+                                  {obj.name.replace("-", " ")}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </li>
+                    );
+                  }
                 })}
 
                 <hr className="my-4 md:min-w-full" />
@@ -436,6 +344,7 @@ export default function Sidebar() {
                 >
                   <button
                     onClick={() => {
+                      deleteCookie("clinic");
                       deleteCookie("token");
                       router.push("/auth/login");
                     }}

@@ -16,6 +16,8 @@ export default function Access() {
   const putModalScrollRef = useRef();
   const detailModalRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [access, setAccess] = useState([]);
@@ -32,7 +34,6 @@ export default function Access() {
         route: "/dashboard/admin",
         access: false,
         submenu: [
-          { name: "user", route: "/dashboard/admin/user", access: false },
           {
             name: "position",
             route: "/dashboard/admin/position",
@@ -186,8 +187,11 @@ export default function Access() {
   };
 
   async function getUser() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("/access", {
+      const response = await axios.get(`accesses/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -342,6 +346,11 @@ export default function Access() {
   }
 
   useEffect(() => {
+    getUser()
+    setAccessLoading(true)
+  }, [clinic]);
+
+  useEffect(() => {
     getUser();
   }, []);
 
@@ -349,7 +358,7 @@ export default function Access() {
 
   return (
     <>
-      <DashboardLayout title="Access">
+      <DashboardLayout title="Access" clinic={clinic} setClinic={setClinic}>
         <div className="flex gap-4">
           <div
             className={

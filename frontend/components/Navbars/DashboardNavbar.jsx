@@ -11,33 +11,37 @@ export default function Navbar({ title, clinic, setClinic }) {
 
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
+
+  const token = getCookie("token");
+  function parseJwt(token) {
+    return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
+  }
   const [apdoc, setApdoc] = useState();
+  // console.log(apdoc.role_id);
 
   if (setClinic) {
-    const token = getCookie("token");
-    function parseJwt(token) {
-      return JSON.parse(
-        Buffer?.from(token?.split(".")[1], "base64").toString()
-      );
-    }
-
     async function getClinics() {
-      setClinicsLoading(true);
-      try {
-        const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
-          headers: {
-            Authorization: "Bearer" + token,
-          },
-        });
-        setClinics(response.data);
-        setClinicsLoading(false);
+      if (apdoc?.role_id > 2) {
+        setClinic(apdoc?.clinic_id);
+      } else {
+        setClinicsLoading(true);
+        try {
+          const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
+            headers: {
+              Authorization: "Bearer" + token,
+            },
+          });
+          setClinics(response.data);
+          setClinicsLoading(false);
 
-        let clinicCookie = getCookie("clinic");
-        if (clinicCookie == "") {
-          setClinic(response.data[0]?.id);
+          let clinicCookie = getCookie("clinic");
+          // console.log(clinicCookie)
+          if (!clinicCookie) {
+            setClinic(response.data[0]?.id);
+          }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
       }
     }
 
@@ -60,7 +64,7 @@ export default function Navbar({ title, clinic, setClinic }) {
       if (clinicCookie == "" && clinics) {
         setCookie("clinic", clinics[0].id);
       }
-    }, []);
+    }, [router.isReady]);
 
     useEffect(() => {
       if (cookieCheck) {
@@ -72,12 +76,15 @@ export default function Navbar({ title, clinic, setClinic }) {
       setApdoc(parseJwt(token));
     }, []);
 
+    // console.log(apdoc)
+
     useEffect(() => {
       if (apdoc?.apdoc_id && token) {
         getClinics();
       }
     }, [apdoc]);
   }
+  // console.log(apdoc?.role_id)
 
   return (
     <>
@@ -85,7 +92,7 @@ export default function Navbar({ title, clinic, setClinic }) {
       <nav className="top-0 left-0 w-full z-10  md:flex-row md:flex-nowrap md:justify-start flex items-center pt-6 pb-4 px-8">
         <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap">
           {/* Brand */}
-          <div className="flex w-full justify-between items-center">
+          <div className={`flex w-full justify-between items-center`}>
             <Link
               className="text-white text-lg uppercase hidden lg:inline-block font-semibold ml-3 mr-8"
               href="#pablo"
@@ -94,11 +101,11 @@ export default function Navbar({ title, clinic, setClinic }) {
               {title}
             </Link>
             {setClinic && (
-              <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
-                <i className="fas fa-hospital"> </i>
+              <div className={`${apdoc?.role_id == 2 ? "block" : "hidden"} flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}>
+                <i className="fas fa-house-chimney-medical ml-1 text-emerald-400"> </i>
                 <div className="">
                   <select
-                    className="p-0 pl-4 pr-0 focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md select- w-48"
+                    className="p-0 pl-0 pr-8 tracking-wider appearance-none text-emerald-400 text-center focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md w-48"
                     onChange={(e) => {
                       setClinic(e.target.value);
                     }}

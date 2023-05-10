@@ -26,6 +26,9 @@ import numeral from "numeral";
 
 export default function Dashboard() {
   const token = getCookies("token");
+
+  const [clinic, setClinic] = useState();
+
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -76,11 +79,16 @@ export default function Dashboard() {
   }
 
   async function getSummary() {
+    if (!clinic) {
+      return;
+    }
     try {
       let response = await axios.get(
-        `/report-sales/summary/${moment(selectionRange.startDate).format(
+        `/report-sales/summary/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -98,11 +106,16 @@ export default function Dashboard() {
     }
   }
   async function getItem() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `/report-sales/item/${moment(selectionRange.startDate).format(
+        `/report-sales/item/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -121,13 +134,13 @@ export default function Dashboard() {
       getSummary();
       getItem();
     }
-  }, [selectionRange]);
+  }, [selectionRange, clinic]);
 
-  console.log(item);
+  // console.log(item);
 
   return (
     <>
-      <DashboardLayout title="Dashboard">
+      <DashboardLayout title="Dashboard" clinic={clinic} setClinic={setClinic}>
         <div className="flex-col gap-4 mt-6">
           {/* <div className="flex gap-4">
             <div className="w-1/2 h-28 bg-white rounded-md p-8">

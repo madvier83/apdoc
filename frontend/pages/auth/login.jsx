@@ -39,7 +39,7 @@ export default function Login() {
       console.log(response)
       var payload = parseJwt(response.data.access_token);
 
-      if (payload.role_id == 2) {
+      if (payload.role_id >= 2) {
         setCookie("token", response.data.access_token, {
           maxAge: 60 * 60 * 12,
         });

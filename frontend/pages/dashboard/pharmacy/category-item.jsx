@@ -15,6 +15,8 @@ export default function CategoryItem() {
   const putModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState()
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -53,9 +55,12 @@ export default function CategoryItem() {
   };
 
   async function getCategory() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `category-items/${perpage}${
+        `category-items/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -142,7 +147,12 @@ export default function CategoryItem() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(()=> {
+    setSearch("")
+    setPage(1)
+  }, [clinic])
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -152,7 +162,7 @@ export default function CategoryItem() {
 
   return (
     <>
-      <DashboardLayout title="Category Item">
+      <DashboardLayout title="Category Item" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"

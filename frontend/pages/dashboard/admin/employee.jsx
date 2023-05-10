@@ -16,6 +16,8 @@ export default function Employee() {
   const detailModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -67,9 +69,12 @@ export default function Employee() {
   };
 
   async function getEmployee() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `employees/${perpage}${
+        `employees/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -92,9 +97,12 @@ export default function Employee() {
   }
 
   async function getPositions() {
+    if(!clinic){
+      return;
+    }
     try {
       const response = await axios.get(
-        `positions/${perpage}${
+        `positions/${clinic && clinic + "/"}${perpage}${
           searchPosition &&
           "/" +
             searchPosition
@@ -176,6 +184,7 @@ export default function Employee() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getEmployee();
+      getPositions()
     }, 300);
 
     if (page > employees?.last_page) {
@@ -183,7 +192,13 @@ export default function Employee() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(() => {
+    setSearch("");
+    setSearchPosition("")
+    setPage(1);
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -200,7 +215,7 @@ export default function Employee() {
 
   return (
     <>
-      <DashboardLayout title="Employees">
+      <DashboardLayout title="Employees" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"

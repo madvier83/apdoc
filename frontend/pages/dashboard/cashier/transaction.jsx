@@ -39,6 +39,8 @@ export default function Transaction() {
   const structRef = useRef();
   const printRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -46,8 +48,8 @@ export default function Transaction() {
 
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
-  const [services, setServices] = useState();
-  const [employees, setEmployees] = useState();
+  // const [services, setServices] = useState();
+  // const [employees, setEmployees] = useState();
   const [items, setItems] = useState();
   const [promotions, setPromotions] = useState();
   const [settings, setSettings] = useState();
@@ -105,6 +107,9 @@ export default function Transaction() {
   const [selectedQueue, setSelectedQueue] = useState(dummyQueue);
 
   async function getSettings() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(`setting/1`, {
         headers: {
@@ -119,9 +124,12 @@ export default function Transaction() {
   }
 
   async function getQueues() {
+    if (!clinic) {
+      return;
+    }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues`, {
+      const response = await axios.get(`queues/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -139,37 +147,46 @@ export default function Transaction() {
     }
   }
 
-  async function getServices() {
-    try {
-      const response = await axios.get(`services`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setServices(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  // async function getServices() {
+  //   if (!clinic) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.get(`services/${clinic && clinic + "/"}${9999999}?page=${1}`, {
+  //       headers: {
+  //         Authorization: "Bearer" + token.token,
+  //       },
+  //     });
+  //     // console.log(response.data);
+  //     setServices(response.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
-  async function getEmployees() {
-    try {
-      const response = await axios.get(`employees`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
-      // console.log(response.data);
-      setEmployees(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  // async function getEmployees() {
+  //   if(!clinic) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.get(`employees/${clinic && clinic + "/"}${9999999}?page=${1}`, {
+  //       headers: {
+  //         Authorization: "Bearer" + token.token,
+  //       },
+  //     });
+  //     // console.log(response.data);
+  //     setEmployees(response.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
   async function getItems() {
+    if(!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get(`items`, {
+      const response = await axios.get(`items/${clinic && clinic + "/"}${9999999}?page=${1}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -182,12 +199,18 @@ export default function Transaction() {
   }
 
   async function getPromotions() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get(`promotions`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `promotions/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       // console.log(response.data);
       setPromotions(response.data);
     } catch (err) {
@@ -196,8 +219,11 @@ export default function Transaction() {
   }
 
   async function getCategory() {
+    if(!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("category-items", {
+      const response = await axios.get(`category-items/${clinic && clinic + "/"}${9999999}?page=${1}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -210,8 +236,11 @@ export default function Transaction() {
   }
 
   async function getCategoryPayments() {
+    if(!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("category-payments", {
+      const response = await axios.get(`category-payments/${clinic && clinic + "/"}${9999999}?page=${1}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -508,13 +537,11 @@ export default function Transaction() {
   useEffect(() => {
     getSettings();
     getQueues();
-    getServices();
-    getEmployees();
     getPromotions();
     getItems();
     getCategory();
     getCategoryPayments();
-  }, []);
+  }, [clinic]);
   // change queue target
   useEffect(() => {
     clearCart();
@@ -557,7 +584,11 @@ export default function Transaction() {
 
   return (
     <>
-      <DashboardLayout title="Transaction">
+      <DashboardLayout
+        title="Transaction"
+        clinic={clinic}
+        setClinic={setClinic}
+      >
         <div className="mt-6">
           <div
             className={`relative max-w-7xl min-w-0 md:min-w-[720px] rounded-md`}
@@ -648,7 +679,7 @@ export default function Transaction() {
                             <p>Promotions</p>
                           </div>
                           <div className="collapse-content font-normal capitalize">
-                            {promotions?.map((obj) => {
+                            {promotions?.data?.map((obj) => {
                               return (
                                 <div
                                   className="btn btn-ghost normal-case flex justify-between cursor-pointer"
@@ -660,7 +691,7 @@ export default function Transaction() {
                                 </div>
                               );
                             })}
-                            {promotions?.length <= 0 && (
+                            {promotions?.data?.length <= 0 && (
                               <div className="btn btn-disabled bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                                 No Promotion
                               </div>
@@ -674,7 +705,7 @@ export default function Transaction() {
                             No Item
                           </div>
                         )}
-                        {category?.map((obj, index) => {
+                        {category?.data?.map((obj, index) => {
                           return (
                             <div
                               key={obj?.id}
@@ -1252,7 +1283,7 @@ export default function Transaction() {
                 <p>Promotion</p>
               </div>
               <div className="collapse-content font-normal capitalize">
-                {promotions?.map((obj) => {
+                {promotions?.data?.map((obj) => {
                   return (
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
@@ -1301,7 +1332,7 @@ export default function Transaction() {
                 <p>Promotion</p>
               </div>
               <div className="collapse-content font-normal capitalize">
-                {promotions?.map((obj) => {
+                {promotions?.data?.map((obj) => {
                   return (
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
@@ -1315,7 +1346,7 @@ export default function Transaction() {
                     </div>
                   );
                 })}
-                {promotions?.length <= 0 && (
+                {promotions?.data?.length <= 0 && (
                   <div className="btn btn-disabled bg-zinc-200 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                     No Promotion
                   </div>
@@ -1431,7 +1462,7 @@ export default function Transaction() {
           </div>
         </div>
 
-        {categoryPayments.map((obj) => {
+        {categoryPayments?.data?.map((obj) => {
           return (
             <div className={`card`} key={obj?.id}>
               <div className="card-body py-2">

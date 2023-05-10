@@ -51,7 +51,7 @@ class PromotionController extends Controller
 
         try {
             $data = $request->all();
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $promotion = Promotion::create($data);
     
             return response()->json($promotion);

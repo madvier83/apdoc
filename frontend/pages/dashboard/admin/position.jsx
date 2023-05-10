@@ -15,6 +15,8 @@ export default function Position() {
   const updateModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinic, setClinic] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -27,10 +29,12 @@ export default function Position() {
   const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
   const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
 
+  // console.log(clinic)
+
   async function getPositions() {
     try {
       const response = await axios.get(
-        `positions/${perpage}${
+        `positions/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -107,8 +111,9 @@ export default function Position() {
   }
 
   useEffect(() => {
-    getPositions();
-    // console.log(positions);
+    if (clinic) {
+      getPositions();
+    }
   }, []);
 
   useEffect(() => {
@@ -121,7 +126,13 @@ export default function Position() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+    setPostionsLoading(true)
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -131,7 +142,7 @@ export default function Position() {
 
   return (
     <>
-      <DashboardLayout title="Positions">
+      <DashboardLayout title="Positions" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -229,7 +240,7 @@ export default function Position() {
                     </td>
                   </tr>
                 )}
-                {positions?.data?.map((obj, index) => {
+                {!positionsLoading && positions?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">

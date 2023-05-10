@@ -15,9 +15,14 @@ export default function ItemSupply() {
   const putModalRef = useRef();
   const tableRef = useRef();
 
+  const [searchCategory, setSearchCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [clinic, setClinic] = useState();
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -58,12 +63,26 @@ export default function ItemSupply() {
   };
 
   async function getItemDb() {
+    if (!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get("items", {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `items/${clinic && clinic + "/"}${perpage}${
+          searchCategory &&
+          "/" +
+            searchCategory
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setItemDb(response.data);
       setItemDbLoading(false);
     } catch (err) {
@@ -72,20 +91,26 @@ export default function ItemSupply() {
   }
 
   async function getItem() {
+    if (!clinic) {
+      return;
+    }
     try {
       const response = await axios.get(
-        `item-supplys/${perpage}${
+        `item-supplys/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
               .split(" ")
               .join("%")
-              .replace(/[a-zA-Z0-9]/, "").replace(".","")
-        }?page=${page}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+              .replace(/[a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setItem(response.data);
       setItemLoading(false);
     } catch (err) {
@@ -160,7 +185,14 @@ export default function ItemSupply() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [page, perpage, search, clinic]);
+
+  useEffect(() => {
+    setSearch("");
+    setSelectedCategory("")
+    setAddForm(initialItemForm)
+    setPage(1);
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -168,9 +200,20 @@ export default function ItemSupply() {
     });
   }, [item]);
 
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getItemDb();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchCategory, clinic]);
+
   return (
     <>
-      <DashboardLayout title="Item Supply">
+      <DashboardLayout
+        title="Item Supply"
+        clinic={clinic}
+        setClinic={setClinic}
+      >
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -213,6 +256,7 @@ export default function ItemSupply() {
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
+                  onClick={() => setSelectedCategory(null)}
                 >
                   Add <i className="fas fa-add"></i>
                 </label>
@@ -281,11 +325,13 @@ export default function ItemSupply() {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
+                        <span className={"ml-3 font-bold"}>
+                          {index + item.from}
+                        </span>
                       </th>
                       <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                         <span className={"ml-3 font-bold"}>
-                        <Highlighter
+                          <Highlighter
                             highlightClassName="bg-emerald-200"
                             searchWords={[search]}
                             autoEscape={true}
@@ -433,22 +479,68 @@ export default function ItemSupply() {
               <label className="label">
                 <span className="label-text">Item</span>
               </label>
-              <select
-                name="item_id"
-                onChange={(e) => handleAddInput(e)}
-                required
-                value={addForm.item_id}
-                className="input input-bordered without-ring input-primary border-slate-300 w-full"
-              >
-                <option value="">Select</option>
-                {itemDb?.map((obj) => {
-                  return (
-                    <option key={obj.id} value={obj.id}>
-                      {obj.name}
-                    </option>
-                  );
-                })}
-              </select>
+
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ item_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search item ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!itemDb?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {itemDb?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setAddForm({ item_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
               {addFormError.item_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -527,7 +619,7 @@ export default function ItemSupply() {
           </form>
         </ModalBox>
 
-        <ModalBox id="modal-put">
+        {/* <ModalBox id="modal-put">
           <h3 className="font-bold text-lg mb-4">Update Item</h3>
           <form onSubmit={putItem} autoComplete="off">
             <label className="label">
@@ -626,7 +718,7 @@ export default function ItemSupply() {
               </button>
             </div>
           </form>
-        </ModalBox>
+        </ModalBox> */}
       </DashboardLayout>
     </>
   );
