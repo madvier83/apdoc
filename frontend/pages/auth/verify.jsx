@@ -1,327 +1,564 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useReducer,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useReducer } from "react";
 import Router, { useRouter } from "next/router";
 import axios from "../api/axios";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
 
-export default function Verify() {
+export default function Register() {
   const router = useRouter();
-  const [userdata, setUserdata] = useState(router.query);
 
-  useEffect(() => {
-    if (!userdata?.email) {
-      router.push("/auth/login");
-    }
-  }, []);
+  const [showPwd, setShowPwd] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
-  const otp_Ref = useRef();
-
-  const [sent, setSent] = useState(false);
-  // const [otp, setOtp] = useState({});
-  const [otpError, setOtpError] = useState("");
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [codes, setCodes] = useState([]);
 
   const initialVerifyForm = {
-    code: "+62",
-    phone: "",
-    fullPhone: "",
-    otp_1: "",
-    otp_2: "",
-    otp_3: "",
-    otp_4: "",
-    otp_5: "",
-    otp_6: "",
+    email: "",
+    email_token_verification: "",
+
+    nik: "",
+    name: "",
+    owner_phone: "",
+    birth_place: "",
+    birth_date: "",
+    gender: "",
+    owner_address: "",
+
+    clinic_name: "",
+    clinic_address: "",
+    province: "",
+    city: "",
+    district: "",
+    postal_code: "",
+    clinic_phone: "",
   };
 
-  function resetOTP() {
-    setVerifyForm({
-      otp_1: "",
-      otp_2: "",
-      otp_3: "",
-      otp_4: "",
-      otp_5: "",
-      otp_6: "",
-    });
-  }
-
-  const [fullPhone, setFullPhone] = useState("");
-  const [verifyForm, setVerifyForm] = useReducer(
+  const [registerForm, setRegisterForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     initialVerifyForm
   );
-  const [verifyFormError, setVerifyFormError] = useState("");
+  const [registerFormError, setRegisterFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialVerifyForm
+  );
 
-  // console.log(verifyForm.fullPhone)
-  async function getOTP(e) {
-    e.preventDefault();
-    setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
-    setOtpError("")
-    const data = {
-      email: userdata.email,
-      phone: verifyForm.fullPhone,
-    };
-    try {
-      const response = await axios.post("auth/send/otp", data, {
-        "Content-Type": "application/json",
-      });
-      setSent(true);
-      resetOTP();
-      setVerifyFormError("")
-      console.log(response)
-      // document.querySelector(`input[name=otp_1]`).focus();
-    } catch (err) {
-      console.error(err);
-      setVerifyFormError(err.response?.data?.phone);
-      if(err.response?.status == 403) {
-        setVerifyFormError(err.response?.data?.message);
-      }
-      if(err.response?.status == 500) {
-        setVerifyFormError(err.response?.data?.message);
-      }
-      if(err.response?.status == 429) {
-        setVerifyFormError(err.response?.data?.message);
-      }
-    }
-  }
-  useEffect(()=>{
-    setVerifyForm({fullPhone: verifyForm.code + verifyForm.phone})
-  }, [verifyForm.phone])
-
-  async function verifyOTP(e) {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "auth/phone/verification",
-        { email: userdata.email, otp_verification: combineOtp(), phone: verifyForm.fullPhone },
-        {
-          "Content-Type": "application/json",
-        }
-      );
-      router.push("/auth/login");
-    } catch (err) {
-      setOtpError(err.response?.data?.message);
-      resetOTP();
-      document.querySelector(`input[name=otp_1]`).focus();
-    }
-  }
-
-  function combineOtp() {
-    const fullOTP =
-      "" +
-      verifyForm.otp_1 +
-      verifyForm.otp_2 +
-      verifyForm.otp_3 +
-      verifyForm.otp_4 +
-      verifyForm.otp_5 +
-      verifyForm.otp_6;
-    return fullOTP;
-  }
-
-  const handleVerifyInput = (event) => {
-    const { maxLength, value, name } = event.target;
-    setVerifyForm({ [name]: value });
-
-    const [fieldName, fieldIndex] = name.split("_");
-
-    let fieldIntIndex = parseInt(fieldIndex, 10);
-
-    // Check if no of char in field == maxlength
-    if (value.length >= maxLength) {
-      // It should not be last input field
-      if (fieldIntIndex < 6) {
-        // Get the next input field using it's name
-        const nextfield = document.querySelector(
-          `input[name=otp_${fieldIntIndex + 1}]`
-        );
-
-        // If found, focus the next field
-        if (nextfield !== null) {
-          nextfield.focus();
-        }
-      }
-    }
+  const handleRegisterInput = (event) => {
+    const { name, value } = event.target;
+    setRegisterForm({ [name]: value });
   };
 
-  // const [timer, setTimer] = useState(60);
-  // const timeOutCallback = useCallback(
-  //   () => setTimer((currTimer) => currTimer - 1),
-  //   []
-  // );
+  async function handleVerify(e) {
+    e.preventDefault();
+    setVerifyLoading(true);
+    try {
+      const response = await axios.post("auth/registration", registerForm, {
+        "Content-Type": "application/json",
+      });
+      router.push(
+        {
+          pathname: "/auth/login",
+          // query: { email: response.data.data.email },
+        },
+        "/auth/login"
+      );
+    } catch (err) {
+      console.log(err);
+      setRegisterFormError(initialVerifyForm);
+      setRegisterFormError(err.response?.data?.errors);
+      setVerifyLoading(false);
+    }
+  }
+
+  async function getProvinces() {
+    try {
+      const response = await axios.get(`location/provinces`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setProvinces(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCities(id) {
+    try {
+      const response = await axios.get(`location/province/cities/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setCities(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getDistricts(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/districts/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setDistricts(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCodes(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/district/villages/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setCodes(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // console.log(provinces)
+  useEffect(() => {
+    getProvinces();
+  }, []);
+
+  useEffect(() => {
+    Object.keys(provinces).map((keyName, i) => {
+      if (provinces[keyName] === registerForm.province) {
+        getCities(keyName);
+      }
+    });
+    setRegisterForm({postal_code: "", district: "", city: ""})
+    setDistricts({})
+    setCodes({})
+  }, [registerForm.province]);
+
+  useEffect(() => {
+    Object.keys(cities).map((keyName, i) => {
+      if (cities[keyName] === registerForm.city) {
+        getDistricts(keyName);
+      }
+    });
+    setRegisterForm({postal_code: "", district: ""})
+    setCodes({})
+  }, [registerForm.city]);
+
+  useEffect(() => {
+    Object.keys(districts).map((keyName, i) => {
+      if (districts[keyName] === registerForm.district) {
+        getCodes(keyName);
+      }
+    });
+    setRegisterForm({postal_code: ""})
+  }, [registerForm.district]);
+
+  useEffect(() => {
+    if(router.isReady) {
+      setRegisterForm({email: router.query.email, email_token_verification: router.query.token})
+    }
+  }, [router.isReady])
+
+  // console.log(registerForm)
 
   return (
     <>
-      <AuthLayout title={"APDOC | Verify"}>
+      <AuthLayout title={"APDOC | Accunt Verification"}>
         <div className="container mx-auto px-4 h-[60vh]">
           <div className="flex content-center items-center justify-center h-full">
-            <div className="w-full lg:w-4/12 px-4">
+            <div className="w-full lg:w-8/12 px-4">
               <div className="relative flex flex-col min-w-0 break-words w-full mb-6 -lg rounded-lg border-0">
-                <div className="rounded-t mb-0 px-6 py-6">
+                {/* <div className="rounded-t mb-0 px-6 py-6">
                   <div className="text-center mb-3">
                     <h6 className="text-white text-4xl mt-4 font-bold">
                       APDOC
                     </h6>
                   </div>
-                </div>
-                <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                  {!sent ? (
-                    <form onSubmit={getOTP}>
-                      <div className="flex flex-col justify-center text-white mb-2">
-                        <h3>Verify Phone Number</h3>
+                </div> */}
+
+                <div className="flex-auto px-4 lg:px-10 py-10 pt-8 mt-16">
+                  <form onSubmit={(e) => handleVerify(e)}>
+                    <div className="flex w-full gap-8">
+                      <div className="w-full">
+                        <div className="divider text-xl mb-8 text-zinc-200 before:bg-indigo-500 after:bg-indigo-500 font-semibold">
+                          Personal Information
+                        </div>
+                        <div className="relative w-full">
+                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+                            NIK
+                          </label>
+                          <input
+                            required={true}
+                            name="nik"
+                            value={registerForm.nik}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="text"
+                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.nik[0] ? "border-rose-500" : "border-indigo-500"
+                            }`}
+                            // placeholder="example@mail.com"
+                          />
+                          <label className="block text-rose-500 text-xs mb-2 mt-2">
+                            {registerFormError.nik[0]}
+                          </label>
+                        </div>
+
+                        <div className="relative w-full">
+                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+                            Full Name
+                          </label>
+                          <input
+                            required={true}
+                            name="name"
+                            value={registerForm.name}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="text"
+                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.name[0] ? "border-rose-500" : "border-indigo-500"
+                            }`}
+                            // placeholder="example@mail.com"
+                          />
+                          <label className="block text-rose-500 text-xs mb-2 mt-2">
+                            {registerFormError.name[0]}
+                          </label>
+                        </div>
+
+                        <div className="relative w-full">
+                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+                            Address
+                          </label>
+                          <textarea
+                            name="owner_address"
+                            value={registerForm.owner_address}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="text"
+                            className={`input w-full h-[68px] border-indigo-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.owner_address[0]
+                                ? "border-rose-500"
+                                : "border-indigo-500"
+                            }`}
+                            // placeholder="+62 xxx xxxx xxxx"
+                          />
+                          <label className="block text-rose-500 text-xs mb-2 mt-2">
+                            {registerFormError.owner_address[0]}
+                          </label>
+                        </div>
+
+                        <div className="relative w-full">
+                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+                            Phone
+                          </label>
+                          <input
+                            required={true}
+                            name="owner_phone"
+                            value={registerForm.owner_phone}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="text"
+                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.owner_phone[0] ? "border-rose-500" : "border-indigo-500"
+                            }`}
+                            // placeholder="+62 xxx xxxx xxxx"
+                          />
+                          <label className="block text-rose-500 text-xs mb-2 mt-2">
+                            {registerFormError.owner_phone[0]}
+                          </label>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              Birth Place
+                            </label>
+                            <input
+                              required={true}
+                              name="birth_place"
+                              value={registerForm.birth_place}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="text"
+                              className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.birth_place[0]
+                                  ? "border-rose-500"
+                                  : "border-indigo-500"
+                              }`}
+                              // placeholder="+62 xxx xxxx xxxx"
+                            />
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.birth_place[0]}
+                            </label>
+                          </div>
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              Birth Date
+                            </label>
+                            <input
+                              required={true}
+                              name="birth_date"
+                              value={registerForm.birth_date}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="date"
+                              className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.birth_date[0]
+                                  ? "border-rose-500"
+                                  : "border-indigo-500"
+                              }`}
+                              // placeholder="+62 xxx xxxx xxxx"
+                            />
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.birth_date[0]}
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="relative w-full">
+                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+                            Gender
+                          </label>
+                          <select
+                            name="gender"
+                            value={registerForm.gender}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="date"
+                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.gender[0]
+                                ? "border-rose-500"
+                                : "border-indigo-500"
+                            }`}
+                          >
+                            <option className="text-black">Select</option>
+                            <option className="text-black" value="male">
+                              Male
+                            </option>
+                            <option className="text-black" value="female">
+                              Female
+                            </option>
+                          </select>
+                          <label className="block text-rose-500 text-xs mb-2 mt-2">
+                            {registerFormError.gender[0]}
+                          </label>
+                        </div>
+
                       </div>
-                      <div className="relative w-full mb-3">
-                        <label className="block text-zinc-500 text-xs font-bold mb-2">
+
+                      <div className="w-full">
+                        <div className="divider text-xl mb-8 text-zinc-200 before:bg-emerald-500 after:bg-emerald-500 font-semibold">
+                          Clinic Information
+                        </div>
+
+                        <label className="block text-zinc-400 text-xs font-bold mb-2">
+                          Clinic Name
+                        </label>
+                        <input
+                          required={true}
+                          name="clinic_name"
+                          value={registerForm.clinic_name}
+                          onChange={(e) => handleRegisterInput(e)}
+                          type="text"
+                          className={`input w-full border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                            registerFormError.clinic_name
+                              ? "border-rose-500"
+                              : null
+                          }`}
+                          // placeholder="example@mail.com"
+                        />
+                        <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {registerFormError.clinic_name}
+                        </label>
+
+                        <label className="block text-zinc-400 text-xs font-bold mb-2">
                           Phone
                         </label>
-                        <div className="flex">
-                          <select
-                            name="code"
-                            value={verifyForm?.code}
-                            onChange={(e) => handleVerifyInput(e)}
-                            className="input mr-1 w-24 px-3"
-                          >
-                            {/* <option value="-">-</option> */}
-                            <option value="+62">+62</option>
-                          </select>
-                          <input
-                            name="phone"
-                            value={verifyForm?.phone}
-                            onChange={(e) => handleVerifyInput(e)}
-                            required
-                            type="number"
-                            className={`input w-full ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                            placeholder="xxx xxxx xxxx"
-                          />
-                        </div>
+                        <input
+                          required={true}
+                          name="clinic_phone"
+                          value={registerForm.clinic_phone}
+                          onChange={(e) => handleRegisterInput(e)}
+                          type="text"
+                          className={`input w-full border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                            registerFormError.clinic_phone
+                              ? "border-rose-500"
+                              : null
+                          }`}
+                          // placeholder="example@mail.com"
+                        />
                         <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {verifyFormError}
-                          {verifyFormError && (<span className="text-emerald-500 cursor-pointer" onClick={()=>{setSent(true);setVerifyFormError("")}}><br/>Submit OTP</span>)}
+                          {registerFormError.clinic_phone}
                         </label>
-                      </div>
-                      {/* <p>{verifyForm.fullPhone}</p> */}
-                      <div className="text-center mt-4">
-                        <button className="bg-zinc-700 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
-                          Send OTP
-                        </button>
-                        {/* <a href="https://api.whatsapp.com/send?phone=082376932445&text=Hi">Send Message</a> */}
-                      </div>
-                    </form>
-                  ) : (
-                    <form onSubmit={verifyOTP}>
-                      <div className="flex flex-col justify-center text-white">
-                        <h3>OTP Sent to {verifyForm.fullPhone}</h3>
-                        <small
-                          className="text-zinc-500 cursor-pointer"
-                          onClick={() => {
-                            setSent(false);
-                          }}
-                        >
-                          Change number
-                        </small>
-                        <small
-                          className="text-zinc-500 cursor-pointer"
-                          onClick={getOTP}
-                        >
-                          Resend OTP
-                        </small>
-                      </div>
-                      <div className="relative w-full mb-3 mt-3">
-                        <label className="block text-zinc-300 text-xs font-bold mb-2"></label>
-                        <div ref={otp_Ref} className="flex gap-2">
-                          <input
-                            name="otp_1"
-                            value={verifyForm.otp_1}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoFocus
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_2"
-                            value={verifyForm.otp_2}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_3"
-                            value={verifyForm.otp_3}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_4"
-                            value={verifyForm.otp_4}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_5"
-                            value={verifyForm.otp_5}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
-                          <input
-                            name="otp_6"
-                            value={verifyForm.otp_6}
-                            onChange={(e) => handleVerifyInput(e)}
-                            type="text"
-                            maxLength={1}
-                            autoComplete="off"
-                            className={`input font-bold w-full text-center px-0 ${
-                              verifyFormError ? "border-rose-500" : null
-                            }`}
-                          />
+
+                        <label className="block text-zinc-400 text-xs font-bold mb-2">
+                          Address
+                        </label>
+                        <textarea
+                          name="clinic_address"
+                          rows={2}
+                          value={registerForm.clinic_address}
+                          onChange={(e) => handleRegisterInput(e)}
+                          type="text"
+                          className={`input w-full h-[68px] border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                            registerFormError.clinic_address
+                              ? "border-rose-500"
+                              : null
+                          }`}
+                          // placeholder="example@mail.com"
+                        />
+                        <label className="block text-rose-500 text-xs mb-2 mt-2">
+                          {registerFormError.clinic_address}
+                        </label>
+
+                        <div className="flex gap-4  ">
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              Province
+                            </label>
+                            <select
+                              name="province"
+                              value={registerForm.province}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="date"
+                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.province
+                                  ? "border-rose-500"
+                                  : null
+                              }`}
+                            >
+                              <option className="text-black">Select</option>
+                              {Object.keys(provinces).map((keyName, i) => (
+                                <option
+                                  key={provinces[keyName]}
+                                  className="text-black"
+                                  value={provinces[keyName]}
+                                >
+                                  {provinces[keyName]}
+                                </option>
+                              ))}
+                            </select>
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.province}
+                            </label>
+                          </div>
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              City
+                            </label>
+                            <select
+                              name="city"
+                              value={registerForm.city}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="date"
+                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.city
+                                  ? "border-rose-500"
+                                  : null
+                              }`}
+                            >
+                              <option className="text-black">Select</option>
+                              {Object.keys(cities).map((keyName, i) => (
+                                <option
+                                  key={cities[keyName]}
+                                  className="text-black"
+                                  value={cities[keyName]}
+                                >
+                                  {cities[keyName]}
+                                </option>
+                              ))}
+                            </select>
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.city}
+                            </label>
+                          </div>
+                        </div>
+                        <div className="flex gap-4  ">
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              District
+                            </label>
+                            <select
+                              name="district"
+                              value={registerForm.district}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="date"
+                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.district
+                                  ? "border-rose-500"
+                                  : null
+                              }`}
+                            >
+                              <option className="text-black">Select</option>
+                              {Object.keys(districts).map((keyName, i) => (
+                                <option
+                                  key={districts[keyName]}
+                                  className="text-black"
+                                  value={districts[keyName]}
+                                >
+                                  {districts[keyName]}
+                                </option>
+                              ))}
+                            </select>
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.district}
+                            </label>
+                          </div>
+                          <div className="relative w-full">
+                            <label className="block text-zinc-400 text-xs font-bold mb-2">
+                              Postal Code
+                            </label>
+                            <select
+                              name="postal_code"
+                              value={registerForm.postal_code}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="date"
+                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.postal_code
+                                  ? "border-rose-500"
+                                  : null
+                              }`}
+                            >
+                              <option className="text-black">Select</option>
+                              {Object.keys(codes).map((keyName, i) => (
+                                <option
+                                  key={codes[keyName].id}
+                                  className="text-black"
+                                  value={codes[keyName].district_code}
+                                >
+                                  {codes[keyName].district_code} -{" "}
+                                  {codes[keyName].name} 
+                                </option>
+                              ))}
+                            </select>
+                            <label className="block text-rose-500 text-xs mb-2 mt-2">
+                              {registerFormError.postal_code}
+                            </label>
+                          </div>
                         </div>
                       </div>
+                    </div>
 
-                      <label className="block text-rose-500 text-xs mb-2 mt-2">
-                        {otpError}
-                      </label>
-                      <label className="block text-rose-500 text-xs mb-2 mt-2">
-                        {verifyFormError}
-                      </label>
-
-                      <div className="text-center mt-4">
-                        <button
-                          className="bg-emerald-600 text-white active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded hover outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                          onClick={() => {}}
+                    <div className="text-center mt-8 w-1/2 mx-auto">
+                      {verifyLoading ? (
+                        <div
+                          className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                          disabled
                         >
-                          Verify
+                          Loading ...
+                        </div>
+                      ) : (
+                        <button
+                          className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                        >
+                          Verify Account
                         </button>
-                      </div>
-                    </form>
-                  )}
+                      )}
+                    </div>
+                  </form>
                 </div>
               </div>
               <div className="flex flex-wrap mt-6 relative justify-center"></div>

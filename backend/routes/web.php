@@ -44,7 +44,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/setting/{clinic}', 'SettingController@show');
 	$router->post('/v1/setting', 'SettingController@create');
 	$router->post('/v1/setting/{id}', 'SettingController@create');
-	$router->group(['middleware' => 'access'], function () use ($router){
+	// $router->group(['middleware' => 'access'], function () use ($router){
 	// ADMIN
 	$router->get('/v1/users', 'UserController@index');
 	$router->get('/v1/user/{id}', 'UserController@show');
@@ -230,5 +230,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/report-sales/category/{clinic}/{from}/{to}', 'ReportSalesController@category');
 	$router->get('/v1/report-sales/promotion/{clinic}/{from}/{to}', 'ReportSalesController@promotion');
 	$router->get('/v1/report-sales/collected/{clinic}/{from}/{to}', 'ReportSalesController@collected');
-	});
+	// });
 });

@@ -49,15 +49,15 @@ export default function Register() {
       });
       router.push(
         {
-          pathname: "/auth/verify",
-          query: { email: response.data.data.email },
+          pathname: "/auth/registered",
+          // query: { email: response.data.data.email },
         },
-        "/auth/verify"
+        "/auth/registered"
       );
     } catch (err) {
       console.log(err);
       setRegisterFormError(initialRegisterForm);
-      setRegisterFormError(err.response?.data);
+      setRegisterFormError(err.response?.data.errors);
       setRegisterLoading(false)
     }
   }
@@ -93,7 +93,7 @@ export default function Register() {
                         placeholder="example@mail.com"
                       />
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
-                        {registerFormError.email}
+                        {registerFormError.email[0]}
                       </label>
                     </div>
                     {/* 

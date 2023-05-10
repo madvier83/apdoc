@@ -86,9 +86,9 @@
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
             <h1>Thanks for signing up!</h1>
             <div class="btn">
-                <a href="{{ route('email.verification',['email' => $email, 'token' => $token]) }}" class="btntext">Click To Verify Email</a>
+                <a href="http://localhost:3000/auth/verify?email={{$email}}&token={{$token}}" class="btntext">Click To Verify Email</a>
             </div>
-            <p class="link">If you have trouble clicking the "Verify Email" button, copy and paste url below into your web browser: <a href="{{ route('email.verification',['email' => $email, 'token' => $token]) }}" target="_blank" class="linkverify">{{ route('email.verification',['email' => $email]) }}</a></p>
+            <p class="link">If you have trouble clicking the "Verify Email" button, copy and paste url below into your web browser: <a href="http://localhost:3000/auth/verify?email={{$email}}&token={{$token}}" target="_blank" class="linkverify">http://localhost:3000/auth/verify?email={{$email}}&token={{$token}}</a></p>
         </div>
     </div>
 </body>

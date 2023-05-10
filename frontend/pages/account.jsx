@@ -4,13 +4,21 @@ import React, { useEffect, useReducer, useRef, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ModalBox from "../components/Modals/ModalBox";
 import axios from "./api/axios";
+import ModalDelete from "../components/Modals/ModalDelete";
 
 export default function Account() {
   const userFormRef = useRef();
+  const addModalRef = useRef();
+  const putModalRef = useRef();
 
   const [isEditUser, setIsEditUser] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [sendEmailLoading, setSendEmailLoading] = useState(false);
+
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [codes, setCodes] = useState([]);
 
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
@@ -51,10 +59,22 @@ export default function Account() {
     (state, newState) => ({ ...state, ...newState }),
     initialClinicForm
   );
+  const [addClinicForm, setAddClinicForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialClinicForm
+  );
+  const [addClinicFormError, setAddClinicFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialClinicForm
+  );
 
   const handleUserForm = (event) => {
     const { name, value } = event.target;
     setUserForm({ [name]: value });
+  };
+  const handleAddClinicForm = (event) => {
+    const { name, value } = event.target;
+    setAddClinicForm({ [name]: value });
   };
   const handlePutClinicForm = (event) => {
     const { name, value } = event.target;
@@ -70,7 +90,7 @@ export default function Account() {
           Authorization: "Bearer" + token,
         },
       });
-      console.log(response);
+      // console.log(response);
       setUser(response.data);
       setUserForm(response.data);
     } catch (err) {
@@ -94,13 +114,65 @@ export default function Account() {
     }
   }
 
+  async function addClinic(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`clinic`, addClinicForm, {
+        "Content-Type": "application/json",
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      getClinics();
+      addModalRef.current.click();
+    } catch (err) {
+      console.error(err);
+      setAddClinicFormError(initialClinicForm);
+      setAddClinicFormError(err.response.data);
+    }
+  }
+  async function putClinic(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `clinic/${putClinicForm.id}`,
+        putClinicForm,
+        {
+          "Content-Type": "application/json",
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
+      getClinics();
+      putModalRef.current.click();
+    } catch (err) {
+      console.error(err);
+      setPutClinicFormError(initialClinicForm);
+      setPutClinicFormError(err.response.data);
+    }
+  }
+  async function deleteClinic(id) {
+    try {
+      const response = await axios.delete(`clinic/${id}`, {
+        "Content-Type": "application/json",
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      getClinics();
+    } catch (err) {
+      console.error(err);
+      setAddClinicFormError(err);
+    }
+  }
+
   useEffect(() => {
     getUser();
     getClinics();
     setUserData(parseJwt());
   }, []);
 
-  console.log(userData);
   async function updateUser(e) {
     e.preventDefault();
     try {
@@ -138,8 +210,128 @@ export default function Account() {
     }
     setSendEmailLoading(false);
   }
-  console.log(clinics);
 
+  async function getProvinces() {
+    try {
+      const response = await axios.get(`location/provinces`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setProvinces(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCities(id) {
+    try {
+      const response = await axios.get(`location/province/cities/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setCities(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getDistricts(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/districts/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setDistricts(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCodes(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/district/villages/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setCodes(response.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // console.log(provinces)
+  useEffect(() => {
+    getProvinces();
+  }, []);
+
+  useEffect(() => {
+    Object.keys(provinces).map((keyName, i) => {
+      if (provinces[keyName] === addClinicForm.province) {
+        getCities(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "", district: "", city: "" });
+    setDistricts({});
+    setCodes({});
+  }, [addClinicForm.province]);
+
+  useEffect(() => {
+    Object.keys(cities).map((keyName, i) => {
+      if (cities[keyName] === addClinicForm.city) {
+        getDistricts(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "", district: "" });
+    setCodes({});
+  }, [addClinicForm.city]);
+
+  useEffect(() => {
+    Object.keys(districts).map((keyName, i) => {
+      if (districts[keyName] === addClinicForm.district) {
+        getCodes(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "" });
+  }, [addClinicForm.district]);
+
+  useEffect(() => {
+    Object.keys(provinces).map((keyName, i) => {
+      if (provinces[keyName] === putClinicForm.province) {
+        getCities(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "", district: "", city: "" });
+    setDistricts({});
+    setCodes({});
+  }, [putClinicForm.province]);
+
+  useEffect(() => {
+    Object.keys(cities).map((keyName, i) => {
+      if (cities[keyName] === putClinicForm.city) {
+        getDistricts(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "", district: "" });
+    setCodes({});
+  }, [putClinicForm.city]);
+
+  useEffect(() => {
+    Object.keys(districts).map((keyName, i) => {
+      if (districts[keyName] === putClinicForm.district) {
+        getCodes(keyName);
+      }
+    });
+    setAddClinicForm({ postal_code: "" });
+  }, [putClinicForm.district]);
+
+  // console.log(user);
   return (
     <>
       <DashboardLayout title="Account">
@@ -150,7 +342,7 @@ export default function Account() {
               <form onSubmit={(e) => updateUser(e)}>
                 <div className="rounded-md bg-gray-900 text-white mb-0 px-6 py-6">
                   <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
-                    <h6 className=" text-xl font-bold">Personal Details</h6>
+                    <h6 className=" text-xl font-bold">Personal Information</h6>
                     <div className="flex">
                       <div
                         className={`${
@@ -187,34 +379,137 @@ export default function Account() {
                     </div>
                   </div>
                 </div>
-                <div className="flex-auto px-4 pb-8 pt-0">
+                <div
+                  className={`flex-auto px-4 pt-0 ${
+                    !isEditUser ? "pb-8" : "pb-16"
+                  } transition-all`}
+                >
                   <div className="flex flex-wrap">
                     <div className="flex gap-8 w-full px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="uppercase text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                          htmlFor="grid-password"
-                        >
-                          <span>Full Name </span>
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={userForm.name || ""}
-                            disabled={!isEditUser}
-                            ref={userFormRef}
-                            name="name"
-                            onChange={(e) => handleUserForm(e)}
-                            required
-                          />
+                      <div className="w-full">
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
+                            <span>NIK</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                              value={userForm.name || ""}
+                              disabled={!isEditUser}
+                              name="name"
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
+                            <span>Full Name </span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                              value={userForm.name || ""}
+                              disabled={!isEditUser}
+                              ref={userFormRef}
+                              name="name"
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
+                            <span>Address</span>
+                          </label>
+                          <div className="relative">
+                            <textarea
+                              type="text"
+                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                              value={userForm.name || ""}
+                              disabled={!isEditUser}
+                              name="name"
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth place</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                value={userForm.name || ""}
+                                disabled={!isEditUser}
+                                name="name"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth date</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                value={userForm.name || ""}
+                                disabled={!isEditUser}
+                                name="name"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Gender</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                value={userForm.name || ""}
+                                disabled={!isEditUser}
+                                name="name"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
                       <div className="w-full">
                         <div className="relative w-full mb-3">
                           <label
-                            className="uppercase text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                             htmlFor="grid-password"
                           >
                             <span>Email </span>
@@ -261,7 +556,7 @@ export default function Account() {
 
                         <div className="relative w-full">
                           <label
-                            className="uppercase text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                             htmlFor="grid-password"
                           >
                             <span>Phone </span>
@@ -273,9 +568,36 @@ export default function Account() {
                               value={userForm.phone}
                               disabled
                             />
-                            <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                              Verified <i className="fas fa-check"></i>
-                            </span>
+                            {!user?.phone_verified_at ? (
+                              emailSent ? (
+                                sendEmailLoading ? (
+                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                    {/* <p>Loading</p> */}
+                                    <img
+                                      src="/loading.svg"
+                                      alt="now loading"
+                                      className="absolute"
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="absolute top-[22%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                    Verification Email Sent
+                                  </span>
+                                )
+                              ) : (
+                                <span
+                                  onClick={sendVerifyEmail}
+                                  className="absolute top-[22%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                >
+                                  Verify now{" "}
+                                  <i className="fas fa-arrow-right"></i>
+                                </span>
+                              )
+                            ) : (
+                              <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Verified <i className="fas fa-check"></i>
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -296,25 +618,36 @@ export default function Account() {
                     <div
                       className={` text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 cursor-pointer`}
                     ></div>
-                    <button
+                    <label
+                      htmlFor="addClinic"
                       className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                     >
                       Add Clinic
                       <i className={`fas fa-plus ml-2`}></i>
-                    </button>
+                    </label>
                   </div>
                 </div>
-                <div className="flex flex-col gap-4 mt-8 mb-4">
+                <div className="flex flex-col gap-4 mt-8 px-2 mb-4">
                   {clinics?.map((obj) => {
                     return (
-                      <div key={obj.id} className="card text-black bg-base-100 rounded-md w-full">
+                      <div
+                        key={obj.id}
+                        className="card text-black bg-base-100 rounded-md w-full"
+                      >
                         <div className="card-body">
                           <h2 className="card-title">
                             <i className="fas fa-house-chimney-medical"></i>{" "}
                             {obj.name}
-                            <div className="badge badge-success bg-emerald-300 text-emerald-800 text-xs px-4 font-bold norma flex">
-                              Active <i className="fas fa-check ml-1"></i>
-                            </div>
+                            {obj.status == "active" ? (
+                              <span className="text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Active <i className="fas fa-check"></i>
+                              </span>
+                            ) : (
+                              <span className="text-sm font-bold bg-rose-300 text-rose-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Pending request{" "}
+                                <i className="fas fa-gear ml-1"></i>
+                              </span>
+                            )}
                           </h2>
                           <p className="mt-2">
                             {obj.address || "-"}, {obj.district || "-"},{" "}
@@ -336,15 +669,25 @@ export default function Account() {
                           </p>
                           <div className="card-actions justify-end">
                             <label
-                              onClick={() => setPutClinicForm(obj)}
+                              onClick={() => {
+                                setPutClinicForm(obj);
+                              }}
                               htmlFor="updateClinicModal"
                               className="btn btn-xs bg-emerald-400 border-none text-white"
                             >
                               Update
                             </label>
-                            <div className="btn btn-xs bg-rose-400 border-none text-white">
+                            <label
+                              htmlFor={`clinic_${obj.id}`}
+                              className="btn btn-xs bg-rose-400 border-none text-white"
+                            >
                               Delete
-                            </div>
+                            </label>
+                            <ModalDelete
+                              id={`clinic_${obj.id}`}
+                              callback={() => deleteClinic(obj.id)}
+                              title={`Delete clinic ${obj.name}?`}
+                            ></ModalDelete>
                           </div>
                         </div>
                       </div>
@@ -356,9 +699,224 @@ export default function Account() {
           </div>
         </div>
 
+        <ModalBox id="addClinic">
+          <h3 className="font-bold text-lg mb-4">Add Clinic</h3>
+          <form onSubmit={addClinic} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={addClinicForm.name}
+                onChange={(e) => handleAddClinicForm(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addClinicFormError.name[0] && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.name[0]}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Phone</span>
+              </label>
+              <input
+                type="text"
+                name="phone"
+                value={addClinicForm.phone}
+                onChange={(e) => handleAddClinicForm(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addClinicFormError.phone && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.phone}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={addClinicForm.address}
+                onChange={(e) => handleAddClinicForm(e)}
+                required
+                placeholder=""
+                className="input h-16 input-bordered input-primary border-slate-300 w-full"
+              />
+              {addClinicFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.address}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Province</span>
+                </label>
+                <select
+                  type="text"
+                  name="province"
+                  value={addClinicForm.province}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(provinces).map((keyName, i) => (
+                    <option
+                      key={provinces[keyName]}
+                      className="text-black"
+                      value={provinces[keyName]}
+                    >
+                      {provinces[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {addClinicFormError.province && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.province}
+                    </span>
+                  </label>
+                )}
+              </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">City</span>
+                </label>
+                <select
+                  type="text"
+                  name="city"
+                  value={addClinicForm.city}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(cities).map((keyName, i) => (
+                    <option
+                      key={cities[keyName]}
+                      className="text-black"
+                      value={cities[keyName]}
+                    >
+                      {cities[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {addClinicFormError.city && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.city}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">District</span>
+                </label>
+                <select
+                  type="text"
+                  name="district"
+                  value={addClinicForm.district}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(districts).map((keyName, i) => (
+                    <option
+                      key={districts[keyName]}
+                      className="text-black"
+                      value={districts[keyName]}
+                    >
+                      {districts[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {addClinicFormError.district && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.district}
+                    </span>
+                  </label>
+                )}
+              </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Postal Code</span>
+                </label>
+                <select
+                  type="text"
+                  name="postal_code"
+                  value={addClinicForm.postal_code}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(codes).map((keyName, i) => (
+                    <option
+                      key={codes[keyName].id}
+                      className="text-black"
+                      value={codes[keyName].district_code}
+                    >
+                      {codes[keyName].district_code} - {codes[keyName].name}
+                    </option>
+                  ))}
+                </select>
+                {addClinicFormError.postal_code && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.postal_code}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="addClinic"
+                ref={addModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-success bg-indigo-400 rounded-md">
+                Add
+              </button>
+            </div>
+          </form>
+        </ModalBox>
+
         <ModalBox id="updateClinicModal">
           <h3 className="font-bold text-lg mb-4">Update Clinic</h3>
-          <form onSubmit={() => {}} autoComplete="off">
+          <form onSubmit={putClinic} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -373,10 +931,10 @@ export default function Account() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putClinicFormError.name && (
+              {putClinicFormError.name[0] && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putClinicFormError.name}
+                    {putClinicFormError.name[0]}
                   </span>
                 </label>
               )}
@@ -402,10 +960,164 @@ export default function Account() {
                 </label>
               )}
             </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={putClinicForm.address}
+                onChange={(e) => handlePutClinicForm(e)}
+                required
+                placeholder=""
+                className="input h-16 input-bordered input-primary border-slate-300 w-full"
+              />
+              {putClinicFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putClinicFormError.address}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Province</span>
+                </label>
+                <select
+                  type="text"
+                  name="province"
+                  value={putClinicForm.province}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(provinces).map((keyName, i) => (
+                    <option
+                      key={provinces[keyName]}
+                      className="text-black"
+                      value={provinces[keyName]}
+                    >
+                      {provinces[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {putClinicFormError.province && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.province}
+                    </span>
+                  </label>
+                )}
+              </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">City</span>
+                </label>
+                <select
+                  type="text"
+                  name="city"
+                  value={putClinicForm.city}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(cities).map((keyName, i) => (
+                    <option
+                      key={cities[keyName]}
+                      className="text-black"
+                      value={cities[keyName]}
+                    >
+                      {cities[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {putClinicFormError.city && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.city}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">District</span>
+                </label>
+                <select
+                  type="text"
+                  name="district"
+                  value={putClinicForm.district}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(districts).map((keyName, i) => (
+                    <option
+                      key={districts[keyName]}
+                      className="text-black"
+                      value={districts[keyName]}
+                    >
+                      {districts[keyName]}
+                    </option>
+                  ))}
+                </select>
+                {putClinicFormError.district && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.district}
+                    </span>
+                  </label>
+                )}
+              </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Postal Code</span>
+                </label>
+                <select
+                  type="text"
+                  name="postal_code"
+                  value={putClinicForm.postal_code}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {Object.keys(codes).map((keyName, i) => (
+                    <option
+                      key={codes[keyName].id}
+                      className="text-black"
+                      value={codes[keyName].district_code}
+                    >
+                      {codes[keyName].district_code} - {codes[keyName].name}
+                    </option>
+                  ))}
+                </select>
+                {putClinicFormError.postal_code && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.postal_code}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
             <div className="modal-action rounded-sm">
               <label
                 htmlFor="updateClinicModal"
-                // ref={addModalRef}
+                ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel

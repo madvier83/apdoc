@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => 'string',
+            // 'name'      => 'string',
             'email'     => 'required|email|unique:users',
             'password'  => 'required|min:8',
         ],[
@@ -38,7 +38,7 @@ class AuthController extends Controller
         }
         try {
             $user = new User();
-            $user->name        = $request->name;
+            // $user->name        = $request->name;
             $user->email       = $request->email;
             $user->password    = app('hash')->make($request->password);
             $user->role_id     = 2;
@@ -53,12 +53,13 @@ class AuthController extends Controller
 
     public function verification_otp(Request $request)
     {
-        $data = User::where('email', $request->email)->where('otp_verification', $request->otp_verification)->first();
+        $data = User::where('phone', $request->phone)->where('otp_verification', $request->otp_verification)->first();
         $validator = Validator::make($request->all(), [
-            'phone' => 'unique:users,phone',
+            // 'phone' => 'unique:users,phone',
+            'phone' => 'required',
             'otp_verification' => 'required|min:6|numeric'
         ],[
-            'phone.unique' => 'phone number was used',
+            // 'phone.unique' => 'phone number was used',
             'otp_verification.required' => 'fill code',
             'otp_verification.min' => 'invalid code minimun 6',
             'otp_verificaton.numeric' => 'please input numeric character'
@@ -81,14 +82,13 @@ class AuthController extends Controller
             if($data->email_verified_at == 0){
                 return response()->json(['status' => 'failed', 'message' => 'Please verify ur email first'], 422);
             }
-            $data->phone = $request->phone;
             $data->is_verified = 1;
             $data->phone_verified_at = Carbon::now();
             $data->save();
             // if ($request->password) {
             //     return $this->login($request);
             // }
-            return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success verification'], 200);
+            return response()->json(['status' => 'success', 'data' => $data, 'message' => 'Success verification'], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -96,16 +96,17 @@ class AuthController extends Controller
 
     public function send_otp(Request $request)
     {   
-        $validator = Validator::make($request->all(), [
-            'phone' => 'unique:users,phone',
-            'email' => 'required'
-        ],[
-            'phone.unique' => 'phone number was used',
-            'email.required' => 'fill email',
-        ]);
-        if($validator->fails()){
-            return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'phone' => 'unique:users,phone',
+        //     'email' => 'required'
+        // ],[
+        //     'phone.unique' => 'phone number was used',
+        //     'email.required' => 'fill email',
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
+        // }
+        // $data = User::where('email', $request->email)->where('phone', $request->phone)->first();
         $data = User::where('email', $request->email)->first();
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'user Not Found'], 404);
@@ -126,7 +127,7 @@ class AuthController extends Controller
                 $data->created_at_otp = Carbon::now();
                 $data->expired_otp = Carbon::now()->addMinutes(5);
                 $data->update();
-                Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($request->phone, $data->otp_verification));
+                Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new OTPWhatsapp($data->phone, $data->otp_verification));
                 return response()->json(['status' => 'OK', 'data' => $data, 'message' => 'Success send OTP'], 200);
             } catch (\Throwable $e) {
                 return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -242,8 +243,8 @@ class AuthController extends Controller
             if($now > $expired){
                 return response()->json(['status' => 'failed', 'message' => 'link was expired'], 422);
             }
-            $payload = ['email' => $data->email, 'email_token_verification' => encrypt($data->email_token_verification)];
-            return response(['status'=>'success','payload' => $payload], 200);
+            // $payload = ['email' => $data->email, 'email_token_verification' => encrypt($data->email_token_verification)];
+            return response(['status'=>'success','message' => 'success verification'], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -254,8 +255,9 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'clinic_name','clinic_address','province',
             'city','district','clinic_phone',
-            'nik','owner_name','birth_place',
-            'birth_date','gender','owner_address' => 'required',
+            'nik','birth_place','name',
+            'birth_date','gender','owner_address','owner_phone' => 'required',
+            'owner_phone' => 'unique:users,phone',
             'postal_code','nik' => 'numeric',
         ]);
         if($validator->fails()){
@@ -279,12 +281,12 @@ class AuthController extends Controller
             ]);
             $employee = Employee::create([
                 'nik'         => $request->nik,
-                'name'        => $data->name,
+                'name'        => $request->name,
                 'birth_place' => $request->birth_place,
                 'birth_date'  => $request->birth_date,
                 'gender'      => $request->gender,
                 'address'     => $request->owner_address,
-                'phone'       => null,
+                'phone'       => $request->owner_phone,
                 'position_id' => null,
                 'clinic_id'   => $clinic->id,
             ]);
@@ -294,6 +296,8 @@ class AuthController extends Controller
                     'clinic_id' => $clinic->id
                 ]);
             }
+            $data->name        = $request->name;
+            $data->phone       = $request->owner_phone;
             $data->apdoc_id    = $apdoc_id;
             $data->employee_id = $employee->id;
             $data->email_verified_at = Carbon::now();

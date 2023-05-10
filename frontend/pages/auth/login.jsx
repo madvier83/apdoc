@@ -51,16 +51,16 @@ export default function Login() {
     } catch (e) {
       console.log(e)
       setLoading(false);
-      setLoginError("Login failed");
-      if (e.response?.status == 403) {
-        router.push(
-          {
-            pathname: "/auth/verify",
-            query: { email: credential },
-          },
-          "/auth/verify"
-        );
-      }
+      setLoginError(e.response.data.message || "Login failed");
+      // if (e.response?.status == 403) {
+      //   router.push(
+      //     {
+      //       pathname: "/auth/verify",
+      //       query: { email: credential },
+      //     },
+      //     "/auth/verify"
+      //   );
+      // }
     }
   }
 
@@ -121,7 +121,7 @@ export default function Login() {
                           } opacity-40 hover:opacity-60 transition-all duration-300 text-emerald-600`}
                         ></i>
                       </div>
-                      <label className="block text-rose-500 text-xs mb-2 mt-2">
+                      <label className="block capitalize text-rose-500 text-xs mb-2 mt-2">
                         {loginError}
                       </label>
                     </div>

@@ -17,37 +17,36 @@ export default function Navbar({ title, clinic, setClinic }) {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }
   const [apdoc, setApdoc] = useState();
-  // console.log(apdoc.role_id);
+
+  async function getClinics() {
+    if (!apdoc) {
+      return;
+    }
+    setClinicsLoading(true);
+    try {
+      const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      setClinics(response.data);
+      setClinicsLoading(false);
+
+      let clinicCookie = getCookie("clinic");
+      // console.log(clinicCookie)
+      if (!clinicCookie) {
+        setClinic(response.data[0]?.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // const initialClinic = "";
+  // const [clinic, setClinic] = useState("");
+  const [cookieCheck, setCookieCheck] = useState(false);
 
   if (setClinic) {
-    async function getClinics() {
-      if (apdoc?.role_id > 2) {
-        setClinic(apdoc?.clinic_id);
-      } else {
-        setClinicsLoading(true);
-        try {
-          const response = await axios.get(`/clinic/${apdoc.apdoc_id}/apdoc`, {
-            headers: {
-              Authorization: "Bearer" + token,
-            },
-          });
-          setClinics(response.data);
-          setClinicsLoading(false);
-
-          let clinicCookie = getCookie("clinic");
-          // console.log(clinicCookie)
-          if (!clinicCookie) {
-            setClinic(response.data[0]?.id);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
-
-    // const initialClinic = "";
-    // const [clinic, setClinic] = useState("");
-    const [cookieCheck, setCookieCheck] = useState(false);
     useEffect(() => {
       try {
         let clinicCookie = getCookie("clinic");
@@ -73,18 +72,20 @@ export default function Navbar({ title, clinic, setClinic }) {
     }, [clinic]);
 
     useEffect(() => {
-      setApdoc(parseJwt(token));
-    }, []);
-
-    // console.log(apdoc)
-
-    useEffect(() => {
+      if (apdoc?.role_id > 2) {
+        setClinic(apdoc?.clinic_id);
+      }
       if (apdoc?.apdoc_id && token) {
         getClinics();
       }
     }, [apdoc]);
+
+    useEffect(() => {
+      setApdoc(parseJwt(token));
+    }, []);
+
+    // console.log(clinic);
   }
-  // console.log(apdoc?.role_id)
 
   return (
     <>
@@ -101,8 +102,14 @@ export default function Navbar({ title, clinic, setClinic }) {
               {title}
             </Link>
             {setClinic && (
-              <div className={`${apdoc?.role_id == 2 ? "block" : "hidden"} flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}>
-                <i className="fas fa-house-chimney-medical ml-1 text-emerald-400"> </i>
+              <div
+                className={`${
+                  apdoc?.role_id == 2 ? "block" : "hidden"
+                } flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}
+              >
+                <i className="fas fa-house-chimney-medical ml-1 text-emerald-400">
+                  {" "}
+                </i>
                 <div className="">
                   <select
                     className="p-0 pl-0 pr-8 tracking-wider appearance-none text-emerald-400 text-center focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md w-48"
