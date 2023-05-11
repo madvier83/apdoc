@@ -18,8 +18,7 @@ class SettingController extends Controller
     public function show($clinic)
     {
         try {
-            $setting = Setting::first();
-            // $setting = Setting::where('clinic_id', $clinic)->first();
+            $setting = Setting::where('clinic_id', $clinic)->first();
     
             return response()->json($setting);
         } catch (Throwable $e) {
@@ -27,10 +26,14 @@ class SettingController extends Controller
         }
     }
 
-    public function create(Request $request, $id)
+    public function create(Request $request)
     {
-        $setting = Setting::first();
-        // $setting = Setting::find($id);
+       //
+    }
+
+    public function update(Request $request, $id)
+    {
+        $setting = Setting::find($id);
 
         if (!$setting) {
             return response()->json(['message' => 'Setting not found!'], 404);
@@ -58,15 +61,10 @@ class SettingController extends Controller
             $setting->fill($data);
             $setting->save();
     
-            return response()->json(Setting::first());
+            return response()->json($setting);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
-    }
-
-    public function update(Request $request)
-    {
-       //
     }
 
     public function destroy($id)

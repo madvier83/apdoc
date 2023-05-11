@@ -184,15 +184,15 @@ class DummySeeder extends Seeder
 			'clinic_id'		=> 2
 		]);
 
-		Setting::create([
-			'logo'        => null,
-            'name'        => 'Cursor ID',
-            'phone'       => '628995754988',
-            'address'     => 'Jl. Dalem Kaum',
-            'city'        => 'Bandung',
-            'country'     => 'Jawa Barat',
-            'postal_code' => '40228',
-            'clinic_id' => 2
-		]);
+		// Setting::create([
+		// 	'logo'        => null,
+        //     'name'        => 'Cursor ID',
+        //     'phone'       => '628995754988',
+        //     'address'     => 'Jl. Dalem Kaum',
+        //     'city'        => 'Bandung',
+        //     'country'     => 'Jawa Barat',
+        //     'postal_code' => '40228',
+        //     'clinic_id' => 2
+		// ]);
 	}
 }
