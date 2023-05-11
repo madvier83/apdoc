@@ -33,9 +33,15 @@ export default function Account() {
   // console.log(userData)
   const initialUserForm = {
     id: "",
+    employee_id: "",
     name: "",
     email: "",
     phone: "",
+    nik: "",
+    address: "",
+    birth_place: "",
+    birth_date: "",
+    gender: "",
   };
   const initialClinicForm = {
     id: "",
@@ -90,9 +96,23 @@ export default function Account() {
           Authorization: "Bearer" + token,
         },
       });
-      // console.log(response);
-      setUser(response.data);
-      setUserForm(response.data);
+      console.log(response.data);
+      let userData = {
+        id: response.data.id,
+        employee_id: response.data.employee_id,
+        name: response.data.name,
+        email: response.data.email,
+        email_verified_at: response.data.email_verified_at,
+        phone: response.data.phone,
+        phone_verified_at: response.data.phone_verified_at,
+        nik: response.data.employee.nik,
+        address: response.data.employee.address,
+        birth_place: response.data.employee.birth_place,
+        birth_date: response.data.employee.birth_date,
+        gender: response.data.employee.gender,
+      };
+      setUser(userData);
+      setUserForm(userData);
     } catch (err) {
       console.log(err);
     }
@@ -176,12 +196,16 @@ export default function Account() {
   async function updateUser(e) {
     e.preventDefault();
     try {
-      const response = await axios.put(`user/${user.id}`, userForm, {
-        "Content-Type": "application/json",
-        headers: {
-          Authorization: "Bearer" + token,
-        },
-      });
+      const response = await axios.put(
+        `employee/${user.employee_id}`,
+        userForm,
+        {
+          "Content-Type": "application/json",
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
       // console.log(response);
       setIsEditUser(false);
       getUser();
@@ -331,7 +355,7 @@ export default function Account() {
     setAddClinicForm({ postal_code: "" });
   }, [putClinicForm.district]);
 
-  // console.log(user);
+  console.log(userForm);
   return (
     <>
       <DashboardLayout title="Account">
@@ -397,10 +421,13 @@ export default function Account() {
                           <div className="relative">
                             <input
                               type="text"
-                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                              value={userForm.name || ""}
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                `}
+                              value={userForm.nik || ""}
                               disabled={!isEditUser}
-                              name="name"
+                              name="nik"
                               onChange={(e) => handleUserForm(e)}
                               required
                             />
@@ -416,7 +443,10 @@ export default function Account() {
                           <div className="relative">
                             <input
                               type="text"
-                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                `}
                               value={userForm.name || ""}
                               disabled={!isEditUser}
                               ref={userFormRef}
@@ -436,10 +466,13 @@ export default function Account() {
                           <div className="relative">
                             <textarea
                               type="text"
-                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                              value={userForm.name || ""}
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                `}
+                              value={userForm.address || ""}
                               disabled={!isEditUser}
-                              name="name"
+                              name="address"
                               onChange={(e) => handleUserForm(e)}
                               required
                             />
@@ -456,10 +489,12 @@ export default function Account() {
                             <div className="relative">
                               <input
                                 type="text"
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                value={userForm.name || ""}
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_place || ""}
                                 disabled={!isEditUser}
-                                name="name"
+                                name="birth_place"
                                 onChange={(e) => handleUserForm(e)}
                                 required
                               />
@@ -474,11 +509,13 @@ export default function Account() {
                             </label>
                             <div className="relative">
                               <input
-                                type="text"
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                value={userForm.name || ""}
+                                type="date"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_date || ""}
                                 disabled={!isEditUser}
-                                name="name"
+                                name="birth_date"
                                 onChange={(e) => handleUserForm(e)}
                                 required
                               />
@@ -492,15 +529,21 @@ export default function Account() {
                               <span>Gender</span>
                             </label>
                             <div className="relative">
-                              <input
+                              <select
                                 type="text"
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                value={userForm.name || ""}
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.gender || ""}
                                 disabled={!isEditUser}
-                                name="name"
+                                name="gender"
                                 onChange={(e) => handleUserForm(e)}
                                 required
-                              />
+                              >
+                                <option>Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
                             </div>
                           </div>
                         </div>
@@ -517,7 +560,9 @@ export default function Account() {
                           <div className="relative">
                             <input
                               type="email"
-                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
                               value={userForm.email}
                               disabled
                             />
@@ -564,7 +609,9 @@ export default function Account() {
                           <div className="relative">
                             <input
                               type="text"
-                              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
                               value={userForm.phone}
                               disabled
                             />

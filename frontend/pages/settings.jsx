@@ -97,8 +97,8 @@ export default function Settings() {
   }, []);
   useEffect(() => {
     setSettingsFormError(initialForm);
-    setPreview(null)
-    setSelectedFile(null)
+    setPreview(null);
+    setSelectedFile(null);
   }, [isEditSettings]);
 
   async function updateSettings(e) {
@@ -144,13 +144,11 @@ export default function Settings() {
         <div className="flex flex-row mt-6 gap-4">
           <div className="w-full lg:w-8/12 mt-1">
             <form onSubmit={(e) => updateSettings(e)}>
-              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-md bg-gray-100 border-0">
+              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-md bg-gray-900 border-0">
                 {/* Personal detail form */}
-                <div className="rounded-t-md bg-white mb-0 px-6 py-6">
-                  <div className="text-center flex justify-between">
-                    <h6 className="text-blueGray-700 text-xl font-bold">
-                      Recipient Setting
-                    </h6>
+                <div className="rounded-t-md bg-gray-900 text-white mb-0 px-6 py-6">
+                  <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
+                    <h6 className="text-xl font-bold">Recipient Setting</h6>
                     <div className="flex">
                       <div
                         className={`${
@@ -188,13 +186,13 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+                <div className="flex-auto px-4 py-10 pt-0">
                   <div className="flex flex-wrap">
-                    <div className="w-full px-4 mt-8">
+                    <div className="w-full px-4 mt-4">
                       <div className="relative w-full mb-3">
                         <div className="w-full gap-8">
                           <div className="w-full">
-                            <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
+                            <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                               <span>Logo</span>
                             </label>
                             <input
@@ -213,9 +211,9 @@ export default function Settings() {
                           </label>
                         </div>
                       </div>
-                      <hr className="mt-6 border-b-1 border-blueGray-300 py-4" />
+                      <div className="w-full border-b-gray-700 border-dotted border-b-2 pb-4 mb-4"></div>
                       <div className="relative w-full mb-3">
-                        <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
+                        <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                           <span>Clinic Name</span>
                         </label>
                         <div className="relative">
@@ -236,7 +234,7 @@ export default function Settings() {
                         </div>
                       </div>
                       <div className="relative w-full mb-3">
-                        <label className="uppercase text-blueGray-600 text-xs font-bold mb-2 flex items-center justify-between">
+                        <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                           <span>Phone Number</span>
                         </label>
                         <div className="relative">
@@ -258,12 +256,11 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <hr className="mt-6 border-b-1 border-blueGray-300 py-4" />
-
                   <div className="flex flex-wrap">
                     <div className="w-full lg:w-12/12 px-4">
+                      <div className="w-full border-b-gray-700 border-dotted border-b-2 pb-4 mb-4"></div>
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           Address
                         </label>
                         <input
@@ -283,7 +280,7 @@ export default function Settings() {
                     </div>
                     <div className="w-full lg:w-4/12 px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           City
                         </label>
                         <input
@@ -303,7 +300,7 @@ export default function Settings() {
                     </div>
                     <div className="w-full lg:w-4/12 px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           Country
                         </label>
                         <input
@@ -323,7 +320,7 @@ export default function Settings() {
                     </div>
                     <div className="w-full lg:w-4/12 px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2">
+                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           Postal Code
                         </label>
                         <input
@@ -402,8 +399,12 @@ export default function Settings() {
                 </div>
                 <div className="border-t w-full border-dashed my-3 border-t-slate-500"></div>
                 <div className="flex w-full justify-between items-center">
-                  <small className="font-semibold">Item 001 <span className="font-normal">#33,300 x30</span></small>
-                  <small className="font-semibold">{numeral("999000").format("0,0")}</small>
+                  <small className="font-semibold">
+                    Item 001 <span className="font-normal">#33,300 x30</span>
+                  </small>
+                  <small className="font-semibold">
+                    {numeral("999000").format("0,0")}
+                  </small>
                 </div>
                 <div className="flex w-full justify-between items-center">
                   <small>⤷ Discount Item 001</small>
