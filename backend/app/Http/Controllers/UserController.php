@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::all();
+        $user = User::with('employee')->get();
         return response()->json($user);
     }
 
@@ -42,7 +42,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::with('employee')->find($id);
         return response()->json($user);
     }
 

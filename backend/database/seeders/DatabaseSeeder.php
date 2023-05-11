@@ -116,14 +116,14 @@ class DatabaseSeeder extends Seeder
         }
 
         $employee = Employee::create([
-            'nik'         => null,
+            'nik'         => '21110533',
             'name'        => 'M Advie Rifaldy',
-            'birth_place' => null,
-            'birth_date'  => null,
-            'gender'      => null,
-            'address'     => '+6282376932445',
-            'phone'       => null,
-            'position_id' => null,
+            'birth_place' => 'Bandung',
+            'birth_date'  => '2002-07-09',
+            'gender'      => 'male',
+            'address'     => 'Jl. Kopo Sayati',
+            'phone'       => '+6282376932445',
+            'position_id' => 1,
             'clinic_id'   => 2
         ]);
 
@@ -135,6 +135,7 @@ class DatabaseSeeder extends Seeder
             'otp_verification'  => '750587',
             'created_at_otp'    => Carbon::now(),
             'expired_otp'       => Carbon::now(),
+            'email_verified_at' => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
             'is_verified'       => 1,
             'apdoc_id'          => $clinic->apdoc_id,
