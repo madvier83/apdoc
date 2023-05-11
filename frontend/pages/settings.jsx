@@ -78,7 +78,7 @@ export default function Settings() {
   async function getSettings() {
     setSettingsLoading(true);
     try {
-      const response = await axios.get(`/setting/1`, {
+      const response = await axios.get(`/setting/2/clinic`, {
         headers: {
           Authorization: "Bearer" + token,
         },
@@ -123,13 +123,14 @@ export default function Settings() {
 
     try {
       // console.log(settingsForm);
-      const response = await axios.post(`setting`, formData, {
+      const response = await axios.post(`setting/1`, formData, {
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: "Bearer" + token,
         },
       });
+      console.log(response);
       setIsEditSettings(false);
       getSettings();
     } catch (err) {

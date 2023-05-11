@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Models\Patient;
 use App\Models\Position;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserSlot;
 use Carbon\Carbon;
@@ -77,6 +78,8 @@ class DatabaseSeeder extends Seeder
             'employee_id'       => $employee->id
         ]);
 
+        // Klinik ke-1 Ngafee
+
         $clinic = Clinic::create([
             'name'        => 'Ngafee',
             'address'     => 'Jl. Dalem Kaum no. 112',
@@ -89,6 +92,17 @@ class DatabaseSeeder extends Seeder
             'status'      => 'active'
         ]);
 
+        Setting::create([
+			'logo'        => null,
+            'name'        => 'Cursor ID',
+            'phone'       => '628995754988',
+            'address'     => 'Jl. Dalem Kaum',
+            'city'        => 'Bandung',
+            'country'     => 'Jawa Barat',
+            'postal_code' => '40228',
+            'clinic_id'   => $clinic->id
+		]);
+
         // free slot
         for($i=0; $i<10; $i++) {
             UserSlot::create([
@@ -96,17 +110,30 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // Klinik ke-2 Umanis
+
         $clinic = Clinic::create([
             'name'        => 'Umanis Klinik',
-            'address'     => null,
-            'province'    => null,
-            'city'        => null,
-            'district'    => null,
-            'postal_code' => null,
-            'phone'       => null,
+            'address'     => 'Jl. Kopo Sayati',
+            'province'    => 'Jawa Barat',
+            'city'        => 'Bandung',
+            'district'    => 'Margahayu',
+            'postal_code' => '40228',
+            'phone'       => '6282376932441',
             'apdoc_id'    => $clinic->apdoc_id,
             'status'      => 'active'
         ]);
+
+        Setting::create([
+			'logo'        => null,
+            'name'        => 'Umanis Klinik',
+            'phone'       => '6282376932441',
+            'address'     => 'Jl. Kopo Sayati',
+            'city'        => 'Bandung',
+            'country'     => 'Jawa Barat',
+            'postal_code' => '40228',
+            'clinic_id'   => $clinic->id
+		]);
 
         // free slot
         for($i=0; $i<10; $i++) {

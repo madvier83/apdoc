@@ -41,9 +41,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
 	// SETTING
-	$router->get('/v1/setting/{clinic}', 'SettingController@show');
-	$router->post('/v1/setting', 'SettingController@create');
-	$router->post('/v1/setting/{id}', 'SettingController@create');
+	$router->get('/v1/setting/{clinic}/clinic', 'SettingController@show');
+	$router->post('/v1/setting/{id}', 'SettingController@update');
+
 	// $router->group(['middleware' => 'access'], function () use ($router){
 	// ADMIN
 	$router->get('/v1/users', 'UserController@index');

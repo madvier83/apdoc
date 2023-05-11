@@ -88,11 +88,11 @@ class EmployeeController extends Controller
             'gender'            => 'required|in:male,female',
             'address'           => 'required',
             'phone'             => 'required',
-            'position_id'       => 'required',
         ]);
 
         try {
             $data = $request->all();
+            $data['position_id'] == $request->position_id ?? null;
             $employee->fill($data);
             $employee->save();
     
