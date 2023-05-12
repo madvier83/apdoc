@@ -92,7 +92,7 @@ class EmployeeController extends Controller
 
         try {
             $data = $request->all();
-            $data['position_id'] == $request->position_id ?? null;
+            if(isset($request['position_id'])) { $data['position_id'] = $request->position_id; }
             $employee->fill($data);
             $employee->save();
     

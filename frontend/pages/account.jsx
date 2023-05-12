@@ -96,11 +96,11 @@ export default function Account() {
           Authorization: "Bearer" + token,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       let userData = {
         id: response.data.id,
         employee_id: response.data.employee_id,
-        name: response.data.name,
+        name: response.data.employee.name,
         email: response.data.email,
         email_verified_at: response.data.email_verified_at,
         phone: response.data.phone,
@@ -206,7 +206,7 @@ export default function Account() {
           },
         }
       );
-      // console.log(response);
+      console.log(response);
       setIsEditUser(false);
       getUser();
     } catch (err) {
@@ -355,7 +355,7 @@ export default function Account() {
     setAddClinicForm({ postal_code: "" });
   }, [putClinicForm.district]);
 
-  console.log(userForm);
+  // console.log(userForm);
   return (
     <>
       <DashboardLayout title="Account">
