@@ -75,6 +75,7 @@ class UserSlotController extends Controller
                 'otp_verification'  => '123456',
                 'created_at_otp'    => Carbon::now(),
                 'expired_otp'       => Carbon::now(),
+                'email_verified_at' => Carbon::now(),
                 'phone_verified_at' => Carbon::now(),
                 'is_verified'       => 1,
                 'employee_id'       => $request->employee_id
