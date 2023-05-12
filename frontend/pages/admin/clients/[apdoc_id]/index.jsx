@@ -38,6 +38,22 @@ export default function Client() {
     }
   }
 
+  async function toggleClinicStatus(id) {
+    try {
+      const response = await axios.put(
+        `clinic/${id}/status`, {},
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      getSlots()
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     if (router.isReady) {
       getSlots();
@@ -123,6 +139,9 @@ export default function Client() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Status
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
@@ -175,6 +194,9 @@ export default function Client() {
                           {obj?.name || "Unasigned"}
                         </span>
                       </td>
+                      <td className="border-t-0 capitalize px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {obj.status}
+                      </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
@@ -195,6 +217,15 @@ export default function Client() {
                           }}
                         >
                           <i className="fa-solid fa-house-chimney-medical"></i>
+                        </label>
+                        <label
+                          className={`${obj.status == "active" ? "bg-emerald-400 active:bg-emerald-400" : "bg-rose-400 active:bg-rose-400"}  text-white text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`}
+                          type="button"
+                          onClick={() => {
+                            toggleClinicStatus(obj.id)
+                          }}
+                        >
+                          <i className={`fas ${obj.status == "active" ? "fa-toggle-on" : "fa-toggle-off"}`}></i>
                         </label>
                         {/* </div> */}
                       </td>

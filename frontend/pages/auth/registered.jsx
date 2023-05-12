@@ -18,14 +18,15 @@ export default function ResetPassword() {
                   </div>
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                  <div
-                    className="cursor-progress mx-autos text-white text-sm text-center"
-                    type="button"
-                    disabled
-                  >
-                    Please check your email,
+                  <div className="cursor-progress mx-autos text-white text-sm text-center">
+                    <h1 className="text-xl font-bold text-emerald-400">
+                      Registration success! <br /> Please check your email
+                    </h1>
+                    <br />
                     <Link href={"/auth/login"}>
-                      <span className="text-emerald-400"> back to login page</span>
+                      <span className="text-gray-400">
+                        <i className="fas fa-arrow-left"></i> back to login page
+                      </span>
                     </Link>
                   </div>
                 </div>
