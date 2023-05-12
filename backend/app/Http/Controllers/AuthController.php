@@ -12,6 +12,7 @@ use App\Events\VerifyEmail;
 use App\Events\ForgotPasswordMail;
 use App\Models\Clinic;
 use App\Models\Employee;
+use App\Models\Setting;
 use App\Models\UserSlot;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
@@ -278,6 +279,16 @@ class AuthController extends Controller
                 'phone'       => $request->clinic_phone,
                 'apdoc_id'    => $apdoc_id,
                 'status'      => 'active'
+            ]);
+            Setting::create([
+                'logo'        => null,
+                'name'        => $clinic->name,
+                'phone'       => $clinic->phone,
+                'address'     => $clinic->address,
+                'city'        => $clinic->city,
+                'country'     => $clinic->province,
+                'postal_code' => $clinic->postal_code,
+                'clinic_id'   => $clinic->id
             ]);
             $employee = Employee::create([
                 'nik'         => $request->nik,

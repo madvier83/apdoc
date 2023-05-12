@@ -211,7 +211,7 @@ class TransactionController extends Controller
             $transaction->fill($data);
             $transaction->save();
     
-            return response()->json(['message' => 'Service updated successfully!']);
+            return response()->json(['message' => 'Transaction updated successfully!']);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }

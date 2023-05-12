@@ -74,6 +74,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/clinic/{id}', 'ClinicController@show');
 	$router->post('/v1/clinic', 'ClinicController@create');
 	$router->put('/v1/clinic/{id}', 'ClinicController@update');
+	$router->put('/v1/clinic/{id}/status', 'ClinicController@updateStatus');
 	$router->delete('/v1/clinic/{id}', 'ClinicController@destroy');
 
 	$router->get('/v1/positions/{clinic}/{perPage}', 'PositionController@index');

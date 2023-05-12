@@ -30,6 +30,27 @@ class ClinicController extends Controller
         }
     }
 
+    public function updateStatus($id)
+    {
+        $clinic = clinic::find($id);
+
+        if (!$clinic) {
+            return response()->json(['message' => 'Clinic not found!'], 404);
+        }
+
+        try {
+            $data = [
+                'status' => ($clinic->status == 'pending') ? 'active' : 'pending'
+            ];
+            $clinic->fill($data);
+            $clinic->save();
+    
+            return response()->json(['message' => 'Clinic updated successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+
     public function show($id)
     {
         try {
