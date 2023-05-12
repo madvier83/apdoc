@@ -139,9 +139,9 @@ export default function Register() {
         getCities(keyName);
       }
     });
-    setRegisterForm({postal_code: "", district: "", city: ""})
-    setDistricts({})
-    setCodes({})
+    setRegisterForm({ postal_code: "", district: "", city: "" });
+    setDistricts({});
+    setCodes({});
   }, [registerForm.province]);
 
   useEffect(() => {
@@ -150,8 +150,8 @@ export default function Register() {
         getDistricts(keyName);
       }
     });
-    setRegisterForm({postal_code: "", district: ""})
-    setCodes({})
+    setRegisterForm({ postal_code: "", district: "" });
+    setCodes({});
   }, [registerForm.city]);
 
   useEffect(() => {
@@ -160,14 +160,17 @@ export default function Register() {
         getCodes(keyName);
       }
     });
-    setRegisterForm({postal_code: ""})
+    setRegisterForm({ postal_code: "" });
   }, [registerForm.district]);
 
   useEffect(() => {
-    if(router.isReady) {
-      setRegisterForm({email: router.query.email, email_token_verification: router.query.token})
+    if (router.isReady) {
+      setRegisterForm({
+        email: router.query.email,
+        email_token_verification: router.query.token,
+      });
     }
-  }, [router.isReady])
+  }, [router.isReady]);
 
   // console.log(registerForm)
 
@@ -190,8 +193,10 @@ export default function Register() {
                   <form onSubmit={(e) => handleVerify(e)}>
                     <div className="flex w-full gap-8">
                       <div className="w-full">
-                        <div className="divider text-xl mb-8 text-zinc-200 before:bg-indigo-500 after:bg-indigo-500 font-semibold">
-                          Personal Information
+                        <div className="relative flex py-5 items-center">
+                          <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white">
+                            Personal Information
+                          </span>
                         </div>
                         <div className="relative w-full">
                           <label className="block text-zinc-400 text-xs font-bold mb-2">
@@ -204,7 +209,9 @@ export default function Register() {
                             onChange={(e) => handleRegisterInput(e)}
                             type="text"
                             className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.nik[0] ? "border-rose-500" : "border-indigo-500"
+                              registerFormError.nik[0]
+                                ? "border-rose-500"
+                                : "border-indigo-500"
                             }`}
                             // placeholder="example@mail.com"
                           />
@@ -224,7 +231,9 @@ export default function Register() {
                             onChange={(e) => handleRegisterInput(e)}
                             type="text"
                             className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.name[0] ? "border-rose-500" : "border-indigo-500"
+                              registerFormError.name[0]
+                                ? "border-rose-500"
+                                : "border-indigo-500"
                             }`}
                             // placeholder="example@mail.com"
                           />
@@ -265,7 +274,9 @@ export default function Register() {
                             onChange={(e) => handleRegisterInput(e)}
                             type="text"
                             className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.owner_phone[0] ? "border-rose-500" : "border-indigo-500"
+                              registerFormError.owner_phone[0]
+                                ? "border-rose-500"
+                                : "border-indigo-500"
                             }`}
                             // placeholder="+62 xxx xxxx xxxx"
                           />
@@ -346,12 +357,13 @@ export default function Register() {
                             {registerFormError.gender[0]}
                           </label>
                         </div>
-
                       </div>
 
                       <div className="w-full">
-                        <div className="divider text-xl mb-8 text-zinc-200 before:bg-emerald-500 after:bg-emerald-500 font-semibold">
-                          Clinic Information
+                        <div className="relative flex py-5 items-center">
+                          <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white">
+                            Clinic Information
+                          </span>
                         </div>
 
                         <label className="block text-zinc-400 text-xs font-bold mb-2">
@@ -530,7 +542,7 @@ export default function Register() {
                                   value={codes[keyName].district_code}
                                 >
                                   {codes[keyName].district_code} -{" "}
-                                  {codes[keyName].name} 
+                                  {codes[keyName].name}
                                 </option>
                               ))}
                             </select>
@@ -551,9 +563,7 @@ export default function Register() {
                           Loading ...
                         </div>
                       ) : (
-                        <button
-                          className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                        >
+                        <button className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
                           Verify Account
                         </button>
                       )}

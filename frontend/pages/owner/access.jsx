@@ -117,7 +117,7 @@ export default function Access() {
           { name: "item", route: "/dashboard/pharmacy/item", access: false },
           {
             name: "item-supply",
-            route: "/dashboard/pharmacy/item-supply",
+            route: "/dashboard/pharmacy/supply",
             access: false,
           },
           {

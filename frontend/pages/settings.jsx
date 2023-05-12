@@ -14,6 +14,8 @@ export default function Settings() {
   const settingsFormRef = useRef();
   const structRef = useRef();
 
+  const [clinic, setClinic] = useState()
+
   const [isEditSettings, setIsEditSettings] = useState(false);
 
   const [settings, setSettings] = useState();
@@ -76,9 +78,12 @@ export default function Settings() {
   }, [selectedFile]);
 
   async function getSettings() {
+    if(!clinic) {
+      return;
+    }
     setSettingsLoading(true);
     try {
-      const response = await axios.get(`/setting/2/clinic`, {
+      const response = await axios.get(`/setting/${clinic && clinic}/clinic`, {
         headers: {
           Authorization: "Bearer" + token,
         },
@@ -123,7 +128,7 @@ export default function Settings() {
 
     try {
       // console.log(settingsForm);
-      const response = await axios.post(`setting/1`, formData, {
+      const response = await axios.post(`setting/${settingsForm.id}`, formData, {
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -138,10 +143,15 @@ export default function Settings() {
       console.log(err);
     }
   }
+  
+  useEffect(() => {
+    getSettings()
+    setIsEditSettings(false)
+  }, [clinic]);
 
   return (
     <>
-      <DashboardLayout title="Settings" headerStats={false}>
+      <DashboardLayout title="Settings" clinic={clinic} setClinic={setClinic}>
         <div className="flex flex-row mt-6 gap-4">
           <div className="w-full lg:w-8/12 mt-1">
             <form onSubmit={(e) => updateSettings(e)}>
