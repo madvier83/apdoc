@@ -12,9 +12,13 @@ class EmployeeController extends Controller
     {
         try {
             if ($keyword == null) {
-                $employee = Employee::with('position')->where('clinic_id', $clinic)->doesntHave('users')->orderBy('updated_at', 'desc')->paginate($perPage);
+                $employee = Employee::with(['position', 'users'])->where('clinic_id', $clinic)->where(function($query) {
+                        $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
+                    })
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate($perPage);
             } else {
-                $employee = Employee::with('position')->where(function($query) use ($keyword) {
+                $employee = Employee::with(['position', 'users'])->where(function($query) use ($keyword) {
                     $query->where('nik', 'like', '%'.$keyword.'%')
                         ->orWhere('name', 'like', '%'.$keyword.'%')
                         ->orWhere('birth_place', 'like', '%'.$keyword.'%')
@@ -25,6 +29,9 @@ class EmployeeController extends Controller
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%')
                         ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where(function($query) {
+                        $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')

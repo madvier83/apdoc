@@ -478,7 +478,7 @@ export default function Slots() {
               {putFormError.employee_id && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.employee_id}
+                    {putFormError.data.message}
                   </span>
                 </label>
               )}

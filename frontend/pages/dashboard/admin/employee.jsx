@@ -401,12 +401,14 @@ export default function Employee() {
                         </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
+                        {!obj.users.length>0&&(
+                          <label
                           className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           htmlFor={obj.id}
-                        >
+                          >
                           <i className="fas fa-trash"></i>
                         </label>
+                          )}
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}

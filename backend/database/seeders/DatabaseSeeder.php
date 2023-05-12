@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'postal_code' => null,
             'phone'       => null,
             'apdoc_id'    => time() . 'AP1',
+            'status'      => 'active'
         ]);
 
         $employee = Employee::create([

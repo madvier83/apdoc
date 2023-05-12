@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clinic;
+use App\Models\Setting;
+use App\Models\UserSlot;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -78,6 +80,23 @@ class ClinicController extends Controller
             $data = $request->all();
             $data['apdoc_id'] = auth()->user()->apdoc_id;
             $clinic = Clinic::create($data);
+
+            Setting::create([
+                'logo'        => null,
+                'name'        => $clinic->name,
+                'phone'       => $clinic->phone,
+                'address'     => $clinic->address,
+                'city'        => $clinic->city,
+                'country'     => $clinic->province,
+                'postal_code' => $clinic->postal_code,
+                'clinic_id'   => $clinic->id
+            ]);
+
+            for($i=0; $i<10; $i++) {
+                UserSlot::create([
+                    'clinic_id' => $clinic->id
+                ]);
+            }
     
             return response()->json($clinic);
         } catch (Throwable $e) {
