@@ -30,6 +30,7 @@ export default function Payment() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
+    clinic_id: "",
     category_payment_id: "",
     name: "",
   };
@@ -188,6 +189,7 @@ export default function Payment() {
     setSearch("")
     setSearchCategory("")
     setPage(1)
+    setAddForm({clinic_id: clinic})
   }, [clinic])
 
   useEffect(() => {

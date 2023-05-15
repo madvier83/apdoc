@@ -24,6 +24,7 @@ export default function CategoryPayment() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialCategoryForm = {
+    clinic_id: "",
     name: "",
   };
 
@@ -155,6 +156,7 @@ export default function CategoryPayment() {
   useEffect(()=> {
     setSearch("")
     setPage(1)
+    setAddForm({clinic_id: clinic})
   }, [clinic])
 
   useEffect(() => {

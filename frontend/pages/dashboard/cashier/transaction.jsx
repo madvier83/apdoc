@@ -70,6 +70,7 @@ export default function Transaction() {
   const [time, setTime] = useState("");
 
   const dummyTransaction = {
+    clinic_id: "",
     patient_id: 0,
     payment_id: null,
     payment: null,
@@ -541,6 +542,8 @@ export default function Transaction() {
     getItems();
     getCategory();
     getCategoryPayments();
+    
+    setTransaction({clinic_id: clinic})
   }, [clinic]);
   // change queue target
   useEffect(() => {
@@ -581,6 +584,7 @@ export default function Transaction() {
   useEffect(() => {
     setTime(moment().format("h:mm:ss A"));
   }, [transaction]);
+  
 
   return (
     <>
@@ -1139,7 +1143,7 @@ export default function Transaction() {
                 <div className="flex justify-center items-center flex-col">
                   {settings?.logo ? (
                     <img
-                      src={"http://localhost:8000/" + settings?.logo}
+                      src={process.env.BASE_URL + settings?.logo}
                       className="max-h-28 max-w-sm grayscale mb-1"
                     />
                   ) : (

@@ -17,6 +17,10 @@ export async function middleware(req) {
     const jwt = req.cookies.get("token")?.value;
     const secret =  new TextEncoder().encode(process.env.JWT_SECRET);
     
+    if(pathname == "/") {
+        return NextResponse.next()
+    }
+
     if(pathname.startsWith("/auth")) {
         if (!jwt) {
             return NextResponse.next();
@@ -84,7 +88,7 @@ export async function middleware(req) {
 
     if(pathname.startsWith("/admin")) {
         if (jwt == undefined) {
-            url.pathname = "/auth/admin"
+            url.pathname = "/auth/login"
             return NextResponse.redirect(url);
         } else {
             try {
@@ -217,7 +221,7 @@ export async function middleware(req) {
 
     let isRouteAllowed = false;
     if (jwt == undefined) {
-        url.pathname = "/auth/admin"
+        url.pathname = "/auth/login"
         return NextResponse.redirect(url);
     } else {
         try {

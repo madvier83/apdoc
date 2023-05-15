@@ -133,7 +133,6 @@ export default function Account() {
       console.error(err);
     }
   }
-
   async function addClinic(e) {
     e.preventDefault();
     try {
@@ -290,72 +289,149 @@ export default function Account() {
     }
   }
 
+  const [verifyForm, setVerifyForm] = useState("");
+  const [verifyFormError, setVerifyFormError] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const otpRef = useRef()
+
+  async function getOTP() {
+    setOtpLoading(true);
+    const data = {
+      email: user?.email,
+      phone: user?.phone?.replace(/\D/g, ""),
+    };
+    console.log(data);
+    try {
+      const response = await axios.post("auth/send/otp", data, {
+        "Content-Type": "application/json",
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+      setOtpLoading(false);
+      setOtpSent(true);
+      setVerifyFormError({});
+      // console.log(response);
+    } catch (err) {
+      console.error(err);
+      setVerifyFormError("");
+      setVerifyFormError(err.response?.data);
+      setOtpLoading(false);
+    }
+  }
+  
+  async function verifyPhone(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "auth/phone/verification",
+        { email: user?.email, otp_verification: verifyForm, phone: user.phone },
+        {
+          "Content-Type": "application/json",
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
+      getUser()
+      otpRef.current.click()
+    } catch (err) {
+      console.error(err)
+      setVerifyFormError({otp: err.response?.data?.message});
+    }
+  }
+
   // console.log(provinces)
   useEffect(() => {
     getProvinces();
   }, []);
 
   useEffect(() => {
-    Object.keys(provinces).map((keyName, i) => {
-      if (provinces[keyName] === addClinicForm.province) {
-        getCities(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "", district: "", city: "" });
-    setDistricts({});
-    setCodes({});
+    const getData = setTimeout(() => {
+      Object.keys(provinces).map((keyName, i) => {
+        if (provinces[keyName] === addClinicForm.province) {
+          getCities(keyName);
+        }
+      });
+      setAddClinicForm({ postal_code: "", district: "", city: "" });
+      setDistricts({});
+      setCodes({});
+    }, 500);
+    return () => clearTimeout(getData);
   }, [addClinicForm.province]);
 
   useEffect(() => {
-    Object.keys(cities).map((keyName, i) => {
-      if (cities[keyName] === addClinicForm.city) {
-        getDistricts(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "", district: "" });
-    setCodes({});
+    const getData = setTimeout(() => {
+      Object.keys(cities).map((keyName, i) => {
+        if (cities[keyName] === addClinicForm.city) {
+          getDistricts(keyName);
+        }
+      });
+      setAddClinicForm({ postal_code: "", district: "" });
+      setCodes({});
+    }, 500);
+    return () => clearTimeout(getData);
   }, [addClinicForm.city]);
 
   useEffect(() => {
-    Object.keys(districts).map((keyName, i) => {
-      if (districts[keyName] === addClinicForm.district) {
-        getCodes(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "" });
+    const getData = setTimeout(() => {
+      Object.keys(districts).map((keyName, i) => {
+        if (districts[keyName] === addClinicForm.district) {
+          getCodes(keyName);
+        }
+      });
+      setAddClinicForm({ postal_code: "" });
+    }, 500);
+    return () => clearTimeout(getData);
   }, [addClinicForm.district]);
 
   useEffect(() => {
-    Object.keys(provinces).map((keyName, i) => {
-      if (provinces[keyName] === putClinicForm.province) {
-        getCities(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "", district: "", city: "" });
-    setDistricts({});
-    setCodes({});
+    const getData = setTimeout(() => {
+      Object.keys(provinces).map((keyName, i) => {
+        if (provinces[keyName] === putClinicForm.province) {
+          getCities(keyName);
+          setPutClinicForm((prev) => {
+            city: prev.city;
+          });
+        }
+      });
+      setPutClinicForm({ postal_code: "", district: "", city: "" });
+      setDistricts({});
+      setCodes({});
+    }, 500);
+    return () => clearTimeout(getData);
   }, [putClinicForm.province]);
 
   useEffect(() => {
-    Object.keys(cities).map((keyName, i) => {
-      if (cities[keyName] === putClinicForm.city) {
-        getDistricts(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "", district: "" });
-    setCodes({});
+    const getData = setTimeout(() => {
+      Object.keys(cities).map((keyName, i) => {
+        if (cities[keyName] === putClinicForm.city) {
+          getDistricts(keyName);
+          setPutClinicForm((prev) => {
+            district: "";
+          });
+        }
+      });
+      setPutClinicForm({ postal_code: "", district: "" });
+      setCodes({});
+    }, 500);
+    return () => clearTimeout(getData);
   }, [putClinicForm.city]);
 
   useEffect(() => {
-    Object.keys(districts).map((keyName, i) => {
-      if (districts[keyName] === putClinicForm.district) {
-        getCodes(keyName);
-      }
-    });
-    setAddClinicForm({ postal_code: "" });
+    const getData = setTimeout(() => {
+      Object.keys(districts).map((keyName, i) => {
+        if (districts[keyName] === putClinicForm.district) {
+          getCodes(keyName);
+        }
+      });
+      setPutClinicForm({ postal_code: "" });
+    }, 500);
+    return () => clearTimeout(getData);
   }, [putClinicForm.district]);
 
-  // console.log(userForm);
+  // console.log(verifyFormError);
   return (
     <>
       <DashboardLayout title="Account">
@@ -632,13 +708,13 @@ export default function Account() {
                                   </span>
                                 )
                               ) : (
-                                <span
-                                  onClick={sendVerifyEmail}
+                                <label
+                                  htmlFor="verifyPhoneModal"
                                   className="absolute top-[22%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
                                 >
                                   Verify now{" "}
                                   <i className="fas fa-arrow-right"></i>
-                                </span>
+                                </label>
                               )
                             ) : (
                               <span className="absolute top-[22%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
@@ -931,7 +1007,11 @@ export default function Account() {
                     <option
                       key={codes[keyName].id}
                       className="text-black"
-                      value={codes[keyName].district_code}
+                      value={
+                        codes[keyName].district_code +
+                        " - " +
+                        codes[keyName].name
+                      }
                     >
                       {codes[keyName].district_code} - {codes[keyName].name}
                     </option>
@@ -1146,7 +1226,11 @@ export default function Account() {
                     <option
                       key={codes[keyName].id}
                       className="text-black"
-                      value={codes[keyName].district_code}
+                      value={
+                        codes[keyName].district_code +
+                        " - " +
+                        codes[keyName].name
+                      }
                     >
                       {codes[keyName].district_code} - {codes[keyName].name}
                     </option>
@@ -1166,6 +1250,93 @@ export default function Account() {
                 htmlFor="updateClinicModal"
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-success bg-emerald-400 rounded-md">
+                Update
+              </button>
+            </div>
+          </form>
+        </ModalBox>
+
+        <ModalBox id="verifyPhoneModal">
+          <h3 className="font-bold text-lg mb-4">Verify Phone Number</h3>
+          <form onSubmit={verifyPhone} autoComplete="off">
+            <div className="form-control w-full">
+              <div className="relative">
+                <label className="label">
+                  <span className="label-text">Phone</span>
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  name="phone"
+                  onChange={() => {}}
+                  value={user?.phone || ""}
+                  required
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {otpLoading ? (
+                  <span className="absolute w-16 top-[36%] h-16 right-8 ml-2 px-4 flex">
+                    <img
+                      src="/loading.svg"
+                      alt="now loading"
+                      className="absolute"
+                    />
+                  </span>
+                ) : (
+                  <>
+                    {otpSent ? (
+                      <label
+                        onClick={() => getOTP()}
+                        className="absolute top-[58%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                      >
+                        OTP Sent, Check Your Whatsapp
+                      </label>
+                    ) : (
+                      <label
+                        onClick={() => getOTP()}
+                        className="absolute top-[58%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                      >
+                        Send OTP
+                      </label>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {verifyFormError.message && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {verifyFormError.message}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">OTP Code</span>
+              </label>
+              <input
+                type="text"
+                name="phone"
+                value={verifyForm}
+                onChange={(e) => setVerifyForm(e.target.value)}
+                required
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {verifyFormError.otp && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {verifyFormError.otp}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="verifyPhoneModal"
+                className="btn btn-ghost rounded-md"
+                ref={otpRef}
               >
                 Cancel
               </label>

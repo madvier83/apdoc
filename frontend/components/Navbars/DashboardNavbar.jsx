@@ -123,10 +123,11 @@ export default function Navbar({ title, clinic, setClinic }) {
                         return (
                           <option
                             key={obj.id}
-                            className={"text-black"}
+                            className={`${obj.status != "active" ? "text-rose-400 text-opacity-50" : "text-black"} `}
                             value={obj.id}
+                            disabled={obj.status != "active"}
                           >
-                            {obj.name}
+                            {obj.status != "active" && "🔒"} {obj.name}
                           </option>
                         );
                       })}

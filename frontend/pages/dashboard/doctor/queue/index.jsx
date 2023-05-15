@@ -32,8 +32,8 @@ export default function Queue() {
   const [isAddService, setIsAddService] = useState(false);
   const [addServiceError, setAddServiceError] = useState("");
   const [isRegular, setIsRegular] = useState(true);
-  
-  const [clinic, setClinic] = useState()
+
+  const [clinic, setClinic] = useState();
 
   // open service form ref
   let infoRef = useRef();
@@ -167,12 +167,18 @@ export default function Queue() {
   const [appointment, setAppointment] = useState();
   const [appointmentLoading, setAppointmentLoading] = useState(true);
   async function getAppointment() {
+    if(!clinic) {
+      return;
+    }
     try {
-      const response = await axios.get(`appointments/${clinic && clinic + "/"}${999999}?page=${1}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `appointments/${clinic && clinic + "/"}${999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setAppointment(response.data.data);
       setAppointmentLoading(false);
 
@@ -277,8 +283,8 @@ export default function Queue() {
   }, [isRegular]);
 
   useEffect(() => {
-    getQueues()
-    getAppointment()
+    getQueues();
+    getAppointment();
   }, [clinic]);
 
   return (
@@ -696,10 +702,11 @@ export default function Queue() {
                     }`}
                   >
                     <a
-                      href={`https://wa.me/${selectedQueue.patient?.phone.replace(
-                        /\D/g,
-                        ""
-                      )}`}
+                      href={`${
+                        selectedQueue.phone
+                          ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                          : ""
+                      }`}
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >

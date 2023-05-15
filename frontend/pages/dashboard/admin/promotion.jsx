@@ -24,6 +24,7 @@ export default function Promotion() {
   const [promotionLoading, setPromotionLoading] = useState(true);
 
   const initialCategoryForm = {
+    clinic_id: "",
     name: "",
     discount: "",
   };
@@ -153,6 +154,7 @@ export default function Promotion() {
   useEffect(() => {
     setSearch("");
     setPage(1);
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

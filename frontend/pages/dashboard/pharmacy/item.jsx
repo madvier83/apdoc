@@ -31,6 +31,7 @@ export default function Item() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
+    clinic_id: "",
     category_item_id: "",
     name: "",
     unit: "",
@@ -197,6 +198,7 @@ export default function Item() {
     setSearchCategory("")
     setPage(1);
     setAddForm(initialItemForm)
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

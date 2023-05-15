@@ -29,6 +29,7 @@ export default function Appointment() {
   const [selectedPatient, setSelectedPatient] = useState();
 
   const initialItemForm = {
+    clinic_id: "",
     patient_id: null,
     description: "",
     appointment_date: "",
@@ -199,6 +200,7 @@ export default function Appointment() {
     setSearch("");
     setSearchPatients("")
     setPage(1);
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

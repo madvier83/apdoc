@@ -24,6 +24,7 @@ export default function CategoryOutcome() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialCategoryForm = {
+    clinic_id: "",
     name: "",
   };
 
@@ -155,6 +156,7 @@ export default function CategoryOutcome() {
   useEffect(()=> {
     setSearch("")
     setPage(1)
+    setAddForm({clinic_id: clinic})
   }, [clinic])
 
   useEffect(() => {
