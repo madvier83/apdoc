@@ -78,27 +78,43 @@ class ReportSalesController extends Controller
     public function payment($clinic, $from, $to) {
         try {
             $payments = Payment::with('categoryPayment')->where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalQty = 0;
             $totalCollected = 0;
+
+            // Cash
+            $qty             = Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('payment_id', null)->where('is_cancelled', false)->count();
+            $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('payment_id', null)->where('is_cancelled', false)->sum('total');
+            $totalQty       += $qty;
+            $totalCollected += $collected;
+
+            $collection->push([
+                'name'      => 'Cash',
+                'category'  => '',
+                'qty'       => $qty,
+                'total'     => $collected
+            ]);
     
+            // Non Cash
             foreach ($payments as $payment) {
                 $qty             = Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('payment_id', $payment->id)->where('is_cancelled', false)->count();
-                $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('payment_id', $payment->id)->where('is_cancelled', false)->sum('total');
-                $totalQty       += $qty;
-                $totalCollected += $collected;
-    
-                array_push($collection, [
-                    'name'      => $payment->name,
-                    'category'  => $payment->categoryPayment->name,
-                    'qty'       => $qty,
-                    'total'     => $collected
-                ]);
+                if ($qty > 0) {
+                    $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('payment_id', $payment->id)->where('is_cancelled', false)->sum('total');
+                    $totalQty       += $qty;
+                    $totalCollected += $collected;
+        
+                    $collection->push([
+                        'name'      => $payment->name,
+                        'category'  => $payment->categoryPayment->name,
+                        'qty'       => $qty,
+                        'total'     => $collected
+                    ]);
+                }
             }
     
             $data['total']  = $totalCollected;
             $data['qty']    = $totalQty;
-            $data['data']   = $collection;
+            $data['data']   = $collection->sortBy('total', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {
@@ -109,37 +125,39 @@ class ReportSalesController extends Controller
     public function service($clinic, $from, $to) {
         try {
             $services = Service::where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalNetSales = 0;
             $totalDiscount = 0;
             $totalGrossSales = 0;
             $totalQty = 0;
             
             foreach ($services as $service) {
-                $netSales            = (integer) TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('service_id', $service->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
-                $discount            = (integer) TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('service_id', $service->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
-                $grossSales          = $netSales + $discount;
                 $qty                 = TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('service_id', $service->id)->whereRelation('transaction' ,'is_cancelled', false)->count();
-                $totalNetSales      += $netSales;
-                $totalDiscount      += $discount;
-                $totalGrossSales    += $grossSales;
-                $totalQty           += $qty;
-                
-    
-                array_push($collection, [
-                    'name'          => $service->name,
-                    'qty'           => $qty,
-                    'grossSales'    => $grossSales,
-                    'discount'      => $discount,
-                    'netSales'      => $netSales
-                ]);
+                if ($qty > 0) {
+                    $netSales            = (integer) TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('service_id', $service->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
+                    $discount            = (integer) TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('service_id', $service->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
+                    $grossSales          = $netSales + $discount;
+                    $totalNetSales      += $netSales;
+                    $totalDiscount      += $discount;
+                    $totalGrossSales    += $grossSales;
+                    $totalQty           += $qty;
+                    
+        
+                    $collection->push([
+                        'name'          => $service->name,
+                        'qty'           => $qty,
+                        'grossSales'    => $grossSales,
+                        'discount'      => $discount,
+                        'netSales'      => $netSales
+                    ]);
+                }
             }
     
             $data['NetSales']      = $totalNetSales;
             $data['Discount']       = $totalDiscount;
             $data['GrossSales']    = $totalGrossSales;
             $data['qty']            = $totalQty;
-            $data['data']           = $collection;
+            $data['data']           = $collection->sortBy('qty', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {
@@ -150,37 +168,40 @@ class ReportSalesController extends Controller
     public function item($clinic, $from, $to) {
         try {
             $items = Item::with('categoryItem')->where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalNetSales = 0;
             $totalDiscount = 0;
             $totalGrossSales = 0;
             $totalQty = 0;
+
             foreach ($items as $item) {
-                $netSales            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
-                $discount            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
-                $grossSales          = $netSales + $discount;
-                $qty                 = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->count();
-                $totalNetSales      += $netSales;
-                $totalDiscount      += $discount;
-                $totalGrossSales    += $grossSales;
-                $totalQty           += $qty;
-                
-    
-                array_push($collection, [
-                    'name'          => $item->name,
-                    'category'      => $item->categoryItem->name,
-                    'qty'           => $qty,
-                    'grossSales'    => $grossSales,
-                    'discount'      => $discount,
-                    'netSales'      => $netSales
-                ]);
+                $qty                 = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('qty');
+                if ($qty > 0) {
+                    $netSales            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
+                    $discount            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('item_id', $item->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
+                    $grossSales          = $netSales + $discount;
+                    $totalNetSales      += $netSales;
+                    $totalDiscount      += $discount;
+                    $totalGrossSales    += $grossSales;
+                    $totalQty           += $qty;
+                    
+        
+                    $collection->push([
+                        'name'          => $item->name,
+                        'category'      => $item->categoryItem->name,
+                        'qty'           => $qty,
+                        'grossSales'    => $grossSales,
+                        'discount'      => $discount,
+                        'netSales'      => $netSales
+                    ]);
+                }
             }
     
             $data['NetSales']      = $totalNetSales;
             $data['Discount']       = $totalDiscount;
             $data['GrossSales']    = $totalGrossSales;
             $data['qty']            = $totalQty;
-            $data['data']           = $collection;
+            $data['data']           = $collection->sortBy('qty', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {
@@ -191,37 +212,39 @@ class ReportSalesController extends Controller
     public function category($clinic, $from, $to) {
         try {
             $categories = CategoryItem::where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalNetSales = 0;
             $totalDiscount = 0;
             $totalGrossSales = 0;
             $totalQty = 0;
     
             foreach ($categories as $category) {
-                $netSales            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
-                $discount            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
-                $grossSales          = $netSales + $discount;
-                $qty                 = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->count();
-                $totalNetSales      += $netSales;
-                $totalDiscount      += $discount;
-                $totalGrossSales    += $grossSales;
-                $totalQty           += $qty;
-                
-    
-                array_push($collection, [
-                    'name'          => $category->name,
-                    'qty'           => $qty,
-                    'grossSales'    => $grossSales,
-                    'discount'      => $discount,
-                    'netSales'      => $netSales
-                ]);
+                $qty                 = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('qty');
+                if ($qty > 0) {
+                    $netSales            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('total');
+                    $discount            = (integer) TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->whereRelation('item', 'category_item_id', $category->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
+                    $grossSales          = $netSales + $discount;
+                    $totalNetSales      += $netSales;
+                    $totalDiscount      += $discount;
+                    $totalGrossSales    += $grossSales;
+                    $totalQty           += $qty;
+                    
+        
+                    $collection->push([
+                        'name'          => $category->name,
+                        'qty'           => $qty,
+                        'grossSales'    => $grossSales,
+                        'discount'      => $discount,
+                        'netSales'      => $netSales
+                    ]);
+                }
             }
     
             $data['NetSales']      = $totalNetSales;
             $data['Discount']       = $totalDiscount;
             $data['GrossSales']    = $totalGrossSales;
             $data['qty']            = $totalQty;
-            $data['data']           = $collection;
+            $data['data']           = $collection->sortBy('qty', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {
@@ -232,29 +255,31 @@ class ReportSalesController extends Controller
     public function promotion($clinic, $from, $to) {
         try {
             $promotions = Promotion::where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalQty = 0;
             $totalCollected = 0;
     
             foreach ($promotions as $promotion) {
                 $qtyItem             = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->count();
-                $collectedItem       = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
                 $qtyService          = TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->count();
-                $collectedService    = TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
-                $totalQty           += $qtyItem + $qtyService;
-                $totalCollected     += $collectedItem + $collectedService;
-    
-                array_push($collection, [
-                    'name'      => $promotion->name,
-                    'discount'  => $promotion->discount,
-                    'qty'       => $qtyItem + $qtyService,
-                    'total'     => $collectedItem + $collectedService
-                ]);
+                if ($qtyItem > 0 || $qtyService) {
+                    $collectedItem       = TransactionItem::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
+                    $collectedService    = TransactionService::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('promotion_id', $promotion->id)->whereRelation('transaction' ,'is_cancelled', false)->sum('discount');
+                    $totalQty           += $qtyItem + $qtyService;
+                    $totalCollected     += $collectedItem + $collectedService;
+        
+                    $collection->push([
+                        'name'      => $promotion->name,
+                        'discount'  => $promotion->discount,
+                        'qty'       => $qtyItem + $qtyService,
+                        'total'     => $collectedItem + $collectedService
+                    ]);
+                }
             }
     
             $data['total']  = $totalCollected;
             $data['qty']    = $totalQty;
-            $data['data']   = $collection;
+            $data['data']   = $collection->sortBy('qty', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {
@@ -265,37 +290,39 @@ class ReportSalesController extends Controller
     public function collected($clinic, $from, $to) {
         try {
             $employees = Employee::where('is_delete', false)->get();
-            $collection = array();
+            $collection = collect();
             $totalQty = 0;
             $totalCollected = 0;
     
-            $qty             = Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', null)->where('is_cancelled', false)->count();
-            $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', null)->where('is_cancelled', false)->sum('total');
-            $totalQty       += $qty;
-            $totalCollected += $collected;
+            // $qty             = Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', null)->where('is_cancelled', false)->count();
+            // $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', null)->where('is_cancelled', false)->sum('total');
+            // $totalQty       += $qty;
+            // $totalCollected += $collected;
     
-            array_push($collection, [
-                'name'      => 'Administrator',
-                'qty'       => $qty,
-                'total'     => $collected
-            ]);
+            // $collection->push([
+            //     'name'      => 'Administrator',
+            //     'qty'       => $qty,
+            //     'total'     => $collected
+            // ]);
     
             foreach ($employees as $employee) {
                 $qty             = Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', $employee->id)->where('is_cancelled', false)->count();
-                $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', $employee->id)->where('is_cancelled', false)->sum('total');
-                $totalQty       += $qty;
-                $totalCollected += $collected;
-    
-                array_push($collection, [
-                    'name'      => $employee->name,
-                    'qty'       => $qty,
-                    'total'     => $collected
-                ]);
+                if ($qty > 0) {
+                    $collected       = (integer) Transaction::where('clinic_id', $clinic)->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->where('employee_id', $employee->id)->where('is_cancelled', false)->sum('total');
+                    $totalQty       += $qty;
+                    $totalCollected += $collected;
+        
+                    $collection->push([
+                        'name'      => $employee->name,
+                        'qty'       => $qty,
+                        'total'     => $collected
+                    ]);
+                }
             }
     
             $data['total']  = $totalCollected;
             $data['qty']    = $totalQty;
-            $data['data']   = $collection;
+            $data['data']   = $collection->sortBy('qty', descending:true)->values()->all();
     
             return response()->json($data);
         } catch (Throwable $e) {

@@ -37,7 +37,7 @@ class QueueDetailController extends Controller
         }
     }
 
-    public function create($queue, $employee, $service)
+    public function create(Request $request, $queue, $employee, $service)
     {
         $queueDetail = QueueDetail::whereDate('created_at', Carbon::today())->where('queue_id', $queue)->where('service_id', $service)->first();
 
@@ -52,7 +52,7 @@ class QueueDetailController extends Controller
                 'service_id'    => $service,
                 'is_cancelled'  => false,
             ];
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $queueDetail = QueueDetail::create($data);
     
             return response()->json($queueDetail);

@@ -130,7 +130,7 @@ class TransactionController extends Controller
                 'discount'      => 0,
                 'total'         => 0,
                 'payment'       => $request->payment,
-                'employee_id'   => auth()->user()->employees->id ?? null
+                'employee_id'   => auth()->user()->employee_id ?? null
             ];
             $dataTransaction['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $transaction = Transaction::create($dataTransaction);
@@ -157,6 +157,7 @@ class TransactionController extends Controller
                     'qty'               => $qty,
                     'discount'          => $discount,
                     'total'             => $total,
+                    'clinic_id'         => $request->clinic_id ?? auth()->user()->employee->clinic_id,
                 ];
                 
                 $totalDiscount += $discount;
@@ -179,6 +180,7 @@ class TransactionController extends Controller
                     'discount'          => $discount,
                     'total'             => $total,
                     'commission'        => $service->commission,
+                    'clinic_id'         => $request->clinic_id ?? auth()->user()->employee->clinic_id,
                 ];
                 
                 $totalDiscount += $discount;
