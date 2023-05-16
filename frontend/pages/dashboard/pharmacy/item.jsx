@@ -8,6 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
+import CurrencyInput from "react-currency-input-field";
 
 export default function Item() {
   const token = getCookies("token");
@@ -601,13 +602,12 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Buy Price</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="buy_price"
+                defaultValue={0}
                 value={addForm.buy_price}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setAddForm({buy_price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.buy_price && (
@@ -620,13 +620,12 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Sell Price</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="sell_price"
+                defaultValue={0}
                 value={addForm.sell_price}
-                onChange={(e) => handleAddInput(e)}
-                required
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setAddForm({sell_price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.sell_price && (
@@ -806,13 +805,12 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Buy Price</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="buy_price"
+                defaultValue={0}
                 value={putForm.buy_price}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setPutForm({buy_price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.buy_price && (
@@ -825,13 +823,12 @@ export default function Item() {
               <label className="label">
                 <span className="label-text">Sell Price</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="sell_price"
+                defaultValue={0}
                 value={putForm.sell_price}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setPutForm({sell_price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.sell_price && (

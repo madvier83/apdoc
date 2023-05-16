@@ -57,7 +57,19 @@ export default function Register() {
     } catch (err) {
       console.log(err);
       setRegisterFormError(initialRegisterForm);
+      if (registerForm.email == "") {
+        setRegisterFormError({ email: [""] });
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(registerForm.email)
+      ) {
+        setRegisterFormError({ email: ["Invalid email address"] });
+      } else {
+        setRegisterFormError({ email: [""] });
+      }
       setRegisterFormError(err.response?.data.errors);
+      if(registerForm.matchPwd == "") {
+        setRegisterFormError({ matchPwd: ["Required"] });
+      }
       setRegisterLoading(false);
     }
   }

@@ -9,14 +9,16 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 
+import CurrencyInput from "react-currency-input-field";
+
 export default function Service() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
-  
-  const [clinic, setClinic] = useState()
+
+  const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
@@ -60,7 +62,7 @@ export default function Service() {
   };
 
   async function getServices() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -72,7 +74,7 @@ export default function Service() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".","")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -155,18 +157,18 @@ export default function Service() {
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic]);
 
-  useEffect(()=> {
-    setSearch("")
-    setPage(1)
-    setAddForm({clinic_id: clinic})
-  }, [clinic])
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+    setAddForm({ clinic_id: clinic });
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
     });
   }, [services]);
-
+console.log(addForm)
   return (
     <>
       <DashboardLayout title="Services" clinic={clinic} setClinic={setClinic}>
@@ -309,25 +311,25 @@ export default function Service() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError(initialServiceForm);
-                            }}
-                          >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
+                        <label
+                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          htmlFor="modal-put"
+                          onClick={() => {
+                            setPutForm(obj);
+                            setPutFormError(initialServiceForm);
+                          }}
+                        >
+                          <i className="fas fa-pen-to-square"></i>
+                        </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
+                        <label
+                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          htmlFor={obj.id}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </label>
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}
@@ -443,13 +445,12 @@ export default function Service() {
               <label className="label">
                 <span className="label-text">Price</span>
               </label>
-              <input
-                type="number"
+              <CurrencyInput
                 name="price"
+                defaultValue={0}
                 value={addForm.price}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                autoComplete="new-off"
+                decimalsLimit={2}
+                onValueChange={(value, name) => setAddForm({price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.price && (
@@ -462,12 +463,12 @@ export default function Service() {
               <label className="label">
                 <span className="label-text">Commission</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="commission"
+                defaultValue={0}
                 value={addForm.commission}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setAddForm({commission: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.commission && (
@@ -517,13 +518,12 @@ export default function Service() {
               <label className="label">
                 <span className="label-text">Price</span>
               </label>
-              <input
-                type="number"
+              <CurrencyInput
                 name="price"
+                defaultValue={0}
                 value={putForm.price}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                autoComplete="new-off"
+                decimalsLimit={2}
+                onValueChange={(value, name) => setPutForm({price: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.price && (
@@ -536,12 +536,12 @@ export default function Service() {
               <label className="label">
                 <span className="label-text">Commission</span>
               </label>
-              <input
-                type="text"
+              <CurrencyInput
                 name="commission"
+                defaultValue={0}
                 value={putForm.commission}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setPutForm({commission: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.commission && (

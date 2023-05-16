@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
+import CurrencyInput from "react-currency-input-field";
 
 export default function Outcome() {
   const token = getCookies("token");
@@ -14,8 +15,8 @@ export default function Outcome() {
   const addModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
-  
-  const [clinic, setClinic] = useState()
+
+  const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
@@ -63,7 +64,7 @@ export default function Outcome() {
   };
 
   async function getItem() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -91,7 +92,7 @@ export default function Outcome() {
   }
 
   async function getCategory() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -178,7 +179,7 @@ export default function Outcome() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getItem();
-      getCategory()
+      getCategory();
     }, 300);
 
     if (page > item?.last_page) {
@@ -188,11 +189,11 @@ export default function Outcome() {
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic]);
 
-  useEffect(()=> {
-    setSearch("")
-    setSearchCategory("")
-    setPage(1)
-  }, [clinic])
+  useEffect(() => {
+    setSearch("");
+    setSearchCategory("");
+    setPage(1);
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -208,10 +209,10 @@ export default function Outcome() {
   }, [searchCategory]);
 
   useEffect(() => {
-    setSearch("")
-    setPage(1)
-    setAddForm({clinic_id: clinic})
-  }, [clinic])
+    setSearch("");
+    setPage(1);
+    setAddForm({ clinic_id: clinic });
+  }, [clinic]);
 
   return (
     <>
@@ -538,13 +539,12 @@ export default function Outcome() {
             <label className="label">
               <span className="label-text">Nominal</span>
             </label>
-            <input
-              type="number"
+            <CurrencyInput
               name="nominal"
+              defaultValue={0}
               value={addForm.nominal}
-              onChange={(e) => handleAddInput(e)}
-              required
-              placeholder=""
+              decimalsLimit={2}
+              onValueChange={(value, name) => setAddForm({ nominal: value })}
               className="input input-bordered input-primary border-slate-300 w-full"
             />
             {addFormError.nominal && (
@@ -668,13 +668,12 @@ export default function Outcome() {
               <label className="label">
                 <span className="label-text">Nominal</span>
               </label>
-              <input
-                type="number"
+              <CurrencyInput
                 name="nominal"
+                defaultValue={0}
                 value={putForm.nominal}
-                onChange={(e) => handlePutInput(e)}
-                required
-                placeholder=""
+                decimalsLimit={2}
+                onValueChange={(value, name) => setPutForm({nominal: value})}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.nominal && (
