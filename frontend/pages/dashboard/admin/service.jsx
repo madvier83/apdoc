@@ -26,6 +26,7 @@ export default function Service() {
   const [servicesLoading, setServicesLoading] = useState(true);
 
   const initialServiceForm = {
+    clinic_id: "",
     id: "",
     name: "",
     price: "",
@@ -157,6 +158,7 @@ export default function Service() {
   useEffect(()=> {
     setSearch("")
     setPage(1)
+    setAddForm({clinic_id: clinic})
   }, [clinic])
 
   useEffect(() => {

@@ -31,6 +31,7 @@ export default function Employee() {
   const [positionsLoading, setPositionsLoading] = useState(true);
 
   const initialEmployeeForm = {
+    clinic_id: "",
     id: "",
     nik: "",
     name: "",
@@ -97,7 +98,7 @@ export default function Employee() {
   }
 
   async function getPositions() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -184,7 +185,7 @@ export default function Employee() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getEmployee();
-      getPositions()
+      getPositions();
     }, 300);
 
     if (page > employees?.last_page) {
@@ -196,8 +197,9 @@ export default function Employee() {
 
   useEffect(() => {
     setSearch("");
-    setSearchPosition("")
+    setSearchPosition("");
     setPage(1);
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -355,10 +357,11 @@ export default function Employee() {
 
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         <a
-                          href={`https://wa.me/${obj.phone?.replace(
-                            /\D/g,
-                            ""
-                          )}`}
+                          href={`${
+                            obj.phone
+                              ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                              : ""
+                          }`}
                           target="_blank"
                           className={""}
                         >
@@ -401,14 +404,14 @@ export default function Employee() {
                         </label>
                         {/* </div> */}
                         {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        {!obj.users.length>0&&(
+                        {!obj.users.length > 0 && (
                           <label
-                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          htmlFor={obj.id}
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            htmlFor={obj.id}
                           >
-                          <i className="fas fa-trash"></i>
-                        </label>
-                          )}
+                            <i className="fas fa-trash"></i>
+                          </label>
+                        )}
                         {/* </div> */}
                         <ModalDelete
                           id={obj.id}

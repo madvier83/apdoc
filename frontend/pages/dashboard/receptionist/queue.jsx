@@ -117,7 +117,9 @@ export default function Queue() {
     try {
       const response = await axios.post(
         `queue/${id}`,
-        {},
+        {
+          clinic_id: clinic,
+        },
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -137,7 +139,9 @@ export default function Queue() {
     try {
       const response = await axios.post(
         `queue/${id}/appointment`,
-        {},
+        {
+          clinic_id: clinic,
+        },
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -430,7 +434,7 @@ export default function Queue() {
     setPage(1);
     setIsAddService(false);
     getQueues();
-    getAppointment()
+    getAppointment();
   }, [clinic]);
 
   useEffect(() => {
@@ -993,10 +997,11 @@ export default function Queue() {
                     }`}
                   >
                     <a
-                      href={`https://wa.me/${selectedQueue.patient?.phone.replace(
-                        /\D/g,
-                        ""
-                      )}`}
+                      href={`${
+                        selectedQueue.phone
+                          ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                          : ""
+                      }`}
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >
@@ -1201,10 +1206,12 @@ export default function Queue() {
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <a
-                            href={`https://wa.me/${obj.phone.replace(
-                              /\D/g,
-                              ""
-                            )}`}
+                            href={`${
+                              obj.phone
+                                ? `https://wa.me/` +
+                                  obj.phone?.replace(/\D/g, "")
+                                : ""
+                            }`}
                             target="_blank"
                             className={""}
                           >

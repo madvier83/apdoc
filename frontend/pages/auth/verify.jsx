@@ -539,7 +539,7 @@ export default function Register() {
                                 <option
                                   key={codes[keyName].id}
                                   className="text-black"
-                                  value={codes[keyName].district_code}
+                                  value={codes[keyName].district_code + " - " + codes[keyName].name}
                                 >
                                   {codes[keyName].district_code} -{" "}
                                   {codes[keyName].name}

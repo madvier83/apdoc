@@ -497,10 +497,7 @@ export default function Patients() {
                       <small className="text-zinc-400">Phone</small> <br />
                       <span className="font-sm text-zinc-800 line-clamp-2">
                         <a
-                          href={`https://wa.me/${selectedPatient?.phone?.replace(
-                            /\D/g,
-                            ""
-                          )}`}
+                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
                           target="_blank"
                           className={""}
                         >

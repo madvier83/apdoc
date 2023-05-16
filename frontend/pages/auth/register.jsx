@@ -7,7 +7,7 @@ import AuthLayout from "../../layouts/AuthLayout";
 
 export default function Register() {
   const router = useRouter();
-  
+
   const [showPwd, setShowPwd] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
@@ -37,8 +37,8 @@ export default function Register() {
     setRegisterLoading(true);
 
     if (registerForm.password !== registerForm.matchPwd) {
-      setRegisterFormError({ matchPwd: "Password doesn't match" })
-      setRegisterLoading(false)
+      setRegisterFormError({ matchPwd: "Password doesn't match" });
+      setRegisterLoading(false);
       return;
     }
     setRegisterFormError({ matchPwd: "" });
@@ -58,9 +58,21 @@ export default function Register() {
       console.log(err);
       setRegisterFormError(initialRegisterForm);
       setRegisterFormError(err.response?.data.errors);
-      setRegisterLoading(false)
+      setRegisterLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (registerForm.email == "") {
+      setRegisterFormError({ email: [""] });
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(registerForm.email)
+    ) {
+      setRegisterFormError({ email: ["Invalid email address"] });
+    } else {
+      setRegisterFormError({ email: [""] });
+    }
+  }, [registerForm.email]);
 
   return (
     <>
@@ -90,6 +102,7 @@ export default function Register() {
                         className={`input w-full ${
                           registerFormError.email[0] ? "border-rose-500" : null
                         }`}
+                        required
                         placeholder="example@mail.com"
                       />
                       <label className="block text-rose-500 text-xs mb-2 mt-2">

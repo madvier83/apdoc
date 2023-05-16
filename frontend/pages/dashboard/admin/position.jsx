@@ -26,7 +26,11 @@ export default function Position() {
 
   const [position, setPostion] = useState("");
   const [errorPosition, setErrorPosition] = useState("");
-  const [updatePosition, setUpdatePosition] = useState({ id: "", name: "" });
+  const [updatePosition, setUpdatePosition] = useState({
+    clinic_id: "",
+    id: "",
+    name: "",
+  });
   const [errorUpdatePosition, setErrorUpdatePosition] = useState("");
 
   // console.log(clinic)
@@ -60,6 +64,7 @@ export default function Position() {
     e.preventDefault();
     const data = {
       name: position,
+      clinic_id: clinic,
     };
     try {
       const response = await axios.post("/position", data, {
@@ -131,7 +136,7 @@ export default function Position() {
   useEffect(() => {
     setSearch("");
     setPage(1);
-    setPostionsLoading(true)
+    setPostionsLoading(true);
   }, [clinic]);
 
   useEffect(() => {
@@ -240,63 +245,64 @@ export default function Position() {
                     </td>
                   </tr>
                 )}
-                {!positionsLoading && positions?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + positions.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {moment(obj.created_at).format("DD MMM YYYY")}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {moment(obj.updated_at).fromNow()}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                {!positionsLoading &&
+                  positions?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + positions.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {moment(obj.created_at).format("DD MMM YYYY")}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {moment(obj.updated_at).fromNow()}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                        <label
-                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-update"
-                          onClick={() => {
-                            setUpdatePosition(obj);
-                            setErrorUpdatePosition("");
-                          }}
-                        >
-                          <i className="fas fa-pen-to-square"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
-                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          htmlFor={obj.id}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </label>
-                        {/* </div> */}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deletePosition(obj.id)}
-                          title={`Delete position?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
+                          <label
+                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-update"
+                            onClick={() => {
+                              setUpdatePosition(obj);
+                              setErrorUpdatePosition("");
+                            }}
+                          >
+                            <i className="fas fa-pen-to-square"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
+                          <label
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            htmlFor={obj.id}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </label>
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deletePosition(obj.id)}
+                            title={`Delete position?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

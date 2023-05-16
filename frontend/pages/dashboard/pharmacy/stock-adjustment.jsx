@@ -32,6 +32,7 @@ export default function StockAdjustment() {
   const [supplyDbLoading, setSupplyDbLoading] = useState(true);
 
   const initialItemForm = {
+    clinic_id: "",
     item_id: 0,
     item_supply_id: "",
     adjustment: "",
@@ -217,6 +218,7 @@ export default function StockAdjustment() {
   useEffect(() => {
     setSearch("");
     setPage(1);
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

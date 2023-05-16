@@ -212,7 +212,7 @@ export default function Patients() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <a
-                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
+                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
                           target="_blank"
                           className={""}
                         >

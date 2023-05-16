@@ -124,7 +124,7 @@ export default function Clients() {
                     Name
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Birth
+                    Email
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Phone
@@ -193,14 +193,13 @@ export default function Clients() {
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                          {obj.birth_place}
+                        <span className={""}>
+                          {obj.email}
                         </span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <a
-                          href={`https://wa.me/${obj.phone.replace(/\D/g, "")}`}
+                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
                           target="_blank"
                           className={""}
                         >

@@ -30,6 +30,7 @@ export default function ItemSupply() {
   const [itemDbLoading, setItemDbLoading] = useState(true);
 
   const initialItemForm = {
+    clinic_id: "",
     item_id: "",
     total: "",
     manufacturing: "",
@@ -192,6 +193,7 @@ export default function ItemSupply() {
     setSelectedCategory("")
     setAddForm(initialItemForm)
     setPage(1);
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

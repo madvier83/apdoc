@@ -26,6 +26,7 @@ export default function Access() {
   const [positionsLoading, setPositionsLoading] = useState(true);
 
   const initialAccessForm = {
+    clinic_id: "",
     role_id: "",
     role: "",
     accesses: [
@@ -348,6 +349,7 @@ export default function Access() {
   useEffect(() => {
     getUser()
     setAccessLoading(true)
+    setAddForm({clinic_id: clinic})
   }, [clinic]);
 
   useEffect(() => {

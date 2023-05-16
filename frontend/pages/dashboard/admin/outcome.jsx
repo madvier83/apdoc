@@ -30,6 +30,7 @@ export default function Outcome() {
   const [categoryLoading, setCategoryLoading] = useState(true);
 
   const initialItemForm = {
+    clinic_id: "",
     note: "",
     nominal: "",
     category_outcome_id: "",
@@ -205,6 +206,12 @@ export default function Outcome() {
     }, 500);
     return () => clearTimeout(getData);
   }, [searchCategory]);
+
+  useEffect(() => {
+    setSearch("")
+    setPage(1)
+    setAddForm({clinic_id: clinic})
+  }, [clinic])
 
   return (
     <>

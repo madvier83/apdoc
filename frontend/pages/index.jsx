@@ -15,7 +15,7 @@ export default function Index() {
                     className="absolute top-0 w-full h-full bg-center bg-cover"
                     style={{
                     backgroundImage:
-                        "url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80')",
+                        "url('https://images.unsplash.com/photo-1631248055158-edec7a3c072b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1461&q=80')",
                     }}
                 >
                     <span

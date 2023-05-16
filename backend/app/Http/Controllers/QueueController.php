@@ -26,7 +26,7 @@ class QueueController extends Controller
         //
     }
 
-    public function create($patient)
+    public function create(Request $request, $patient)
     {
         $queue = Queue::whereDate('created_at', Carbon::today())->where('patient_id', $patient)->where('status_id', 1)->first();
 
@@ -42,7 +42,7 @@ class QueueController extends Controller
                 'queue_number'  => 'A'.$queue_number,
                 'status_id'     => 1
             ];
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $queue = Queue::create($data);
 
             return response()->json($queue);
@@ -51,7 +51,7 @@ class QueueController extends Controller
         }
     }
 
-    public function createFromAppointment($appointment)
+    public function createFromAppointment(Request $request, $appointment)
     {
         $appoint = Appointment::find($appointment);
 
@@ -73,7 +73,7 @@ class QueueController extends Controller
                 'queue_number'  => 'B'.$queue_number,
                 'status_id'     => 1
             ];
-            $data['clinic_id'] = auth()->user()->employee->clinic_id;
+            $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
     
             $queue = Queue::create($data);
     
