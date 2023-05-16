@@ -1,0 +1,51 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql_database
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports: 
+    - 3306:3306
+    environment:
+    - MYSQL_DATABASE=db_appdoc
+    - MYSQL_USER=appdoc
+    - MYSQL_PASSWORD=y.5M3PpsJ.{_reyT
+    - MYSQL_ROOT_PASSWORD=secret
+    # - MYSQL_ALLOW_EMPTY_PASSWORD = true
+    # - MYSQL_RANDOM_ROOT_PASSWORD = true
+    volumes:
+      - ./backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/scripts/local.ini:/usr/local/etc/php8/conf.d/local.ini
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rest_api
+    ports:
+    - 8000:8000
+    depends_on:
+    - db
+    environment:
+    - DB_HOST=db
+    - DB_PORT=3306
+    - DB_DATABASE=db_appdoc
+    - DB_USER=appdoc
+    - DB_PASSWORD=y.5M3PpsJ.{_reyT
+    - JWT_SECRET=9TIHvWQw9mqiGcGhItPxgzRBAhylzRN8r8GnYrL61UQCwovMMbxmx5hejyKn95Xc
+    command: php -S 0.0.0.0:8000 public/index.php
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nextjs_appdoc
+    ports:
+    - 3000:3000
+    environment:
+      - JWT_SECRET=9TIHvWQw9mqiGcGhItPxgzRBAhylzRN8r8GnYrL61UQCwovMMbxmx5hejyKn95Xc
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+      - 3000:80

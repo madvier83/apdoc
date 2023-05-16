@@ -1,0 +1,26 @@
+options:
+  docker: true
+pipelines:
+  default:
+    - step:
+        name: Appdoc Rest API
+        script:
+          - docker build -t appdoc_api:v1 backend/
+          - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          - docker tag appdoc_api:v1 $DOCKER_USERNAME/appdoc_api:v1
+          - docker push $DOCKER_USERNAME/appdoc_api:v1
+    - step:
+        name: Appdoc Web App
+        script:
+          - docker build -t appdoc_app:v1 frontend/
+          - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          - docker tag appdoc_app:v1 $DOCKER_USERNAME/appdoc_app:v1
+          - docker push $DOCKER_USERNAME/appdoc_app:v1
+
+    - step:
+      name: Deploy to Vultr Server
+      deployment: production
+      script:
+        - apt-get update && apt-get install -y rsync sshpass
+        - sshpass -p $VULTR_SSH_PASSWORD rsync -azP --delete-after --exclude='.env' --exclude='storage' . $VULTR_SSH_USER@$VULTR_SERVER_IP:/var/www/appdoc_api
+        - sshpass -p $VULTR_SSH_PASSWORD ssh $VULTR_SSH_USER@$VULTR_SERVER_IP 'cd /var/www/appdoc_api && docker-compose up -d'

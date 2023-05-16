@@ -1,0 +1,5 @@
+CREATE USER 'appdoc'@'localhost' IDENTIFIED BY 'y.5M3PpsJ.{_reyT';
+GRANT ALL PRIVILEGES ON *.* TO 'appdoc'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+DROP DATABASE IF EXISTS db_appdoc;
+CREATE DATABASE db_appdoc;
