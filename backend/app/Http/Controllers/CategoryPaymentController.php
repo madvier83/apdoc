@@ -48,6 +48,12 @@ class CategoryPaymentController extends Controller
             'name' => 'required|string',
         ]);
 
+        $unique = CategoryPayment::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+
+        if ($unique) {
+            return response()->json(['message' => 'The name has already been taken.'], 422);
+        }
+
         try {
             $data = $request->all();
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;

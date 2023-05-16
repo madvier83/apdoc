@@ -57,6 +57,12 @@ class EmployeeController extends Controller
 
     public function create(Request $request)
     {
+        $unique = Employee::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('nik', $request->nik)->first();
+
+        if ($unique) {
+            return response()->json(['message' => 'The nik has already been taken.'], 400);
+        }
+        
         $this->validate($request, [
             'nik'               => 'required',
             'name'              => 'required|string',

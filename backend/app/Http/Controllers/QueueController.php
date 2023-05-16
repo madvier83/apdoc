@@ -35,7 +35,7 @@ class QueueController extends Controller
         }
 
         try {
-            $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
+            $queue_number = Queue::whereDate('created_at', Carbon::today())->where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->get()->count() + 1;
 
             $data = [
                 'patient_id'    => $patient,
