@@ -103,6 +103,14 @@ class EmployeeController extends Controller
             'phone'             => 'required',
         ]);
 
+        if($employee->nik != $request->nik) {
+            $unique = Employee::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('nik', $request->nik)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The nik has already been taken.'], 400);
+            }
+        }
+
         try {
             $data = $request->all();
             if(isset($request['position_id'])) { $data['position_id'] = $request->position_id; }

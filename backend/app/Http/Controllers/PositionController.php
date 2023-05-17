@@ -75,8 +75,16 @@ class PositionController extends Controller
         }
 
         $this->validate($request, [
-            'name' => ($request->name == $position->name) ? 'required|string' : 'required|string',
+            'name' => 'required|string',
         ]);
+
+        if($position->name != $request->name) {
+            $unique = Position::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The name has already been taken.'], 422);
+            }
+        }
 
         try {
             $data = $request->all();

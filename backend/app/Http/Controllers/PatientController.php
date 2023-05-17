@@ -94,6 +94,14 @@ class PatientController extends Controller
             'phone'             => 'required',
         ]);
 
+        if($patient->nik != $request->nik) {
+            $unique = Patient::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('nik', $request->nik)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The nik has already been taken.'], 422);
+            }
+        }
+
         try {
             $data = $request->all();
             $patient->fill($data);
