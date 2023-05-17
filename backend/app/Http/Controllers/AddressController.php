@@ -6,7 +6,7 @@ class AddressController extends Controller
 {
     public function index(){
         try {
-            $provinces = \Indonesia::allProvinces()->pluck('name','id')->sortBy('name');
+            $provinces = \Indonesia::allProvinces();
             return response()->json(['status' => 'success', 'data' => $provinces], 200);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 400);
@@ -14,7 +14,7 @@ class AddressController extends Controller
     }
     public function cities($id){
         try {
-            $cities = \Indonesia::findProvince($id, ['cities'])->cities->sortBy('name')->pluck('name','id');
+            $cities = \Indonesia::findProvince($id, ['cities'])->cities->sortBy('name');
             return response()->json(['status' => 'success', 'data' => $cities], 200);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 400);
@@ -22,7 +22,7 @@ class AddressController extends Controller
     }
     public function districts($id){
         try {
-            $district = \Indonesia::findCity($id, ['districts'])->districts->sortBy('name')->pluck('name','id');
+            $district = \Indonesia::findCity($id, ['districts'])->districts->sortBy('name');
             return response()->json(['status' => 'success', 'data' => $district], 200);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 400);
