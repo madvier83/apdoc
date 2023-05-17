@@ -73,13 +73,13 @@ export default function Position() {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
+      // console.log(response);
       addModalRef.current.click();
       setPostion("");
       setErrorPosition("");
       getPositions();
     } catch (err) {
-      setErrorPosition(err.response?.data.name[0]);
+      setErrorPosition(err.response?.data?.message || "Invalid");
     }
   }
 

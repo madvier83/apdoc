@@ -93,56 +93,62 @@ export default function Navbar({ title, clinic, setClinic }) {
       <nav className="top-0 left-0 w-full z-10  md:flex-row md:flex-nowrap md:justify-start flex items-center pt-6 pb-4 px-8">
         <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap">
           {/* Brand */}
-          <div className={`flex w-full justify-between items-center`}>
+          <div className={`grid grid-flow-col w-full justify-between items-center`}>
             <Link
-              className="text-white text-lg uppercase hidden lg:inline-block font-semibold ml-3 mr-8"
+              className="text-white text-lg uppercase hidden lg:inline-block font-semibold w-96 ml-3"
               href="#pablo"
               onClick={(e) => e.preventDefault()}
             >
               {title}
             </Link>
-            {setClinic && (
-              <div
-                className={`${
-                  apdoc?.role_id == 2 ? "block" : "hidden"
-                } flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}
-              >
-                <i className="fas fa-house-chimney-medical ml-1 text-emerald-400">
-                  {" "}
-                </i>
-                <div className="">
-                  <select
-                    className="p-0 pl-0 pr-8 tracking-wider appearance-none text-emerald-400 text-center focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md w-48"
-                    onChange={(e) => {
-                      setClinic(e.target.value);
-                    }}
-                    value={clinic}
-                  >
-                    {!clinicsLoading &&
-                      clinics?.map((obj) => {
-                        return (
-                          <option
-                            key={obj.id}
-                            className={`${obj.status != "active" ? "text-rose-400 text-opacity-50" : "text-black"} `}
-                            value={obj.id}
-                            disabled={obj.status != "active"}
-                          >
-                            {obj.status != "active" && "🔒"} {obj.name}
-                          </option>
-                        );
-                      })}
-                  </select>
+            <div className="">
+              {setClinic && (
+                <div
+                  className={`${
+                    apdoc?.role_id == 2 ? "block" : "hidden"
+                  } flex items-center mx-auto rounded-md text-slate-200 bg-opacity-10 bg-emerald-500 pl-4 py-1`}
+                >
+                  <i className="fas fa-house-chimney-medical ml-1 text-emerald-400">
+                    {" "}
+                  </i>
+                  <div className="">
+                    <select
+                      className="p-0 pl-0 pr-8 tracking-wider appearance-none text-emerald-400 text-center focus:ring-0 focus:ring-offset-0 ring-transparent bg-transparent border-none rounded-md w-48"
+                      onChange={(e) => {
+                        setClinic(e.target.value);
+                      }}
+                      value={clinic}
+                    >
+                      {!clinicsLoading &&
+                        clinics?.map((obj) => {
+                          return (
+                            <option
+                              key={obj.id}
+                              className={`${
+                                obj.status != "active"
+                                  ? "text-rose-400 text-opacity-50"
+                                  : "text-black"
+                              } `}
+                              value={obj.id}
+                              disabled={obj.status != "active"}
+                            >
+                              {obj.status != "active" && "🔒"} {obj.name}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-          <div className="flex ml-20">
-            <button
-              className="text-slate-500 text-lg hidden lg:inline-block font-normal mx-5"
-              onClick={() => router.back()}
-            >
-              <i className="fas fa-arrow-left"></i>
-            </button>
+              )}
+            </div>
+            <div className="w-96 flex justify-end pr-8">
+              <button
+                className="text-slate-500 text-lg hidden lg:inline-block font-normal mx-5"
+                onClick={() => router.back()}
+              >
+                <i className="fas fa-arrow-left"></i>
+              </button>
+            </div>
           </div>
         </div>
       </nav>

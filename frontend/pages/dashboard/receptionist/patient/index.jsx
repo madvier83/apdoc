@@ -454,6 +454,7 @@ export default function Patients() {
                 <span className="label-text">NIK</span>
               </label>
               <input
+                required
                 type="text"
                 name="nik"
                 value={addForm.nik}
@@ -461,10 +462,10 @@ export default function Patients() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.nik && (
+              {addFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.nik}
+                    {addFormError.message}
                   </span>
                 </label>
               )}
@@ -472,6 +473,7 @@ export default function Patients() {
                 <span className="label-text">Name</span>
               </label>
               <input
+                required
                 type="text"
                 name="name"
                 value={addForm.name}
@@ -491,6 +493,7 @@ export default function Patients() {
                 <span className="label-text">Phone</span>
               </label>
               <input
+                required
                 type="text"
                 name="phone"
                 value={addForm.phone}
@@ -612,6 +615,7 @@ export default function Patients() {
                 <span className="label-text">NIK</span>
               </label>
               <input
+                required
                 type="text"
                 name="nik"
                 value={putForm.nik}
@@ -630,6 +634,7 @@ export default function Patients() {
                 <span className="label-text">Name</span>
               </label>
               <input
+                required
                 type="text"
                 name="name"
                 value={putForm.name}
@@ -649,6 +654,7 @@ export default function Patients() {
                 <span className="label-text">Phone</span>
               </label>
               <input
+                required
                 type="text"
                 name="phone"
                 value={putForm.phone}

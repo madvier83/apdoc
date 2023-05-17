@@ -96,6 +96,7 @@ export default function CategoryItem() {
       setAddForm(initialCategoryForm);
       setAddFormError(initialCategoryForm);
     } catch (err) {
+      console.log(err)
       setAddFormError(initialCategoryForm);
       setAddFormError(err.response?.data);
     }
@@ -207,6 +208,10 @@ export default function CategoryItem() {
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-add"
+                  onClick={() => {
+                    setAddFormError({message : ""})
+                    setPutFormError({message : ""})
+                  }}
                 >
                   Add <i className="fas fa-add"></i>
                 </label>
@@ -407,6 +412,7 @@ export default function CategoryItem() {
                 <span className="label-text">Name</span>
               </label>
               <input
+                required={true}
                 type="text"
                 name="name"
                 value={addForm.name}
@@ -414,10 +420,10 @@ export default function CategoryItem() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.name && (
+              {addFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.name}
+                    {addFormError.message}
                   </span>
                 </label>
               )}
@@ -444,6 +450,7 @@ export default function CategoryItem() {
                 <span className="label-text">Name</span>
               </label>
               <input
+                required={true}
                 type="text"
                 name="name"
                 value={putForm.name}
@@ -451,10 +458,10 @@ export default function CategoryItem() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.name && (
+              {putFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
+                    {putFormError.message}
                   </span>
                 </label>
               )}
