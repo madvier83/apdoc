@@ -3,14 +3,15 @@
 namespace App\Imports;
 
 use App\Models\Patient;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class PatientImport implements ToModel, WithStartRow
 {
     /**
-    * @param Collection $collection
+    * @param array $row
+    *
+    * @return \Illuminate\Database\Eloquent\Model|null
     */
     public function startRow(): int
     {
@@ -27,7 +28,6 @@ class PatientImport implements ToModel, WithStartRow
             'gender'      => $row[5],
             'phone'       => $row[6],
             'address'     => $row[7],
-            // 'clinic_id'   => $row[7],
         ]);
     }
 }
