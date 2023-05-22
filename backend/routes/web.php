@@ -234,6 +234,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// EXCEL
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
-	$router->get('/v1/import/patient', 'ExcelController@importPatient');
+	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	// });
 });
