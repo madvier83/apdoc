@@ -7,11 +7,14 @@
     "require": {
         "php": "^7.3|^8.0",
         "flipbox/lumen-generator": "^9.2",
+        "fruitcake/laravel-cors": "^3.0",
         "illuminate/mail": "*",
         "illuminate/notifications": "*",
         "illuminate/support": "*",
         "laravel/lumen-framework": "^8.3.1",
+        "laravelista/lumen-vendor-publish": "^8.0",
         "laravolt/indonesia": "^0.34.0",
+        "maatwebsite/excel": "^3.1",
         "nesbot/carbon": "^2.64",
         "twilio/sdk": "^6.44",
         "tymon/jwt-auth": "^1.0"

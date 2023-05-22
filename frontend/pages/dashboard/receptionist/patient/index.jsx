@@ -143,6 +143,24 @@ export default function Patients() {
       console.error(err);
     }
   }
+  
+  async function downloadTable() {
+    if (!clinic) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `/export/patient?clinic_id=${clinic}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   useEffect(() => {
     getPatients();
@@ -163,7 +181,7 @@ export default function Patients() {
   useEffect(() => {
     setSearch("");
     setPage(1);
-    setAddForm({clinic_id: clinic})
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -211,6 +229,13 @@ export default function Patients() {
                 ></i>
               </div>
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                <label
+                  className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button"
+                  htmlFor="modal-export"
+                >
+                  <i className="fas fa-cog"></i>
+                </label>
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -309,7 +334,11 @@ export default function Patients() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <a
-                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
+                          href={`${
+                            obj.phone
+                              ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                              : ""
+                          }`}
                           target="_blank"
                           className={""}
                         >
@@ -876,6 +905,65 @@ export default function Patients() {
               Close
             </label>
           </div>
+        </ModalBox>
+
+        <ModalBox id="modal-export">
+          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <form onSubmit={() => {}} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              {/* <label className="label">
+                <span className="label-text">NIK</span>
+              </label>
+              <input
+                required
+                type="text"
+                name="nik"
+                value={addForm.nik}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.message && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.message}
+                  </span>
+                </label>
+              )} */}
+              <label className="label">
+                <span className="label-text">Export</span>
+              </label>
+              <div className="btn btn-primary normal-case" onClick={() => downloadTable()}>
+                Download Current Template <i className="fas fa-download ml-2"></i>
+              </div>
+              <label className="label">
+                <span className="label-text">Import</span>
+              </label>
+              <input
+                required
+                type="file"
+                name="nik"
+                // value={addForm.nik}
+                onChange={(e) => {}}
+                placeholder=""
+                className="file-input input-bordered border rounded-md border-slate-300 w-full"
+              />
+              <button className="btn btn-success normal-case text-zinc-700 mt-2">
+                Apply Template <i className="fas fa-upload ml-2"></i>
+              </button>
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-add"
+                ref={addModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              {/* <button className="btn btn-primary rounded-md">Add</button> */}
+            </div>
+          </form>
         </ModalBox>
       </DashboardLayout>
     </>

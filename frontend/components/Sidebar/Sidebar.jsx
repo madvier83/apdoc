@@ -200,7 +200,6 @@ export default function Sidebar() {
                         User Access
                       </Link>
                     </li>
-
                     <li
                       // key={index}
                       className={`items-center list-none ${
@@ -208,11 +207,11 @@ export default function Sidebar() {
                         "text-emerald-500"
                       }`}
                     >
-                      <Link
-                        scroll={false}
-                        href={"/owner/slots"}
+                      <div
+                        // scroll={false}
+                        onClick={() => router.push("/owner/slots")}
                         className={
-                          "text-xs py-3 font-semibold block capitalize"
+                          "text-xs py-3 font-semibold block capitalize cursor-pointer"
                         }
                       >
                         <i
@@ -223,12 +222,12 @@ export default function Sidebar() {
                           } mr-2 text-sm`}
                         ></i>{" "}
                         User Slots
-                      </Link>
+                      </div>
                     </li>
                   </ul>
                 </li>
               )}
-              
+
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 {accesses?.map((menu, index) => {
                   if (menu.access) {
