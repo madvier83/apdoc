@@ -293,7 +293,7 @@ export default function Account() {
   const [verifyFormError, setVerifyFormError] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const otpRef = useRef()
+  const otpRef = useRef();
 
   async function getOTP() {
     setOtpLoading(true);
@@ -320,7 +320,7 @@ export default function Account() {
       setOtpLoading(false);
     }
   }
-  
+
   async function verifyPhone(e) {
     e.preventDefault();
     try {
@@ -334,11 +334,11 @@ export default function Account() {
           },
         }
       );
-      getUser()
-      otpRef.current.click()
+      getUser();
+      otpRef.current.click();
     } catch (err) {
-      console.error(err)
-      setVerifyFormError({otp: err.response?.data?.message});
+      console.error(err);
+      setVerifyFormError({ otp: err.response?.data?.message });
     }
   }
 
@@ -349,89 +349,152 @@ export default function Account() {
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      Object.keys(provinces).map((keyName, i) => {
-        if (provinces[keyName] === addClinicForm.province) {
-          getCities(keyName);
-        }
-      });
-      setAddClinicForm({ postal_code: "", district: "", city: "" });
-      setDistricts({});
-      setCodes({});
+      if (!addClinicForm.province) {
+        setCities([]);
+        return;
+      }
+      setAddClinicForm({ city: "", districts: "", postal_code: "" });
+      setCities([]);
+      setDistricts([]);
+      setCodes([]);
+      getCities(addClinicForm.province);
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.province]);
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      Object.keys(cities).map((keyName, i) => {
-        if (cities[keyName] === addClinicForm.city) {
-          getDistricts(keyName);
-        }
-      });
-      setAddClinicForm({ postal_code: "", district: "" });
-      setCodes({});
+      if (!addClinicForm.city) {
+        setDistricts([]);
+        return;
+      }
+      setAddClinicForm({ districts: "", postal_code: "" });
+      setDistricts([]);
+      setCodes([]);
+      getDistricts(addClinicForm.city);
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.city]);
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      Object.keys(districts).map((keyName, i) => {
-        if (districts[keyName] === addClinicForm.district) {
-          getCodes(keyName);
-        }
-      });
+      if (!addClinicForm.district) {
+        setCodes([]);
+        return;
+      }
       setAddClinicForm({ postal_code: "" });
+      setCodes([]);
+      getCodes(addClinicForm.district);
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.district]);
 
   useEffect(() => {
+    if (isGetUpdateAddress) {
+      return;
+    }
     const getData = setTimeout(() => {
-      Object.keys(provinces).map((keyName, i) => {
-        if (provinces[keyName] === putClinicForm.province) {
-          getCities(keyName);
-          setPutClinicForm((prev) => {
-            city: prev.city;
-          });
-        }
-      });
-      setPutClinicForm({ postal_code: "", district: "", city: "" });
-      setDistricts({});
-      setCodes({});
+      if (!putClinicForm.province) {
+        setCities([]);
+        return;
+      }
+      setPutClinicForm({ city: "", districts: "", postal_code: "" });
+      setCities([]);
+      setDistricts([]);
+      setCodes([]);
+      getCities(putClinicForm.province);
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.province]);
 
   useEffect(() => {
+    if (isGetUpdateAddress) {
+      return;
+    }
     const getData = setTimeout(() => {
-      Object.keys(cities).map((keyName, i) => {
-        if (cities[keyName] === putClinicForm.city) {
-          getDistricts(keyName);
-          setPutClinicForm((prev) => {
-            district: "";
-          });
-        }
-      });
-      setPutClinicForm({ postal_code: "", district: "" });
-      setCodes({});
+      if (!putClinicForm.city) {
+        setDistricts([]);
+        return;
+      }
+      setPutClinicForm({ districts: "", postal_code: "" });
+      setDistricts([]);
+      setCodes([]);
+      getDistricts(putClinicForm.city);
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.city]);
 
   useEffect(() => {
+    if (isGetUpdateAddress) {
+      return;
+    }
     const getData = setTimeout(() => {
-      Object.keys(districts).map((keyName, i) => {
-        if (districts[keyName] === putClinicForm.district) {
-          getCodes(keyName);
-        }
-      });
+      if (!putClinicForm.district) {
+        setCodes([]);
+        return;
+      }
+      setCodes([]);
       setPutClinicForm({ postal_code: "" });
+      getCodes(putClinicForm.district);
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.district]);
 
-  // console.log(verifyFormError);
+  const [isGetUpdateAddress, setIsGetUpdateAddress] = useState(false);
+  async function getUpdateAddress(obj) {
+    setIsGetUpdateAddress(true);
+    await getCities(obj.province);
+    await getDistricts(obj.city);
+    await getCodes(obj.district);
+    setIsGetUpdateAddress(false);
+  }
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     Object.keys(provinces).map((keyName, i) => {
+  //       if (provinces[keyName] === putClinicForm.province) {
+  //         getCities(keyName);
+  //         setPutClinicForm((prev) => {
+  //           city: prev.city;
+  //         });
+  //       }
+  //     });
+  //     setPutClinicForm({ postal_code: "", district: "", city: "" });
+  //     setDistricts({});
+  //     setCodes({});
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [putClinicForm.province]);
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     Object.keys(cities).map((keyName, i) => {
+  //       if (cities[keyName] === putClinicForm.city) {
+  //         getDistricts(keyName);
+  //         setPutClinicForm((prev) => {
+  //           district: "";
+  //         });
+  //       }
+  //     });
+  //     setPutClinicForm({ postal_code: "", district: "" });
+  //     setCodes({});
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [putClinicForm.city]);
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     Object.keys(districts).map((keyName, i) => {
+  //       if (districts[keyName] === putClinicForm.district) {
+  //         getCodes(keyName);
+  //       }
+  //     });
+  //     setPutClinicForm({ postal_code: "" });
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [putClinicForm.district]);
+
+  console.log(codes);
   return (
     <>
       <DashboardLayout title="Account">
@@ -743,6 +806,11 @@ export default function Account() {
                     ></div>
                     <label
                       htmlFor="addClinic"
+                      onClick={() => {
+                        setCities([]);
+                        setDistricts([]);
+                        setCodes([]);
+                      }}
                       className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                     >
                       Add Clinic
@@ -794,6 +862,7 @@ export default function Account() {
                             <label
                               onClick={() => {
                                 setPutClinicForm(obj);
+                                getUpdateAddress(obj);
                               }}
                               htmlFor="updateClinicModal"
                               className="btn btn-xs bg-emerald-400 border-none text-white"
@@ -904,7 +973,18 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(provinces).map((keyName, i) => (
+                  {provinces?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
+                  {/* {Object.keys(provinces).map((keyName, i) => (
                     <option
                       key={provinces[keyName]}
                       className="text-black"
@@ -912,7 +992,7 @@ export default function Account() {
                     >
                       {provinces[keyName]}
                     </option>
-                  ))}
+                  ))} */}
                 </select>
                 {addClinicFormError.province && (
                   <label className="label">
@@ -936,15 +1016,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(cities).map((keyName, i) => (
-                    <option
-                      key={cities[keyName]}
-                      className="text-black"
-                      value={cities[keyName]}
-                    >
-                      {cities[keyName]}
-                    </option>
-                  ))}
+                  {cities?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {addClinicFormError.city && (
                   <label className="label">
@@ -971,15 +1053,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(districts).map((keyName, i) => (
-                    <option
-                      key={districts[keyName]}
-                      className="text-black"
-                      value={districts[keyName]}
-                    >
-                      {districts[keyName]}
-                    </option>
-                  ))}
+                  {districts?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {addClinicFormError.district && (
                   <label className="label">
@@ -1003,19 +1087,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(codes).map((keyName, i) => (
-                    <option
-                      key={codes[keyName].id}
-                      className="text-black"
-                      value={
-                        codes[keyName].district_code +
-                        " - " +
-                        codes[keyName].name
-                      }
-                    >
-                      {codes[keyName].district_code} - {codes[keyName].name}
-                    </option>
-                  ))}
+                  {codes?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.meta?.pos + " : " + obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {addClinicFormError.postal_code && (
                   <label className="label">
@@ -1123,15 +1205,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(provinces).map((keyName, i) => (
-                    <option
-                      key={provinces[keyName]}
-                      className="text-black"
-                      value={provinces[keyName]}
-                    >
-                      {provinces[keyName]}
-                    </option>
-                  ))}
+                  {provinces?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {putClinicFormError.province && (
                   <label className="label">
@@ -1155,15 +1239,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(cities).map((keyName, i) => (
-                    <option
-                      key={cities[keyName]}
-                      className="text-black"
-                      value={cities[keyName]}
-                    >
-                      {cities[keyName]}
-                    </option>
-                  ))}
+                  {cities?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {putClinicFormError.city && (
                   <label className="label">
@@ -1190,15 +1276,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(districts).map((keyName, i) => (
-                    <option
-                      key={districts[keyName]}
-                      className="text-black"
-                      value={districts[keyName]}
-                    >
-                      {districts[keyName]}
-                    </option>
-                  ))}
+                  {districts?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {putClinicFormError.district && (
                   <label className="label">
@@ -1222,19 +1310,17 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {Object.keys(codes).map((keyName, i) => (
-                    <option
-                      key={codes[keyName].id}
-                      className="text-black"
-                      value={
-                        codes[keyName].district_code +
-                        " - " +
-                        codes[keyName].name
-                      }
-                    >
-                      {codes[keyName].district_code} - {codes[keyName].name}
-                    </option>
-                  ))}
+                  {codes?.map((obj) => {
+                    return (
+                      <option
+                        key={obj.id}
+                        className="text-black"
+                        value={obj.id}
+                      >
+                        {obj.meta?.pos + " : " + obj.name}
+                      </option>
+                    );
+                  })}
                 </select>
                 {putClinicFormError.postal_code && (
                   <label className="label">

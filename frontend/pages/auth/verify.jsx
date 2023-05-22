@@ -134,33 +134,45 @@ export default function Register() {
   }, []);
 
   useEffect(() => {
-    Object.keys(provinces).map((keyName, i) => {
-      if (provinces[keyName] === registerForm.province) {
-        getCities(keyName);
+    const getData = setTimeout(() => {
+      if (!registerForm.province) {
+        setCities([]);
+        return;
       }
-    });
-    setRegisterForm({ postal_code: "", district: "", city: "" });
-    setDistricts({});
-    setCodes({});
+      setRegisterForm({ city: "", districts: "", postal_code: "" });
+      setCities([]);
+      setDistricts([]);
+      setCodes([]);
+      getCities(registerForm.province);
+    }, 500);
+    return () => clearTimeout(getData);
   }, [registerForm.province]);
 
   useEffect(() => {
-    Object.keys(cities).map((keyName, i) => {
-      if (cities[keyName] === registerForm.city) {
-        getDistricts(keyName);
+    const getData = setTimeout(() => {
+      if (!registerForm.city) {
+        setDistricts([]);
+        return;
       }
-    });
-    setRegisterForm({ postal_code: "", district: "" });
-    setCodes({});
+      setRegisterForm({ districts: "", postal_code: "" });
+      setDistricts([]);
+      setCodes([]);
+      getDistricts(registerForm.city);
+    }, 500);
+    return () => clearTimeout(getData);
   }, [registerForm.city]);
 
   useEffect(() => {
-    Object.keys(districts).map((keyName, i) => {
-      if (districts[keyName] === registerForm.district) {
-        getCodes(keyName);
+    const getData = setTimeout(() => {
+      if (!registerForm.district) {
+        setCodes([]);
+        return;
       }
-    });
-    setRegisterForm({ postal_code: "" });
+      setRegisterForm({ postal_code: "" });
+      setCodes([]);
+      getCodes(registerForm.district);
+    }, 500);
+    return () => clearTimeout(getData);
   }, [registerForm.district]);
 
   useEffect(() => {
@@ -443,15 +455,17 @@ export default function Register() {
                               }`}
                             >
                               <option className="text-black">Select</option>
-                              {Object.keys(provinces).map((keyName, i) => (
-                                <option
-                                  key={provinces[keyName]}
-                                  className="text-black"
-                                  value={provinces[keyName]}
-                                >
-                                  {provinces[keyName]}
-                                </option>
-                              ))}
+                              {provinces?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
                             </select>
                             <label className="block text-rose-500 text-xs mb-2 mt-2">
                               {registerFormError.province}
@@ -473,15 +487,17 @@ export default function Register() {
                               }`}
                             >
                               <option className="text-black">Select</option>
-                              {Object.keys(cities).map((keyName, i) => (
-                                <option
-                                  key={cities[keyName]}
-                                  className="text-black"
-                                  value={cities[keyName]}
-                                >
-                                  {cities[keyName]}
-                                </option>
-                              ))}
+                              {cities?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
                             </select>
                             <label className="block text-rose-500 text-xs mb-2 mt-2">
                               {registerFormError.city}
@@ -505,15 +521,17 @@ export default function Register() {
                               }`}
                             >
                               <option className="text-black">Select</option>
-                              {Object.keys(districts).map((keyName, i) => (
-                                <option
-                                  key={districts[keyName]}
-                                  className="text-black"
-                                  value={districts[keyName]}
-                                >
-                                  {districts[keyName]}
-                                </option>
-                              ))}
+                              {districts?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
                             </select>
                             <label className="block text-rose-500 text-xs mb-2 mt-2">
                               {registerFormError.district}
@@ -535,16 +553,17 @@ export default function Register() {
                               }`}
                             >
                               <option className="text-black">Select</option>
-                              {Object.keys(codes).map((keyName, i) => (
-                                <option
-                                  key={codes[keyName].id}
-                                  className="text-black"
-                                  value={codes[keyName].district_code + " - " + codes[keyName].name}
-                                >
-                                  {codes[keyName].district_code} -{" "}
-                                  {codes[keyName].name}
-                                </option>
-                              ))}
+                              {codes?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.district_code + " : " + obj.name}
+                                  </option>
+                                );
+                              })}
                             </select>
                             <label className="block text-rose-500 text-xs mb-2 mt-2">
                               {registerFormError.postal_code}

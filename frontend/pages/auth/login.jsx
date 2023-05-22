@@ -51,7 +51,7 @@ export default function Login() {
     } catch (e) {
       console.log(e)
       setLoading(false);
-      setLoginError(e.response.data.message || "Login failed");
+      setLoginError(e.response?.data?.message || "Login failed");
       // if (e.response?.status == 403) {
       //   router.push(
       //     {
