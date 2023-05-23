@@ -7,7 +7,6 @@
     "require": {
         "php": "^7.3|^8.0",
         "flipbox/lumen-generator": "^9.2",
-        "fruitcake/laravel-cors": "^3.0",
         "illuminate/mail": "*",
         "illuminate/notifications": "*",
         "illuminate/support": "*",

@@ -98,8 +98,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/service/{id}', 'ServiceController@update');
 	$router->delete('/v1/service/{id}', 'ServiceController@destroy');
 
-	$router->get('/v1/diagnoses/{clinic}/{perPage}', 'DiagnoseController@index');
-	$router->get('/v1/diagnoses/{clinic}/{perPage}/{keyword}', 'DiagnoseController@index');
+	$router->get('/v1/diagnoses/{perPage}', 'DiagnoseController@index');
+	$router->get('/v1/diagnoses/{perPage}/{keyword}', 'DiagnoseController@index');
 	$router->get('/v1/diagnose/{id}', 'DiagnoseController@show');
 	$router->post('/v1/diagnose', 'DiagnoseController@create');
 	$router->put('/v1/diagnose/{id}', 'DiagnoseController@update');
@@ -234,6 +234,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	// EXCEL
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
-	$router->get('/v1/import/patient', 'ExcelController@importPatient');
+	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	// });
 });

@@ -192,7 +192,7 @@ export default function Access() {
       return;
     }
     try {
-      const response = await axios.get(`accesses/${clinic && clinic}`, {
+      const response = await axios.get(`accesses/${clinic}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -356,7 +356,7 @@ export default function Access() {
     getUser();
   }, []);
 
-  // console.log(users);
+  console.log(users);
 
   return (
     <>
@@ -405,12 +405,12 @@ export default function Access() {
                     {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Email
                     </th> */}
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Created At
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Updated At
-                    </th>
+                    </th> */}
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Actions
                     </th>
@@ -422,6 +422,20 @@ export default function Access() {
                       <td colSpan={99}>
                         <div className="flex w-full justify-center my-4">
                           <img src="/loading.svg" alt="now loading" />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {!usersLoading && users?.length <= 0 && (
+                    <tr>
+                      <td colSpan={99}>
+                        <div className="flex w-full justify-center mt-48">
+                          <div className="text-center">
+                            <h1 className="text-xl">No data found</h1>
+                            <small>
+                              Data is empty or try adjusting your filter
+                            </small>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -440,12 +454,12 @@ export default function Access() {
                         {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           <span className={""}>{obj.email}</span>
                         </td> */}
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           {moment(obj.created_at).format("DD MMM YYYY")}
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           {moment(obj.updated_at).fromNow()}
-                        </td>
+                        </td> */}
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           {/* <div className="tooltip tooltip-left" data-tip="Detail">
                           <label

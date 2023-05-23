@@ -28,6 +28,7 @@ class PatientImport implements ToModel, WithStartRow
             'gender'      => $row[5],
             'phone'       => $row[6],
             'address'     => $row[7],
+            'clinic_id'   => 2,
         ]);
     }
 }

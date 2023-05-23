@@ -29,7 +29,7 @@ class CorsMiddleware
 
         $response = $next($request);
         foreach ($headers as $key => $value) {
-            $response->headers($key, $value);
+            // $response->headers($key, $value);
             $response->headers->set($key, $value);
         }
 

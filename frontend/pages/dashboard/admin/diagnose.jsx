@@ -57,11 +57,11 @@ export default function Diagnose() {
     const { name, value } = event.target;
     setPutForm({ [name]: value });
   };
-
+  
   async function getDiagnosis() {
     try {
       const response = await axios.get(
-        `diagnoses/${clinic && clinic + "/"}${perpage}${
+        `diagnoses/${perpage}${
           search &&
           "/" +
             search
@@ -158,7 +158,7 @@ export default function Diagnose() {
 
   return (
     <>
-      <DashboardLayout title="Diagnose" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Diagnose">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"

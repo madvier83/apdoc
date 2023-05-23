@@ -7,13 +7,16 @@ import DashboardLayout from "../../../../layouts/DashboardLayout";
 import ModalBox from "../../../../components/Modals/ModalBox";
 import ModalDelete from "../../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
+import { useRouter } from "next/router";
 
 export default function Patients() {
   const token = getCookies("token");
+  const router = useRouter();
 
   const addModalRef = useRef();
   const putModalRef = useRef();
   const detailModalRef = useRef();
+  const exportModalRef = useRef();
   const tableRef = useRef();
 
   const [clinic, setClinic] = useState();
@@ -143,22 +146,140 @@ export default function Patients() {
       console.error(err);
     }
   }
-  
+
+  // async function downloadTable() {
+  //   if (!clinic) {
+  //     return;
+  //   }
+  //   try {
+  //     axios({
+  //       url: `export/patient?clinic=${clinic}`,
+  //       method: "GET",
+  //       responseType: "blob",
+  //       headers: {
+  //         Authorization: "Bearer" + token.token,
+  //       },
+  //     })
+  //       .then((response) => {
+  //         const url = window.URL.createObjectURL(new Blob([response.data]));
+
+  //         const link = document.createElement("a");
+  //         link.href = url;
+  //         link.setAttribute("download", "Patient.xlsx");
+  //         document.body.appendChild(link);
+
+  //         link.click();
+
+  //         link.parentNode.removeChild(link);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error downloading file:", error);
+  //       });
+
+  //     // const response = await axios.get(
+  //     //   `/export/patient?clinic_id=${clinic}`,
+  //     //   {
+  //     //     headers: {
+  //     //       Authorization: "Bearer" + token.token,
+  //     //     },
+  //     //   }
+  //     //   );
+
+  //     //   console.log(response.data)
+  //     //   const url = window.URL.createObjectURL(new Blob([response.data], { type: "xlsx" }));
+
+  //     //   const link = document.createElement('a');
+  //     //   link.href = url;
+  //     //   link.setAttribute('download', 'template.csv');
+  //     //   document.body.appendChild(link);
+  //     //   link.click();
+
+  //     //   link.parentNode.removeChild(link);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
   async function downloadTable() {
     if (!clinic) {
       return;
     }
     try {
-      const response = await axios.get(
-        `/export/patient?clinic_id=${clinic}`,
+      axios({
+        url: `export/patient?clinic=${clinic}`,
+        method: "GET",
+        responseType: "blob",
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "Patient.xlsx");
+          document.body.appendChild(link);
+
+          link.click();
+
+          link.parentNode.removeChild(link);
+        })
+        .catch((error) => {
+          console.error("Error downloading file:", error);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  async function uploadTable() {
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+
+    for (let [key, value] of formData) {
+      console.log(`${key}: ${value}`);
+    }
+
+    try {
+      const response = await axios.post(
+        `import/patient?clinic=${clinic}`,
+        formData,
         {
+          data: formData,
           headers: {
+            "Content-Type": "multipart/form-data",
             Authorization: "Bearer" + token.token,
           },
         }
       );
+      // console.log(response);
+      getPatients();
+      exportModalRef.current.click();
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   }
 
@@ -264,14 +385,17 @@ export default function Patients() {
                     Birth
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Phone
+                    Address
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    Phone
+                  </th>
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Updated At
-                  </th>
+                  </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Actions
                   </th>
@@ -328,9 +452,12 @@ export default function Patients() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                          {obj.birth_place}
+                          {moment(obj.birth_date).format("DD MMM YYYY")}
+                          {/* {obj.birth_place} */}
                         </span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span className="">{obj.address?.substring(0, 50)} {obj.address.length > 50 && "..."}</span>
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <a
@@ -346,12 +473,12 @@ export default function Patients() {
                           {obj.phone}
                         </a>
                       </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
-                      </td>
+                      </td> */}
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {/* <div className="tooltip tooltip-left" data-tip="Detail"> */}
                         <label
@@ -934,13 +1061,17 @@ export default function Patients() {
               <label className="label">
                 <span className="label-text">Export</span>
               </label>
-              <div className="btn btn-primary normal-case" onClick={() => downloadTable()}>
-                Download Current Template <i className="fas fa-download ml-2"></i>
+              <div
+                className="btn btn-ghost bg-zinc-200 normal-case"
+                onClick={() => downloadTable()}
+              >
+                Download Current Template{" "}
+                <i className="fas fa-download ml-2"></i>
               </div>
-              <label className="label">
-                <span className="label-text">Import</span>
+              <label className="label mt-4">
+                <span className="label-text">Import Template</span>
               </label>
-              <input
+              {/* <input
                 required
                 type="file"
                 name="nik"
@@ -948,15 +1079,26 @@ export default function Patients() {
                 onChange={(e) => {}}
                 placeholder=""
                 className="file-input input-bordered border rounded-md border-slate-300 w-full"
+              /> */}
+
+              <input
+                type="file"
+                name="logo"
+                accept="xlsx"
+                onChange={onSelectFile}
+                className="file-input file-input-ghost input-bordered border rounded-md border-slate-300 w-full"
               />
-              <button className="btn btn-success normal-case text-zinc-700 mt-2">
-                Apply Template <i className="fas fa-upload ml-2"></i>
-              </button>
+              <div
+                onClick={() => uploadTable()}
+                className="btn btn-success normal-case text-zinc-700 mt-2"
+              >
+                Upload Template <i className="fas fa-upload ml-2"></i>
+              </div>
             </div>
             <div className="modal-action rounded-sm">
               <label
-                htmlFor="modal-add"
-                ref={addModalRef}
+                htmlFor="modal-export"
+                ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel

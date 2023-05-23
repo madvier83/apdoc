@@ -112,7 +112,7 @@ export default function Transaction() {
       return;
     }
     try {
-      const response = await axios.get(`setting/1`, {
+      const response = await axios.get(`setting/${clinic}/clinic`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
