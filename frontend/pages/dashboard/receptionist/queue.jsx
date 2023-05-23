@@ -1136,14 +1136,17 @@ export default function Queue() {
                       Birth
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Phone
+                      Address
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                      Phone
+                    </th>
+                    {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Created At
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Updated At
-                    </th>
+                    </th> */}
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Actions
                     </th>
@@ -1200,10 +1203,14 @@ export default function Queue() {
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <span className={"capitalize"}>
-                            {moment(obj.birth_date).format("DD MMM YYYY")} -{" "}
-                            {obj.birth_place}
+                            {moment(obj.birth_date).format("DD MMM YYYY")} 
+                            {/* -{" "}
+                            {obj.birth_place} */}
                           </span>
                         </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span className="">{obj.address?.substring(0, 50)} {obj.address.length > 50 && "..."}</span>
+                      </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           <a
                             href={`${
@@ -1219,12 +1226,12 @@ export default function Queue() {
                             {obj.phone}
                           </a>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.created_at).format("DD MMM YYYY")}
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.updated_at).fromNow()}
-                        </td>
+                        </td> */}
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {obj.queues[0]?.status_id == 1 ? (
                             <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
