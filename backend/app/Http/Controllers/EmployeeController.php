@@ -8,14 +8,17 @@ use Throwable;
 
 class EmployeeController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
                 $employee = Employee::with(['position', 'users'])->where('clinic_id', $clinic)->where(function($query) {
                         $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             } else {
                 $employee = Employee::with(['position', 'users'])->where(function($query) use ($keyword) {
@@ -34,7 +37,7 @@ class EmployeeController extends Controller
                         $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     

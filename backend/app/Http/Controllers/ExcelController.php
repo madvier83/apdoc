@@ -19,7 +19,7 @@ class ExcelController extends Controller
         $file = $request->file('file');
 
         if ($file) {
-            Excel::import(new PatientImport, $file);
+            Excel::import(new PatientImport($request), $file);
 
             return response()->json(['message' => 'Data imported successfully']);
         }

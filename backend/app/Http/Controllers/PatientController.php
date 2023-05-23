@@ -8,11 +8,14 @@ use Throwable;
 
 class PatientController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $patient = Patient::with('queues')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $patient = Patient::with('queues')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $patient = Patient::with('queues')->where(function($query) use ($keyword) {
                     $query->where('nik', 'like', '%'.$keyword.'%')
@@ -26,7 +29,7 @@ class PatientController extends Controller
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     
