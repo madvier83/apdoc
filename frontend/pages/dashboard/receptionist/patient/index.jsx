@@ -258,9 +258,10 @@ export default function Patients() {
   async function uploadTable() {
     let formData = new FormData();
     formData.append("file", selectedFile);
-    // for (let [key, value] of formData) {
-    //   console.log(`${key}: ${value}`)
-    // }
+
+    for (let [key, value] of formData) {
+      console.log(`${key}: ${value}`)
+    }
 
     try {
       const response = await axios.post(
@@ -274,7 +275,8 @@ export default function Patients() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
+      getPatients()
       exportModalRef.current.click();
     } catch (err) {
       console.log(err);

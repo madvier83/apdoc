@@ -8,11 +8,11 @@ use Throwable;
 
 class DiagnoseController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index($perPage, $keyword=null)
     {
         try {
             if ($keyword == null) {
-                $diagnose = Diagnose::where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $diagnose = Diagnose::orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
                 $diagnose = Diagnose::where(function($query) use ($keyword) {
                     $query->where('code', 'like', '%'.$keyword.'%')
@@ -20,7 +20,6 @@ class DiagnoseController extends Controller
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
-                    ->where('clinic_id', $clinic)
                     ->orderBy('updated_at', 'desc')
                     ->paginate($perPage);
             }

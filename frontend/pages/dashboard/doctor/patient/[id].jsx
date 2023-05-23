@@ -461,7 +461,7 @@ export default function Patients() {
     return () => clearTimeout(getData);
   }, [page, perpage, search]);
 
-  // console.log(selectedDiagnosis);
+  console.log(selectedPatient);
   return (
     <>
       <DashboardLayout title="Patient Records">
@@ -497,7 +497,7 @@ export default function Patients() {
                       <small className="text-zinc-400">Phone</small> <br />
                       <span className="font-sm text-zinc-800 line-clamp-2">
                         <a
-                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
+                          href={`${selectedPatient.phone ? `https://wa.me/` + selectedPatient.phone?.replace(/\D/g, "") : ""}`}
                           target="_blank"
                           className={""}
                         >
