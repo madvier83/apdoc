@@ -9,11 +9,14 @@ use Throwable;
 
 class CategoryItemController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $category = CategoryItem::with('items')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $category = CategoryItem::with('items')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $category = CategoryItem::with('items')->where(function($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%')
@@ -21,7 +24,7 @@ class CategoryItemController extends Controller
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     

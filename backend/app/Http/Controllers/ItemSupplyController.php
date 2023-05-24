@@ -8,11 +8,14 @@ use Throwable;
 
 class ItemSupplyController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $itemSupply = ItemSupply::with('item')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $itemSupply = ItemSupply::with('item')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $itemSupply = ItemSupply::with('item')->where(function($query) use ($keyword) {
                     $query->where('total', 'like', '%'.$keyword.'%')
@@ -26,7 +29,7 @@ class ItemSupplyController extends Controller
                         ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     

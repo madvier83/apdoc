@@ -8,11 +8,14 @@ use Throwable;
 
 class ItemController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $item = Item::with(['categoryItem', 'itemSupplys'])->where(function($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%')
@@ -26,7 +29,7 @@ class ItemController extends Controller
                         ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     
