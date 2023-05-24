@@ -8,6 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import CurrencyInput from "react-currency-input-field";
+import Loading from "../../../components/loading";
 
 export default function Outcome() {
   const token = getCookies("token");
@@ -21,6 +22,9 @@ export default function Outcome() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("category_outcome_id");
+  const [order, setOrder] = useState(true);
 
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
@@ -67,6 +71,7 @@ export default function Outcome() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true)
     try {
       const response = await axios.get(
         `outcomes/${clinic && clinic + "/"}${perpage}${
@@ -77,7 +82,7 @@ export default function Outcome() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -88,6 +93,8 @@ export default function Outcome() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({})
+      setItemLoading(false);
     }
   }
 
@@ -187,7 +194,7 @@ export default function Outcome() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -279,14 +286,53 @@ export default function Outcome() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "category_outcome_id" && setOrder((p) => !p);
+                        setSortBy("category_outcome_id");
+                      }}
+                    >
+                      <p>Category</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "category_outcome_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Note
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "note" && setOrder((p) => !p);
+                        setSortBy("note");
+                      }}
+                    >
+                      <p>Note</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "note" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Nominal
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "nominal" && setOrder((p) => !p);
+                        setSortBy("nominal");
+                      }}
+                    >
+                      <p>Nominal</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "nominal" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -300,30 +346,8 @@ export default function Outcome() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
+                <Loading data={item} dataLoading={itemLoading} reload={getItem}></Loading>
+                {!itemLoading && item?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">

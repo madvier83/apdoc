@@ -5,8 +5,8 @@ import moment from "moment/moment";
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
-import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
+import Loading from "../../../components/loading";
 
 export default function Payment() {
   const token = getCookies("token");
@@ -20,6 +20,9 @@ export default function Payment() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
@@ -65,6 +68,7 @@ export default function Payment() {
     if(!clinic){
       return;
     }
+    setItemLoading(true)
     try {
       const response = await axios.get(
         `payments/${clinic && clinic + "/"}${perpage}${
@@ -74,7 +78,7 @@ export default function Payment() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "").replace(".","")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -85,6 +89,8 @@ export default function Payment() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({})
+      setItemLoading(false);
     }
   }
 
@@ -183,7 +189,7 @@ export default function Payment() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
   
   useEffect(()=> {
     setSearch("")
@@ -270,11 +276,37 @@ export default function Payment() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "category_payment_id" && setOrder((p) => !p);
+                        setSortBy("category_payment_id");
+                      }}
+                    >
+                      <p>Category</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "category_payment_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -288,30 +320,8 @@ export default function Payment() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
+                <Loading data={item} dataLoading={itemLoading} reload={getItem}></Loading>
+                {!itemLoading && item?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
@@ -632,9 +642,6 @@ export default function Payment() {
                               }}
                             >
                               <p className="text-left">{obj.name}</p>
-                              <p className="text-right pr-4">
-                                Rp. {numeral(obj.price).format("0,0")}
-                              </p>
                             </div>
                           </li>
                         );

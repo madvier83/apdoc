@@ -9,6 +9,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function Diagnose() {
   const token = getCookies("token");
@@ -20,6 +21,9 @@ export default function Diagnose() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("code");
+  const [order, setOrder] = useState(true);
 
   const [clinic, setClinic] = useState("");
 
@@ -59,6 +63,7 @@ export default function Diagnose() {
   };
   
   async function getDiagnosis() {
+    setDiagnosisLoading(true)
     try {
       const response = await axios.get(
         `diagnoses/${perpage}${
@@ -69,7 +74,7 @@ export default function Diagnose() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -81,6 +86,7 @@ export default function Diagnose() {
       setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
+      setDiagnosisLoading(false)
     }
   }
 
@@ -148,7 +154,7 @@ export default function Diagnose() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, sortBy, order]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -218,11 +224,37 @@ export default function Diagnose() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     #
                   </th>
-                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
-                    Code
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>Code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
-                    Description
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "Description" && setOrder((p) => !p);
+                        setSortBy("Description");
+                      }}
+                    >
+                      <p>Description</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "Description" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
                     Created At
@@ -236,30 +268,8 @@ export default function Diagnose() {
                 </tr>
               </thead>
               <tbody>
-                {diagnosisLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-6">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!diagnosisLoading && diagnosis.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {diagnosis?.data?.map((obj, index) => {
+                <Loading data={diagnosis} dataLoading={diagnosisLoading} reload={getDiagnosis}></Loading>
+                {!diagnosisLoading && diagnosis?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs text-left">

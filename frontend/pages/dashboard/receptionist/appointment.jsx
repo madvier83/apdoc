@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import numeral from "numeral";
+import Loading from "../../../components/loading";
 
 export default function Appointment() {
   const token = getCookies("token");
@@ -21,6 +22,9 @@ export default function Appointment() {
   const [search, setSearch] = useState("");
   const [searchPatients, setSearchPatients] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("patient_id");
+  const [order, setOrder] = useState(true);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -65,6 +69,7 @@ export default function Appointment() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true)
     try {
       const response = await axios.get(
         `appointments/${clinic && clinic + "/"}${perpage}${
@@ -75,7 +80,7 @@ export default function Appointment() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -87,6 +92,8 @@ export default function Appointment() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({})
+      setItemLoading(false);
     }
   }
 
@@ -194,13 +201,13 @@ export default function Appointment() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
-    setSearchPatients("")
+    setSearchPatients("");
     setPage(1);
-    setAddForm({clinic_id: clinic})
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -210,6 +217,7 @@ export default function Appointment() {
     return () => clearTimeout(getData);
   }, [searchPatients, clinic]);
 
+  console.log(item)
   return (
     <>
       <DashboardLayout
@@ -276,17 +284,69 @@ export default function Appointment() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-1 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "patient_id" && setOrder((p) => !p);
+                        setSortBy("patient_id");
+                      }}
+                    >
+                      <p>Patient</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "patient_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Description
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "description" && setOrder((p) => !p);
+                        setSortBy("description");
+                      }}
+                    >
+                      <p>Description</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "description" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Status
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "status_id" && setOrder((p) => !p);
+                        setSortBy("status_id");
+                      }}
+                    >
+                      <p>Status</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "status_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Date Time
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "appointment_date" && setOrder((p) => !p);
+                        setSortBy("appointment_date");
+                      }}
+                    >
+                      <p>Date Time</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "appointment_date" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -300,120 +360,110 @@ export default function Appointment() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.patient?.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>{obj.patient?.name}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.description.slice(0, 40)}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="">
-                          {obj.status_id == 1 && (
-                            <button className="btn-primary bg-indigo-100 text-indigo-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
-                              Pending
-                            </button>
-                          )}
-                          {obj.status_id == 2 && (
-                            <button className="btn-disabled ml-auto bg-slate-100 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
-                              In Queue
-                            </button>
-                          )}
-                          {obj.status_id == 3 && (
-                            <button className="btn-disabled ml-auto bg-emerald-100 text-emerald-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
-                              Completed
-                            </button>
-                          )}
-                          {obj.status_id == 4 && (
-                            <button className="btn-disabled ml-auto bg-rose-100 text-rose-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
-                              Cancelled
-                            </button>
-                          )}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>
-                          {moment(obj.appointment_date).format("DD MMM YYYY")} -{" "}
-                          {moment(obj.appointment_date).format("h:mm A")}
-                        </span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={item}
+                  dataLoading={itemLoading}
+                  reload={getItem}
+                ></Loading>
+                {!itemLoading &&
+                  item?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + item.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <i
+                            className={`text-md mr-2 ${
+                              obj.patient?.gender == "male"
+                                ? "text-blue-400 fas fa-mars"
+                                : "text-pink-400 fas fa-venus"
+                            }`}
+                          ></i>{" "}
+                          <span className={"font-bold"}>
+                            {obj.patient?.name}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.description.slice(0, 40)}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className="">
+                            {obj.status_id == 1 && (
+                              <button className="btn-primary bg-indigo-100 text-indigo-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                                Pending
+                              </button>
+                            )}
+                            {obj.status_id == 2 && (
+                              <button className="btn-disabled ml-auto bg-slate-100 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                                In Queue
+                              </button>
+                            )}
+                            {obj.status_id == 3 && (
+                              <button className="btn-disabled ml-auto bg-emerald-100 text-emerald-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                                Completed
+                              </button>
+                            )}
+                            {obj.status_id == 4 && (
+                              <button className="btn-disabled ml-auto bg-rose-100 text-rose-600 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
+                                Cancelled
+                              </button>
+                            )}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>
+                            {moment(obj.appointment_date).format("DD MMM YYYY")}{" "}
+                            - {moment(obj.appointment_date).format("h:mm A")}
+                          </span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td> */}
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <span className="tooltip tooltip-left" data-tip="Edit">
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError("");
-                            }}
+                          <span
+                            className="tooltip tooltip-left"
+                            data-tip="Edit"
                           >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
-                        </span>
-                        <span
-                          className="tooltip tooltip-left"
-                          data-tip="Delete"
-                        >
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
+                            <label
+                              className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              type="button"
+                              htmlFor="modal-put"
+                              onClick={() => {
+                                setPutForm(obj);
+                                setPutFormError("");
+                              }}
+                            >
+                              <i className="fas fa-pen-to-square"></i>
+                            </label>
+                          </span>
+                          <span
+                            className="tooltip tooltip-left"
+                            data-tip="Delete"
                           >
-                            <i className="fas fa-trash"></i>
-                          </label>
-                        </span>
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteItem(obj.id)}
-                          title={`Delete appointment?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                            <label
+                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              htmlFor={obj.id}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </label>
+                          </span>
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteItem(obj.id)}
+                            title={`Delete appointment?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

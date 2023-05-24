@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function StockAdjustment() {
   const token = getCookies("token");
@@ -23,6 +24,9 @@ export default function StockAdjustment() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("item_supply_id");
+  const [order, setOrder] = useState(true);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -113,6 +117,7 @@ export default function StockAdjustment() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true);
     try {
       const response = await axios.get(
         `stock-adjustments/${clinic && clinic + "/"}${perpage}${
@@ -123,7 +128,7 @@ export default function StockAdjustment() {
               .join("%")
               .replace(/[a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -134,6 +139,8 @@ export default function StockAdjustment() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({});
+      setItemLoading(false);
     }
   }
 
@@ -213,12 +220,12 @@ export default function StockAdjustment() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
     setPage(1);
-    setAddForm({clinic_id: clinic})
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -233,6 +240,8 @@ export default function StockAdjustment() {
     }, 500);
     return () => clearTimeout(getData);
   }, [searchCategory]);
+
+  console.log(item);
 
   return (
     <>
@@ -301,20 +310,85 @@ export default function StockAdjustment() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Item
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "item_supply_id" && setOrder((p) => !p);
+                        setSortBy("item_supply_id");
+                      }}
+                    >
+                      <p>Item</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "item_supply_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Before
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "before" && setOrder((p) => !p);
+                        setSortBy("before");
+                      }}
+                    >
+                      <p>Before</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "before" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Adjustment
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "adjustment" && setOrder((p) => !p);
+                        setSortBy("adjustment");
+                      }}
+                    >
+                      <p>Adjustment</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "adjustment" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Difference
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "difference" && setOrder((p) => !p);
+                        setSortBy("difference");
+                      }}
+                    >
+                      <p>After</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "difference" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Note
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "note" && setOrder((p) => !p);
+                        setSortBy("note");
+                      }}
+                    >
+                      <p>Note</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "note" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -328,78 +402,61 @@ export default function StockAdjustment() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + item.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.item_supply.item.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {obj.before}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {obj.adjustment}
-                      </td>
-                      <td
-                        className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-semibold ${
-                          obj.difference > 0
-                            ? "text-emerald-500"
-                            : "text-rose-400"
-                        }`}
-                      >
-                        {obj.difference > 0 && "+"}
-                        {obj.difference}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {obj.note}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={item}
+                  dataLoading={itemLoading}
+                  reload={getItem}
+                ></Loading>
+                {!itemLoading &&
+                  item?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + item.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.item_supply.item.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {obj.before}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {obj.adjustment}
+                        </td>
+                        <td
+                          className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-semibold ${
+                            obj.difference > 0
+                              ? "text-emerald-500"
+                              : "text-rose-400"
+                          }`}
+                        >
+                          {obj.difference > 0 && "+"}
+                          {obj.difference}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {obj.note}
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                      </td> */}
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         -
                       </td> */}
-                    </tr>
-                  );
-                })}
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -515,7 +572,7 @@ export default function StockAdjustment() {
                       name="searchAdd"
                       value={searchCategory}
                       onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search service ..."
+                      placeholder="Search item ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
