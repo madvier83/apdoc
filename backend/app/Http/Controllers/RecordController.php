@@ -6,6 +6,8 @@ use App\Models\Patient;
 use App\Models\Record;
 use App\Models\RecordDiagnose;
 use App\Models\RecordFile;
+use App\Models\RecordItem;
+use App\Models\RecordService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -17,9 +19,12 @@ class RecordController extends Controller
     {
         try {
             if ($keyword == null) {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.item', 'recordServices', 'recordServices.service')
+                ->where('clinic_id', $clinic)
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
             } else {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose')->where(function($query) use ($keyword) {
+                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.item', 'recordServices', 'recordServices.service')->where(function($query) use ($keyword) {
                     $query->where('complaint', 'like', '%'.$keyword.'%')
                         ->orWhere('inspection', 'like', '%'.$keyword.'%')
                         ->orWhere('therapy', 'like', '%'.$keyword.'%')
@@ -99,11 +104,12 @@ class RecordController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'files'      => 'image',
-            'patient_id' => 'required',
-            'complaint'  => 'required',
-            'inspection' => 'required',
-            'therapy'    => 'required',
+            'files'       => 'image',
+            'patient_id'  => 'required',
+            'complaint'   => 'required',
+            'inspection'  => 'required',
+            'therapy'     => 'required',
+            'description' => 'required',
         ]);
 
         try {
@@ -141,6 +147,34 @@ class RecordController extends Controller
                             'diagnose_id'  => $diagnose[$i],
                         ];
                         RecordDiagnose::create($data);
+                    }
+                }
+            }
+            
+            // Record Item
+            if ($request->items) {
+                $item = json_decode($request->items);
+                for ($i = 0; $i < count($item); $i++) {
+                    if ($item[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'item_id'  => $item[$i],
+                        ];
+                        RecordItem::create($data);
+                    }
+                }
+            }
+            
+            // Record Service
+            if ($request->services) {
+                $service = json_decode($request->services);
+                for ($i = 0; $i < count($service); $i++) {
+                    if ($service[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'service_id'  => $service[$i],
+                        ];
+                        RecordService::create($data);
                     }
                 }
             }
@@ -195,6 +229,40 @@ class RecordController extends Controller
     
                     RecordFile::create($recordFile);
                 // }
+            }
+    
+            // Record Item
+            if ($request->items) {
+                RecordItem::where('record_id', $record->id)->delete();
+                $item = json_decode($request->items);
+                for ($i = 0; $i < count($item); $i++) {
+                    if ($item[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'item_id'  => $item[$i],
+                        ];
+                        RecordItem::create($data);
+                    }
+                }
+            } else {
+                RecordItem::where('record_id', $record->id)->delete();
+            }
+    
+            // Record Service
+            if ($request->services) {
+                RecordService::where('record_id', $record->id)->delete();
+                $service = json_decode($request->services);
+                for ($i = 0; $i < count($service); $i++) {
+                    if ($service[$i]) {
+                        $data = [
+                            'record_id'     => $record->id,
+                            'service_id'  => $service[$i],
+                        ];
+                        RecordService::create($data);
+                    }
+                }
+            } else {
+                RecordService::where('record_id', $record->id)->delete();
             }
     
             // Record Diagnosa

@@ -10,6 +10,16 @@ class Record extends Model
 
     // RELATIONSHIPS
 
+    public function recordItems()
+    {
+        return $this->hasMany(RecordItem::class);
+    }
+
+    public function recordServices()
+    {
+        return $this->hasMany(RecordService::class);
+    }
+
     public function recordDiagnoses()
     {
         return $this->hasMany(RecordDiagnose::class);

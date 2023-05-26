@@ -18,7 +18,8 @@ class ServiceController extends Controller
                 $service = Service::where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $service = Service::where(function($query) use ($keyword) {
-                    $query->where('name', 'like', '%'.$keyword.'%')
+                    $query->where('code', 'like', '%'.$keyword.'%')
+                        ->orWhere('name', 'like', '%'.$keyword.'%')
                         ->orWhere('price', 'like', '%'.$keyword.'%')
                         ->orWhere('commission', 'like', '%'.$keyword.'%')
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
@@ -48,8 +49,15 @@ class ServiceController extends Controller
 
     public function create(Request $request)
     {
+        $unique = Service::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('code', $request->code)->first();
+
+        if ($unique) {
+            return response()->json(['message' => 'The code has already been taken.'], 400);
+        }
+
         $this->validate($request, [
-            'name'       => 'required|string',
+            'code'       => 'required',
+            'name'       => 'required',
             'price'      => 'required',
             'commission' => 'required',
         ]);
@@ -74,10 +82,19 @@ class ServiceController extends Controller
         }
 
         $this->validate($request, [
-            'name'       => 'required|string',
+            'code'       => 'required',
+            'name'       => 'required',
             'price'      => 'required',
             'commission' => 'required',
         ]);
+
+        if($service->code != $request->code) {
+            $unique = Service::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('code', $request->code)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The code has already been taken.'], 400);
+            }
+        }
 
         try {
             $data = $request->all();

@@ -20,6 +20,7 @@ class CreateRecordsTable extends Migration
             $table->longText('complaint')->nullable();
             $table->longText('inspection')->nullable();
             $table->longText('therapy')->nullable();
+            $table->longText('description')->nullable();
             $table->boolean('is_editable')->default(true);
             $table->boolean('is_delete')->default(false);
             $table->foreignId('clinic_id')->nullable();
