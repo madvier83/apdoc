@@ -173,7 +173,7 @@ export default function Patients() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "Patient.xlsx");
+          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
           document.body.appendChild(link);
 
           link.click();

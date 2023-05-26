@@ -23,11 +23,17 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import axios from "../api/axios";
 import Chart from "react-google-charts";
 import numeral from "numeral";
+import Loading from "../../components/loading";
+import Highlighter from "react-highlight-words";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Dashboard() {
   const token = getCookies("token");
+  const router = useRouter();
 
   const [clinic, setClinic] = useState();
+  const tableRef = useRef();
 
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
@@ -39,11 +45,23 @@ export default function Dashboard() {
     ["Date", "Gross Sales", "Net Sales"],
     ["", 0, 0],
   ]);
+
   const [summary, setSummary] = useState([]);
   const [summaryLoading, setSummaryLoading] = useState(true);
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
+  const [stock, setStock] = useState([]);
+  const [stockLoading, setStockLoading] = useState(true);
   const [cookieCheck, setCookieCheck] = useState(false);
+
+  const [perpage, setPerpage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("stock");
+  const [order, setOrder] = useState(true);
+
+  const [lowPoint, setLowPoint] = useState(100);
 
   useEffect(() => {
     try {
@@ -129,6 +147,37 @@ export default function Dashboard() {
       console.error(err);
     }
   }
+
+  async function getStock() {
+    if (!clinic) {
+      return;
+    }
+    setStockLoading(true);
+    try {
+      const response = await axios.get(
+        `item-supplys/${clinic && clinic + "/"}${perpage}${
+          search &&
+          "/" +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      setStock(response.data);
+      setStockLoading(false);
+    } catch (err) {
+      console.error(err);
+      setStock({});
+      setStockLoading(false);
+    }
+  }
   useEffect(() => {
     if (cookieCheck) {
       getSummary();
@@ -136,7 +185,17 @@ export default function Dashboard() {
     }
   }, [selectionRange, clinic]);
 
-  // console.log(item);
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getStock();
+    }, 300);
+
+    if (page > item?.last_page) {
+      setPage(item.last_page);
+    }
+
+    return () => clearTimeout(getData);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   return (
     <>
@@ -258,8 +317,8 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-            {/* <h1 className="ml-8 font-bold">Other</h1> */}
-            {/* <div className="flex gap-4 px-8 pb-8 opacity-80">
+            {/* <h1 className="ml-8 font-bold">Details</h1>
+            <div className="flex gap-4 px-8 pb-8 opacity-80 mt-4">
               <div className="border-slate-300 border-b py-2 px-4 w-full">
                 <h1 className="text-xs">Refunds</h1>
                 <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
@@ -279,6 +338,266 @@ export default function Dashboard() {
             </div> */}
           </div>
         </div>
+        <div className="py-2"></div>
+
+        <div className="bg-white rounded-md">
+          <div className="rounded-t mb-0 px-4 py-4 border-0">
+            <div className="flex flex-wrap items-center my-3">
+              <Link
+                href={"/dashboard/pharmacy/supply"}
+                className="relative w-full px-4 max-w-full flex-grow flex-1"
+              >
+                <h3 className={"font-semibold text-lg "}>
+                  <i className="fas fa-filter mr-3"></i> Item Supply Table
+                </h3>
+              </Link>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  maxLength={32}
+                  value={search}
+                  onChange={(e) => {
+                    setPage(1);
+                    setSearch(e.target.value);
+                  }}
+                  className="input input-bordered input-xs input-primary border-slate-300 w-64 text-xs m-0 font-semibold"
+                />
+                <i
+                  onClick={() => {
+                    setSearch("");
+                    setPage(1);
+                  }}
+                  className={`fas ${
+                    !search ? "fa-search" : "fa-x"
+                  } absolute text-slate-400 right-0 pr-4 cursor-pointer  top-[6px] text-xs`}
+                ></i>
+              </div>
+
+              <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                <Link
+                  className="btn btn-xs bg-gray-500 text-white active:bg-gray-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button"
+                  href={`/dashboard/pharmacy/stock-adjustment`}
+                >
+                  Stock Adjustment <i className="fas fa-cog ml-2"></i>
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div
+            ref={tableRef}
+            className="h-[72vh] w-full overflow-x-auto flex flex-col justify-between"
+          >
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+              <thead className="sticky top-0">
+                <tr>
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    #
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "item_id" && setOrder((p) => !p);
+                        setSortBy("item_id");
+                      }}
+                    >
+                      <p>Item</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "item_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "stock" && setOrder((p) => !p);
+                        setSortBy("stock");
+                      }}
+                    >
+                      <p>Stock</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "stock" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "manufacturing" && setOrder((p) => !p);
+                        setSortBy("manufacturing");
+                      }}
+                    >
+                      <p>Manufacturing</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "manufacturing" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "expired" && setOrder((p) => !p);
+                        setSortBy("expired");
+                      }}
+                    >
+                      <p>Expired</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "expired" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <Loading
+                  data={stock}
+                  dataLoading={stockLoading}
+                  reload={getStock}
+                ></Loading>
+                {!stockLoading &&
+                  stock?.data?.map((obj, index) => {
+                    return (
+                      <tr
+                        key={obj.id}
+                        className={`${
+                          sortBy == "stock" && obj.stock < lowPoint
+                            ? ""
+                            : "hover:bg-zinc-50"
+                        } `}
+                      >
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + stock.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.item?.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td
+                          className={`${
+                            obj.stock < lowPoint &&
+                            "text-rose-500 animate-pulse font-semibold"
+                          } border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2`}
+                        >
+                          {obj.stock}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {moment(obj.manufacturing).format("DD MMM YYYY")}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {moment(obj.expired).format("DD MMM YYYY")}{" "}
+                          <span
+                            className={`font-semibold ${
+                              moment(obj.expired).format() <
+                                moment().subtract(-7, "d").format() &&
+                              "text-rose-400 animate-pulse"
+                            }`}
+                          >
+                            {" "}
+                            - Expired {moment(obj.expired).fromNow()}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
+            <small className="w-44 text-right truncate">
+              Results {stock.from}-{stock.to} of {stock.total}
+            </small>
+            <div className="flex text-xs justify-center items-center">
+              <button
+                className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                disabled={page <= 1 ? true : false}
+                onClick={() => {
+                  setPage(1);
+                }}
+              >
+                <i className="fa-solid fa-angles-left"></i>
+              </button>
+              <button
+                className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                disabled={page <= 1 ? true : false}
+                onClick={() => {
+                  setPage((prev) => prev - 1);
+                }}
+              >
+                <i className="fa-solid fa-angle-left"></i>
+              </button>
+              <input
+                type="number"
+                name="number"
+                className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
+                value={page}
+                min={1}
+                max={stock.last_page}
+                onChange={(e) => setPage(e.target.value)}
+              />
+              {/* <p className="font-bold w-8 text-center">{page}</p> */}
+              <button
+                className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                disabled={page >= stock.last_page ? true : false}
+                onClick={() => {
+                  setPage((prev) => prev + 1);
+                }}
+              >
+                <i className="fa-solid fa-angle-right"></i>
+              </button>
+              <button
+                className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
+                disabled={page >= item.last_page ? true : false}
+                onClick={() => {
+                  setPage(stock.last_page);
+                }}
+              >
+                <i className="fa-solid fa-angles-right"></i>
+              </button>
+            </div>
+            <div className="flex items-center text-xs w-44">
+              <p className="truncate">Number of rows</p>
+              <select
+                className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
+                name="perpage"
+                id=""
+                onChange={(e) => {
+                  setPerpage(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="250">250</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="pb-4 pt-4 block w-full"></div>
         <div className="py-8"></div>
       </DashboardLayout>
     </>

@@ -25,8 +25,8 @@ export default function StockAdjustment() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("item_supply_id");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);

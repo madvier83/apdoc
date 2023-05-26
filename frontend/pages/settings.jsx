@@ -371,7 +371,7 @@ export default function Settings() {
                   <React.Fragment>
                     {settingsForm.logo ? (
                       <img
-                        src={process.env.BASE_SERVER + settingsForm.logo}
+                        src={process.env.NEXT_PUBLIC_SERVER_URL + settingsForm.logo}
                         className="max-h-28 max-w-sm grayscale mb-1 mt-2"
                       />
                     ) : (
