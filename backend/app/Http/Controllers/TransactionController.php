@@ -107,9 +107,13 @@ class TransactionController extends Controller
         }
 
         try {
-            $newStock = $oldStock->stock - $qty;
-    
+            $newStock = $oldStock->stock - $qty;    
             ItemSupply::where('id', $id)->update(['stock' => $newStock]);
+            if($newStock < 50){
+                $data = ItemSupply::where('id', $id)->where('stock','<=',50)->get();
+                $message = 'stock item under 50';
+                event(new ItemLowStockNotification($message, $data));
+            }
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
