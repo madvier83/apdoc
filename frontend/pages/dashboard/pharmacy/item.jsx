@@ -27,8 +27,8 @@ export default function Item() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("name");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -38,6 +38,7 @@ export default function Item() {
   const initialItemForm = {
     clinic_id: "",
     category_item_id: "",
+    code: "",
     name: "",
     unit: "",
     sell_price: "",
@@ -147,12 +148,12 @@ export default function Item() {
     } catch (err) {
       setAddFormError(initialItemForm);
       setAddFormError(err.response?.data);
+      err.response?.data?.message && setAddFormError({code: err.response?.data?.message || ""})
     }
   }
 
   async function putItem(e) {
     e.preventDefault();
-    console.log(putForm);
     try {
       const response = await axios.put(`item/${putForm.id}`, putForm, {
         headers: {
@@ -167,6 +168,7 @@ export default function Item() {
     } catch (err) {
       setPutFormError(initialItemForm);
       setPutFormError(err.response?.data);
+      err.response?.data?.message && setPutFormError({code: err.response?.data?.message || ""})
     }
   }
 
@@ -290,6 +292,22 @@ export default function Item() {
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
                       onClick={() => {
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>Code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
                         sortBy == "name" && setOrder((p) => !p);
                         setSortBy("name");
                       }}
@@ -408,6 +426,16 @@ export default function Item() {
                             {index + item.from}
                           </span>
                         </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.code}
+                            ></Highlighter>
+                          </span>
+                        </td>
                         <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                           <span className={"ml-3 font-bold"}>
                             <Highlighter
@@ -565,6 +593,25 @@ export default function Item() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
+                <span className="label-text">Code</span>
+              </label>
+              <input
+                type="text"
+                name="code"
+                value={addForm.code}
+                onChange={(e) => handleAddInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.code && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.code}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -614,7 +661,7 @@ export default function Item() {
                       name="searchAdd"
                       value={searchCategory}
                       onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search service ..."
+                      placeholder="Search category ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -772,6 +819,25 @@ export default function Item() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
+                <span className="label-text">Code</span>
+              </label>
+              <input
+                type="text"
+                name="code"
+                value={putForm.code}
+                onChange={(e) => handlePutInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.code && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.code}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -821,7 +887,7 @@ export default function Item() {
                       name="searchAdd"
                       value={searchCategory}
                       onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search service ..."
+                      placeholder="Search category ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul

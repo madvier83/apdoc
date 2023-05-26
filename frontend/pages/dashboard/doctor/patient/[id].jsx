@@ -24,6 +24,8 @@ export default function Patients() {
 
   const [perpage, setPerpage] = useState(9);
   const [search, setSearch] = useState("");
+  const [searchItem, setSearchItem] = useState("");
+  const [searchService, setSearchService] = useState("");
   const [page, setPage] = useState(1);
 
   const [refresher, setRefresher] = useState(true);
@@ -38,6 +40,10 @@ export default function Patients() {
   const [patientLoading, setPatientLoading] = useState(true);
   const [diagsosis, setDiagnosis] = useState([]);
   const [diagsosisLoading, setDiagnosisLoading] = useState(true);
+  const [items, setItems] = useState([]);
+  const [itemsLoading, setItemsLoading] = useState(true);
+  const [services, setServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
   const [growth, setGrowth] = useState([]);
   const [growthLoading, setGrowthLoading] = useState(true);
   const [files, setFiles] = useState([]);
@@ -57,6 +63,9 @@ export default function Patients() {
     id: "",
     patient_id: "",
     diagnoses: [],
+    items: [],
+    services: [],
+    description: "",
     complaint: "",
     inspection: "",
     therapy: "",
@@ -68,6 +77,8 @@ export default function Patients() {
   };
   const [selectedPatient, setSelectedPatient] = useState(initialRecordForm);
   const [selectedDiagnosis, setSelectedDiagnosis] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -206,15 +217,66 @@ export default function Patients() {
           },
         }
       );
-      // console.log(response.data);
-      // const data = response?.data?.data?.map((obj) => {
-      //   return {
-      //     label: obj.code,
-      //     value: obj.id,
-      //   };
-      // });
       setDiagnosis(response.data);
       setDiagnosisLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async function getItems() {
+    if (!selectedPatient.clinic_id) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `items/${
+          selectedPatient.clinic_id && selectedPatient.clinic_id + "/"
+        }${perpage}${
+          searchItem &&
+          "/" +
+            searchItem
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      setItems(response.data);
+      setItemsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async function getServices() {
+    if (!selectedPatient.clinic_id) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `services/${
+          selectedPatient.clinic_id && selectedPatient.clinic_id + "/"
+        }${perpage}${
+          searchService &&
+          "/" +
+            searchService
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      setServices(response.data);
+      setServicesLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -228,7 +290,10 @@ export default function Patients() {
     formData.append("complaint", addForm.complaint);
     formData.append("inspection", addForm.inspection);
     formData.append("therapy", addForm.therapy);
+    formData.append("description", addForm.description);
     formData.append(`diagnoses`, JSON.stringify(addForm.diagnoses));
+    formData.append(`services`, JSON.stringify(addForm.services));
+    formData.append(`items`, JSON.stringify(addForm.items));
 
     // for (var key of formData.entries()) {
     //   console.log(key[0] + ", " + key[1]);
@@ -365,7 +430,10 @@ export default function Patients() {
     formData.append("complaint", putForm.complaint);
     formData.append("inspection", putForm.inspection);
     formData.append("therapy", putForm.therapy);
+    formData.append("description", putForm.description);
     formData.append(`diagnoses`, JSON.stringify(putForm.diagnoses));
+    formData.append(`services`, JSON.stringify(putForm.services));
+    formData.append(`items`, JSON.stringify(putForm.diagnoses));
 
     try {
       const response = await axios.post(`/record/${putForm.id}`, formData, {
@@ -431,6 +499,50 @@ export default function Patients() {
     setRefresher((prev) => !prev);
   }
 
+  function addMultiItem(obj) {
+    let multi = selectedItems;
+    // console.log(multi)
+    if (
+      multi.filter((e) => {
+        return e.id == obj.id;
+      }).length == 0
+    ) {
+      multi.push(obj);
+      setSelectedItems(multi);
+    } else {
+      let newMulti = [];
+      multi.map((e) => {
+        if (e.id != obj.id) {
+          newMulti.push(e);
+        }
+      });
+      setSelectedItems(newMulti);
+    }
+    setRefresher((prev) => !prev);
+  }
+
+  function addMultiService(obj) {
+    let multi = selectedServices;
+    // console.log(multi)
+    if (
+      multi.filter((e) => {
+        return e.id == obj.id;
+      }).length == 0
+    ) {
+      multi.push(obj);
+      setSelectedServices(multi);
+    } else {
+      let newMulti = [];
+      multi.map((e) => {
+        if (e.id != obj.id) {
+          newMulti.push(e);
+        }
+      });
+      setSelectedServices(newMulti);
+    }
+    setRefresher((prev) => !prev);
+  }
+
   useEffect(() => {
     if (router.isReady) {
       getPatient();
@@ -447,21 +559,39 @@ export default function Patients() {
   }, [selectedPatient]);
 
   useEffect(() => {
-    let data = selectedDiagnosis.map((obj) => {
+    let diagnoses = selectedDiagnosis.map((obj) => {
       return obj.id;
     });
-    setAddForm({ diagnoses: data });
-    setPutForm({ diagnoses: data });
-  }, [selectedDiagnosis, refresher]);
+    let items = selectedItems.map((obj) => {
+      return obj.id;
+    });
+    let services = selectedServices.map((obj) => {
+      return obj.id;
+    });
+    setAddForm({ diagnoses, items, services });
+    setPutForm({ diagnoses, items, services });
+  }, [selectedDiagnosis, selectedItems, selectedServices, refresher]);
 
   useEffect(() => {
     const getData = setTimeout(() => {
       getDiagnosis();
     }, 500);
     return () => clearTimeout(getData);
-  }, [page, perpage, search]);
+  }, [search]);
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getServices();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchService, selectedPatient]);
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getItems();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchItem, selectedPatient]);
 
-  console.log(selectedPatient);
+  console.log(addForm);
   return (
     <>
       <DashboardLayout title="Patient Records">
@@ -497,7 +627,12 @@ export default function Patients() {
                       <small className="text-zinc-400">Phone</small> <br />
                       <span className="font-sm text-zinc-800 line-clamp-2">
                         <a
-                          href={`${selectedPatient.phone ? `https://wa.me/` + selectedPatient.phone?.replace(/\D/g, "") : ""}`}
+                          href={`${
+                            selectedPatient.phone
+                              ? `https://wa.me/` +
+                                selectedPatient.phone?.replace(/\D/g, "")
+                              : ""
+                          }`}
                           target="_blank"
                           className={""}
                         >
@@ -702,7 +837,11 @@ export default function Patients() {
                         className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                         type="button"
                         htmlFor="modal-add"
-                        onClick={() => setSelectedDiagnosis([])}
+                        onClick={() => {
+                          setSelectedDiagnosis([]);
+                          setSelectedItems([]);
+                          setSelectedServices([]);
+                        }}
                       >
                         Add record <i className="fas fa-add"></i>
                       </label>
@@ -761,12 +900,18 @@ export default function Patients() {
                                       className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
-                                        let arr = obj.record_diagnoses.map(
-                                          (e) => {
-                                            return e.diagnose;
-                                          }
+                                        let diagnoses = obj.record_diagnoses.map(
+                                          (e) => e.diagnose
                                         );
-                                        setSelectedDiagnosis(arr);
+                                        let items = obj.record_diagnoses.map(
+                                          (e) => e.diagnose
+                                        );
+                                        let services = obj.record_diagnoses.map(
+                                          (e) => e.diagnose
+                                        );
+                                        setSelectedDiagnosis(diagnoses);
+                                        setSelectedItems(diagnoses);
+                                        setSelectedServices(diagnoses);
                                         setPutForm(obj);
                                       }}
                                     >
@@ -802,30 +947,79 @@ export default function Patients() {
                                     <td className="py-2">{obj.inspection}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Diagnoses</td>
+                                    <td className="w-24">Description</td>
                                     <td className="w-4">:</td>
-                                    <td className="py-2">
-                                      {obj.record_diagnoses?.length > 0 ? (
-                                        obj.record_diagnoses.map((obj) => {
-                                          return (
-                                            <p
-                                              className="text-justify mb-2 p-4 bg-slate-50 rounded-md"
-                                              key={obj.id}
-                                            >
-                                              <b>{obj.diagnose?.code}</b> -{" "}
-                                              {obj.diagnose?.description}
-                                            </p>
-                                          );
-                                        })
-                                      ) : (
-                                        <p>-</p>
-                                      )}
-                                    </td>
+                                    <td className="py-2">{obj.description}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
                                     <td className="w-24">Therapy</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.therapy}</td>
+                                  </tr>
+                                  <tr className="text-sm text-zinc-500 align-text-top">
+                                    <td className="w-24">Diagnoses</td>
+                                    <td className="w-4">:</td>
+                                    <td className="py-2">
+                                      {obj.record_diagnoses?.length > 0 && (
+                                        <div className="bg-indigo-200 rounded-md">
+                                          {obj.record_diagnoses.map((obj) => {
+                                            return (
+                                              <p
+                                                className="text-justify mb-1 px-4 py-3 bg-indigo-50 border border-indigo-400 rounded-md"
+                                                key={obj.id}
+                                              >
+                                                <b>{obj.diagnose?.code}</b> -{" "}
+                                                {obj.diagnose?.description}
+                                              </p>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </td>
+                                  </tr>
+
+                                  <tr className="text-sm text-zinc-500 align-text-top">
+                                    <td className="w-24">Services</td>
+                                    <td className="w-4">:</td>
+                                    <td className="py-2">
+                                      {obj.record_diagnoses?.length > 0 && (
+                                        <div className="bg-emerald-200 rounded-md">
+                                          {obj.record_diagnoses.map((obj) => {
+                                            return (
+                                              <p
+                                                className="text-justify mb-1 px-4 py-3 bg-emerald-50 border border-emerald-400 rounded-md"
+                                                key={obj.id}
+                                              >
+                                                <b>{obj.diagnose?.code}</b> -{" "}
+                                                {obj.diagnose?.description}
+                                              </p>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </td>
+                                  </tr>
+
+                                  <tr className="text-sm text-zinc-500 align-text-top">
+                                    <td className="w-24">Items</td>
+                                    <td className="w-4">:</td>
+                                    <td className="py-2">
+                                      {obj.record_diagnoses?.length > 0 && (
+                                        <div className="bg-amber-200 rounded-md">
+                                          {obj.record_diagnoses.map((obj) => {
+                                            return (
+                                              <p
+                                                className="text-justify mb-1 px-4 py-3 bg-amber-50 border border-amber-400 rounded-md"
+                                                key={obj.id}
+                                              >
+                                                <b>{obj.diagnose?.code}</b> -{" "}
+                                                {obj.diagnose?.description}
+                                              </p>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
                                     <td className="w-24 align-top">Files</td>
@@ -839,7 +1033,7 @@ export default function Patients() {
                                                 <div className="rounded-md group-hover:brightness-[.3] duration-300 overflow-hidden bg-slate-50 border border-gray-400 w-28 h-28">
                                                   <img
                                                     className="object-cover grayscale opacity-80"
-                                                    src={`http://localhost:8000/${obj.file}`}
+                                                    src={`${process.env.NEXT_PUBLIC_SERVER_URL}${obj.file}`}
                                                     alt=""
                                                   />
                                                 </div>
@@ -958,42 +1152,49 @@ export default function Patients() {
                   </span>
                 </label>
               )}
-              {/* <label className="label">
-                <span className="label-text">Diagnosa</span>
+              <label className="label mt-2">
+                <span className="label-text">Description</span>
               </label>
-              <MultiSelect
-                options={diagsosis || []}
-                value={selectedDiagnosis}
-                onChange={setSelectedDiagnosis}
-                hasSelectAll={false}
-              /> */}
-              <div className="dropdown">
+              <textarea
+                type="text"
+                name="description"
+                value={addForm.description}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {addFormError.description && (
                 <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.description}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Therapy</span>
+              </label>
+              <textarea
+                type="text"
+                name="therapy"
+                value={addForm.therapy}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {addFormError.therapy && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.therapy}
+                  </span>
+                </label>
+              )}
+
+              <div className="dropdown">
+                <label className="label mt-4">
                   <span className="label-text">Diagnosa</span>
                 </label>
-                <div className="mb-2">
-                  {selectedDiagnosis.length > 0 &&
-                    selectedDiagnosis?.map((obj) => {
-                      return (
-                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
-                          <div
-                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
-                            onClick={() => {
-                              addMultiD(obj);
-                            }}
-                          >
-                            <div>
-                              <b>{obj.code}</b>
-                              {" - " + obj.description}{" "}
-                            </div>
-                            <div className="flex justify-center font-bold">
-                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
                 <input
                   tabIndex={0}
                   ref={diagnoseRef}
@@ -1002,7 +1203,7 @@ export default function Patients() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search diagnosa ..."
-                  className="input input-bordered border-slate-300 w-full"
+                  className="input input-bordered input-md border-slate-300 w-full"
                 />
                 {search && (
                   <ul
@@ -1036,46 +1237,172 @@ export default function Patients() {
                     })}
                   </ul>
                 )}
-              </div>
-              <label className="label">
-                <span className="label-text">Therapy</span>
-              </label>
-              <textarea
-                type="text"
-                name="therapy"
-                value={addForm.therapy}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {addFormError.therapy && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.therapy}
-                  </span>
-                </label>
-              )}
 
-              {/* <label className="label">
-                <span className="label-text">File</span>
-              </label>
-              <input
-                type="file"
-                name="file"
-                // multiple={true}
-                accept="image/*"
-                value={addForm.file}
-                onChange={(e) => onSelectFile(e)}
-                className="border-slate-300 w-full"
-              />
-              {addFormError.file && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.file}
-                  </span>
+                <div className="mt-2 bg-indigo-200 rounded-md">
+                  {selectedDiagnosis.length > 0 &&
+                    selectedDiagnosis?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-indigo-50 border border-indigo-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiD(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.description}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+
+              <div className="dropdown">
+                <label className="label mt-4">
+                  <span className="label-text">Services</span>
                 </label>
-              )} */}
+                <input
+                  tabIndex={0}
+                  // ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={searchService}
+                  onChange={(e) => setSearchService(e.target.value)}
+                  placeholder="Search service ..."
+                  className="input input-bordered input-md border-slate-300 w-full"
+                />
+
+                {searchService && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!services?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {services?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiService(obj);
+                              setSearchService("");
+                            }}
+                          >
+                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
+                            {obj.name.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                <div className="mt-2 bg-emerald-200 rounded-md">
+                  {selectedServices.length > 0 &&
+                    selectedServices?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-emerald-50 border border-emerald-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiService(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.name}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="dropdown">
+                <label className="label mt-4">
+                  <span className="label-text">Items</span>
+                </label>
+                <input
+                  tabIndex={0}
+                  // ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={searchItem}
+                  onChange={(e) => setSearchItem(e.target.value)}
+                  placeholder="Search item ..."
+                  className="input input-bordered input-md border-slate-300 w-full"
+                />
+
+                {searchItem && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!items?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {items?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiItem(obj);
+                              setSearchItem("");
+                            }}
+                          >
+                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
+                            {obj.name.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                <div className="mt-2 bg-amber-200 rounded-md">
+                  {selectedItems.length > 0 &&
+                    selectedItems?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-amber-50 border border-amber-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiItem(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.name}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -1095,7 +1422,7 @@ export default function Patients() {
           <form onSubmit={(e) => addGrowth(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              <label className="label">
+              <label className="label mt-4">
                 <span className="label-text">Height (cm)</span>
               </label>
               <input
@@ -1232,34 +1559,49 @@ export default function Patients() {
                   </span>
                 </label>
               )}
+              <label className="label mt-2">
+                <span className="label-text">Description</span>
+              </label>
+              <textarea
+                type="text"
+                name="description"
+                value={putForm.description}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {putFormError.description && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.description}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Therapy</span>
+              </label>
+              <textarea
+                type="text"
+                name="therapy"
+                value={putForm.therapy}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {putFormError.therapy && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.therapy}
+                  </span>
+                </label>
+              )}
 
               <div className="dropdown">
-                <label className="label">
+                <label className="label mt-4">
                   <span className="label-text">Diagnosa</span>
                 </label>
-                <div className="mb-2">
-                  {selectedDiagnosis.length > 0 &&
-                    selectedDiagnosis?.map((obj) => {
-                      return (
-                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
-                          <div
-                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-slate-50 rounded-md cursor-pointer"
-                            onClick={() => {
-                              addMultiD(obj);
-                            }}
-                          >
-                            <div>
-                              <b>{obj.code}</b>
-                              {" - " + obj.description}{" "}
-                            </div>
-                            <div className="flex justify-end font-bold">
-                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
                 <input
                   tabIndex={0}
                   ref={diagnoseRef}
@@ -1268,7 +1610,7 @@ export default function Patients() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search diagnosa ..."
-                  className="input input-bordered border-slate-300 w-full"
+                  className="input input-bordered input-md border-slate-300 w-full"
                 />
                 {search && (
                   <ul
@@ -1302,26 +1644,172 @@ export default function Patients() {
                     })}
                   </ul>
                 )}
+
+                <div className="mt-2 bg-indigo-200 rounded-md">
+                  {selectedDiagnosis.length > 0 &&
+                    selectedDiagnosis?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-indigo-50 border border-indigo-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiD(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.description}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
-              <label className="label">
-                <span className="label-text">Therapy</span>
-              </label>
-              <textarea
-                type="text"
-                name="therapy"
-                value={putForm.therapy}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {putFormError.therapy && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.therapy}
-                  </span>
+
+              <div className="dropdown">
+                <label className="label mt-4">
+                  <span className="label-text">Services</span>
                 </label>
-              )}
+                <input
+                  tabIndex={0}
+                  // ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={searchService}
+                  onChange={(e) => setSearchService(e.target.value)}
+                  placeholder="Search service ..."
+                  className="input input-bordered input-md border-slate-300 w-full"
+                />
+
+                {searchService && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!services?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {services?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiService(obj);
+                              setSearchService("");
+                            }}
+                          >
+                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
+                            {obj.name.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                <div className="mt-2 bg-emerald-200 rounded-md">
+                  {selectedServices.length > 0 &&
+                    selectedServices?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-emerald-50 border border-emerald-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiService(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.name}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="dropdown">
+                <label className="label mt-4">
+                  <span className="label-text">Items</span>
+                </label>
+                <input
+                  tabIndex={0}
+                  // ref={diagnoseRef}
+                  type="text"
+                  name="searchAdd"
+                  value={searchItem}
+                  onChange={(e) => setSearchItem(e.target.value)}
+                  placeholder="Search item ..."
+                  className="input input-bordered input-md border-slate-300 w-full"
+                />
+
+                {searchItem && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                  >
+                    {!items?.data?.length && (
+                      <li className="rounded-sm text-sm">
+                        <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                          No data found
+                        </div>
+                      </li>
+                    )}
+                    {items?.data?.map((obj) => {
+                      return (
+                        <li key={obj.id} className="p-0 overflow-hidden">
+                          <div
+                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                            onClick={() => {
+                              addMultiItem(obj);
+                              setSearchItem("");
+                            }}
+                          >
+                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
+                            {obj.name.length > 50 && "..."}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                <div className="mt-2 bg-amber-200 rounded-md">
+                  {selectedItems.length > 0 &&
+                    selectedItems?.map((obj) => {
+                      return (
+                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                          <div
+                            className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-amber-50 border border-amber-400 rounded-md cursor-pointer"
+                            onClick={() => {
+                              addMultiItem(obj);
+                            }}
+                          >
+                            <div>
+                              <b>{obj.code}</b>
+                              {" - " + obj.name}{" "}
+                            </div>
+                            <div className="flex justify-center font-bold">
+                              <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
 
               {/* <label className="label">
                 <span className="label-text">File</span>

@@ -25,8 +25,8 @@ export default function Service() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   
-  const [sortBy, setSortBy] = useState("name");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [services, setServices] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(true);
@@ -34,6 +34,7 @@ export default function Service() {
   const initialServiceForm = {
     clinic_id: "",
     id: "",
+    code: "",
     name: "",
     price: "",
     commission: "",
@@ -112,6 +113,7 @@ export default function Service() {
     } catch (err) {
       setAddFormError(initialServiceForm);
       setAddFormError(err.response?.data);
+      err.response?.data?.message && setAddFormError({code: err.response?.data?.message || ""})
     }
   }
 
@@ -132,6 +134,7 @@ export default function Service() {
     } catch (err) {
       setPutFormError(initialServiceForm);
       setPutFormError(err.response?.data);
+      err.response?.data?.message && setPutFormError({code: err.response?.data?.message || ""})
     }
   }
 
@@ -242,6 +245,22 @@ export default function Service() {
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
                       onClick={() => {
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>Code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
                         sortBy == "name" && setOrder((p) => !p);
                         setSortBy("name");
                       }}
@@ -307,6 +326,16 @@ export default function Service() {
                           {index + services.from}
                         </span>
                       </th>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span className={"font-bold"}>
+                          <Highlighter
+                            highlightClassName="bg-emerald-200"
+                            searchWords={[search]}
+                            autoEscape={true}
+                            textToHighlight={obj.code}
+                          ></Highlighter>
+                        </span>
+                      </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span className={"font-bold"}>
                           <Highlighter
@@ -449,6 +478,24 @@ export default function Service() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
+                <span className="label-text">Code</span>
+              </label>
+              <input
+                type="text"
+                name="code"
+                value={addForm.code}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.code && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.code}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
@@ -521,6 +568,24 @@ export default function Service() {
           <form onSubmit={putService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Code</span>
+              </label>
+              <input
+                type="text"
+                name="code"
+                value={putForm.code}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putFormError.code && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.code}
+                  </span>
+                </label>
+              )}
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
