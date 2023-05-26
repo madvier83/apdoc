@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function CategoryItem() {
   const token = getCookies("token");
@@ -20,6 +21,9 @@ export default function CategoryItem() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
@@ -59,6 +63,7 @@ export default function CategoryItem() {
     if(!clinic){
       return;
     }
+    setCategoryLoading(true)
     try {
       const response = await axios.get(
         `category-items/${clinic && clinic + "/"}${perpage}${
@@ -68,7 +73,7 @@ export default function CategoryItem() {
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -79,6 +84,8 @@ export default function CategoryItem() {
       setCategoryLoading(false);
     } catch (err) {
       console.error(err);
+      setCategory({})
+      setCategoryLoading(false);
     }
   }
 
@@ -149,7 +156,7 @@ export default function CategoryItem() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(()=> {
     setSearch("")
@@ -229,8 +236,21 @@ export default function CategoryItem() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -244,30 +264,8 @@ export default function CategoryItem() {
                 </tr>
               </thead>
               <tbody>
-                {categoryLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!categoryLoading && category.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {category?.data?.map((obj, index) => {
+                <Loading data={category} dataLoading={categoryLoading} reload={getCategory}></Loading>
+                {!categoryLoading && category?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">

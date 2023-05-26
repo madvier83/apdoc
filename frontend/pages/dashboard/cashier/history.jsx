@@ -7,17 +7,21 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
+import Loading from "../../../components/loading";
 
 export default function History() {
   const token = getCookies("token");
 
-  const tableRef = useRef()
+  const tableRef = useRef();
 
   const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("patient_id");
+  const [order, setOrder] = useState(true);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -27,8 +31,10 @@ export default function History() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true)
     try {
-      const response = await axios.get(`transactions/${clinic && clinic + "/"}${perpage}${
+      const response = await axios.get(
+        `transactions/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
@@ -36,16 +42,20 @@ export default function History() {
               .join("%")
               .replace(/[a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setItem(response.data);
       setItemLoading(false);
       // console.log(response.data);
     } catch (err) {
       console.error(err);
+      setItem({})
+      setItemLoading(false);
     }
   }
 
@@ -76,8 +86,8 @@ export default function History() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
-  
+  }, [page, perpage, search, clinic, sortBy, order]);
+
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
@@ -92,6 +102,8 @@ export default function History() {
   useEffect(() => {
     getItem();
   }, []);
+
+  // console.log(item)
 
   return (
     <>
@@ -108,7 +120,7 @@ export default function History() {
                   <i className="fas fa-filter mr-3"></i> History Table
                 </h3>
               </div>
-              
+
               <div className="relative">
                 <input
                   type="text"
@@ -155,23 +167,101 @@ export default function History() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Patient
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "patient_id" && setOrder((p) => !p);
+                        setSortBy("patient_id");
+                      }}
+                    >
+                      <p>Patient</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "patient_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Status
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "is_cancelled" && setOrder((p) => !p);
+                        setSortBy("is_cancelled");
+                      }}
+                    >
+                      <p>Status</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "is_cancelled" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Code
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>Code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Payment
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "total" && setOrder((p) => !p);
+                        setSortBy("total");
+                      }}
+                    >
+                      <p>Total</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "total" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Total
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "payment" && setOrder((p) => !p);
+                        setSortBy("payment");
+                      }}
+                    >
+                      <p>Payment</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "payment" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Method
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "payment" && setOrder((p) => !p);
+                        setSortBy("payment");
+                      }}
+                    >
+                      <p>Payment Method</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "payment" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -185,92 +275,82 @@ export default function History() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.patient.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>{obj.patient.name}</span>
-                      </td>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3"}>
+                <Loading
+                  data={item}
+                  dataLoading={itemLoading}
+                  reload={getItem}
+                ></Loading>
+                {!itemLoading &&
+                  item?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + item.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <i
-                            className={`fas fa-circle mr-2 ${
-                              !obj.is_cancelled
-                                ? "text-emerald-400"
-                                : "text-orange-500"
+                            className={`text-md mr-2 ${
+                              obj.patient.gender == "male"
+                                ? "text-blue-400 fas fa-mars"
+                                : "text-pink-400 fas fa-venus"
                             }`}
                           ></i>{" "}
-                          {!obj.is_cancelled ? "Completed" : "Canceled"}
-                        </span>
-                      </td>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3"}>{obj.code}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>Rp. {numeral(obj.payment).format("0,0")}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>Rp. {numeral(obj.total).format("0,0")}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.payment_method?.name || "Cash"}</span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-bold"}>
+                            {obj.patient.name}
+                          </span>
+                        </td>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3"}>
+                            <i
+                              className={`fas fa-circle mr-2 ${
+                                !obj.is_cancelled
+                                  ? "text-emerald-400"
+                                  : "text-orange-500"
+                              }`}
+                            ></i>{" "}
+                            {!obj.is_cancelled ? "Completed" : "Canceled"}
+                          </span>
+                        </td>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3"}>{obj.code}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>Rp. {numeral(obj.total).format("0,0")}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>Rp. {numeral(obj.payment).format("0,0")}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.payment_method?.name || "Cash"}</span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Detail">
-                          <label
-                            className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-details"
-                            onClick={() => {
-                              // setPutForm(obj);
-                              setSelectedQueue(obj);
-                            }}
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Detail"
                           >
-                            <i className="fas fa-eye"></i>
-                          </label>
-                        </div>
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit">
+                            <label
+                              className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              type="button"
+                              htmlFor="modal-details"
+                              onClick={() => {
+                                // setPutForm(obj);
+                                setSelectedQueue(obj);
+                              }}
+                            >
+                              <i className="fas fa-eye"></i>
+                            </label>
+                          </div>
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -283,41 +363,44 @@ export default function History() {
                             <i className="fas fa-pen-to-square"></i>
                           </label>
                         </div> */}
-                        {obj.is_cancelled ? (
-                          <div className="tooltip tooltip-left" data-tip="Undo">
-                            <label
-                              className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                              onClick={() => cancelTransaction(obj.id)}
+                          {obj.is_cancelled ? (
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Undo"
                             >
-                              <i className="fas fa-undo"></i>
-                            </label>
-                          </div>
-                        ) : (
-                          <div
-                            className="tooltip tooltip-left"
-                            data-tip="Cancel"
-                          >
-                            <label
-                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                              htmlFor={obj.id}
+                              <label
+                                className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                onClick={() => cancelTransaction(obj.id)}
+                              >
+                                <i className="fas fa-undo"></i>
+                              </label>
+                            </div>
+                          ) : (
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Cancel"
                             >
-                              <i className="fas fa-trash"></i>
-                            </label>
-                          </div>
-                        )}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => cancelTransaction(obj.id)}
-                          title={`Cancel transaction ${obj.code}?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                              <label
+                                className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                htmlFor={obj.id}
+                              >
+                                <i className="fas fa-trash"></i>
+                              </label>
+                            </div>
+                          )}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => cancelTransaction(obj.id)}
+                            title={`Cancel transaction ${obj.code}?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
-          
+
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
@@ -720,7 +803,9 @@ export default function History() {
                 <div className="flex justify-between w-full text-sm border-dashed border-t pt-2">
                   <p className="font-semibold ml-1">Subtotal</p>
                   <p className="font-semibold ml-1 text-right">
-                    {numeral(selectedQueue.total + selectedQueue.discount).format("0,0")}
+                    {numeral(
+                      selectedQueue.total + selectedQueue.discount
+                    ).format("0,0")}
                   </p>
                 </div>
                 <div className="flex justify-between w-full text-sm py-2">

@@ -9,11 +9,14 @@ use Throwable;
 
 class StockAdjustmentController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $itemSupply = StockAdjustment::with(['itemSupply', 'itemSupply.item'])->where(function($query) use ($keyword) {
                     $query->where('adjustment', 'like', '%'.$keyword.'%')
@@ -25,7 +28,7 @@ class StockAdjustmentController extends Controller
                         ->orWhereRelation('itemSupply.item', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     

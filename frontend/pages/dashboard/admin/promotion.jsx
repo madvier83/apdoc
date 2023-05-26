@@ -6,6 +6,7 @@ import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
+import Loading from "../../../components/loading";
 
 export default function Promotion() {
   const token = getCookies("token");
@@ -19,6 +20,9 @@ export default function Promotion() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [promotion, setPromotion] = useState([]);
   const [promotionLoading, setPromotionLoading] = useState(true);
@@ -59,6 +63,7 @@ export default function Promotion() {
     if (!clinic) {
       return;
     }
+    setPromotionLoading(true)
     try {
       const response = await axios.get(
         `promotions/${clinic && clinic + "/"}${perpage}${
@@ -69,7 +74,7 @@ export default function Promotion() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -80,6 +85,8 @@ export default function Promotion() {
       setPromotionLoading(false);
     } catch (err) {
       console.error(err);
+      setPromotion({})
+      setPromotionLoading(false);
     }
   }
 
@@ -149,7 +156,7 @@ export default function Promotion() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -225,11 +232,37 @@ export default function Promotion() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Discount
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "discount" && setOrder((p) => !p);
+                        setSortBy("discount");
+                      }}
+                    >
+                      <p>Discount</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "discount" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -243,30 +276,8 @@ export default function Promotion() {
                 </tr>
               </thead>
               <tbody>
-                {promotionLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!promotionLoading && promotion.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {promotion?.data?.map((obj, index) => {
+                <Loading data={promotion} dataLoading={promotionLoading} reload={getPromotion}></Loading>
+                {!promotionLoading && promotion?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">

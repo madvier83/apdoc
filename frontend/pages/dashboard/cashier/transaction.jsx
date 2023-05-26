@@ -1143,7 +1143,7 @@ export default function Transaction() {
                 <div className="flex justify-center items-center flex-col">
                   {settings?.logo ? (
                     <img
-                      src={process.env.BASE_URL + settings?.logo}
+                      src={process.env.NEXT_PUBLIC_SERVER_URL + settings?.logo}
                       className="max-h-28 max-w-sm grayscale mb-1"
                     />
                   ) : (

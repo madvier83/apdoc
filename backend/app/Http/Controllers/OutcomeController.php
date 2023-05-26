@@ -8,11 +8,14 @@ use Throwable;
 
 class OutcomeController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $outcome = Outcome::with('categoryOutcome')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $outcome = Outcome::with('categoryOutcome')->where(function($query) use ($keyword) {
                     $query->where('nominal', 'like', '%'.$keyword.'%')
@@ -22,7 +25,7 @@ class OutcomeController extends Controller
                         ->orWhereRelation('categoryOutcome' ,'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     

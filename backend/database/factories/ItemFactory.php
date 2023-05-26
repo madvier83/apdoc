@@ -23,6 +23,7 @@ class ItemFactory extends Factory
     {
         return [
             'category_item_id'  => mt_rand(1, 5),
+            'code'              => 'I' . mt_rand(1, 40000),
             'name'              => $this->faker->name,
             'unit'              => $this->faker->randomElement(['5gr', '10gr', '15gr', '20gr', '25gr']),
             'sell_price'        => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),

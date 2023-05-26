@@ -8,14 +8,18 @@ use Throwable;
 
 class ItemController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $item = Item::with(['categoryItem', 'itemSupplys'])->where(function($query) use ($keyword) {
-                    $query->where('name', 'like', '%'.$keyword.'%')
+                    $query->where('code', 'like', '%'.$keyword.'%')
+                        ->orWhere('name', 'like', '%'.$keyword.'%')
                         ->orWhere('unit', 'like', '%'.$keyword.'%')
                         ->orWhere('sell_price', 'like', '%'.$keyword.'%')
                         ->orWhere('buy_price', 'like', '%'.$keyword.'%')
@@ -26,7 +30,7 @@ class ItemController extends Controller
                         ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     
@@ -49,8 +53,15 @@ class ItemController extends Controller
 
     public function create(Request $request)
     {
+        $unique = Item::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('code', $request->code)->first();
+
+        if ($unique) {
+            return response()->json(['message' => 'The code has already been taken.'], 400);
+        }
+
         $this->validate($request, [
             'category_item_id'  => 'required',
+            'code'              => 'required',
             'name'              => 'required',
             'unit'              => 'required',
             'sell_price'        => 'required',
@@ -80,6 +91,7 @@ class ItemController extends Controller
 
         $this->validate($request, [
             'category_item_id'  => 'required',
+            'code'              => 'required',
             'name'              => 'required',
             'unit'              => 'required',
             'sell_price'        => 'required',
@@ -87,6 +99,14 @@ class ItemController extends Controller
             'factory'           => 'required',
             'distributor'       => 'required',
         ]);
+
+        if($item->code != $request->code) {
+            $unique = Item::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('code', $request->code)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The code has already been taken.'], 400);
+            }
+        }
 
         try {
             $data = $request->all();

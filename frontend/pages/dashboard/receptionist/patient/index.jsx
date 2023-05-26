@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import { useRouter } from "next/router";
 
+import moment from "moment/moment";
 import axios from "../../../api/axios";
+import Highlighter from "react-highlight-words";
+
 import DashboardLayout from "../../../../layouts/DashboardLayout";
+import Loading from "../../../../components/loading";
 import ModalBox from "../../../../components/Modals/ModalBox";
 import ModalDelete from "../../../../components/Modals/ModalDelete";
-import Highlighter from "react-highlight-words";
-import { useRouter } from "next/router";
 
 export default function Patients() {
   const token = getCookies("token");
@@ -24,6 +26,9 @@ export default function Patients() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
@@ -70,6 +75,7 @@ export default function Patients() {
     if (!clinic) {
       return;
     }
+    setPatientsLoading(true);
     try {
       const response = await axios.get(
         `/patients/${clinic && clinic + "/"}${perpage}${
@@ -80,7 +86,7 @@ export default function Patients() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -91,6 +97,8 @@ export default function Patients() {
       setPatientsLoading(false);
     } catch (err) {
       console.error(err);
+      setPatients({ data: [] });
+      setPatientsLoading(false);
     }
   }
 
@@ -134,7 +142,7 @@ export default function Patients() {
     }
   }
 
-  async function deleteEmployee(id) {
+  async function deletePatient(id) {
     try {
       const response = await axios.delete(`/patient/${id}`, {
         headers: {
@@ -147,58 +155,6 @@ export default function Patients() {
     }
   }
 
-  // async function downloadTable() {
-  //   if (!clinic) {
-  //     return;
-  //   }
-  //   try {
-  //     axios({
-  //       url: `export/patient?clinic=${clinic}`,
-  //       method: "GET",
-  //       responseType: "blob",
-  //       headers: {
-  //         Authorization: "Bearer" + token.token,
-  //       },
-  //     })
-  //       .then((response) => {
-  //         const url = window.URL.createObjectURL(new Blob([response.data]));
-
-  //         const link = document.createElement("a");
-  //         link.href = url;
-  //         link.setAttribute("download", "Patient.xlsx");
-  //         document.body.appendChild(link);
-
-  //         link.click();
-
-  //         link.parentNode.removeChild(link);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error downloading file:", error);
-  //       });
-
-  //     // const response = await axios.get(
-  //     //   `/export/patient?clinic_id=${clinic}`,
-  //     //   {
-  //     //     headers: {
-  //     //       Authorization: "Bearer" + token.token,
-  //     //     },
-  //     //   }
-  //     //   );
-
-  //     //   console.log(response.data)
-  //     //   const url = window.URL.createObjectURL(new Blob([response.data], { type: "xlsx" }));
-
-  //     //   const link = document.createElement('a');
-  //     //   link.href = url;
-  //     //   link.setAttribute('download', 'template.csv');
-  //     //   document.body.appendChild(link);
-  //     //   link.click();
-
-  //     //   link.parentNode.removeChild(link);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -217,7 +173,7 @@ export default function Patients() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "Patient.xlsx");
+          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
           document.body.appendChild(link);
 
           link.click();
@@ -297,7 +253,7 @@ export default function Patients() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -378,17 +334,72 @@ export default function Patients() {
                   <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Birth
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => {
+                        sortBy == "birth_date" && setOrder((p) => !p);
+                        setSortBy("birth_date");
+                      }}
+                    >
+                      <p>Birth</p>
+
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "birth_date" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Address
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => {
+                        sortBy == "address" && setOrder((p) => !p);
+                        setSortBy("address");
+                      }}
+                    >
+                      <p>Address</p>
+
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "address" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Phone
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => {
+                        sortBy == "phone" && setOrder((p) => !p);
+                        setSortBy("phone");
+                      }}
+                    >
+                      <p>Phone</p>
+
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "phone" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -402,127 +413,114 @@ export default function Patients() {
                 </tr>
               </thead>
               <tbody>
-                {patientsLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!patientsLoading && patients.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {patients?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold "}>
-                          {index + patients.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")}
-                          {/* {obj.birth_place} */}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="">{obj.address?.substring(0, 50)} {obj.address.length > 50 && "..."}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <a
-                          href={`${
-                            obj.phone
-                              ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
-                              : ""
-                          }`}
-                          target="_blank"
-                          className={""}
-                        >
-                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                          {obj.phone}
-                        </a>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={patients}
+                  dataLoading={patientsLoading}
+                  reload={getPatients}
+                ></Loading>
+                {!patientsLoading &&
+                  patients?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold "}>
+                            {index + patients.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <i
+                            className={`text-md mr-2 ${
+                              obj.gender == "male"
+                                ? "text-blue-400 fas fa-mars"
+                                : "text-pink-400 fas fa-venus"
+                            }`}
+                          ></i>{" "}
+                          <span className={"font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"capitalize"}>
+                            {moment(obj.birth_date).format("DD MMM YYYY")}
+                            {/* {obj.birth_place} */}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className="">
+                            {obj.address?.substring(0, 50)}{" "}
+                            {obj.address.length > 50 && "..."}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <a
+                            href={`${
+                              obj.phone
+                                ? `https://wa.me/` +
+                                  obj.phone?.replace(/\D/g, "")
+                                : ""
+                            }`}
+                            target="_blank"
+                            className={""}
+                          >
+                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                            {obj.phone}
+                          </a>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <div className="tooltip tooltip-left" data-tip="Detail"> */}
-                        <label
-                          className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-details"
-                          onClick={() => {
-                            setPutForm(obj);
-                            setPutFormError(initialPatientForm);
-                          }}
-                        >
-                          <i className="fas fa-eye"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                        <label
-                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-put"
-                          onClick={() => {
-                            setPutForm(obj);
-                            setPutFormError(initialPatientForm);
-                          }}
-                        >
-                          <i className="fas fa-pen-to-square"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
-                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          htmlFor={obj.id}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </label>
-                        {/* </div> */}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteEmployee(obj.id)}
-                          title={`Delete patient?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <div className="tooltip tooltip-left" data-tip="Detail"> */}
+                          <label
+                            className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-details"
+                            onClick={() => {
+                              setPutForm(obj);
+                              setPutFormError(initialPatientForm);
+                            }}
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
+                          <label
+                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-put"
+                            onClick={() => {
+                              setPutForm(obj);
+                              setPutFormError(initialPatientForm);
+                            }}
+                          >
+                            <i className="fas fa-pen-to-square"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
+                          <label
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            htmlFor={obj.id}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </label>
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deletePatient(obj.id)}
+                            title={`Delete patient?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

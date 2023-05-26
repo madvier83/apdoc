@@ -9,6 +9,7 @@ import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
+import Loading from "../../../components/loading";
 
 export default function Item() {
   const token = getCookies("token");
@@ -25,6 +26,9 @@ export default function Item() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -72,6 +76,7 @@ export default function Item() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true);
     try {
       const response = await axios.get(
         `items/${clinic && clinic + "/"}${perpage}${
@@ -82,7 +87,7 @@ export default function Item() {
               .join("%")
               .replace(/[a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -93,6 +98,8 @@ export default function Item() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({});
+      setItemLoading(false);
     }
   }
 
@@ -184,7 +191,7 @@ export default function Item() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getItem();
-      getCategory()
+      getCategory();
     }, 300);
 
     if (page > item?.last_page) {
@@ -192,14 +199,14 @@ export default function Item() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
-    setSearchCategory("")
+    setSearchCategory("");
     setPage(1);
-    setAddForm(initialItemForm)
-    setAddForm({clinic_id: clinic})
+    setAddForm(initialItemForm);
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -279,23 +286,101 @@ export default function Item() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Unit
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "unit" && setOrder((p) => !p);
+                        setSortBy("unit");
+                      }}
+                    >
+                      <p>Unit</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "unit" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Buy Price
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "buy_price" && setOrder((p) => !p);
+                        setSortBy("buy_price");
+                      }}
+                    >
+                      <p>Buy Price</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "buy_price" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Sell Price
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "sell_price" && setOrder((p) => !p);
+                        setSortBy("sell_price");
+                      }}
+                    >
+                      <p>Sell Price</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "sell_price" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Category
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "category_item_id" && setOrder((p) => !p);
+                        setSortBy("category_item_id");
+                      }}
+                    >
+                      <p>Category</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "category_item_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Distributor
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "distributor" && setOrder((p) => !p);
+                        setSortBy("distributor");
+                      }}
+                    >
+                      <p>Distributor</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "distributor" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -309,102 +394,92 @@ export default function Item() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + item.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.unit}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>Rp. {numeral(obj.buy_price).format("0,0")}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>Rp. {numeral(obj.sell_price).format("0,0")}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category_item?.name}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.distributor}</span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={item}
+                  dataLoading={itemLoading}
+                  reload={getItem}
+                ></Loading>
+                {!itemLoading &&
+                  item?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + item.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.unit}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>
+                            Rp. {numeral(obj.buy_price).format("0,0")}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>
+                            Rp. {numeral(obj.sell_price).format("0,0")}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.category_item?.name}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.distributor}</span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError("");
-                              setSelectedCategory(obj.category_item);
-                            }}
+                          <div className="tooltip tooltip-left" data-tip="Edit">
+                            <label
+                              className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              type="button"
+                              htmlFor="modal-put"
+                              onClick={() => {
+                                setPutForm(obj);
+                                setPutFormError("");
+                                setSelectedCategory(obj.category_item);
+                              }}
+                            >
+                              <i className="fas fa-pen-to-square"></i>
+                            </label>
+                          </div>
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Delete"
                           >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
-                        </div>
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteItem(obj.id)}
-                          title={`Delete item?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                            <label
+                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              htmlFor={obj.id}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </label>
+                          </div>
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteItem(obj.id)}
+                            title={`Delete item?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -607,7 +682,9 @@ export default function Item() {
                 defaultValue={0}
                 value={addForm.buy_price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setAddForm({buy_price: value})}
+                onValueChange={(value, name) =>
+                  setAddForm({ buy_price: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.buy_price && (
@@ -625,7 +702,9 @@ export default function Item() {
                 defaultValue={0}
                 value={addForm.sell_price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setAddForm({sell_price: value})}
+                onValueChange={(value, name) =>
+                  setAddForm({ sell_price: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.sell_price && (
@@ -810,7 +889,9 @@ export default function Item() {
                 defaultValue={0}
                 value={putForm.buy_price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setPutForm({buy_price: value})}
+                onValueChange={(value, name) =>
+                  setPutForm({ buy_price: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.buy_price && (
@@ -828,7 +909,9 @@ export default function Item() {
                 defaultValue={0}
                 value={putForm.sell_price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setPutForm({sell_price: value})}
+                onValueChange={(value, name) =>
+                  setPutForm({ sell_price: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.sell_price && (

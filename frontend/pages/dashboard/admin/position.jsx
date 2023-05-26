@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function Position() {
   const token = getCookies("token");
@@ -20,6 +21,9 @@ export default function Position() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [positions, setPosition] = useState([]);
   const [positionsLoading, setPostionsLoading] = useState(true);
@@ -36,6 +40,10 @@ export default function Position() {
   // console.log(clinic)
 
   async function getPositions() {
+    if (!clinic) {
+      return;
+    }
+    setPostionsLoading(true);
     try {
       const response = await axios.get(
         `positions/${clinic && clinic + "/"}${perpage}${
@@ -46,7 +54,7 @@ export default function Position() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -57,6 +65,8 @@ export default function Position() {
       setPostionsLoading(false);
     } catch (err) {
       console.error(err);
+      setPosition({ data: [] });
+      setPostionsLoading(false);
     }
   }
 
@@ -116,9 +126,7 @@ export default function Position() {
   }
 
   useEffect(() => {
-    if (clinic) {
-      getPositions();
-    }
+    getPositions();
   }, []);
 
   useEffect(() => {
@@ -131,7 +139,7 @@ export default function Position() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -207,8 +215,21 @@ export default function Position() {
                   <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-3 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Name
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Name</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -222,29 +243,11 @@ export default function Position() {
                 </tr>
               </thead>
               <tbody>
-                {positionsLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!positionsLoading && positions.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
+                <Loading
+                  data={positions}
+                  dataLoading={positionsLoading}
+                  reload={getPositions}
+                ></Loading>
                 {!positionsLoading &&
                   positions?.data?.map((obj, index) => {
                     return (
@@ -255,7 +258,7 @@ export default function Position() {
                           </span>
                         </th>
                         <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2 text-left">
-                          <span className={"ml-3 font-bold"}>
+                          <span className={"ml-6 font-bold"}>
                             <Highlighter
                               highlightClassName="bg-emerald-200"
                               searchWords={[search]}

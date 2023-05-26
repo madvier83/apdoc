@@ -17,11 +17,17 @@ use Throwable;
 
 class TransactionController extends Controller
 {
-    public function index($clinic, $perPage, $keyword=null)
+    public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
+        $sortBy = $request->sortBy ?? 'updated_at';
+        $order  = $request->order ?? 'desc';
+
         try {
             if ($keyword == null) {
-                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where('clinic_id', $clinic)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])
+                ->where('clinic_id', $clinic)
+                ->orderBy($sortBy, $order)
+                ->paginate($perPage);
             } else {
                 $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where(function($query) use ($keyword) {
                     $query->where('discount', 'like', '%'.$keyword.'%')
@@ -34,7 +40,7 @@ class TransactionController extends Controller
                         ->orWhereRelation('employee', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
 

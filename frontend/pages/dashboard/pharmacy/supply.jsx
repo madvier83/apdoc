@@ -7,6 +7,7 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function ItemSupply() {
   const token = getCookies("token");
@@ -21,6 +22,9 @@ export default function ItemSupply() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [sortBy, setSortBy] = useState("stock");
+  const [order, setOrder] = useState(true);
 
   const [clinic, setClinic] = useState();
 
@@ -95,6 +99,7 @@ export default function ItemSupply() {
     if (!clinic) {
       return;
     }
+    setItemLoading(true)
     try {
       const response = await axios.get(
         `item-supplys/${clinic && clinic + "/"}${perpage}${
@@ -105,7 +110,7 @@ export default function ItemSupply() {
               .join("%")
               .replace(/[a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -116,6 +121,8 @@ export default function ItemSupply() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
+      setItem({})
+      setItemLoading(false);
     }
   }
 
@@ -186,7 +193,7 @@ export default function ItemSupply() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -208,6 +215,8 @@ export default function ItemSupply() {
     }, 500);
     return () => clearTimeout(getData);
   }, [searchCategory, clinic]);
+
+  // console.log(item)
 
   return (
     <>
@@ -276,17 +285,69 @@ export default function ItemSupply() {
                   <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     #
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Item
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "item_id" && setOrder((p) => !p);
+                        setSortBy("item_id");
+                      }}
+                    >
+                      <p>Item</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "item_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Stock
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "stock" && setOrder((p) => !p);
+                        setSortBy("stock");
+                      }}
+                    >
+                      <p>Stock</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "stock" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Manufacturing
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "manufacturing" && setOrder((p) => !p);
+                        setSortBy("manufacturing");
+                      }}
+                    >
+                      <p>Manufacturing</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "manufacturing" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
-                  <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Expired
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "expired" && setOrder((p) => !p);
+                        setSortBy("expired");
+                      }}
+                    >
+                      <p>Expired</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "expired" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -300,30 +361,8 @@ export default function ItemSupply() {
                 </tr>
               </thead>
               <tbody>
-                {itemLoading && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center my-4">
-                        <img src="/loading.svg" alt="now loading" />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!itemLoading && item.data?.length <= 0 && (
-                  <tr>
-                    <td colSpan={99}>
-                      <div className="flex w-full justify-center mt-48">
-                        <div className="text-center">
-                          <h1 className="text-xl">No data found</h1>
-                          <small>
-                            Data is empty or try adjusting your filter
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {item?.data?.map((obj, index) => {
+                <Loading data={item} dataLoading={itemLoading} reload={getItem}></Loading>
+                {!itemLoading && item?.data?.map((obj, index) => {
                   return (
                     <tr key={obj.id} className="hover:bg-zinc-50">
                       <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">

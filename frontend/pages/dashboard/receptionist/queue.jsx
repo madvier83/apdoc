@@ -17,6 +17,7 @@ import axios from "../../api/axios";
 import Link from "next/link";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
+import Loading from "../../../components/loading";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -40,6 +41,9 @@ export default function Queue() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [sortBy, setSortBy] = useState("name");
+  const [order, setOrder] = useState(true);
 
   const [selectedService, setSelectedService] = useState();
   const [selectedEmployee, setSelectedEmployee] = useState();
@@ -88,6 +92,7 @@ export default function Queue() {
     if (!clinic) {
       return;
     }
+    setPatientsLoading(true)
     try {
       const response = await axios.get(
         `/patients/${clinic && clinic + "/"}${perpage}${
@@ -98,7 +103,7 @@ export default function Queue() {
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -109,6 +114,8 @@ export default function Queue() {
       setPatientsLoading(false);
     } catch (err) {
       console.error(err);
+      setPatients({})
+      setPatientsLoading(false);
     }
   }
 
@@ -425,7 +432,7 @@ export default function Queue() {
     }
 
     return () => clearTimeout(getData);
-  }, [page, perpage, search, clinic]);
+  }, [page, perpage, search, clinic, sortBy, order]);
 
   useEffect(() => {
     setSearch("");
@@ -1129,17 +1136,69 @@ export default function Queue() {
                     <th className="pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       #
                     </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Name
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                      <div
+                        className={`flex items-center justify-between cursor-pointer`}
+                        onClick={() => {
+                          sortBy == "name" && setOrder((p) => !p);
+                          setSortBy("name");
+                        }}
+                      >
+                        <p>Name</p>
+                        <i
+                          className={`fas fa-sort text-right px-2 ${
+                            sortBy != "name" && "opacity-40"
+                          }`}
+                        ></i>
+                      </div>
                     </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Birth
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                      <div
+                        className={`flex items-center justify-between cursor-pointer`}
+                        onClick={() => {
+                          sortBy == "birth_date" && setOrder((p) => !p);
+                          setSortBy("birth_date");
+                        }}
+                      >
+                        <p>Birth</p>
+                        <i
+                          className={`fas fa-sort text-right px-2 ${
+                            sortBy != "birth_date" && "opacity-40"
+                          }`}
+                        ></i>
+                      </div>
                     </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Address
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                      <div
+                        className={`flex items-center justify-between cursor-pointer`}
+                        onClick={() => {
+                          sortBy == "address" && setOrder((p) => !p);
+                          setSortBy("address");
+                        }}
+                      >
+                        <p>Address</p>
+                        <i
+                          className={`fas fa-sort text-right px-2 ${
+                            sortBy != "address" && "opacity-40"
+                          }`}
+                        ></i>
+                      </div>
                     </th>
-                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Phone
+                    <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                      <div
+                        className={`flex items-center justify-between cursor-pointer`}
+                        onClick={() => {
+                          sortBy == "phone" && setOrder((p) => !p);
+                          setSortBy("phone");
+                        }}
+                      >
+                        <p>Phone</p>
+                        <i
+                          className={`fas fa-sort text-right px-2 ${
+                            sortBy != "phone" && "opacity-40"
+                          }`}
+                        ></i>
+                      </div>
                     </th>
                     {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Created At
@@ -1153,106 +1212,92 @@ export default function Queue() {
                   </tr>
                 </thead>
                 <tbody>
-                  {patientsLoading && (
-                    <tr>
-                      <td colSpan={99}>
-                        <div className="flex w-full justify-center my-4">
-                          <img src="/loading.svg" alt="now loading" />
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {!patientsLoading && patients.data?.length <= 0 && (
-                    <tr>
-                      <td colSpan={99}>
-                        <div className="flex w-full justify-center mt-48">
-                          <div className="text-center">
-                            <h1 className="text-xl">No data found</h1>
-                            <small>
-                              Data is empty or try adjusting your filter
-                            </small>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {patients?.data?.map((obj, index) => {
-                    return (
-                      <tr key={obj.id} className="hover:bg-zinc-50">
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
-                          <span className={"ml-3 font-bold "}>
-                            {index + patients.from}
-                          </span>
-                        </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <i
-                            className={`text-md mr-2 ${
-                              obj.gender == "male"
-                                ? "text-blue-400 fas fa-mars"
-                                : "text-pink-400 fas fa-venus"
-                            }`}
-                          ></i>{" "}
-                          <span className={"font-bold"}>
-                            <Highlighter
-                              highlightClassName="bg-emerald-200"
-                              searchWords={search.split()}
-                              autoEscape={true}
-                              textToHighlight={obj.name}
-                            ></Highlighter>
-                          </span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <span className={"capitalize"}>
-                            {moment(obj.birth_date).format("DD MMM YYYY")} 
-                            {/* -{" "}
+                  <Loading
+                    data={patients}
+                    dataLoading={patientsLoading}
+                    reload={getPatients}
+                  ></Loading>
+                  {!patientsLoading &&
+                    patients?.data?.map((obj, index) => {
+                      return (
+                        <tr key={obj.id} className="hover:bg-zinc-50">
+                          <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap px-4 text-left">
+                            <span className={"ml-3 font-bold "}>
+                              {index + patients.from}
+                            </span>
+                          </th>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                            <i
+                              className={`text-md mr-2 ${
+                                obj.gender == "male"
+                                  ? "text-blue-400 fas fa-mars"
+                                  : "text-pink-400 fas fa-venus"
+                              }`}
+                            ></i>{" "}
+                            <span className={"font-bold"}>
+                              <Highlighter
+                                highlightClassName="bg-emerald-200"
+                                searchWords={search.split()}
+                                autoEscape={true}
+                                textToHighlight={obj.name}
+                              ></Highlighter>
+                            </span>
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                            <span className={"capitalize"}>
+                              {moment(obj.birth_date).format("DD MMM YYYY")}
+                              {/* -{" "}
                             {obj.birth_place} */}
-                          </span>
-                        </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="">{obj.address?.substring(0, 50)} {obj.address.length > 50 && "..."}</span>
-                      </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          <a
-                            href={`${
-                              obj.phone
-                                ? `https://wa.me/` +
-                                  obj.phone?.replace(/\D/g, "")
-                                : ""
-                            }`}
-                            target="_blank"
-                            className={""}
-                          >
-                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                            {obj.phone}
-                          </a>
-                        </td>
-                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                            </span>
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            <span className="">
+                              {obj.address?.substring(0, 50)}{" "}
+                              {obj.address.length > 50 && "..."}
+                            </span>
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                            <a
+                              href={`${
+                                obj.phone
+                                  ? `https://wa.me/` +
+                                    obj.phone?.replace(/\D/g, "")
+                                  : ""
+                              }`}
+                              target="_blank"
+                              className={""}
+                            >
+                              <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                              {obj.phone}
+                            </a>
+                          </td>
+                          {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.created_at).format("DD MMM YYYY")}
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                           {moment(obj.updated_at).fromNow()}
                         </td> */}
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
-                          {obj.queues[0]?.status_id == 1 ? (
-                            <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                              In Queue
-                            </button>
-                          ) : (
-                            <button
-                              // htmlFor="addQueueModal"
-                              onClick={() => {
-                                addToQueue(obj.id);
-                                setSearch("");
-                              }}
-                              className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            >
-                              Add to queue <i className="fas fa-add ml-2"></i>
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
+                            {obj.queues[0]?.status_id == 1 ? (
+                              <button className="btn btn-xs btn-disabled text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                In Queue
+                              </button>
+                            ) : (
+                              <button
+                                // htmlFor="addQueueModal"
+                                onClick={() => {
+                                  addToQueue(obj.id);
+                                  setSearch("");
+                                }}
+                                className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              >
+                                Add to queue <i className="fas fa-add ml-2"></i>
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>
