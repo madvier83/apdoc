@@ -154,7 +154,7 @@ export default function Patients() {
           Authorization: "Bearer" + token.token,
         },
       });
-      // console.log(response.data);
+      console.log(response);
       setRecord(response.data);
       setRecordLoading(false);
     } catch (err) {
@@ -591,7 +591,7 @@ export default function Patients() {
     return () => clearTimeout(getData);
   }, [searchItem, selectedPatient]);
 
-  console.log(addForm);
+  // console.log(addForm);
   return (
     <>
       <DashboardLayout title="Patient Records">
@@ -982,16 +982,16 @@ export default function Patients() {
                                     <td className="w-24">Services</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">
-                                      {obj.record_diagnoses?.length > 0 && (
+                                      {obj.record_services?.length > 0 && (
                                         <div className="bg-emerald-200 rounded-md">
-                                          {obj.record_diagnoses.map((obj) => {
+                                          {obj.record_services.map((obj) => {
                                             return (
                                               <p
                                                 className="text-justify mb-1 px-4 py-3 bg-emerald-50 border border-emerald-400 rounded-md"
                                                 key={obj.id}
                                               >
-                                                <b>{obj.diagnose?.code}</b> -{" "}
-                                                {obj.diagnose?.description}
+                                                <b>{obj.service?.code}</b> -{" "}
+                                                {obj.service?.name}
                                               </p>
                                             );
                                           })}
@@ -1004,16 +1004,16 @@ export default function Patients() {
                                     <td className="w-24">Items</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">
-                                      {obj.record_diagnoses?.length > 0 && (
+                                      {obj.record_items?.length > 0 && (
                                         <div className="bg-amber-200 rounded-md">
-                                          {obj.record_diagnoses.map((obj) => {
+                                          {obj.record_items.map((obj) => {
                                             return (
                                               <p
                                                 className="text-justify mb-1 px-4 py-3 bg-amber-50 border border-amber-400 rounded-md"
                                                 key={obj.id}
                                               >
-                                                <b>{obj.diagnose?.code}</b> -{" "}
-                                                {obj.diagnose?.description}
+                                                <b>{obj.item?.code}</b> -{" "}
+                                                {obj.item?.name}
                                               </p>
                                             );
                                           })}
