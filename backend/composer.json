@@ -15,6 +15,7 @@
         "laravolt/indonesia": "^0.34.0",
         "maatwebsite/excel": "^3.1",
         "nesbot/carbon": "^2.64",
+        "pusher/pusher-php-server": "^7.2",
         "twilio/sdk": "^6.44",
         "tymon/jwt-auth": "^1.0"
     },

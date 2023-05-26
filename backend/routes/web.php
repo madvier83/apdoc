@@ -3,7 +3,6 @@
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 use App\Models\User;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -34,7 +33,7 @@ $router->get('/v1/location/province/cities/{id}', 'AddressController@cities');
 $router->get('/v1/location/province/city/districts/{id}', 'AddressController@districts');
 $router->get('/v1/location/province/city/district/villages/{id}', 'AddressController@villages');
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+// $router->group(['middleware' => 'auth'], function () use ($router) {
 	// Whatsapp Verification
 	$router->post('/v1/auth/send/otp','AuthController@send_otp');
 	$router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
@@ -236,4 +235,4 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	// });
-});
+// });

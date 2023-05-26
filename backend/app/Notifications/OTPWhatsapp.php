@@ -43,7 +43,6 @@ class OTPWhatsapp extends Notification
      */
     public function WhatsappMessage($notifiable)
     {   
-        
         return (new WhatsappMessages())
         ->WhatsappContent("Use this {$this->otp_verification} code for verify your account, don't give it to other, the estimation time for code is 5 minutes.");
     }

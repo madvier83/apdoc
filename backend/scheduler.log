@@ -3,3 +3,20 @@
   There are no commands defined in the "appointment" namespace.  
                                                                  
 
+
+                                                                 
+  There are no commands defined in the "appointment" namespace.  
+                                                                 
+
+
+In DailyWhatsappAppointment.php line 41:
+                                                                 
+  Class "App\Console\Commands\App\Models\Appointment" not found  
+                                                                 
+
+
+In Command.php line 136:
+                                                                          
+  Object of class Illuminate\Http\Response could not be converted to int  
+                                                                          
+

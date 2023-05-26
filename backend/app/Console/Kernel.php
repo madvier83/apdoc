@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \Laravelista\LumenVendorPublish\VendorPublishCommand::class
+        \Laravelista\LumenVendorPublish\VendorPublishCommand::class,
+        Commands\LowStockNotification::class,
+        Commands\DailyWhatsappAppointment::class,
     ];
 
     public function scheduleTimezone()
@@ -29,5 +31,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('appointment:whatsapp')->dailyAt('08:00')->appendOutputTo('scheduler.log')->onOneServer();
+        $schedule->command('notification:stock')->dailyAt('08:00')->appendOutputTo('notification.log')->onOneServer();
     }
 }

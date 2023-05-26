@@ -5,3 +5,5 @@ Homestead.yaml
 .env
 .phpunit.result.cache
 /public/img
+notification.log
+scheduler.log
