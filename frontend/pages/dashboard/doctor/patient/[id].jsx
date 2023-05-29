@@ -900,18 +900,18 @@ export default function Patients() {
                                       className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
-                                        let diagnoses = obj.record_diagnoses.map(
+                                        let diagnoses = obj.record_diagnoses?.map(
                                           (e) => e.diagnose
                                         );
-                                        let items = obj.record_diagnoses.map(
-                                          (e) => e.diagnose
+                                        let items = obj.record_items?.map(
+                                          (e) => e.item
                                         );
-                                        let services = obj.record_diagnoses.map(
-                                          (e) => e.diagnose
+                                        let services = obj.record_services?.map(
+                                          (e) => e.service
                                         );
-                                        setSelectedDiagnosis(diagnoses);
-                                        setSelectedItems(diagnoses);
-                                        setSelectedServices(diagnoses);
+                                        setSelectedDiagnosis(diagnoses || []);
+                                        setSelectedItems(items || []);
+                                        setSelectedServices(services || []);
                                         setPutForm(obj);
                                       }}
                                     >
@@ -961,7 +961,7 @@ export default function Patients() {
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_diagnoses?.length > 0 && (
-                                        <div className="bg-indigo-200 rounded-md">
+                                        <div className="bg-indigo-200 w-2/3 rounded-md">
                                           {obj.record_diagnoses.map((obj) => {
                                             return (
                                               <p
@@ -983,7 +983,7 @@ export default function Patients() {
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_services?.length > 0 && (
-                                        <div className="bg-emerald-200 rounded-md">
+                                        <div className="bg-emerald-200 w-2/3 rounded-md">
                                           {obj.record_services.map((obj) => {
                                             return (
                                               <p
@@ -1005,7 +1005,7 @@ export default function Patients() {
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_items?.length > 0 && (
-                                        <div className="bg-amber-200 rounded-md">
+                                        <div className="bg-amber-200 w-2/3 rounded-md">
                                           {obj.record_items.map((obj) => {
                                             return (
                                               <p
