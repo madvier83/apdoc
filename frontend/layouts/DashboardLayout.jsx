@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // components
 
@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import HeaderStats from "../components/Headers/HeaderStats";
 import FooterAdmin from "../components/Footers/FooterAdmin";
 import Head from "next/head";
+import Script from "next/script";
 
 export default function DashboardLayout({ title, children, headerStats, clinic, setClinic }) {
     return (

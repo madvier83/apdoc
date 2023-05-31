@@ -12,6 +12,7 @@ import Loading from "../../../components/loading";
 export default function ItemSupply() {
   const token = getCookies("token");
 
+  const detailModalRef = useRef();
   const addModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
@@ -19,11 +20,13 @@ export default function ItemSupply() {
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
 
+  const [selectedItem, setSelectedItem] = useState({});
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("stock");
+  const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(true);
 
   const [clinic, setClinic] = useState();
@@ -71,17 +74,18 @@ export default function ItemSupply() {
     if (!clinic) {
       return;
     }
+    setItemDbLoading(true);
     try {
       const response = await axios.get(
         `items/${clinic && clinic + "/"}${perpage}${
-          searchCategory &&
+          search &&
           "/" +
-            searchCategory
+            search
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
-        }?page=${page}`,
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -92,39 +96,40 @@ export default function ItemSupply() {
       setItemDbLoading(false);
     } catch (err) {
       console.error(err);
+      setItemDbLoading(false);
     }
   }
 
-  async function getItem() {
-    if (!clinic) {
-      return;
-    }
-    setItemLoading(true)
-    try {
-      const response = await axios.get(
-        `item-supplys/${clinic && clinic + "/"}${perpage}${
-          search &&
-          "/" +
-            search
-              .split(" ")
-              .join("%")
-              .replace(/[a-zA-Z0-9]/, "")
-              .replace(".", "")
-        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
-        {
-          headers: {
-            Authorization: "Bearer" + token.token,
-          },
-        }
-      );
-      setItem(response.data);
-      setItemLoading(false);
-    } catch (err) {
-      console.error(err);
-      setItem({})
-      setItemLoading(false);
-    }
-  }
+  // async function getItem() {
+  //   if (!clinic) {
+  //     return;
+  //   }
+  //   setItemLoading(true);
+  //   try {
+  //     const response = await axios.get(
+  //       `item-supplys/${clinic && clinic + "/"}${perpage}${
+  //         search &&
+  //         "/" +
+  //           search
+  //             .split(" ")
+  //             .join("%")
+  //             .replace(/[a-zA-Z0-9]/, "")
+  //             .replace(".", "")
+  //       }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer" + token.token,
+  //         },
+  //       }
+  //     );
+  //     setItem(response.data);
+  //     setItemLoading(false);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setItem({});
+  //     setItemLoading(false);
+  //   }
+  // }
 
   async function addItem(e) {
     e.preventDefault();
@@ -136,7 +141,7 @@ export default function ItemSupply() {
         },
       });
       addModalRef.current.click();
-      getItem();
+      getItemDb();
       setAddForm(initialItemForm);
       setAddFormError(initialItemForm);
     } catch (err) {
@@ -179,13 +184,13 @@ export default function ItemSupply() {
   }
 
   useEffect(() => {
-    getItem();
+    // getItem();
     getItemDb();
   }, []);
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      getItem();
+      getItemDb();
     }, 300);
 
     if (page > item?.last_page) {
@@ -197,26 +202,19 @@ export default function ItemSupply() {
 
   useEffect(() => {
     setSearch("");
-    setSelectedCategory("")
-    setAddForm(initialItemForm)
+    setSelectedCategory("");
+    setAddForm(initialItemForm);
     setPage(1);
-    setAddForm({clinic_id: clinic})
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
     });
-  }, [item]);
+  }, [itemDb]);
 
-  useEffect(() => {
-    const getData = setTimeout(() => {
-      getItemDb();
-    }, 500);
-    return () => clearTimeout(getData);
-  }, [searchCategory, clinic]);
-
-  // console.log(item)
+  // console.log(itemDb.data);
 
   return (
     <>
@@ -289,14 +287,30 @@ export default function ItemSupply() {
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
                       onClick={() => {
-                        sortBy == "item_id" && setOrder((p) => !p);
-                        setSortBy("item_id");
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
                       }}
                     >
                       <p>Item</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
-                          sortBy != "item_id" && "opacity-40"
+                          sortBy != "name" && "opacity-40"
                         }`}
                       ></i>
                     </div>
@@ -309,45 +323,16 @@ export default function ItemSupply() {
                         setSortBy("stock");
                       }}
                     >
-                      <p>Stock</p>
-                      <i
+                      <p>Total Stock</p>
+                      {/* <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "stock" && "opacity-40"
                         }`}
-                      ></i>
+                      ></i> */}
                     </div>
                   </th>
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                    <div
-                      className={`flex items-center justify-between cursor-pointer`}
-                      onClick={() => {
-                        sortBy == "manufacturing" && setOrder((p) => !p);
-                        setSortBy("manufacturing");
-                      }}
-                    >
-                      <p>Manufacturing</p>
-                      <i
-                        className={`fas fa-sort text-right px-2 ${
-                          sortBy != "manufacturing" && "opacity-40"
-                        }`}
-                      ></i>
-                    </div>
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                    <div
-                      className={`flex items-center justify-between cursor-pointer`}
-                      onClick={() => {
-                        sortBy == "expired" && setOrder((p) => !p);
-                        setSortBy("expired");
-                      }}
-                    >
-                      <p>Expired</p>
-                      <i
-                        className={`fas fa-sort text-right px-2 ${
-                          sortBy != "expired" && "opacity-40"
-                        }`}
-                      ></i>
-                    </div>
+                    <p>Actions</p>
                   </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
@@ -361,53 +346,81 @@ export default function ItemSupply() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={item} dataLoading={itemLoading} reload={getItem}></Loading>
-                {!itemLoading && item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + item.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.item?.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {obj.stock}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.manufacturing).format("DD MMM YYYY")}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.expired).format("DD MMM YYYY")}{" "}
-                        <span
-                          className={`font-semibold ${
-                            moment(obj.expired).format() <
-                              moment().subtract(-7, "d").format() &&
-                            "text-rose-400 animate-pulse"
-                          }`}
-                        >
-                          {" "}
-                          - Expired {moment(obj.expired).fromNow()}
-                        </span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={itemDb}
+                  dataLoading={itemDbLoading}
+                  reload={getItemDb}
+                ></Loading>
+                {!itemDbLoading &&
+                  itemDb?.data?.map((obj, index) => {
+                    // if (
+                    //   obj.item_supplys?.reduce(
+                    //     (totalStock, item) => totalStock + item.stock,
+                    //     0
+                    //   ) <= 0
+                    // ) {
+                    //   return;
+                    // }
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + itemDb.from}
+                          </span>
+                        </th>
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"font-bold"}>{obj.code}</span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {obj.item_supplys?.reduce(
+                            (totalStock, item) => totalStock + item.stock,
+                            0
+                          )}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
+                          <label
+                            htmlFor={`modal-detail`}
+                            onClick={() => setSelectedItem(obj)}
+                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {moment(obj.manufacturing).format("DD MMM YYYY")}
+                        </td> */}
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {moment(obj.expired).format("DD MMM YYYY")}{" "}
+                          <span
+                            className={`font-semibold ${
+                              moment(obj.expired).format() <
+                                moment().subtract(-7, "d").format() &&
+                              "text-rose-400 animate-pulse"
+                            }`}
+                          >
+                            {" "}
+                            - Expired {moment(obj.expired).fromNow()}
+                          </span>
+                        </td> */}
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         - */}
-                      {/* <div className="tooltip tooltip-left" data-tip="Edit">
+                        {/* <div className="tooltip tooltip-left" data-tip="Edit">
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -429,10 +442,10 @@ export default function ItemSupply() {
                             <i className="fas fa-trash"></i>
                           </button>
                         </div> */}
-                      {/* </td> */}
-                    </tr>
-                  );
-                })}
+                        {/* </td> */}
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -440,7 +453,7 @@ export default function ItemSupply() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {item.from}-{item.to} of {item.total}
+                Results {itemDb.from}-{itemDb.to} of {itemDb.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -467,13 +480,13 @@ export default function ItemSupply() {
                   className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
                   value={page}
                   min={1}
-                  max={item.last_page}
+                  max={itemDb.last_page}
                   onChange={(e) => setPage(e.target.value)}
                 />
                 {/* <p className="font-bold w-8 text-center">{page}</p> */}
                 <button
                   className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
-                  disabled={page >= item.last_page ? true : false}
+                  disabled={page >= itemDb.last_page ? true : false}
                   onClick={() => {
                     setPage((prev) => prev + 1);
                   }}
@@ -482,9 +495,9 @@ export default function ItemSupply() {
                 </button>
                 <button
                   className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
-                  disabled={page >= item.last_page ? true : false}
+                  disabled={page >= itemDb.last_page ? true : false}
                   onClick={() => {
-                    setPage(item.last_page);
+                    setPage(itemDb.last_page);
                   }}
                 >
                   <i className="fa-solid fa-angles-right"></i>
@@ -508,6 +521,120 @@ export default function ItemSupply() {
                   <option value="250">250</option>
                 </select>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <input type="checkbox" id="modal-detail" className="modal-toggle" />
+        <div className="modal">
+          <div className="modal-box px-0 p-0 max-w-2xl">
+            <div
+              className={
+                "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
+              }
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
+                  <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
+                  {selectedItem.name || "Item"} Supply List
+                </h3>
+                <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                  <label
+                    className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    ref={detailModalRef}
+                    htmlFor="modal-detail"
+                  >
+                    <i className="fas fa-x"></i>
+                  </label>
+                </div>
+              </div>
+              <form onSubmit={addItem} autoComplete="off">
+                <input type="hidden" autoComplete="off" />
+                <div className="form-control w-full">
+                  <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                    <thead className="sticky top-0">
+                      <tr>
+                        <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                          #
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Stock</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Manufacturing</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Expired</p>
+                          </div>
+                        </th>
+                        {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <p>Actions</p>
+                        </th> */}
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      {selectedItem.item_supplys?.map((obj, index) => {
+                        return (
+                          <tr key={obj.id} className="hover:bg-zinc-50">
+                            <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                              <span className={"ml-3 font-bold"}>
+                                {index + itemDb.from}
+                              </span>
+                            </th>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {obj.stock}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {moment(obj.manufacturing).format("DD MMM YYYY")}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {moment(obj.expired).format("DD MMM YYYY")}{" "}
+                              <span
+                                className={`font-semibold ${
+                                  moment(obj.expired).format() <
+                                    moment().subtract(-7, "d").format() &&
+                                  "text-rose-400 animate-pulse"
+                                }`}
+                              >
+                                {" "}
+                                - Expired {moment(obj.expired).fromNow()}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      <tr className="bg-gray-100">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {/* {index + itemDb.from} */}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-bold">
+                          {selectedItem.item_supplys?.reduce(
+                            (totalStock, item) => totalStock + item.stock,
+                            0
+                          )}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
             </div>
           </div>
         </div>

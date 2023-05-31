@@ -70,16 +70,15 @@
 html {
   overflow: scroll;
   overflow-x: hidden;
-} 
+}
 ::-webkit-scrollbar {
-  width: 0; 
-  background: transparent; 
+  width: 0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #10bea7;
-} 
-
+}
 
 select,
 button,
@@ -93,6 +92,24 @@ input[type="button"]::-moz-focus-inner {
 }
 button:focus {
   outline: 0 !important;
+}
+/* .goog-te-gadget span {
+  display: none;
+}
+.goog-te-gadget #text{
+  display: none;
+} */
+.goog-te-combo {
+  width: 100%;
+}
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+body > .skiptranslate {
+  display: none;
 }
 
 /* html,

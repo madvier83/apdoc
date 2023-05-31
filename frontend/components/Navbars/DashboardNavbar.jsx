@@ -4,6 +4,7 @@ import UserDropdown from "../Dropdowns/UserDropdown";
 import { useRouter } from "next/router";
 import axios from "../../pages/api/axios";
 import { getCookie, setCookie } from "cookies-next";
+import Script from "next/script";
 // import veri
 
 export default function Navbar({ title, clinic, setClinic }) {
@@ -93,7 +94,9 @@ export default function Navbar({ title, clinic, setClinic }) {
       <nav className="top-0 left-0 w-full z-10  md:flex-row md:flex-nowrap md:justify-start flex items-center pt-6 pb-4 px-8">
         <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap">
           {/* Brand */}
-          <div className={`grid grid-flow-col w-full justify-between items-center`}>
+          <div
+            className={`grid grid-flow-col w-full justify-between items-center`}
+          >
             <Link
               className="text-white text-lg uppercase hidden lg:inline-block font-semibold w-96 ml-3"
               href="#pablo"

@@ -12,6 +12,47 @@ export default function Sidebar() {
   const pwdRef = useRef();
   const [accesses, setAccesses] = useState([]);
 
+  
+  // const { isFallback, events } = useRouter()
+  
+  // const googleTranslateElementInit = () => {
+  //   new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element')
+  // }
+
+  // useEffect(() => {
+  //   const id = 'google-translate-script'
+
+  //   const addScript = () => {
+  //     const s = document.createElement('script')
+  //     s.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit')
+  //     s.setAttribute('id', id)
+  //     const q = document.getElementById(id)
+  //     if (!q) {
+  //       document.body.appendChild(s)
+  //       window.googleTranslateElementInit = googleTranslateElementInit
+  //     }
+  //   }
+
+  //   const removeScript = () => {
+  //     const q = document.getElementById(id)
+  //     if (q) q.remove()
+  //     const w = document.getElementById('google_translate_element')
+  //     if (w) w.innerHTML = ''
+  //   }
+
+  //   isFallback || addScript()
+
+  //   events.on('routeChangeStart', removeScript)
+  //   events.on('routeChangeComplete', addScript)
+
+  //   return () => {
+  //     events.off('routeChangeStart', removeScript)
+  //     events.off('routeChangeComplete', addScript)
+  //   }
+  // }, [])
+
+//  Translate
+
   const token = getCookie("token");
   function parseJwt(token) {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
@@ -128,6 +169,8 @@ export default function Sidebar() {
               </div>
             </div>
 
+            {/* <div id="google_translate_element"></div> */}
+
             <div className="text-slate-400">
               <hr className="my-4 md:min-w-full hidden md:block" />
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
@@ -158,7 +201,9 @@ export default function Sidebar() {
                   }`}
                 >
                   <button
-                    onClick={() => setSidebar({ user: !sidebar.user })}
+                    onClick={() =>
+                      setSidebar({ ...initialSidebar, user: !sidebar.user })
+                    }
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
                     }
@@ -240,7 +285,10 @@ export default function Sidebar() {
                       >
                         <button
                           onClick={() =>
-                            setSidebar({ [menu.name]: !sidebar[menu.name] })
+                            setSidebar({
+                              ...initialSidebar,
+                              [menu.name]: !sidebar[menu.name],
+                            })
                           }
                           className={
                             "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"

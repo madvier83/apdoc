@@ -289,7 +289,7 @@ export default function Settings() {
                         </label>
                       </div>
                     </div>
-                    <div className="w-full lg:w-4/12 px-4">
+                    <div className="w-full lg:w-3/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           City
@@ -309,7 +309,7 @@ export default function Settings() {
                         </label>
                       </div>
                     </div>
-                    <div className="w-full lg:w-4/12 px-4">
+                    <div className="w-full lg:w-3/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           Country
@@ -329,7 +329,27 @@ export default function Settings() {
                         </label>
                       </div>
                     </div>
-                    <div className="w-full lg:w-4/12 px-4">
+                    <div className="w-full lg:w-3/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
+                          District
+                        </label>
+                        <input
+                          type="text"
+                          name="country"
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          value={settingsForm.district}
+                          onChange={(e) => handleSettingsForm(e)}
+                          disabled={!isEditSettings}
+                        />
+                        <label className="">
+                          <span className="label-text-alt text-rose-300">
+                            {settingsFormError?.district}
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-3/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
                           Postal Code
