@@ -21,7 +21,8 @@ class CategoryItemController extends Controller
                 $category = CategoryItem::with('items')->where(function($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%')
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('items', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)

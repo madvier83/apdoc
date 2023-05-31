@@ -423,13 +423,11 @@ export default function CategoryPayment() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.message}
+                    {addFormError.message || addFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -461,13 +459,11 @@ export default function CategoryPayment() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
+                    {putFormError.message || putFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label

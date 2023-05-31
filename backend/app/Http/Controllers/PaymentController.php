@@ -52,6 +52,12 @@ class PaymentController extends Controller
             'name'                => 'required',
         ]);
 
+        $unique = Payment::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+
+        if ($unique) {
+            return response()->json(['message' => 'The name has already been taken.'], 422);
+        }
+
         try {
             $data = $request->all();
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
@@ -75,6 +81,14 @@ class PaymentController extends Controller
             'category_payment_id' => 'required',
             'name'                => 'required',
         ]);
+
+        if($payment->name != $request->name) {
+            $unique = Payment::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+    
+            if ($unique) {
+                return response()->json(['message' => 'The name has already been taken.'], 422);
+            }
+        }
 
         try {
             $data = $request->all();
