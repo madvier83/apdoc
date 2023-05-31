@@ -138,6 +138,7 @@ export default function Outcome() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);

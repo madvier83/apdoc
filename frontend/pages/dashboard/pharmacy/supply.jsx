@@ -143,6 +143,7 @@ export default function ItemSupply() {
       addModalRef.current.click();
       getItemDb();
       setAddForm(initialItemForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);

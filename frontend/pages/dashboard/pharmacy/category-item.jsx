@@ -101,6 +101,7 @@ export default function CategoryItem() {
       addModalRef.current.click();
       getCategory();
       setAddForm(initialCategoryForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialCategoryForm);
     } catch (err) {
       console.log(err)
@@ -169,6 +170,8 @@ export default function CategoryItem() {
       top: 0,
     });
   }, [category]);
+
+  console.log(addForm)
 
   return (
     <>

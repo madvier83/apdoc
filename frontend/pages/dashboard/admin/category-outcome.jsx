@@ -101,6 +101,7 @@ export default function CategoryOutcome() {
       addModalRef.current.click();
       getCategory();
       setAddForm(initialCategoryForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialCategoryForm);
     } catch (err) {
       setAddFormError(initialCategoryForm);

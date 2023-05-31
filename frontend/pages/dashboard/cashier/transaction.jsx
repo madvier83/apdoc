@@ -583,6 +583,7 @@ export default function Transaction() {
   //
   useEffect(() => {
     setTime(moment().format("h:mm:ss A"));
+    setTransaction({clinic_id: clinic});
   }, [transaction]);
   
 

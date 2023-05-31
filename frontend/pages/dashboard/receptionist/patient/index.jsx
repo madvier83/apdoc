@@ -115,6 +115,7 @@ export default function Patients() {
       addModalRef.current.click();
       getPatients();
       setAddForm(initialPatientForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialPatientForm);
     } catch (err) {
       setAddFormError(initialPatientForm);

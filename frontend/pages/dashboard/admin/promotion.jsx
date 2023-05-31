@@ -102,6 +102,7 @@ export default function Promotion() {
       addModalRef.current.click();
       getPromotion();
       setAddForm(initialCategoryForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialCategoryForm);
     } catch (err) {
       setAddFormError(initialCategoryForm);

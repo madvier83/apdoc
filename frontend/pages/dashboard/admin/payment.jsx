@@ -133,6 +133,7 @@ export default function Payment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);

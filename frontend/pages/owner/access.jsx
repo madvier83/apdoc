@@ -291,6 +291,7 @@ export default function Access() {
       );
       // console.log(response);
       setAddForm(initialAccessForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialAccessForm);
       addModalRef.current.click();
       getUser();

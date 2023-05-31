@@ -141,6 +141,7 @@ export default function Appointment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
       setSelectedPatient({});
     } catch (err) {

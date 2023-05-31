@@ -156,6 +156,7 @@ export default function StockAdjustment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -241,7 +242,7 @@ export default function StockAdjustment() {
     return () => clearTimeout(getData);
   }, [searchCategory]);
 
-  console.log(item);
+  // console.log(item);
 
   return (
     <>
