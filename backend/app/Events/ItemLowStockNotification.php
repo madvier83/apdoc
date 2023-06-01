@@ -15,19 +15,18 @@ class ItemLowStockNotification extends Event implements ShouldBroadcast
      *
      * @return void
      */
-    protected $LowStock,$message;
+    public $LowStock;
 
-    public function __construct($LowStock, $message)
+    public function __construct($LowStock)
     {
         $this->LowStock = $LowStock;
-        $this->message = $message;
     }
 
     public function broadcastOn(){
-        return ['message.'.$this->message.'data.'.$this->LowStock];
+        return ['message'];
     }
 
     public function broadcastAs(){
-        return 'Notifications';
+        return 'ItemLowStockNotification';
     }
 }

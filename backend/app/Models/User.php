@@ -21,6 +21,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $guarded = ['id'];
+    
+    protected $casts = [
+        'is_verified' => 'boolean',
+        'daily_sales_summary_status' => 'boolean',
+        'daily_inventory_alerts_status' => 'boolean',
+        'is_delete' => 'boolean',
+    ];
     // RELATIONSHIPS
 
     public function clinics()
@@ -42,6 +49,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function recipientMail(){
+        return $this->belongsToMany(RecipientMail::class,  'apdoc_id', 'apdoc_id');
     }
 
     /**

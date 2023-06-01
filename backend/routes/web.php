@@ -33,7 +33,7 @@ $router->get('/v1/location/province/cities/{id}', 'AddressController@cities');
 $router->get('/v1/location/province/city/districts/{id}', 'AddressController@districts');
 $router->get('/v1/location/province/city/district/villages/{id}', 'AddressController@villages');
 
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
 	// Whatsapp Verification
 	$router->post('/v1/auth/send/otp','AuthController@send_otp');
 	$router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
@@ -42,8 +42,14 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	// SETTING
 	$router->get('/v1/setting/{clinic}/clinic', 'SettingController@show');
 	$router->post('/v1/setting/{id}', 'SettingController@update');
-
+	// RECIPIENT MAIL SETTING
+	$router->get('/v1/recipient-mails', 'RecipientMailController@index');
+	$router->post('/v1/recipient-mail', 'RecipientMailController@store');
+	$router->delete('/v1/recipient-mail/{id}', 'RecipientMailController@destroy');
+	// STATUS MAIL SETTING
+	$router->put('/v1/recipient-mail/setting', 'UserController@setStatus');
 	// $router->group(['middleware' => 'access'], function () use ($router){
+
 	// ADMIN
 	$router->get('/v1/users', 'UserController@index');
 	$router->get('/v1/user/{id}', 'UserController@show');
@@ -141,7 +147,6 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
 
 	// RECEPTIONIST
-
 	$router->get('/v1/patients/{clinic}/{perPage}', 'PatientController@index');
 	$router->get('/v1/patients/{clinic}/{perPage}/{keyword}', 'PatientController@index');
 	$router->get('/v1/patient/{id}', 'PatientController@show');
@@ -167,7 +172,6 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	$router->put('/v1/queue-detail/{id}', 'QueueDetailController@update');
 	
 	// DOCTOR
-
 	$router->get('/v1/records/{clinic}/{perPage}', 'RecordController@index');
 	$router->get('/v1/records/{clinic}/{perPage}/{keyword}', 'RecordController@index');
 	$router->get('/v1/record/{patient}', 'RecordController@show');
@@ -188,7 +192,6 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	$router->delete('/v1/growth/{id}', 'GrowthController@destroy');
 
 	// PHARMACY
-	
 	$router->get('/v1/category-items/{clinic}/{perPage}', 'CategoryItemController@index');
 	$router->get('/v1/category-items/{clinic}/{perPage}/{keyword}', 'CategoryItemController@index');
 	$router->get('/v1/category-item/{id}', 'CategoryItemController@show');
@@ -212,8 +215,7 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	$router->get('/v1/stock-adjustments/{clinic}/{perPage}/{keyword}', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
 	
-	// CASHIER
-	
+	// CASHIER	
 	$router->get('/v1/transactions/{clinic}/{perPage}', 'TransactionController@index');
 	$router->get('/v1/transactions/{clinic}/{perPage}/{keyword}', 'TransactionController@index');
 	$router->get('/v1/transaction/{cancelled}/status', 'TransactionController@status');
@@ -235,4 +237,4 @@ $router->get('/v1/location/province/city/district/villages/{id}', 'AddressContro
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	// });
-// });
+});

@@ -1,26 +1,27 @@
 <?php
 
 namespace App\Console\Commands;
+
 use Illuminate\Console\Command;
-use Carbon\Carbon;
-use App\Events\ItemLowStockMail;
+use App\Events\SalesMail;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 
-class LowStockNotification extends Command
+class DailySalesNotifications extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'notification:stock';
+    protected $signature = 'notification:sales';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'LowStock Notification';
+    protected $description = 'Daily Notification Sales';
 
     /**
      * Create a new command instance.
@@ -40,14 +41,14 @@ class LowStockNotification extends Command
     public function handle()
     {
         try {
-            $ClinicMail = App\Models\User::where('employee_id',2)->where('daily_inventory_alerts_status', 1)->get();
+            $ClinicMail = App\Models\User::where('employee_id',2)->where('daily_sales_summary_status', 1)->get();
             foreach($ClinicMail as $data){
                 $recipient = App\Models\RecipientMail::where('apdoc_id', $data->apdoc_id)->get();
-                $LowStock = App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $data->employee->clinic_id)->get();
+                $sales = 'test';
                 foreach($recipient as $item){
-                    Mail::to($item->email)->send(new ItemLowStockMail($LowStock));
+                    Mail::to($item->email)->send(new SalesMail($sales));
                 }
-                Mail::to($data->email)->send(new ItemLowStockMail($LowStock));
+                Mail::to($data->email)->send(new SalesMail($sales));
             }
             return response(['message' => 'Messages Notification Sended!']);
         } catch (\Throwable $th) {

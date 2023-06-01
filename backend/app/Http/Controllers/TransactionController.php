@@ -11,6 +11,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\TransactionService;
+use App\Events\ItemLowStockNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Throwable;
@@ -117,8 +118,7 @@ class TransactionController extends Controller
             ItemSupply::where('id', $id)->update(['stock' => $newStock]);
             if($newStock < 50){
                 $data = ItemSupply::where('id', $id)->where('stock','<=',50)->get();
-                $message = 'stock item under 50';
-                event(new ItemLowStockNotification($message, $data));
+                event(new ItemLowStockNotification($data));
             }
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);

@@ -40,6 +40,33 @@ class UserController extends Controller
         }
     }
 
+    public function setStatus(Request $request){
+        try {
+            $this->validate($request, [
+                'daily_sales_status'     => 'required|boolean',
+                'daily_inventory_status'     => 'required|boolean'
+            ]);
+
+            $data = User::find(auth()->guard('api')->user()->id);
+            if($request->daily_sales_status == 1){
+                $data->daily_sales_summary_status = 1;
+            }
+            if($request->daily_sales_status == 0){
+                $data->daily_sales_summary_status = 0;
+            }
+            if($request->daily_inventory_status == 1){
+                $data->daily_inventory_alerts_status = 1;   
+            }
+            if($request->daily_inventory_status == 0){
+                $data->daily_inventory_alerts_status = 0;
+            }
+            $data->save();
+            return response()->json(['message'=> 'Success change status!']);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+
     public function show($id)
     {
         $user = User::with('employee')->find($id);
