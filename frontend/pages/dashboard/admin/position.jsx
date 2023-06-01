@@ -89,7 +89,7 @@ export default function Position() {
       setErrorPosition("");
       getPositions();
     } catch (err) {
-      setErrorPosition(err.response?.data?.message || "Invalid");
+      setErrorPosition(err.response?.data?.message || err.response?.data?.name[0]);
     }
   }
 
@@ -108,7 +108,7 @@ export default function Position() {
       updateModalRef.current.click();
       getPositions();
     } catch (err) {
-      setErrorUpdatePosition(err.response?.data.name[0]);
+      setErrorUpdatePosition(err.response?.data?.message || err.response?.data?.name[0]);
     }
   }
 

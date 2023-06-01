@@ -115,6 +115,7 @@ export default function Patients() {
       addModalRef.current.click();
       getPatients();
       setAddForm(initialPatientForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialPatientForm);
     } catch (err) {
       setAddFormError(initialPatientForm);
@@ -777,13 +778,11 @@ export default function Patients() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.nik && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.nik}
+                    {putFormError.message || putFormError.nik}
                   </span>
                 </label>
-              )}
               <label className="label">
                 <span className="label-text">Name</span>
               </label>

@@ -109,6 +109,7 @@ export default function Service() {
       addModalRef.current.click();
       getServices();
       setAddForm(initialServiceForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialServiceForm);
     } catch (err) {
       setAddFormError(initialServiceForm);

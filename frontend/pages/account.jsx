@@ -623,7 +623,7 @@ export default function Account() {
                               className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                               htmlFor="grid-password"
                             >
-                              <span>Birth place</span>
+                              <span>Provice</span>
                             </label>
                             <div className="relative">
                               <input
@@ -644,7 +644,7 @@ export default function Account() {
                               className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                               htmlFor="grid-password"
                             >
-                              <span>Birth date</span>
+                              <span>City</span>
                             </label>
                             <div className="relative">
                               <input
@@ -660,12 +660,39 @@ export default function Account() {
                               />
                             </div>
                           </div>
+                        </div>
+                        <div className="flex gap-4">
                           <div className="relative w-full mb-3">
                             <label
                               className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                               htmlFor="grid-password"
                             >
-                              <span>Gender</span>
+                              <span>District</span>
+                            </label>
+                            <div className="relative">
+                              <select
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.gender || ""}
+                                disabled={!isEditUser}
+                                name="gender"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              >
+                                <option>Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Postal Code</span>
                             </label>
                             <div className="relative">
                               <select
@@ -786,7 +813,77 @@ export default function Account() {
                             )}
                           </div>
                         </div>
+                        <div className="relative w-full flex gap-4 items-center mt-3">
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth place</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_place || ""}
+                                disabled={!isEditUser}
+                                name="birth_place"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth date</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="date"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_date || ""}
+                                disabled={!isEditUser}
+                                name="birth_date"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      <div className="relative w-full mb-3">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Gender</span>
+                            </label>
+                            <div className="relative">
+                              <select
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                                value={userForm.gender || ""}
+                                disabled={!isEditUser}
+                                name="gender"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              >
+                                <option>Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
+                            </div>
+                          </div>
                       </div>
+                      
                     </div>
                   </div>
                 </div>

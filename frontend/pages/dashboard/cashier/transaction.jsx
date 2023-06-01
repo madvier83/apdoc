@@ -565,6 +565,7 @@ export default function Transaction() {
         payment: paymentAmount,
         items: cart.array,
         services: serviceCart.array,
+        clinic_id: clinic,
       };
     });
   }, [selectedQueue, cart.array, serviceCart.array, paymentAmount]);

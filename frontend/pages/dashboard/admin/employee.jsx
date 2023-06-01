@@ -144,6 +144,7 @@ export default function Employee() {
       addModalRef.current.click();
       getEmployee();
       setAddForm(initialEmployeeForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialEmployeeForm);
     } catch (err) {
       console.log(err)
@@ -165,6 +166,7 @@ export default function Employee() {
       putModalRef.current.click();
       getEmployee();
       setPutForm(initialEmployeeForm);
+      setAddForm({clinic_id: clinic});
       setPutFormError(initialEmployeeForm);
     } catch (err) {
       setPutFormError(initialEmployeeForm);

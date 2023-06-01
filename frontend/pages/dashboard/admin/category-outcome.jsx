@@ -101,6 +101,7 @@ export default function CategoryOutcome() {
       addModalRef.current.click();
       getCategory();
       setAddForm(initialCategoryForm);
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialCategoryForm);
     } catch (err) {
       setAddFormError(initialCategoryForm);
@@ -127,7 +128,7 @@ export default function CategoryOutcome() {
       setPutForm(initialCategoryForm);
       setPutFormError(initialCategoryForm);
     } catch (err) {
-      setPutFormError(initialCategoryForm);
+      setPutFormError({message: ""});
       setPutFormError(err.response?.data);
     }
   }
@@ -419,13 +420,11 @@ export default function CategoryOutcome() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.message}
+                    {addFormError.message || addFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -457,13 +456,11 @@ export default function CategoryOutcome() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.name && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.name}
+                    {putFormError.message || putFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
