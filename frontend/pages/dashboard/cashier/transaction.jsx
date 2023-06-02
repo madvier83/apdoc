@@ -17,6 +17,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import axios from "../../api/axios";
 import numeral from "numeral";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
+import CurrencyInput from "react-currency-input-field";
 
 export default function Transaction() {
   const token = getCookies("token");
@@ -1438,12 +1439,38 @@ export default function Transaction() {
             <div
               className={`${transaction.payment_id != null && "opacity-50"}`}
             >
-              <input
+              {/* <input
                 type="number"
                 name="payment"
                 value={paymentAmount}
                 onChange={(e) => {
                   setPaymentAmount(e.target.value);
+                }}
+                onClick={(e) => {
+                  setTransaction((prev) => {
+                    return {
+                      ...prev,
+                      payment_id: null,
+                      payment: e.target.value,
+                    };
+                  });
+                }}
+                className={`input input-bordered w-full  ${
+                  transaction.payment_id != null && "border-zinc-400"
+                } ${
+                  transaction.payment >= total && transaction.payment_id == null
+                    ? "border-emerald-400 bg-emerald-50"
+                    : "border-rose-400 bg-zinc-50"
+                }`}
+              /> */}
+              
+              <CurrencyInput
+                name="price"
+                defaultValue={0}
+                value={paymentAmount}
+                decimalsLimit={2}
+                onValueChange={(value) => {
+                  setPaymentAmount(value);
                 }}
                 onClick={(e) => {
                   setTransaction((prev) => {

@@ -773,14 +773,24 @@ export default function Account() {
                             <span>Phone </span>
                           </label>
                           <div className="relative">
-                            <input
-                              type="text"
-                              className={`${
-                                isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
-                              value={userForm.phone}
-                              disabled
-                            />
+                            <div className="flex">
+                              <input
+                                type="select"
+                                className={`${
+                                  isEditUser ? "bg-zinc-100" : "bg-zinc-200"
+                                } border-0 w-14 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-l text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={"+62"}
+                                disabled
+                              />
+                              <input
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-r text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={userForm.phone}
+                                disabled
+                              />
+                            </div>
                             {!user?.phone_verified_at ? (
                               emailSent ? (
                                 sendEmailLoading ? (
@@ -857,33 +867,32 @@ export default function Account() {
                             </div>
                           </div>
                         </div>
-                      <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
+                            <span>Gender</span>
+                          </label>
+                          <div className="relative">
+                            <select
+                              type="text"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                              value={userForm.gender || ""}
+                              disabled={!isEditUser}
+                              name="gender"
+                              onChange={(e) => handleUserForm(e)}
+                              required
                             >
-                              <span>Gender</span>
-                            </label>
-                            <div className="relative">
-                              <select
-                                type="text"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.gender || ""}
-                                disabled={!isEditUser}
-                                name="gender"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              >
-                                <option>Select</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                              </select>
-                            </div>
+                              <option>Select</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
+                            </select>
                           </div>
+                        </div>
                       </div>
-                      
                     </div>
                   </div>
                 </div>
@@ -1017,6 +1026,15 @@ export default function Account() {
               <label className="label">
                 <span className="label-text">Phone</span>
               </label>
+              <input
+                type="text"
+                name="phone"
+                value={addClinicForm.phone}
+                onChange={(e) => handleAddClinicForm(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
               <input
                 type="text"
                 name="phone"

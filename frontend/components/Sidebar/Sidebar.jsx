@@ -378,7 +378,7 @@ export default function Sidebar() {
                 >
                   <label
                     htmlFor="modalPwd"
-                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                    className={"text-xs py-3 font-bold block  text-slate-500 cursor-pointer"}
                   >
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Change
                     Password
