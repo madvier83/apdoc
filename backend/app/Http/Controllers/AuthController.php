@@ -97,17 +97,6 @@ class AuthController extends Controller
 
     public function send_otp(Request $request)
     {   
-        // $validator = Validator::make($request->all(), [
-        //     'phone' => 'unique:users,phone',
-        //     'email' => 'required'
-        // ],[
-        //     'phone.unique' => 'phone number was used',
-        //     'email.required' => 'fill email',
-        // ]);
-        // if($validator->fails()){
-        //     return response()->json(['status' => 'error', 'message' => 'unvalid data', 'errors' => $validator->errors()], 422);
-        // }
-        // $data = User::where('email', $request->email)->where('phone', $request->phone)->first();
         $data = User::where('email', $request->email)->first();
         if (!$data) {
             return response()->json(['status' => 'error', 'message' => 'user Not Found'], 404);

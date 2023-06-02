@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Events\ItemLowStockMail;
+use Illuminate\Support\Facades\Mail;
+
 class LowStockNotification extends Command
 {
     /**
@@ -38,12 +40,16 @@ class LowStockNotification extends Command
     public function handle()
     {
         try {
-            $ClinicMail = App\Models\Users::where('employee_id',2)->get();
+            $ClinicMail = App\Models\User::where('employee_id',2)->where('daily_inventory_alerts_status', 1)->get();
             foreach($ClinicMail as $data){
-                $LowStock = App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $ClinicMail->employee->clinic_id)->get();
-                Mail::to($ClinicMail->email)->send(new ItemLowStockMail($LowStock));
+                $recipient = App\Models\RecipientMail::where('apdoc_id', $data->apdoc_id)->get();
+                $LowStock = App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $data->employee->clinic_id)->get();
+                foreach($recipient as $item){
+                    Mail::to($item->email)->send(new ItemLowStockMail($LowStock));
+                }
+                Mail::to($data->email)->send(new ItemLowStockMail($LowStock));
             }
-            return response(['success' => 'Messages Notification Sended!']);
+            return response(['message' => 'Messages Notification Sended!']);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
         }
