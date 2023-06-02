@@ -23,10 +23,10 @@ PUSHER_APP_SECRET="a2b00504410202f261a3"
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=adam.albani.t@gmail.com
-MAIL_PASSWORD=afeeogmmxotexbof
+MAIL_USERNAME=dev.cursorid@gmail.com
+MAIL_PASSWORD=pjjcwldmwgjfenow
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=adam.albani.t@gmail.com
+MAIL_FROM_ADDRESS=dev.cursorid@gmail.com
 MAIL_FROM_NAME="${APP_NAME}"
 
 # DB_CONNECTION=pgsql

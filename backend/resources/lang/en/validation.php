@@ -147,12 +147,6 @@ return [
         ],
     ],
 
-    'custom' => [
-        'name' => [
-            'unique' => 'custom-message',
-        ],
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

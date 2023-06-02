@@ -87,7 +87,7 @@
             <h1>Daily Sales Mail</h1>
             <p>{{$data}}</p>
             <div class="btn">
-                <a href="http://localhost:3000/dashboard/pharmacy/item" class="btntext">Detail</a>
+                <a href="http://localhost:3000/dashboard/report/sales" class="btntext">Detail</a>
             </div>
         </div>
     </div>

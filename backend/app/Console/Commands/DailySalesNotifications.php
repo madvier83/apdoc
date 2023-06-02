@@ -41,7 +41,7 @@ class DailySalesNotifications extends Command
     public function handle()
     {
         try {
-            $ClinicMail = App\Models\User::where('employee_id',2)->where('daily_sales_summary_status', 1)->get();
+            $ClinicMail = App\Models\User::where('role_id',2)->where('daily_sales_summary_status', 1)->get();
             foreach($ClinicMail as $dataclinic){
                 
                 $recipient = App\Models\RecipientMail::where('apdoc_id', $dataclinic->apdoc_id)->with('employee')->get();
