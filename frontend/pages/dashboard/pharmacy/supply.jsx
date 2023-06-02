@@ -18,14 +18,15 @@ export default function ItemSupply() {
   const tableRef = useRef();
   const exportModalRef = useRef();
 
-  const [searchCategory, setSearchCategory] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState();
-
+  
   const [selectedItem, setSelectedItem] = useState({});
-
+  
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  const [searchCategory, setSearchCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
 
   const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(true);
@@ -101,36 +102,35 @@ export default function ItemSupply() {
     }
   }
 
-  // async function getItem() {
-  //   if (!clinic) {
-  //     return;
-  //   }
-  //   setItemLoading(true);
-  //   try {
-  //     const response = await axios.get(
-  //       `item-supplys/${clinic && clinic + "/"}${perpage}${
-  //         search &&
-  //         "/" +
-  //           search
-  //             .split(" ")
-  //             .join("%")
-  //             .replace(/[a-zA-Z0-9]/, "")
-  //             .replace(".", "")
-  //       }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
-  //       {
-  //         headers: {
-  //           Authorization: "Bearer" + token.token,
-  //         },
-  //       }
-  //     );
-  //     setItem(response.data);
-  //     setItemLoading(false);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setItem({});
-  //     setItemLoading(false);
-  //   }
-  // }
+  async function getItem() {
+    if (!clinic) {
+      return;
+    }
+    setItemLoading(true);
+    try {
+      const response = await axios.get(
+        `items/${clinic && clinic + "/"}${perpage}${
+          searchCategory &&
+          "/" +
+            searchCategory
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      setItem(response.data);
+      setItemLoading(false);
+    } catch (err) {
+      console.error(err);
+      setItemLoading(false);
+    }
+  }
 
   async function addItem(e) {
     e.preventDefault();
@@ -144,7 +144,7 @@ export default function ItemSupply() {
       addModalRef.current.click();
       getItemDb();
       setAddForm(initialItemForm);
-      setAddForm({ clinic_id: clinic });
+      setAddForm({clinic_id: clinic});
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -184,7 +184,7 @@ export default function ItemSupply() {
       console.error(err);
     }
   }
-
+  
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -203,10 +203,7 @@ export default function ItemSupply() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute(
-            "download",
-            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
-          );
+          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
           document.body.appendChild(link);
 
           link.click();
@@ -264,7 +261,7 @@ export default function ItemSupply() {
         }
       );
       // console.log(response);
-      // getPatients();
+      getPatients();
       exportModalRef.current.click();
     } catch (err) {
       console.log(err);
@@ -272,7 +269,7 @@ export default function ItemSupply() {
   }
 
   useEffect(() => {
-    // getItem();
+    getItem();
     getItemDb();
   }, []);
 
@@ -287,6 +284,18 @@ export default function ItemSupply() {
 
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic, sortBy, order]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getItem();
+    }, 300);
+
+    if (page > item?.last_page) {
+      setPage(item.last_page);
+    }
+
+    return () => clearTimeout(getData);
+  }, [searchCategory, clinic]);
 
   useEffect(() => {
     setSearch("");
@@ -777,14 +786,14 @@ export default function ItemSupply() {
                       tabIndex={0}
                       className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
                     >
-                      {!itemDb?.data?.length && (
+                      {!item?.data?.length && (
                         <li className="rounded-sm text-sm">
                           <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
                             No data found
                           </div>
                         </li>
                       )}
-                      {itemDb?.data?.map((obj) => {
+                      {item?.data?.map((obj) => {
                         return (
                           <li key={obj.id} className="p-0 overflow-hidden">
                             <div
@@ -983,11 +992,13 @@ export default function ItemSupply() {
           </form>
         </ModalBox> */}
 
-        <ModalBox id="modal-export">
+        
+<ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
+              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

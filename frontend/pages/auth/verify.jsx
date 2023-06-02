@@ -279,19 +279,37 @@ export default function Register() {
                           <label className="block text-zinc-400 text-xs font-bold mb-2">
                             Phone
                           </label>
-                          <input
-                            required={true}
-                            name="owner_phone"
-                            value={registerForm.owner_phone}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="text"
-                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                          <div
+                            className={`flex border rounded-sm ${
                               registerFormError.owner_phone[0]
                                 ? "border-rose-500"
                                 : "border-indigo-500"
                             }`}
-                            // placeholder="+62 xxx xxxx xxxx"
-                          />
+                          >
+                            <input
+                              value={"+62"}
+                              type="text"
+                              className={`input w-14 rounded-none border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-zinc-300 ${
+                                registerFormError.clinic_phone
+                                  ? "border-rose-500"
+                                  : null
+                              }`}
+                              disabled
+                            />
+                            <input
+                              required={true}
+                              name="owner_phone"
+                              value={registerForm.owner_phone}
+                              onChange={(e) => handleRegisterInput(e)}
+                              type="number"
+                              className={`input pl-0 w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                                registerFormError.owner_phone[0]
+                                  ? "border-rose-500"
+                                  : "border-none"
+                              }`}
+                              // placeholder="+62 xxx xxxx xxxx"
+                            />
+                          </div>
                           <label className="block text-rose-500 text-xs mb-2 mt-2">
                             {registerFormError.owner_phone[0]}
                           </label>
@@ -401,19 +419,37 @@ export default function Register() {
                         <label className="block text-zinc-400 text-xs font-bold mb-2">
                           Phone
                         </label>
-                        <input
-                          required={true}
-                          name="clinic_phone"
-                          value={registerForm.clinic_phone}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="text"
-                          className={`input w-full border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                            registerFormError.clinic_phone
+                        <div
+                          className={`flex border rounded-sm ${
+                            registerFormError.owner_phone[0]
                               ? "border-rose-500"
-                              : null
+                              : "border-emerald-500"
                           }`}
-                          // placeholder="example@mail.com"
-                        />
+                        >
+                          <input
+                            value={"+62"}
+                            type="text"
+                            className={`input w-14 rounded-none border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-zinc-300 ${
+                              registerFormError.clinic_phone
+                                ? "border-rose-500"
+                                : null
+                            }`}
+                            disabled
+                          />
+                          <input
+                            required={true}
+                            name="clinic_phone"
+                            value={registerForm.clinic_phone}
+                            onChange={(e) => handleRegisterInput(e)}
+                            type="number"
+                            className={`input pl-0 w-full border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
+                              registerFormError.clinic_phone
+                                ? "border-rose-500"
+                                : null
+                            }`}
+                            // placeholder="example@mail.com"
+                          />
+                        </div>
                         <label className="block text-rose-500 text-xs mb-2 mt-2">
                           {registerFormError.clinic_phone}
                         </label>
