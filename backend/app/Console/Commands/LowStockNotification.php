@@ -40,7 +40,7 @@ class LowStockNotification extends Command
     public function handle()
     {
         try {
-            $ClinicMail = App\Models\User::where('employee_id',2)->where('daily_inventory_alerts_status', 1)->get();
+            $ClinicMail = App\Models\User::where('role_id',2)->where('daily_inventory_alerts_status', 1)->get();
             foreach($ClinicMail as $data){
                 $recipient = App\Models\RecipientMail::where('apdoc_id', $data->apdoc_id)->get();
                 $LowStock = App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $data->employee->clinic_id)->get();
