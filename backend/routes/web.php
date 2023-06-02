@@ -15,7 +15,8 @@ use App\Models\User;
 */
 
 $router->get('/', function () use ($router) {
-	return "AppDoc API v1.0";
+	$setting =  \App\Models\Setting::first();
+	return $setting;
 });
 
 // Email Verification
