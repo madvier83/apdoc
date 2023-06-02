@@ -82,9 +82,10 @@ class DailySalesNotifications extends Command
                 }
                 Mail::to($dataclinic->email)->send(new SalesMail($data));
             }
-            return response(['message' => 'Messages Notification Sended!']);
+            $message = 'Messages Notification Sended!';
+            return $message;
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+            return $th->getMessage();
         }
     }
 }

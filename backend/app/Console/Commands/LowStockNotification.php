@@ -49,9 +49,10 @@ class LowStockNotification extends Command
                 }
                 Mail::to($data->email)->send(new ItemLowStockMail($LowStock));
             }
-            return response(['message' => 'Messages Notification Sended!']);
+            $message = 'Messages Notification Sended!';
+            return $message;
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+            return $th->getMessage();
         }
     }
 }

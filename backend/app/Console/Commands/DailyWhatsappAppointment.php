@@ -46,9 +46,10 @@ class DailyWhatsappAppointment extends Command
                                     $data->appointment_date, $data->description,$data->patient->phone,
                                     $setting->name, $setting->address, $setting->phone));
             }
-        return response()->json(['message' => 'Messages Appointment Sended!']);
+        $message = 'Messages Appointment Sended!';
+        return $message;
         } catch (\Throwable $th) {
-        return response()->json(['status' => 'error', 'message' => $th->getMessage()]);
+        return $th->getMessage();
         }
     }
 }
