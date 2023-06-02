@@ -191,7 +191,6 @@ export default function Patients() {
 
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
-
   const onSelectFile = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
@@ -1034,29 +1033,11 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <h3 className="font-bold text-lg mb-4">Position Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              {/* <label className="label">
-                <span className="label-text">NIK</span>
-              </label>
-              <input
-                required
-                type="text"
-                name="nik"
-                value={addForm.nik}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              />
-              {addFormError.message && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.message}
-                  </span>
-                </label>
-              )} */}
+              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>
@@ -1070,15 +1051,6 @@ export default function Patients() {
               <label className="label mt-4">
                 <span className="label-text">Import Template</span>
               </label>
-              {/* <input
-                required
-                type="file"
-                name="nik"
-                // value={addForm.nik}
-                onChange={(e) => {}}
-                placeholder=""
-                className="file-input input-bordered border rounded-md border-slate-300 w-full"
-              /> */}
 
               <input
                 type="file"
@@ -1102,7 +1074,6 @@ export default function Patients() {
               >
                 Cancel
               </label>
-              {/* <button className="btn btn-primary rounded-md">Add</button> */}
             </div>
           </form>
         </ModalBox>

@@ -565,6 +565,7 @@ export default function Transaction() {
         payment: paymentAmount,
         items: cart.array,
         services: serviceCart.array,
+        clinic_id: clinic,
       };
     });
   }, [selectedQueue, cart.array, serviceCart.array, paymentAmount]);
@@ -583,7 +584,6 @@ export default function Transaction() {
   //
   useEffect(() => {
     setTime(moment().format("h:mm:ss A"));
-    setTransaction({clinic_id: clinic});
   }, [transaction]);
   
 
