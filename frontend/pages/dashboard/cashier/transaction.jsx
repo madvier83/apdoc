@@ -183,15 +183,18 @@ export default function Transaction() {
   // }
 
   async function getItems() {
-    if(!clinic) {
+    if (!clinic) {
       return;
     }
     try {
-      const response = await axios.get(`items/${clinic && clinic + "/"}${9999999}?page=${1}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `items/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       // console.log(response.data);
       setItems(response.data);
     } catch (err) {
@@ -220,15 +223,18 @@ export default function Transaction() {
   }
 
   async function getCategory() {
-    if(!clinic) {
+    if (!clinic) {
       return;
     }
     try {
-      const response = await axios.get(`category-items/${clinic && clinic + "/"}${9999999}?page=${1}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `category-items/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setCategory(response.data);
       setCategoryLoading(false);
     } catch (err) {
@@ -237,15 +243,18 @@ export default function Transaction() {
   }
 
   async function getCategoryPayments() {
-    if(!clinic) {
+    if (!clinic) {
       return;
     }
     try {
-      const response = await axios.get(`category-payments/${clinic && clinic + "/"}${9999999}?page=${1}`, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-        },
-      });
+      const response = await axios.get(
+        `category-payments/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
       setCategoryPayments(response.data);
       setCategoryPaymentsLoading(false);
     } catch (err) {
@@ -275,16 +284,18 @@ export default function Transaction() {
         if (remove == true) {
           oldItem = {
             ...item,
-            qty: item.qty - 1,
-            total: item.sell_price * (item.qty - 1),
-            discount: (item.sell_price * (item.qty - 1) * item.promotion) / 100,
+            qty: Number(item.qty) - 1,
+            total: item.sell_price * (Number(item.qty) - 1),
+            discount:
+              (item.sell_price * (Number(item.qty) - 1) * item.promotion) / 100,
           };
         } else {
           oldItem = {
             ...item,
-            qty: item.qty + 1,
-            total: item.sell_price * (item.qty + 1),
-            discount: (item.sell_price * (item.qty + 1) * item.promotion) / 100,
+            qty: Number(item.qty) + 1,
+            total: item.sell_price * (Number(item.qty) + 1),
+            discount:
+              (item.sell_price * (Number(item.qty) + 1) * item.promotion) / 100,
           };
         }
         oldItem.qty > 0 && newCart.push(oldItem);
@@ -542,8 +553,8 @@ export default function Transaction() {
     getItems();
     getCategory();
     getCategoryPayments();
-    
-    setTransaction({clinic_id: clinic})
+
+    setTransaction({ clinic_id: clinic });
   }, [clinic]);
   // change queue target
   useEffect(() => {
@@ -585,7 +596,6 @@ export default function Transaction() {
   useEffect(() => {
     setTime(moment().format("h:mm:ss A"));
   }, [transaction]);
-  
 
   return (
     <>
@@ -972,7 +982,53 @@ export default function Transaction() {
                                                   >
                                                     <i className="fas fa-caret-left"></i>
                                                   </button>
-                                                  <span>{obj.qty}</span>
+                                                  <input
+                                                    type="number"
+                                                    className="input input-xs w-12 text-center text-xs px-0 font-bold border-none bg-gray-50"
+                                                    onChange={(e) => {
+                                                      let newCart = [];
+                                                      if (
+                                                        e.target.value != null
+                                                      ) {
+                                                        cart?.array?.map(
+                                                          (item) => {
+                                                            if (
+                                                              item.id == obj.id
+                                                            ) {
+                                                              newCart.push({
+                                                                ...obj,
+                                                                qty: e.target
+                                                                  .value,
+                                                                total:
+                                                                  obj.sell_price *
+                                                                  Number(
+                                                                    e.target
+                                                                      .value
+                                                                  ),
+                                                                discount:
+                                                                  (obj.sell_price *
+                                                                    Number(
+                                                                      e.target
+                                                                        .value
+                                                                    ) *
+                                                                    obj.promotion) /
+                                                                  100,
+                                                              });
+                                                            } else {
+                                                              newCart.push(
+                                                                item
+                                                              );
+                                                            }
+                                                          }
+                                                        );
+                                                        console.log(newCart);
+                                                        setCart({
+                                                          array: newCart,
+                                                        });
+                                                      }
+                                                    }}
+                                                    value={obj.qty}
+                                                  ></input>
                                                   <button
                                                     onClick={() =>
                                                       addToCart(obj)

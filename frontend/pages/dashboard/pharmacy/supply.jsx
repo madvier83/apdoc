@@ -144,7 +144,7 @@ export default function ItemSupply() {
       addModalRef.current.click();
       getItemDb();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -185,7 +185,6 @@ export default function ItemSupply() {
     }
   }
 
-  
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -204,7 +203,10 @@ export default function ItemSupply() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -981,13 +983,11 @@ export default function ItemSupply() {
           </form>
         </ModalBox> */}
 
-        
-<ModalBox id="modal-export">
+        <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>
