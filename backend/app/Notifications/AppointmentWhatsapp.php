@@ -52,7 +52,7 @@ class AppointmentWhatsapp extends Notification
         $day = strftime('%A', strtotime($this->date));
         $date = strftime('%d %B %Y', strtotime($this->date));
         $time = date('H:i A', strtotime($this->date));
-        $appointment = "{$this->day} {$this->date} {$this->time}";
+        $appointment = "{$day} {$date} {$time}";
         // return (new WhatsappMessages())
         //     ->WhatsappContent("Selamat Pagi Bpk / Ibu {$this->name},
         //     Kami ingin mengkonfirmasi janji untuk {$this->description},
@@ -63,6 +63,6 @@ class AppointmentWhatsapp extends Notification
         //     {$this->clinicphone}.
         //     Salam sehat,
         //     {$this->clinicname}.");
-        return (new WhatsappMessage())->WhatsappContent("Good Morning {$this->name},You have appointment on {$appointment}.");
+        return (new WhatsappMessages())->WhatsappContent("Good Morning {$this->name},You have appointment on {$appointment}.");
     }
 }
