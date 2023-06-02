@@ -3,8 +3,6 @@
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 use App\Models\User;
-use Carbon\Carbon;
-use App\Notifications\AppointmentWhatsapp;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -16,21 +14,8 @@ use App\Notifications\AppointmentWhatsapp;
 |
 */
 
-$router->get('/', function () use ($router) {try {
-	$datas = \App\Models\Appointment::whereDate('appointment_date', Carbon::tomorrow())->get();
-		foreach($datas as $data){
-			$setting =  \App\Models\Setting::where('clinic_id', $data->clinic_id)->get();
-			foreach ($setting as $clinic) {
-				\Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new AppointmentWhatsapp($data->patient->name,
-				$data->appointment_date, $data->description,$data->patient->phone,
-				$clinic->name, $clinic->address, $clinic->phone));
-			}
-		}
-	$message = 'Messages Appointment Sended!';
-	return $message;
-	} catch (\Throwable $th) {
-	return $th->getMessage();
-	}
+$router->get('/', function () use ($router) {
+	return 'Apdoc API v.1';
 });
 
 // Email Verification
