@@ -16,6 +16,7 @@ export default function Employee() {
   const putModalRef = useRef();
   const detailModalRef = useRef();
   const tableRef = useRef();
+  const exportModalRef = useRef();
 
   const [clinic, setClinic] = useState();
 
@@ -186,6 +187,56 @@ export default function Employee() {
       console.error(err);
     }
   }
+  
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  async function uploadTable() {
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+
+    for (let [key, value] of formData) {
+      console.log(`${key}: ${value}`);
+    }
+
+    try {
+      const response = await axios.post(
+        `import/patient?clinic=${clinic}`,
+        formData,
+        {
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      // console.log(response);
+      // getPatients();
+      exportModalRef.current.click();
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
     getEmployee();
@@ -266,6 +317,13 @@ export default function Employee() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                <label
+                  className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button"
+                  htmlFor="modal-export"
+                >
+                  <i className="fas fa-cog"></i>
+                </label>
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -1174,6 +1232,52 @@ export default function Employee() {
             </label>
           </div>
         </ModalBox> */}
+        
+        <ModalBox id="modal-export">
+          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <form onSubmit={() => {}} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              
+              <label className="label">
+                <span className="label-text">Export</span>
+              </label>
+              <div
+                className="btn btn-ghost bg-zinc-200 normal-case"
+                onClick={() => downloadTable()}
+              >
+                Download Current Template{" "}
+                <i className="fas fa-download ml-2"></i>
+              </div>
+              <label className="label mt-4">
+                <span className="label-text">Import Template</span>
+              </label>
+
+              <input
+                type="file"
+                name="logo"
+                accept="xlsx"
+                onChange={onSelectFile}
+                className="file-input file-input-ghost input-bordered border rounded-md border-slate-300 w-full"
+              />
+              <div
+                onClick={() => uploadTable()}
+                className="btn btn-success normal-case text-zinc-700 mt-2"
+              >
+                Upload Template <i className="fas fa-upload ml-2"></i>
+              </div>
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-export"
+                ref={exportModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+            </div>
+          </form>
+        </ModalBox>
       </DashboardLayout>
     </>
   );

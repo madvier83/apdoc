@@ -73,6 +73,7 @@ class DatabaseSeeder extends Seeder
             'otp_verification'  => '750587',
             'created_at_otp'    => Carbon::now(),
             'expired_otp'       => Carbon::now(),
+            'email_verified_at' => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
             'is_verified'       => 1,
             'apdoc_id'          => $clinic->apdoc_id,

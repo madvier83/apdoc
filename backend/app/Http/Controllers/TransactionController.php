@@ -105,9 +105,9 @@ class TransactionController extends Controller
         //
     }
 
-    public function updateStock($id, $qty)
+    public function updateStock($item_id, $qty)
     {
-        $oldStock = ItemSupply::where('item_id', $id)->where('stock', '>', 0)->orderBy('expired')->first();
+        $oldStock = ItemSupply::where('item_id', $item_id)->where('stock', '>', 0)->orderBy('expired')->first();
 
         if($oldStock === '') {
             return response()->json(['message' => 'Not enough stock'], 400);
@@ -115,10 +115,24 @@ class TransactionController extends Controller
 
         try {
             $newStock = $oldStock->stock - $qty;    
-            ItemSupply::where('id', $id)->update(['stock' => $newStock]);
+            
+            $oldStock->fill(['stock' => $newStock]);
+            $oldStock->save();
+
+            while($newStock < 0) {
+                $oldStock->fill(['stock' => 0]);
+                $oldStock->save();
+
+                $oldStock = ItemSupply::where('item_id', $item_id)->where('stock', '>', 0)->orderBy('expired')->first();
+                $newStock = $oldStock->stock + $newStock;
+                $oldStock->fill(['stock' => $newStock]);
+                $oldStock->save();
+            }
+            
             if($newStock < 50){
-                $data = ItemSupply::where('id', $id)->where('stock','<=',50)->get();
-                event(new ItemLowStockNotification($data));
+                $data = ItemSupply::where('item_id', $item_id)->where('stock', '!=', 0)->where('stock','<=',50)->get();
+                $message = 'stock item under 50';
+                event(new ItemLowStockNotification($message, $data));
             }
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
