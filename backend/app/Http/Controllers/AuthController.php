@@ -347,7 +347,7 @@ class AuthController extends Controller
             if ($user->email_verified_at == 0) {
                 return response()->json(['status' => 'error', 'message' => 'user not verified'], 403);
             }
-            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email,'email_verified_at' => $user->email_verified_at, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'apdoc_id' => $user->apdoc_id ?? '', 'clinic_id' => $user->employee->clinic_id ?? '', 'accesses' => ($user->role_id == 1) ? "" : $user->role->accesses[0]->accesses])->attempt($credentials)) {
+            if (!$token = auth()->claims(['id' => $user->id, 'phone' => $user->phone, 'email' => $user->email, 'email_verified_at' => $user->email_verified_at, 'daily_sales_summary_status' => $user->daily_sales_summary_status,'daily_inventory_alerts_status' => $user->daily_inventory_alerts_status, 'role_id' => $user->role_id, 'exp' => time() + (3600 * 12), 'apdoc_id' => $user->apdoc_id ?? '', 'clinic_id' => $user->employee->clinic_id ?? '', 'accesses' => ($user->role_id == 1) ? "" : $user->role->accesses[0]->accesses])->attempt($credentials)) {
                 return response()->json(['status'=> 'error', 'message' => 'unauthorized'], 401);
             }
         } catch (\Throwable $e) {
