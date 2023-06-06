@@ -15,7 +15,7 @@ class DiagnoseController extends Controller
 
         try {
             if ($keyword == null) {
-                $diagnose = Diagnose::orderBy($sortBy, $order)->paginate($perPage);
+                $diagnose = Diagnose::where('is_delete', false)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $diagnose = Diagnose::where(function($query) use ($keyword) {
                     $query->where('code', 'like', '%'.$keyword.'%')
@@ -23,6 +23,7 @@ class DiagnoseController extends Controller
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
+                    ->where('is_delete', false)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
@@ -95,7 +96,9 @@ class DiagnoseController extends Controller
         }
 
         try {
-            $diagnose->delete();
+            // $diagnose->delete();
+            $diagnose->fill(['is_delete' => true]);
+            $diagnose->save();
     
             return response()->json(['message' => 'Diagnose deleted successfully!']);
         } catch (Throwable $e) {

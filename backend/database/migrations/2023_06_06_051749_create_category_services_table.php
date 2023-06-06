@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOutcomesTable extends Migration
+class CreateCategoryServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateOutcomesTable extends Migration
      */
     public function up()
     {
-        Schema::create('outcomes', function (Blueprint $table) {
+        Schema::create('category_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_outcome_id')->nullable();
-            $table->string('nominal');
-            $table->longText('note')->nullable();
+            $table->string('name');
             $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });
@@ -30,6 +28,6 @@ class CreateOutcomesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('outcomes');
+        Schema::dropIfExists('category_services');
     }
 }

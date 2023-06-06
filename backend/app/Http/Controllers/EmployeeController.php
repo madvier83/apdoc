@@ -15,28 +15,33 @@ class EmployeeController extends Controller
 
         try {
             if ($keyword == null) {
-                $employee = Employee::with(['position', 'users'])->where('clinic_id', $clinic)->where(function($query) {
+                $employee = Employee::with(['position', 'users'])
+                    ->where(function($query) {
                         $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
+                    ->where('clinic_id', $clinic)
+                    ->where('is_delete', false)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             } else {
-                $employee = Employee::with(['position', 'users'])->where(function($query) use ($keyword) {
-                    $query->where('nik', 'like', '%'.$keyword.'%')
-                        ->orWhere('name', 'like', '%'.$keyword.'%')
-                        ->orWhere('birth_place', 'like', '%'.$keyword.'%')
-                        ->orWhere('birth_date', 'like', '%'.$keyword.'%')
-                        ->orWhere('gender', 'like', '%'.$keyword.'%')
-                        ->orWhere('address', 'like', '%'.$keyword.'%')
-                        ->orWhere('phone', 'like', '%'.$keyword.'%')
-                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                        ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%');
+                $employee = Employee::with(['position', 'users'])
+                    ->where(function($query) use ($keyword) {
+                        $query->where('nik', 'like', '%'.$keyword.'%')
+                            ->orWhere('name', 'like', '%'.$keyword.'%')
+                            ->orWhere('birth_place', 'like', '%'.$keyword.'%')
+                            ->orWhere('birth_date', 'like', '%'.$keyword.'%')
+                            ->orWhere('gender', 'like', '%'.$keyword.'%')
+                            ->orWhere('address', 'like', '%'.$keyword.'%')
+                            ->orWhere('phone', 'like', '%'.$keyword.'%')
+                            ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                            ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                            ->orWhereRelation('position', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where(function($query) {
                         $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
                     ->where('clinic_id', $clinic)
+                    ->where('is_delete', false)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
@@ -135,7 +140,9 @@ class EmployeeController extends Controller
         }
 
         try {
-            $employee->delete();
+            // $employee->delete();
+            $employee->fill(['is_delete' => true]);
+            $employee->save();
     
             return response()->json(['message' => 'Employee deleted successfully!']);
         } catch (Throwable $e) {

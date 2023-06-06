@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Access;
 use App\Models\CategoryItem;
+use App\Models\CategoryService;
 use App\Models\Clinic;
 use App\Models\Diagnose;
 use App\Models\Employee;
@@ -182,9 +183,10 @@ class DatabaseSeeder extends Seeder
         Employee::factory(100)->create();
         Position::factory(100)->create();
         Diagnose::factory(100)->create();
+        CategoryService::factory(50)->create();
         Service::factory(100)->create();
         Patient::factory(100)->create();
-        CategoryItem::factory(100)->create();
+        CategoryItem::factory(50)->create();
         Item::factory(100)->create();
     }
 }

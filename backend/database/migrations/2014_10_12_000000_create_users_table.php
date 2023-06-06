@@ -31,7 +31,6 @@ return new class extends Migration
             $table->foreignId('employee_id')->nullable();
             $table->string('apdoc_id')->unique()->nullable();
             $table->boolean('is_verified')->default(0);
-            $table->boolean('is_delete')->default(false);
             $table->timestamps();
         });
     }

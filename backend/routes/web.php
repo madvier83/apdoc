@@ -96,6 +96,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/employee/{id}', 'EmployeeController@update');
 	$router->delete('/v1/employee/{id}', 'EmployeeController@destroy');
 
+	$router->get('/v1/category-services/{clinic}/{perPage}', 'CategoryServiceController@index');
+	$router->get('/v1/category-services/{clinic}/{perPage}/{keyword}', 'CategoryServiceController@index');
+	$router->get('/v1/category-service/{id}', 'CategoryServiceController@show');
+	$router->post('/v1/category-service', 'CategoryServiceController@create');
+	$router->put('/v1/category-service/{id}', 'CategoryServiceController@update');
+	$router->delete('/v1/category-service/{id}', 'CategoryServiceController@destroy');
+
 	$router->get('/v1/services/{clinic}/{perPage}', 'ServiceController@index');
 	$router->get('/v1/services/{clinic}/{perPage}/{keyword}', 'ServiceController@index');
 	$router->get('/v1/service/{id}', 'ServiceController@show');

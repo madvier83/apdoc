@@ -22,11 +22,12 @@ class ServiceFactory extends Factory
     public function definition()
     {
         return [
-            'code'       => 'S' . mt_rand(1, 40000),
-            'name'       => $this->faker->name,
-            'price'      => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
-            'commission' => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
-            'clinic_id'  => mt_rand(2, 3)
+            'category_service_id'  => mt_rand(1, 5),
+            'code'                 => 'S' . mt_rand(1, 40000),
+            'name'                 => $this->faker->name,
+            'price'                => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
+            'commission'           => $this->faker->randomElement([5000, 10000, 15000, 20000, 25000]),
+            'clinic_id'            => mt_rand(2, 3)
         ];
     }
 }

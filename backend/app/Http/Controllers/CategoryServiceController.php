@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
+use App\Models\CategoryService;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Throwable;
 
-class PaymentController extends Controller
+class CategoryServiceController extends Controller
 {
     public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
@@ -15,22 +16,21 @@ class PaymentController extends Controller
 
         try {
             if ($keyword == null) {
-                $payment = Payment::with('categoryPayment')->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $category = CategoryService::with('services')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $payment = Payment::with('categoryPayment')
+                $category = CategoryService::with('services')
                     ->where(function($query) use ($keyword) {
                         $query->where('name', 'like', '%'.$keyword.'%')
                             ->orWhere('created_at', 'like', '%'.$keyword.'%')
                             ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                            ->orWhereRelation('categoryPayment', 'name', 'like', '%'.$keyword.'%');
+                            ->orWhereRelation('services', 'name', 'like', '%'.$keyword.'%');
                     })
-                    ->where('is_delete', false)
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
     
-            return response()->json($payment);
+            return response()->json($category);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
@@ -39,9 +39,9 @@ class PaymentController extends Controller
     public function show($id)
     {
         try {
-            $payment = Payment::with('categoryPayment')->find($id);
+            $category = CategoryService::find($id);
     
-            return response()->json($payment);
+            return response()->json($category);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
@@ -50,11 +50,10 @@ class PaymentController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'category_payment_id' => 'required',
-            'name'                => 'required',
+            'name' => 'required',
         ]);
 
-        $unique = Payment::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+        $unique = CategoryService::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
 
         if ($unique) {
             return response()->json(['message' => 'The name has already been taken.'], 422);
@@ -63,9 +62,9 @@ class PaymentController extends Controller
         try {
             $data = $request->all();
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
-            $payment = Payment::create($data);
+            $category = CategoryService::create($data);
     
-            return response()->json($payment);
+            return response()->json($category);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
@@ -73,19 +72,18 @@ class PaymentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $payment = Payment::find($id);
+        $category = CategoryService::find($id);
 
-        if (!$payment) {
-            return response()->json(['message' => 'Payment not found!'], 404);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found!'], 404);
         }
 
         $this->validate($request, [
-            'category_payment_id' => 'required',
-            'name'                => 'required',
+            'name' => 'required',
         ]);
 
-        if($payment->name != $request->name) {
-            $unique = Payment::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
+        if($category->name != $request->name) {
+            $unique = CategoryService::where('clinic_id', $request->clinic_id ?? auth()->user()->employee->clinic_id)->where('name', $request->name)->first();
     
             if ($unique) {
                 return response()->json(['message' => 'The name has already been taken.'], 422);
@@ -94,10 +92,10 @@ class PaymentController extends Controller
 
         try {
             $data = $request->all();
-            $payment->fill($data);
-            $payment->save();
+            $category->fill($data);
+            $category->save();
     
-            return response()->json($payment);
+            return response()->json($category);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
@@ -105,18 +103,17 @@ class PaymentController extends Controller
 
     public function destroy($id)
     {
-        $payment = Payment::find($id);
+        $category = CategoryService::find($id);
 
-        if (!$payment) {
-            return response()->json(['message' => 'Payment not found!'], 404);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found!'], 404);
         }
 
         try {
-            // $payment->delete();
-            $payment->fill(['is_delete' => true]);
-            $payment->save();
+            $category->delete();
+            Service::where('category_service_id', $id)->update(['category_service_id' => null]);
     
-            return response()->json(['message' => 'Payment deleted successfully!']);
+            return response()->json(['message' => 'Category deleted successfully!']);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
