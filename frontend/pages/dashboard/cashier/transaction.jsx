@@ -41,6 +41,8 @@ export default function Transaction() {
   const printRef = useRef();
 
   const [clinic, setClinic] = useState();
+  const [search, setSearch] = useState("");
+  const [record, setRecord] = useState([]);
 
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
@@ -49,8 +51,6 @@ export default function Transaction() {
 
   const [queues, setQueues] = useState();
   const [queuesLoading, setQueuesLoading] = useState(true);
-  // const [services, setServices] = useState();
-  // const [employees, setEmployees] = useState();
   const [items, setItems] = useState();
   const [promotions, setPromotions] = useState();
   const [settings, setSettings] = useState();
@@ -149,55 +149,48 @@ export default function Transaction() {
     }
   }
 
-  // async function getServices() {
-  //   if (!clinic) {
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.get(`services/${clinic && clinic + "/"}${9999999}?page=${1}`, {
-  //       headers: {
-  //         Authorization: "Bearer" + token.token,
-  //       },
-  //     });
-  //     // console.log(response.data);
-  //     setServices(response.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
-
-  // async function getEmployees() {
-  //   if(!clinic) {
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.get(`employees/${clinic && clinic + "/"}${9999999}?page=${1}`, {
-  //       headers: {
-  //         Authorization: "Bearer" + token.token,
-  //       },
-  //     });
-  //     // console.log(response.data);
-  //     setEmployees(response.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
-
   async function getItems() {
-    if (!clinic) {
+    if (!clinic || !search) {
       return;
     }
     try {
       const response = await axios.get(
-        `items/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        `items/${clinic && clinic + "/"}${16}${
+          search &&
+          `/` +
+            search
+              .split(" ")
+              .join("%")
+              .replace(/[a-zA-Z0-9]/, "")
+              .replace(".", "")
+        }?page=${1}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
           },
         }
       );
-      // console.log(response.data);
-      setItems(response.data);
+      setItems(response.data.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function getRecord() {
+    if (!selectedQueue?.patient?.id) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `/record/${selectedQueue?.patient?.id}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      console.log(response);
+      setRecord(response.data[0]?.record_items || []);
     } catch (err) {
       console.error(err);
     }
@@ -598,6 +591,29 @@ export default function Transaction() {
     setTime(moment().format("h:mm:ss A"));
   }, [transaction]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      getItems();
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  useEffect(() => {
+    setRecord([])
+    getRecord();
+    setSearch("")
+  }, [selectedQueue]);
+
+  // useEffect(() => {
+  //   if (record.length > 0) {
+  //     record.map((item) => {
+  //       addToCart(item.item);
+  //     });
+  //   }
+  // }, [record]);
+
+  console.log(cart.array);
+
   return (
     <>
       <DashboardLayout
@@ -653,8 +669,8 @@ export default function Transaction() {
                               )[0]
                             );
                           }}
-                          className={`input border-none py-4 mt-1 h-full text-white ${
-                            selectedQueue?.id ? "bg-indigo-600" : "bg-slate-800"
+                          className={`input border-none py-4 rounded-sm mt-1 h-full text-white ${
+                            selectedQueue?.id ? "bg-indigo-800 bg-opacity-90" : "bg-slate-800"
                           } w-full`}
                         >
                           <option value={dummyQueue.id}>Select patient</option>
@@ -674,23 +690,24 @@ export default function Transaction() {
                       !selectedQueue?.id && "opacity-30"
                     } bg-opacity-50 rounded-md shadow-md mb-0 mt-2`}
                   >
-                    <div className="px-0 flex flex-col">
-                      <div className="">
+                    
+                    <div className="">
                         <label className="label px-0">
-                          <span className="label-text text-white pl-1">
-                            Library
+                          <span className="label-text text-white pl-1 mt-3">
+                            Promotions
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
-                            {items?.length} Items
+                            {/* {items?.length} Items */}
                           </span>
                         </label>
                       </div>
-                      <div className="bg-slate-800 rounded-md mt-1">
+                    <div className="px-0 flex flex-col">
+                      <div className="bg-slate-800 rounded-md">
                         <div
                           tabIndex={0}
-                          className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
+                          className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-rose-500 focus:bg-opacity-10 border-rose-400 group"
                         >
-                          <div className="collapse-title font-semibold capitalize text-sm group-focus:text-indigo-400 text-zinc-300 flex items-center gap-4">
+                          <div className="collapse-title font-semibold capitalize text-sm group-focus:text-rose-400 text-zinc-300 flex items-center gap-4">
                             <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
                             <p>Promotions</p>
                           </div>
@@ -708,16 +725,108 @@ export default function Transaction() {
                               );
                             })}
                             {promotions?.data?.length <= 0 && (
-                              <div className="btn btn-disabled bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                              <div className="btn btn-disabled bg-rose-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                                 No Promotion
                               </div>
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className="bg-slate-800 rounded-md mt-4 min-h-[32vh]">
+                      <div className="">
+                        <label className="label px-0">
+                          <span className="label-text text-white pl-1 mt-4">
+                            Items
+                          </span>
+                          <span className="label-text opacity-50 ml-auto text-white">
+                            {/* {items?.length} Items */}
+                          </span>
+                        </label>
+                      </div>
+                      <div className="bg-slate-800 rounded-md mb-4">
+                        <div className="text-white bg-amber-500 bg-opacity-10 border-amber-400 rounded-md">
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={search}
+                              onChange={(e) => setSearch(e.target.value)}
+                              placeholder="Search item ..."
+                              className={`input py-4 h-full text-white ${
+                                search
+                                  ? "border-none border-opacity-75 bg-amber-500 bg-opacity-10 text-amber-400 font-semibold"
+                                  : "border-slate-800 bg-slate-800"
+                              }
+                            w-full`}
+                            ></input>
+                            <i
+                              onClick={() => setSearch("")}
+                              className={`fas ${
+                                search ? "fa-x text-rose-400" : "fa-search"
+                              } absolute top-1 right-1 p-4`}
+                            ></i>
+                          </div>
+                          {search &&
+                            items?.length > 0 &&
+                            items?.map((item) => {
+                              return (
+                                <div
+                                  className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                  key={item.id}
+                                  onClick={() => addToCart(item)}
+                                >
+                                  <span>{item.name}</span>
+                                  <span>
+                                    {numeral(item.sell_price).format("0,0")}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          {search && items?.length <= 0 && (
+                            <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
+                              No Item Found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className={`${record.length <= 0 && "hidden"} bg-slate-800 rounded-md mb-4`}>
+                        <div
+                          tabIndex={0}
+                          className="collapse collapse-open p-0 m-0 rounded-md  text-white bg-amber-500 bg-opacity-10 border-amber-400 group"
+                        >
+                          <div className="collapse-title font-semibold capitalize text-sm text-amber-400  flex items-center gap-4">
+                            <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
+                            <p>Recomendation</p>
+                          </div>
+                          <div className="collapse-content font-normal capitalize">
+                            {record?.map((obj) => {
+                              console.log(obj);
+                              return (
+                                <div
+                                  className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                  key={obj.item?.id}
+                                  onClick={() => addToCart(obj.item)}
+                                >
+                                  <span>{obj.item?.name}</span>
+                                  <span>
+                                    {numeral(obj.item?.sell_price).format(
+                                      "0,0"
+                                    )}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                            {record?.length <= 0 && (
+                              <div className="btn btn-disabled bg-amber-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                                No recomendation
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-800 rounded-md min-h-[32vh]">
                         {category.length <= 0 && (
-                          <div className="btn btn-disabled mx-4 mt-4 bg-indigo-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
+                          <div className="btn btn-disabled mx-4 mt-4 bg-amber-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
                             No Item
                           </div>
                         )}
@@ -726,9 +835,9 @@ export default function Transaction() {
                             <div
                               key={obj?.id}
                               tabIndex={index}
-                              className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-indigo-500 focus:bg-opacity-10 border-indigo-400 group"
+                              className="collapse p-0 m-0 rounded-md bg-slate-800 text-white focus:bg-amber-500 focus:bg-opacity-10 border-amber-400 group"
                             >
-                              <div className="collapse-title font-semibold capitalize text-sm group-focus:text-indigo-400 text-zinc-300 flex items-center gap-4">
+                              <div className="collapse-title font-semibold capitalize text-sm group-focus:text-amber-400 text-zinc-300 flex items-center gap-4">
                                 <i className="fas fa-caret-down group-focus:rotate-180 duration-500"></i>
                                 <span>{obj.name}</span>
                               </div>
@@ -1463,7 +1572,7 @@ export default function Transaction() {
                     : "border-rose-400 bg-zinc-50"
                 }`}
               /> */}
-              
+
               <CurrencyInput
                 name="price"
                 defaultValue={0}

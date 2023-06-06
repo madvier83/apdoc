@@ -88,6 +88,7 @@ export default function Sidebar() {
     promotion: false,
     cashier: false,
     report: false,
+    settings: false,
   };
   const [sidebar, setSidebar] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -358,7 +359,7 @@ export default function Sidebar() {
                   </Link>
                 </li>
 
-                <li
+                {/* <li
                   className={`items-center ${
                     router.pathname == "/" && "text-emerald-500 "
                   }`}
@@ -369,6 +370,74 @@ export default function Sidebar() {
                   >
                     <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
                   </Link>
+                </li> */}
+
+                <li
+                  // key={index}
+                  className={`items-center list-none ${
+                    router.pathname == "/" && "text-emerald-500 "
+                  }`}
+                >
+                  <button
+                    onClick={() =>
+                      setSidebar({ ...initialSidebar, settings: !sidebar.settings })
+                    }
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                    }
+                  >
+                    <i
+                      className={`fas fa-cogs mr-2 text-sm `}
+                    ></i>{" "}
+                    Settings
+                  </button>
+
+                  <ul
+                    className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                      sidebar.settings == true ? "block" : "hidden"
+                    }`}
+                  >
+                    <li
+                      // key={index}
+                      className={`items-center list-none ${
+                        router.pathname.startsWith("/settings/recipient") &&
+                        "text-emerald-500"
+                      }`}
+                    >
+                      <Link
+                        scroll={false}
+                        href={"/settings/recipient"}
+                        className={
+                          "text-xs py-3 font-semibold block capitalize"
+                        }
+                      >
+                        <i
+                          className={`fas fa-scroll mr-2 text-sm`}
+                        ></i>{" "}
+                        Recipient
+                      </Link>
+                    </li>
+                    <li
+                      // key={index}
+                      className={`items-center list-none ${
+                        router.pathname.startsWith("/settings/notification") &&
+                        "text-emerald-500"
+                      }`}
+                    >
+                      <Link
+                        scroll={false}
+                        href={"/settings/notification"}
+                        className={
+                          "text-xs py-3 font-semibold block capitalize"
+                        }
+                      >
+                        <i
+                          className={`fas fa-envelope mr-2 text-sm`}
+                        ></i>{" "}
+                        Notification
+                      </Link>
+                    </li>
+                  </ul>
                 </li>
 
                 <li

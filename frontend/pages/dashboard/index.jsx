@@ -384,6 +384,18 @@ export default function Dashboard() {
                   className="btn btn-xs bg-gray-500 text-white active:bg-gray-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   href={`/dashboard/pharmacy/stock-adjustment`}
+                  onClick={() => {
+                    setCookie("sidebar", JSON.stringify({
+                      user: false,
+                      admin: false,
+                      receptionist: false,
+                      doctor: false,
+                      pharmacy: true,
+                      promotion: false,
+                      cashier: false,
+                      report: false,
+                    }))
+                  }}
                 >
                   Stock Adjustment <i className="fas fa-cog ml-2"></i>
                 </Link>

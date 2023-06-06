@@ -144,7 +144,7 @@ export default function Navbar({ title, clinic, setClinic }) {
                 </div>
               )}
             </div>
-            <div className="w-96 flex justify-end pr-8">
+            <div className="w-96 flex justify-end pr-0">
               <button
                 className="text-slate-500 text-lg hidden lg:inline-block font-normal mx-5"
                 onClick={() => router.back()}

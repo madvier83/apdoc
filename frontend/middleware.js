@@ -42,7 +42,7 @@ export async function middleware(req) {
         }
     }
 
-    if(pathname.startsWith("/dashboard") || pathname === "/account" || pathname === "/settings") {
+    if(pathname.startsWith("/dashboard") || pathname === "/account" || pathname.startsWith("/settings")) {
         if (jwt == undefined) {
             url.pathname = "/auth/login"
             return NextResponse.redirect(url);
