@@ -13,6 +13,11 @@ class Service extends Model
 
     // RELATIONSHIP
 
+    public function categoryService()
+    {
+        return $this->belongsTo(CategoryService::class);
+    }
+
     public function queueDetails()
     {
         return $this->hasMany(QueueDetail::class);

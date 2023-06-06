@@ -16,7 +16,6 @@ class CreateCategoryOutcomesTable extends Migration
         Schema::create('category_outcomes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('is_delete')->default(false);
             $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
         });

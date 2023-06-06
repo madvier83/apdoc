@@ -13,7 +13,7 @@ class ClinicController extends Controller
     public function index()
     {
         try {
-            $clinic = Clinic::where('apdoc_id', auth()->user()->apdoc_id)->get();
+            $clinic = Clinic::where('apdoc_id', auth()->user()->apdoc_id)->where('is_delete', false)->get();
     
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -24,7 +24,7 @@ class ClinicController extends Controller
     public function getByApdocId($id)
     {
         try {
-            $clinic = Clinic::where('apdoc_id', $id)->get();
+            $clinic = Clinic::where('apdoc_id', $id)->where('is_delete', false)->get();
     
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -142,7 +142,9 @@ class ClinicController extends Controller
         }
 
         try {
-            $clinic->delete();
+            // $clinic->delete();
+            $clinic->fill(['is_delete' => true]);
+            $clinic->save();
     
             return response()->json(['message' => 'Clinic deleted successfully!']);
         } catch (Throwable $e) {

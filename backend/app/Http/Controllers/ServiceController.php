@@ -15,7 +15,7 @@ class ServiceController extends Controller
 
         try {
             if ($keyword == null) {
-                $service = Service::where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $service = Service::where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $service = Service::where(function($query) use ($keyword) {
                     $query->where('code', 'like', '%'.$keyword.'%')
@@ -25,6 +25,7 @@ class ServiceController extends Controller
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
+                    ->where('is_delete', false)
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
@@ -116,7 +117,9 @@ class ServiceController extends Controller
         }
 
         try {
-            $service->delete();
+            // $service->delete();
+            $service->fill(['is_delete' => true]);
+            $service->save();
     
             return response()->json(['message' => 'Service deleted successfully!']);
         } catch (Throwable $e) {

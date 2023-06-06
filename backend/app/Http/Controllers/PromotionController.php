@@ -15,7 +15,7 @@ class PromotionController extends Controller
 
         try {
             if ($keyword == null) {
-                $promotion = Promotion::where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $promotion = Promotion::where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $promotion = Promotion::where(function($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%')
@@ -23,6 +23,7 @@ class PromotionController extends Controller
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
+                    ->where('is_delete', false)
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
@@ -96,7 +97,9 @@ class PromotionController extends Controller
         }
 
         try {
-            $promotion->delete();
+            // $promotion->delete();
+            $promotion->fill(['is_delete' => true]);
+            $promotion->save();
     
             return response()->json(['message' => 'Promotion deleted successfully!']);
         } catch (Throwable $e) {

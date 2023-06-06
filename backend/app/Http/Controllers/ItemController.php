@@ -15,20 +15,22 @@ class ItemController extends Controller
 
         try {
             if ($keyword == null) {
-                $item = Item::with(['categoryItem', 'itemSupplys'])->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $item = Item::with(['categoryItem', 'itemSupplys'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $item = Item::with(['categoryItem', 'itemSupplys'])->where(function($query) use ($keyword) {
-                    $query->where('code', 'like', '%'.$keyword.'%')
-                        ->orWhere('name', 'like', '%'.$keyword.'%')
-                        ->orWhere('unit', 'like', '%'.$keyword.'%')
-                        ->orWhere('sell_price', 'like', '%'.$keyword.'%')
-                        ->orWhere('buy_price', 'like', '%'.$keyword.'%')
-                        ->orWhere('factory', 'like', '%'.$keyword.'%')
-                        ->orWhere('distributor', 'like', '%'.$keyword.'%')
-                        ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                        ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%');
+                $item = Item::with(['categoryItem', 'itemSupplys'])
+                    ->where(function($query) use ($keyword) {
+                        $query->where('code', 'like', '%'.$keyword.'%')
+                            ->orWhere('name', 'like', '%'.$keyword.'%')
+                            ->orWhere('unit', 'like', '%'.$keyword.'%')
+                            ->orWhere('sell_price', 'like', '%'.$keyword.'%')
+                            ->orWhere('buy_price', 'like', '%'.$keyword.'%')
+                            ->orWhere('factory', 'like', '%'.$keyword.'%')
+                            ->orWhere('distributor', 'like', '%'.$keyword.'%')
+                            ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                            ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                            ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%');
                     })
+                    ->where('is_delete', false)
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
@@ -128,7 +130,9 @@ class ItemController extends Controller
         }
 
         try {
-            $item->delete();
+            // $item->delete();
+            $item->fill(['is_delete' => true]);
+            $item->save();
     
             return response()->json(['message' => 'Item deleted successfully!']);
         } catch (Throwable $e) {
