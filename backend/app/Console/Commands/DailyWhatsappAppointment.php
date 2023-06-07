@@ -42,9 +42,10 @@ class DailyWhatsappAppointment extends Command
         $datas = \App\Models\Appointment::whereDate('appointment_date', Carbon::tomorrow())->get();
             foreach($datas as $data){
                 $setting =  \App\Models\Setting::where('clinic_id', $data->clinic_id)->get();
+                $phone = substr_replace($data->patient->phone, '62', 0, 0);
                 foreach ($setting as $clinic) {
                     \Notification::route('whatsapp', 'WHATSAPP_SESSION')->notify(new AppointmentWhatsapp($data->patient->name,
-                    $data->appointment_date, $data->description,$data->patient->phone,
+                    $data->appointment_date, $data->description,$phone,
                     $clinic->name, $clinic->address, $clinic->phone));
                 }
             }
