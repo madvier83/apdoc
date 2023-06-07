@@ -50,14 +50,26 @@ export default function Register() {
     const { name, value } = event.target;
     setRegisterForm({ [name]: value });
   };
-
+  // console.log({
+  //   ...registerForm,
+  //   owner_phone: "62" + registerForm.owner_phone,
+  //   clinic_phone: "62" + registerForm.clinic_phone,
+  // });
   async function handleVerify(e) {
     e.preventDefault();
     setVerifyLoading(true);
     try {
-      const response = await axios.post("auth/registration", registerForm, {
-        "Content-Type": "application/json",
-      });
+      const response = await axios.post(
+        "auth/registration",
+        {
+          ...registerForm,
+          owner_phone: "62" + registerForm.owner_phone,
+          clinic_phone: "62" + registerForm.clinic_phone,
+        },
+        {
+          "Content-Type": "application/json",
+        }
+      );
       router.push(
         {
           pathname: "/auth/login",

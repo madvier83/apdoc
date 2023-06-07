@@ -494,7 +494,7 @@ export default function Account() {
   //   return () => clearTimeout(getData);
   // }, [putClinicForm.district]);
 
-  console.log(codes);
+  // console.log(codes);
   return (
     <>
       <DashboardLayout title="Account">
@@ -787,7 +787,7 @@ export default function Account() {
                                 className={`${
                                   isEditUser ? "bg-white" : "bg-zinc-100"
                                 } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-r text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
-                                value={userForm.phone}
+                                value={userForm.phone.substring(2)}
                                 disabled
                               />
                             </div>
@@ -1542,7 +1542,7 @@ export default function Account() {
                 Cancel
               </label>
               <button className="btn btn-success bg-emerald-400 rounded-md">
-                Update
+                Verify
               </button>
             </div>
           </form>
