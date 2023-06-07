@@ -15,7 +15,7 @@ class PatientController extends Controller
 
         try {
             if ($keyword == null) {
-                $patient = Patient::with('queues')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $patient = Patient::with('queues')->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $patient = Patient::with('queues')->where(function($query) use ($keyword) {
                     $query->where('nik', 'like', '%'.$keyword.'%')
@@ -29,6 +29,7 @@ class PatientController extends Controller
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
+                    ->where('is_delete', false)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             }
@@ -125,7 +126,9 @@ class PatientController extends Controller
         }
 
         try {
-            $patient->delete();
+            // $patient->delete();
+            $patient->fill(['is_delete' => true]);
+            $patient->save();
     
             return response()->json(['message' => 'Patient deleted successfully!']);
         } catch (Throwable $e) {

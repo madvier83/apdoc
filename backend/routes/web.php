@@ -241,6 +241,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/report-sales/collected/{clinic}/{from}/{to}', 'ReportSalesController@collected');
 
 	// EXCEL
+	$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	// });

@@ -9,6 +9,19 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExcelController extends Controller
 {
+    public function importDiagnose(Request $request)
+    {
+        $file = $request->file('file');
+
+        if ($file) {
+            Excel::import(new PatientImport($request), $file);
+
+            return response()->json(['message' => 'Data imported successfully']);
+        }
+
+        return response()->json(['message' => 'No file uploaded'], 400);
+    }
+
     public function exportPatient(Request $request) 
     {
         return Excel::download(new PatientExport($request), 'Patient.xlsx');

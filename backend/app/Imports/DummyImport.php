@@ -15,6 +15,8 @@ class PatientImport implements ToModel, WithStartRow
     public function __construct(Request $request)
     {
         $this->request = $request;
+
+        Patient::where('clinic_id', $this->request->clinic)->truncate();
     }
     
     public function startRow(): int
@@ -25,13 +27,13 @@ class PatientImport implements ToModel, WithStartRow
     public function model(array $row)
     {
         return new Patient([
-            'nik'         => $row[0],
-            'name'        => $row[1],
-            'birth_place' => $row[2],
-            'birth_date'  => Date::excelToDateTimeObject(intval($row[3]))->format('Y-m-d'),
-            'gender'      => $row[4],
-            'phone'       => $row[5],
-            'address'     => $row[6],
+            'nik'         => $row[1],
+            'name'        => $row[2],
+            'birth_place' => $row[3],
+            'birth_date'  => Date::excelToDateTimeObject(intval($row[4]))->format('Y-m-d'),
+            'gender'      => $row[5],
+            'phone'       => $row[6],
+            'address'     => $row[7],
             'clinic_id'   => $this->request->clinic,
         ]);
     }

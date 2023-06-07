@@ -15,9 +15,9 @@ class ServiceController extends Controller
 
         try {
             if ($keyword == null) {
-                $service = Service::where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $service = Service::with('categoryService')->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $service = Service::where(function($query) use ($keyword) {
+                $service = Service::with('categoryService')->where(function($query) use ($keyword) {
                     $query->where('code', 'like', '%'.$keyword.'%')
                         ->orWhere('name', 'like', '%'.$keyword.'%')
                         ->orWhere('price', 'like', '%'.$keyword.'%')
