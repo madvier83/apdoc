@@ -6,10 +6,9 @@ import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
-import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 
-export default function CategoryItem() {
+export default function CategoryService() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
@@ -17,14 +16,14 @@ export default function CategoryItem() {
   const tableRef = useRef();
   const exportModalRef = useRef();
 
-  const [clinic, setClinic] = useState()
+  const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
-  const [sortBy, setSortBy] = useState("name");
-  const [order, setOrder] = useState(true);
+
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
@@ -61,19 +60,20 @@ export default function CategoryItem() {
   };
 
   async function getCategory() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     setCategoryLoading(true)
     try {
       const response = await axios.get(
-        `category-items/${clinic && clinic + "/"}${perpage}${
+        `category-services/${clinic && clinic + "/"}${perpage}${
           search &&
           "/" +
             search
               .split(" ")
               .join("%")
               .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
@@ -93,7 +93,7 @@ export default function CategoryItem() {
   async function addCategory(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("category-item", addForm, {
+      const response = await axios.post("category-service", addForm, {
         headers: {
           Authorization: "Bearer" + token.token,
           "Content-Type": "application/json",
@@ -105,7 +105,6 @@ export default function CategoryItem() {
       setAddForm({clinic_id: clinic});
       setAddFormError(initialCategoryForm);
     } catch (err) {
-      console.log(err)
       setAddFormError(initialCategoryForm);
       setAddFormError(err.response?.data);
     }
@@ -113,14 +112,17 @@ export default function CategoryItem() {
 
   async function putCategory(e) {
     e.preventDefault();
-    console.log(putForm);
     try {
-      const response = await axios.put(`category-item/${putForm.id}`, putForm, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(
+        `category-service/${putForm.id}`,
+        putForm,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       putModalRef.current.click();
       getCategory();
       setPutForm(initialCategoryForm);
@@ -133,7 +135,7 @@ export default function CategoryItem() {
 
   async function deleteCategory(id) {
     try {
-      const response = await axios.delete(`category-item/${id}`, {
+      const response = await axios.delete(`category-service/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -244,11 +246,11 @@ export default function CategoryItem() {
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic, sortBy, order]);
 
-  useEffect(()=> {
-    setSearch("")
-    setPage(1)
-    setAddForm({clinic_id: clinic})
-  }, [clinic])
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+    setAddForm({ clinic_id: clinic });
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -256,11 +258,13 @@ export default function CategoryItem() {
     });
   }, [category]);
 
-  console.log(addForm)
-
   return (
     <>
-      <DashboardLayout title="Category Item" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout
+        title="Category Service"
+        clinic={clinic}
+        setClinic={setClinic}
+      >
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -270,7 +274,7 @@ export default function CategoryItem() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Item Table
+                  <i className="fas fa-filter mr-3"></i> Category Service Table
                 </h3>
               </div>
 
@@ -294,7 +298,7 @@ export default function CategoryItem() {
                   }}
                   className={`fas ${
                     !search ? "fa-search" : "fa-x"
-                  } absolute text-slate-400 right-0 pr-4 cursor-pointer  top-[6px] text-xs`}
+                  } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
                 ></i>
               </div>
 
@@ -311,8 +315,7 @@ export default function CategoryItem() {
                   type="button"
                   htmlFor="modal-add"
                   onClick={() => {
-                    setAddFormError({message : ""})
-                    setPutFormError({message : ""})
+                    setAddFormError({ message: "" });
                   }}
                 >
                   Add <i className="fas fa-add"></i>
@@ -359,35 +362,33 @@ export default function CategoryItem() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={category} dataLoading={categoryLoading} reload={getCategory}></Loading>
-                {!categoryLoading && category?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + category.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={category}
+                  dataLoading={categoryLoading}
+                  reload={getCategory}
+                ></Loading>
+                {!categoryLoading &&
+                  category?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + category.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>{obj.name}</span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -399,24 +400,24 @@ export default function CategoryItem() {
                           >
                             <i className="fas fa-pen-to-square"></i>
                           </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
                           <label
                             className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             htmlFor={obj.id}
                           >
                             <i className="fas fa-trash"></i>
                           </label>
-                        </div>
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteCategory(obj.id)}
-                          title={`Delete category item?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteCategory(obj.id)}
+                            title={`Delete category payment?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -497,7 +498,7 @@ export default function CategoryItem() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Item</h3>
+          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -505,21 +506,19 @@ export default function CategoryItem() {
                 <span className="label-text">Name</span>
               </label>
               <input
-                required={true}
                 type="text"
                 name="name"
                 value={addForm.name}
                 onChange={(e) => handleAddInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.message}
+                    {addFormError.message || addFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -535,7 +534,7 @@ export default function CategoryItem() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Item</h3>
+          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
           <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -543,21 +542,19 @@ export default function CategoryItem() {
                 <span className="label-text">Name</span>
               </label>
               <input
-                required={true}
                 type="text"
                 name="name"
                 value={putForm.name}
                 onChange={(e) => handlePutInput(e)}
+                required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {putFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.message}
+                    {putFormError.message || putFormError.name[0]}
                   </span>
                 </label>
-              )}
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -573,7 +570,6 @@ export default function CategoryItem() {
             </div>
           </form>
         </ModalBox>
-
         
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>

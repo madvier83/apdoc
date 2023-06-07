@@ -348,13 +348,13 @@ export default function Item() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                <label
+                {/* <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-export"
                 >
                   <i className="fas fa-cog"></i>
-                </label>
+                </label> */}
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"

@@ -25,6 +25,12 @@ export default function Service() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [searchCategory, setSearchCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
+
+  const [category, setCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
   
   const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(false);
@@ -37,6 +43,7 @@ export default function Service() {
     id: "",
     code: "",
     name: "",
+    category_service_id: "",
     price: "",
     commission: "",
   };
@@ -112,6 +119,7 @@ export default function Service() {
       setAddForm(initialServiceForm);
       setAddForm({clinic_id: clinic});
       setAddFormError(initialServiceForm);
+      setSelectedCategory({})
     } catch (err) {
       setAddFormError(initialServiceForm);
       setAddFormError(err.response?.data);
@@ -133,6 +141,7 @@ export default function Service() {
       getServices();
       setPutForm(initialServiceForm);
       setPutFormError(initialServiceForm);
+      setSelectedCategory({})
     } catch (err) {
       setPutFormError(initialServiceForm);
       setPutFormError(err.response?.data);
@@ -148,6 +157,33 @@ export default function Service() {
         },
       });
       getServices();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
+  async function getCategory() {
+    if(!clinic){
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `category-services/${clinic && clinic + "/"}${perpage}${
+          searchCategory &&
+          "/" +
+            searchCategory
+              .split(" ")
+              .join("%")
+              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
+        }?page=${page}`,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      setCategory(response.data);
+      setCategoryLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -264,6 +300,13 @@ export default function Service() {
     });
   }, [services]);
   
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      getCategory();
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [searchCategory]);
+  console.log(services.data)
   return (
     <>
       <DashboardLayout title="Services" clinic={clinic} setClinic={setClinic}>
@@ -305,13 +348,13 @@ export default function Service() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                <label
+                {/* <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-export"
                 >
                   <i className="fas fa-cog"></i>
-                </label>
+                </label> */}
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -361,6 +404,22 @@ export default function Service() {
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "category" && setOrder((p) => !p);
+                        setSortBy("category");
+                      }}
+                    >
+                      <p>Category</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "category" && "opacity-40"
                         }`}
                       ></i>
                     </div>
@@ -440,6 +499,11 @@ export default function Service() {
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         <span className={"font-semibold capitalize"}>
+                          {obj.category_service?.name || "Uncategorized"}
+                        </span>
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <span className={"font-semibold capitalize"}>
                           Rp. {numeral(obj.price).format("0,0")}
                         </span>
                       </td>
@@ -463,6 +527,7 @@ export default function Service() {
                           onClick={() => {
                             setPutForm(obj);
                             setPutFormError(initialServiceForm);
+                            setSelectedCategory(obj.category_service)
                           }}
                         >
                           <i className="fas fa-pen-to-square"></i>
@@ -606,6 +671,77 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
+                <span className="label-text">Category</span>
+              </label>
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setAddForm({ category_service_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search category ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setAddForm({ category_service_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+              {addFormError.category_service_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.category_service_id}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Price</span>
               </label>
               <CurrencyInput
@@ -693,6 +829,78 @@ export default function Service() {
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {putFormError.name}
+                  </span>
+                </label>
+              )}
+              
+              <label className="label">
+                <span className="label-text">Category</span>
+              </label>
+              <div className="dropdown w-full">
+                {selectedCategory?.id && (
+                  <div className="p-0 overflow-hidden mb-1">
+                    <div
+                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory({});
+                        setPutForm({ category_service_id: null });
+                      }}
+                    >
+                      <div className="flex justify-end font-bold">
+                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
+                      </div>
+                      <div className="text-sm font-semibold flex">
+                        <p className="text-left">{selectedCategory.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {!selectedCategory?.id && (
+                  <>
+                    <input
+                      tabIndex={0}
+                      type="text"
+                      name="searchAdd"
+                      value={searchCategory}
+                      onChange={(e) => setSearchCategory(e.target.value)}
+                      placeholder="Search category ..."
+                      className="input input-bordered border-slate-300 w-full"
+                    />
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
+                    >
+                      {!category?.data?.length && (
+                        <li className="rounded-sm text-sm">
+                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
+                            No data found
+                          </div>
+                        </li>
+                      )}
+                      {category?.data?.map((obj) => {
+                        return (
+                          <li key={obj.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                setSelectedCategory(obj);
+                                setPutForm({ category_service_id: obj.id });
+                                setSearchCategory("");
+                              }}
+                            >
+                              <p className="text-left">{obj.name}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+              {putFormError.category_service_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.category_service_id}
                   </span>
                 </label>
               )}

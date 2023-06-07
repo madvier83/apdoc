@@ -45,12 +45,13 @@ export default function Access() {
             route: "/dashboard/admin/employee",
             access: false,
           },
-          { name: "service", route: "/dashboard/admin/service", access: false },
           {
             name: "diagnose",
             route: "/dashboard/admin/diagnose",
             access: false,
           },
+          { name: "category-service", route: "/dashboard/admin/category-service", access: false },
+          { name: "service", route: "/dashboard/admin/service", access: false },
           {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
