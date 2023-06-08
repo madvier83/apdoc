@@ -10,8 +10,8 @@ class ItemController extends Controller
 {
     public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
-        $sortBy = $request->sortBy ?? 'updated_at';
-        $order  = $request->order ?? 'desc';
+        $sortBy = $request->sortBy ?? 'id';
+        $order  = $request->order ?? 'asc';
 
         try {
             if ($keyword == null) {
@@ -130,11 +130,50 @@ class ItemController extends Controller
         }
 
         try {
-            // $item->delete();
             $item->fill(['is_delete' => true]);
             $item->save();
     
             return response()->json(['message' => 'Item deleted successfully!']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+
+    public function lowstock(Request $request, $clinic, $perPage, $keyword=null)
+    {
+        $sortBy = $request->sortBy ?? 'id';
+        $order  = $request->order ?? 'asc';
+
+        try {
+            if ($keyword == null) {
+                $items = Item::with(['categoryItem'])
+                    ->withSum('itemSupplys as item_stock', 'stock')
+                    ->where('is_delete', false)
+                    ->where('clinic_id', $clinic)
+                    ->orderBy($sortBy, $order)
+                    ->get();
+            } else {
+                $items = Item::with(['categoryItem'])
+                    ->withSum('itemSupplys as item_stock', 'stock')
+                    ->where(function($query) use ($keyword) {
+                        $query->where('code', 'like', '%'.$keyword.'%')
+                            ->orWhere('name', 'like', '%'.$keyword.'%')
+                            ->orWhere('unit', 'like', '%'.$keyword.'%')
+                            ->orWhere('sell_price', 'like', '%'.$keyword.'%')
+                            ->orWhere('buy_price', 'like', '%'.$keyword.'%')
+                            ->orWhere('factory', 'like', '%'.$keyword.'%')
+                            ->orWhere('distributor', 'like', '%'.$keyword.'%')
+                            ->orWhere('created_at', 'like', '%'.$keyword.'%')
+                            ->orWhere('updated_at', 'like', '%'.$keyword.'%')
+                            ->orWhereRelation('categoryItem', 'name', 'like', '%'.$keyword.'%');
+                    })
+                    ->where('is_delete', false)
+                    ->where('clinic_id', $clinic)
+                    ->orderBy($sortBy, $order)
+                    ->get();
+            }
+
+            return $items->where('item_stock', '<', 50)->toQuery()->withSum('itemSupplys as item_stock', 'stock')->paginate($perPage);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }

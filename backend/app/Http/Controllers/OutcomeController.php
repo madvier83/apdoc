@@ -10,8 +10,8 @@ class OutcomeController extends Controller
 {
     public function index(Request $request, $clinic, $perPage, $keyword=null)
     {
-        $sortBy = $request->sortBy ?? 'updated_at';
-        $order  = $request->order ?? 'desc';
+        $sortBy = $request->sortBy ?? 'id';
+        $order  = $request->order ?? 'asc';
 
         try {
             if ($keyword == null) {

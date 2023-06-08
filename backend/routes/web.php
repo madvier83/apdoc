@@ -209,6 +209,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/items/{clinic}/{perPage}', 'ItemController@index');
 	$router->get('/v1/items/{clinic}/{perPage}/{keyword}', 'ItemController@index');
 	$router->get('/v1/item/{id}', 'ItemController@show');
+	$router->get('/v1/item/{clinic}/{perPage}/lowstock', 'ItemController@lowstock');
+	$router->get('/v1/item/{clinic}/{perPage}/{keyword}/lowstock', 'ItemController@lowstock');
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
@@ -221,6 +223,21 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/stock-adjustments/{clinic}/{perPage}', 'StockAdjustmentController@index');
 	$router->get('/v1/stock-adjustments/{clinic}/{perPage}/{keyword}', 'StockAdjustmentController@index');
 	$router->post('/v1/stock-adjustment', 'StockAdjustmentController@create');
+
+	$router->get('/v1/suppliers/{clinic}/{perPage}', 'SupplierController@index');
+	$router->get('/v1/suppliers/{clinic}/{perPage}/{keyword}', 'SupplierController@index');
+	$router->get('/v1/supplier/{id}', 'SupplierController@show');
+	$router->post('/v1/supplier', 'SupplierController@create');
+	$router->put('/v1/supplier/{id}', 'SupplierController@update');
+	$router->delete('/v1/supplier/{id}', 'SupplierController@destroy');
+
+	$router->get('/v1/purchase-orders/{clinic}/{perPage}', 'PurchaseOrderController@index');
+	$router->get('/v1/purchase-orders/{clinic}/{perPage}/{keyword}', 'PurchaseOrderController@index');
+	$router->get('/v1/purchase-order/{id}', 'PurchaseOrderController@show');
+	$router->post('/v1/purchase-order', 'PurchaseOrderController@create');
+	$router->put('/v1/purchase-order/{id}', 'PurchaseOrderController@update');
+	$router->put('/v1/purchase-order/{id}/finished', 'PurchaseOrderController@updateFinished');
+	$router->delete('/v1/purchase-order/{id}', 'PurchaseOrderController@destroy');
 	
 	// CASHIER	
 	$router->get('/v1/transactions/{clinic}/{perPage}', 'TransactionController@index');
