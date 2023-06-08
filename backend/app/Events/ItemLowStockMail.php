@@ -17,7 +17,6 @@ class ItemLowStockMail extends Mailable
      * @return void
      */
     protected $LowStock;
-    
     public function __construct($LowStock)
     {
         $this->LowStock = $LowStock;

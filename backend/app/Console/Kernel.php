@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('appointment:whatsapp')->dailyAt('08:00')->appendOutputTo('scheduler.log')->onOneServer();
-        $schedule->command('notification:stock')->dailyAt('08:00')->appendOutputTo('notification.log')->onOneServer();
-        $schedule->command('notification:sales')->dailyAt('08:00')->appendOutputTo('notification.log')->onOneServer();
+        $schedule->command('notification:stock')->dailyAt('00:00')->appendOutputTo('notification.log')->onOneServer();
+        $schedule->command('notification:sales')->dailyAt('22:00')->appendOutputTo('notification.log')->onOneServer();
     }
 }

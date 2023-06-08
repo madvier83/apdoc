@@ -39,20 +39,14 @@ class LowStockNotification extends Command
      */
     public function handle()
     {
-        try {
-            $ClinicMail = App\Models\User::where('role_id',2)->where('daily_inventory_alerts_status', 1)->get();
-            foreach($ClinicMail as $data){
-                $recipient = App\Models\RecipientMail::where('apdoc_id', $data->apdoc_id)->get();
-                $LowStock = App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $data->employee->clinic_id)->get();
+        $ClinicMail = \App\Models\User::where('role_id',2)->where('daily_inventory_alerts_status', 1)->get();
+        foreach($ClinicMail as $data){
+            $recipient = \App\Models\RecipientMail::where('apdoc_id', $data->apdoc_id)->get();
+            $LowStock = \App\Models\ItemSupply::where('stock','<',50)->where('clinic_id', $data->employee?->clinic_id)->get();
                 foreach($recipient as $item){
                     Mail::to($item->email)->send(new ItemLowStockMail($LowStock));
                 }
-                Mail::to($data->email)->send(new ItemLowStockMail($LowStock));
-            }
-            $message = 'Messages Notification Sended!';
-            return $message;
-        } catch (\Throwable $th) {
-            return $th->getMessage();
+            Mail::to($data->email)->send(new ItemLowStockMail($LowStock));
         }
     }
 }

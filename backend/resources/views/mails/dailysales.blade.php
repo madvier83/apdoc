@@ -76,6 +76,39 @@
             background-color: #34d399;
             height: 64px;
         }
+
+        #table-data {
+            border-collapse: collapse;
+            width: 75%;
+            padding: 10px 20px;
+            margin-bottom: 2rem;
+        }
+        #table-data thead{
+            text-align: center;
+            background-color: #34d399;
+            text-transform: uppercase;
+        }
+        #table-data tbody{
+            text-align: center;
+            color: white;
+            text-transform: capitalize;
+        }
+        #table-data td, #table-data th {
+            border: 2px solid #34d399;
+            padding: 8px;
+        }
+
+        #table-data tr:nth-child(even){background-color: #f2f2f2;}
+
+        #table-data tr:hover {background-color: #ddd; color:#18181b; }
+
+        #table-data th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -85,7 +118,34 @@
             <h1 class="logo">APDOC</h1>
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
             <h1>Daily Sales Mail</h1>
-            <p>{{$data}}</p>
+            <center>
+                <table id="table-data">
+                    <thead>
+                    <tr>
+                        <td>gross sales</td>
+                        <td>discounts</td>
+                        <td>refund</td>
+                        <td>Net Sales</td>
+                        <td>Gratuify</td>
+                        <td>Tax</td>
+                        <td>Rounding</td>
+                        <td>Total</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Rp. {{ $data['GrossSales'] }}</td>
+                        <td>Rp. {{ $data['Discounts'] }}</td>
+                        <td>Rp. {{ $data['Refund'] }}</td>
+                        <td>Rp. {{ $data['NetSales'] }}</td>
+                        <td>Rp. {{ $data['Gratuify'] }}</td>
+                        <td>Rp. {{ $data['Tax'] }}</td>
+                        <td>Rp. {{ $data['Rounding'] }}</td>
+                        <td>Rp. {{ $data['Total'] }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </center>
             <div class="btn">
                 <a href="http://localhost:3000/dashboard/report/sales" class="btntext">Detail</a>
             </div>

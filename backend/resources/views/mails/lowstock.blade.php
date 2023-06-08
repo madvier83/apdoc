@@ -76,6 +76,38 @@
             background-color: #34d399;
             height: 64px;
         }
+        #table-data {
+            border-collapse: collapse;
+            width: 60%;
+            padding: 10px 20px;
+            margin-bottom: 2rem;
+        }
+        #table-data thead{
+            text-align: center;
+            background-color: #34d399;
+            text-transform: uppercase;
+        }
+        #table-data tbody{
+            text-align: center;
+            color: white;
+            text-transform: capitalize;
+        }
+        #table-data td, #table-data th {
+            border: 2px solid #34d399;
+            padding: 8px;
+        }
+
+        #table-data tr:nth-child(even){background-color: #f2f2f2;}
+
+        #table-data tr:hover {background-color: #ddd; color:#18181b; }
+
+        #table-data th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -85,20 +117,32 @@
             <h1 class="logo">APDOC</h1>
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
             <h1>Stok Item on your Clinic is low</h1>
-            <table>
-                <tr>
-                    <td>name</td>
-                    <td>stok</td>
-                    <td>unit</td>
-                </tr>
-                @foreach ( $data as $item)
-                <tr>
-                    <td>{{$item->itemSupply->item->unit}}</td>
-                    <td>{{$item->adjustment}}</td>
-                    <td>{{$item->itemSupply->item->categoryItem->name}}</td>
-                </tr>
-                @endforeach
-            </table>
+            <center>
+                <table id="table-data">
+                    <thead>
+                    <tr>
+                        <td>name</td>
+                        <td>categories</td>
+                        <td>stok</td>
+                        <td>unit</td>
+                        <td>manufacture</td>
+                        <td>expired</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ( $data as $item)
+                    <tr>
+                        <td>{{$item->item?->name}}</td>
+                        <td>{{$item->item?->categoryItem?->name}}</td>
+                        <td>{{$item->stock}}</td>
+                        <td>{{$item->item?->unit}}</td>
+                        <td>{{$item->manufacturing}}</td>
+                        <td>{{$item->expired}}</td>
+                    </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </center>
             <div class="btn">
                 <a href="http://localhost:3000/dashboard/pharmacy/item" class="btntext">Detail</a>
             </div>
