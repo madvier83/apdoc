@@ -142,7 +142,6 @@ class TransactionController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'patient_id'    => 'required',
             'payment'       => 'required',
         ]);
 

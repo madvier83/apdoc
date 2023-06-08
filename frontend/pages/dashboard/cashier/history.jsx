@@ -291,14 +291,14 @@ export default function History() {
                         </th>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <i
-                            className={`text-md mr-2 ${
-                              obj.patient.gender == "male"
+                            className={`text-md mr-2 ${!obj.patient && "hidden"} ${
+                              obj.patient?.gender == "male"
                                 ? "text-blue-400 fas fa-mars"
                                 : "text-pink-400 fas fa-venus"
                             }`}
                           ></i>{" "}
                           <span className={"font-bold"}>
-                            {obj.patient.name}
+                            {obj.patient?.name || "NPC"}
                           </span>
                         </td>
                         <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
