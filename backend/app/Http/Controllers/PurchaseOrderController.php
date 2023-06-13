@@ -18,16 +18,16 @@ class PurchaseOrderController extends Controller
 
         try {
             if ($keyword == null) {
-                $purchaseOrder = PurchaseOrder::with(['supplier', 'puchaseOrderItems', 'puchaseOrderItems.item'])
+                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             } else {
-                $purchaseOrder = PurchaseOrder::with(['supplier', 'puchaseOrderItems', 'puchaseOrderItems.item'])
+                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])
                     ->where(function($query) use ($keyword) {
                         $query->where('note', 'like', '%'.$keyword.'%')
                             ->orWhereRelation('supplier', 'name', 'like', '%'.$keyword.'%')
-                            ->orWhereRelation('puchaseOrderItems.item', 'name', 'like', '%'.$keyword.'%');
+                            ->orWhereRelation('purchaseOrderItems.item', 'name', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
@@ -42,7 +42,7 @@ class PurchaseOrderController extends Controller
 
     public function show($id)
     {
-        $purchaseOrder = PurchaseOrder::with(['supplier', 'puchaseOrderItems', 'puchaseOrderItems.item'])->find('id');
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])->find('id');
         return response()->json($purchaseOrder);
     }
 

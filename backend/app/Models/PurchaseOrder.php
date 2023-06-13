@@ -15,4 +15,9 @@ class PurchaseOrder extends Model
     {
         return $this->hasMany(PurchaseOrderItem::class);
     }
+    
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

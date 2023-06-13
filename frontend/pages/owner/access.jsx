@@ -50,8 +50,6 @@ export default function Access() {
             route: "/dashboard/admin/diagnose",
             access: false,
           },
-          { name: "category-service", route: "/dashboard/admin/category-service", access: false },
-          { name: "service", route: "/dashboard/admin/service", access: false },
           {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
@@ -99,6 +97,21 @@ export default function Access() {
         access: false,
         submenu: [
           {
+            name: "diagnose",
+            route: "/dashboard/doctor/diagnose",
+            access: false,
+          },
+          {
+            name: "category-service",
+            route: "/dashboard/doctor/category-service",
+            access: false,
+          },
+          {
+            name: "service",
+            route: "/dashboard/doctor/service",
+            access: false,
+          },
+          {
             name: "patient",
             route: "/dashboard/doctor/patient",
             access: false,
@@ -120,6 +133,16 @@ export default function Access() {
           {
             name: "item-supply",
             route: "/dashboard/pharmacy/supply",
+            access: false,
+          },
+          {
+            name: "supplier",
+            route: "/dashboard/pharmacy/supplier",
+            access: false,
+          },
+          {
+            name: "purchase-order",
+            route: "/dashboard/pharmacy/purchase-order",
             access: false,
           },
           {
@@ -292,7 +315,7 @@ export default function Access() {
       );
       // console.log(response);
       setAddForm(initialAccessForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialAccessForm);
       addModalRef.current.click();
       getUser();
@@ -329,14 +352,11 @@ export default function Access() {
   async function deleteRole(id) {
     // console.log(putForm);
     try {
-      const response = await axios.delete(
-        `/access/${id}`,
-        {
-          headers: {
-            Authorization: "Bearer" + token.token,
-          },
-        }
-      );
+      const response = await axios.delete(`/access/${id}`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
       console.log(response);
       setPutForm(initialAccessForm);
       setPutFormError(initialAccessForm);
@@ -349,9 +369,9 @@ export default function Access() {
   }
 
   useEffect(() => {
-    getUser()
-    setAccessLoading(true)
-    setAddForm({clinic_id: clinic})
+    getUser();
+    setAccessLoading(true);
+    setAddForm({ clinic_id: clinic });
   }, [clinic]);
 
   useEffect(() => {
@@ -499,15 +519,22 @@ export default function Access() {
                               <i className="fas fa-cog"></i>
                             </label>
                           </div>
-                          <div className="tooltip tooltip-left" data-tip="Delete">
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Delete"
                           >
-                            <i className="fas fa-trash"></i>
-                          </label>
-                        </div>
-                        <ModalDelete id={obj.id} callback={() => deleteRole(obj.id)} title={`Delete role?`}></ModalDelete>
+                            <label
+                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              htmlFor={obj.id}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </label>
+                          </div>
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteRole(obj.id)}
+                            title={`Delete role?`}
+                          ></ModalDelete>
                         </td>
                       </tr>
                     );
@@ -717,7 +744,7 @@ export default function Access() {
                       return (
                         <label
                           key={obj.route}
-                          htmlFor={obj.route+"add"}
+                          htmlFor={obj.route + "add"}
                           className={`${
                             menu.access == false || obj.access == false
                               ? "opacity-25 cursor-pointer"
@@ -735,7 +762,7 @@ export default function Access() {
                               handleSelection(obj);
                             }}
                             disabled={menu.access == false}
-                            id={obj.route+"add"}
+                            id={obj.route + "add"}
                             className="focus:ring-0 focus:ring-offset-0 cursor-pointer"
                           />
                         </label>

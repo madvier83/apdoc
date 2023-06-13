@@ -11,6 +11,15 @@ import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
 
+// import { Html5QrcodeScanner } from "html5-qrcode";
+// import { Html5Qrcode } from "html5-qrcode";
+// import ResultContainerPlugin from "../../../components/ResultContainerPlugin";
+// import Html5QrcodePlugin from "../../../components/ResultContainerPlugin";
+
+// import QRCode from "react-qr-code";
+
+// import { QrReader } from "react-qr-reader";
+
 export default function Item() {
   const token = getCookies("token");
 
@@ -23,6 +32,8 @@ export default function Item() {
 
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
+
+  const [qrCodeValue, setQrCodeValue] = useState("");
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
@@ -145,12 +156,13 @@ export default function Item() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
       setAddFormError(err.response?.data);
-      err.response?.data?.message && setAddFormError({code: err.response?.data?.message || ""})
+      err.response?.data?.message &&
+        setAddFormError({ code: err.response?.data?.message || "" });
     }
   }
 
@@ -170,7 +182,8 @@ export default function Item() {
     } catch (err) {
       setPutFormError(initialItemForm);
       setPutFormError(err.response?.data);
-      err.response?.data?.message && setPutFormError({code: err.response?.data?.message || ""})
+      err.response?.data?.message &&
+        setPutFormError({ code: err.response?.data?.message || "" });
     }
   }
 
@@ -205,7 +218,10 @@ export default function Item() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -308,6 +324,34 @@ export default function Item() {
     return () => clearTimeout(getData);
   }, [searchCategory, clinic]);
 
+  // const [decodedResults, setDecodedResults] = useState([]);
+  // const onNewScanResult = (decodedText, decodedResult) => {
+  //   console.log("App [result]", decodedResult);
+  //   setDecodedResults((prev) => [...prev, decodedResult]);
+  // };
+
+  // useEffect(() => {
+  //   const scanner = new Html5QrcodeScanner("reader", {
+  //     qrbox: {
+  //       width: 250,
+  //       height: 250,
+  //     },
+  //     fps: 5,
+  //   });
+
+  //   scanner.render(success, error);
+
+  //   function success(result) {
+  //     // scanner.clear();
+  //     console.log(result);
+  //   }
+  //   function error(err) {
+  //     console.log(err)
+  //   }
+  // }, []);
+
+  const [data, setData] = useState("No result");
+
   return (
     <>
       <DashboardLayout title="Item" clinic={clinic} setClinic={setClinic}>
@@ -351,7 +395,7 @@ export default function Item() {
                 {/* <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  htmlFor="modal-export"
+                  htmlFor="modal-export"af
                 >
                   <i className="fas fa-cog"></i>
                 </label> */}
@@ -683,6 +727,31 @@ export default function Item() {
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
+              {/* <div id="reader"></div> */}
+
+              {/* <Html5QrcodePlugin
+                fps={10}
+                qrbox={250}
+                disableFlip={false}
+                qrCodeSuccessCallback={onNewScanResult}
+              />
+              <ResultContainerPlugin results={decodedResults} /> */}
+
+              {/* <QrReader
+                onResult={(result, error) => {
+                  console.log(result)
+                  if (!!result) {
+                    setData(result?.text);
+                  }
+
+                  if (!!error) {
+                    console.info(error);
+                  }
+                }}
+                style={{ width: "100%" }}
+              />
+              <p>{data}</p> */}
+
               <label className="label">
                 <span className="label-text">Code</span>
               </label>
@@ -1131,13 +1200,12 @@ export default function Item() {
             </div>
           </form>
         </ModalBox>
-        
+
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

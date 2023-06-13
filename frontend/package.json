@@ -21,6 +21,8 @@
     "cookies-next": "^2.1.1",
     "daisyui": "^2.43.2",
     "date-fns": "^2.29.3",
+    "dynamsoft-camera-enhancer": "^3.3.4",
+    "dynamsoft-javascript-barcode": "^9.6.20",
     "gsap": "^3.11.4",
     "jose": "^4.11.1",
     "jquery": "^3.6.1",
@@ -29,7 +31,6 @@
     "moment": "^2.29.4",
     "nanoid": "^4.0.1",
     "next": "13.0.5",
-    "nextjs-progressbar": "^0.0.16",
     "numeral": "^2.0.6",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
+    "html5-qrcode": "^2.3.8",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4"
   }

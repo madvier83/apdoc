@@ -12,9 +12,8 @@ export default function Sidebar() {
   const pwdRef = useRef();
   const [accesses, setAccesses] = useState([]);
 
-  
   // const { isFallback, events } = useRouter()
-  
+
   // const googleTranslateElementInit = () => {
   //   new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element')
   // }
@@ -51,7 +50,7 @@ export default function Sidebar() {
   //   }
   // }, [])
 
-//  Translate
+  //  Translate
 
   const token = getCookie("token");
   function parseJwt(token) {
@@ -61,7 +60,9 @@ export default function Sidebar() {
   useEffect(() => {
     let jwt = parseJwt(token);
     // console.log(JSON.parse(jwt.accesses))
-    setAccesses(JSON.parse(jwt.accesses));
+    try {
+      setAccesses(JSON.parse(jwt.accesses));
+    } catch (e) {}
     setUser(jwt);
   }, []);
 
@@ -380,16 +381,16 @@ export default function Sidebar() {
                 >
                   <button
                     onClick={() =>
-                      setSidebar({ ...initialSidebar, settings: !sidebar.settings })
+                      setSidebar({
+                        ...initialSidebar,
+                        settings: !sidebar.settings,
+                      })
                     }
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
                     }
                   >
-                    <i
-                      className={`fas fa-cogs mr-2 text-sm `}
-                    ></i>{" "}
-                    Settings
+                    <i className={`fas fa-cogs mr-2 text-sm `}></i> Settings
                   </button>
 
                   <ul
@@ -411,9 +412,7 @@ export default function Sidebar() {
                           "text-xs py-3 font-semibold block capitalize"
                         }
                       >
-                        <i
-                          className={`fas fa-scroll mr-2 text-sm`}
-                        ></i>{" "}
+                        <i className={`fas fa-scroll mr-2 text-sm`}></i>{" "}
                         Recipient
                       </Link>
                     </li>
@@ -431,9 +430,7 @@ export default function Sidebar() {
                           "text-xs py-3 font-semibold block capitalize"
                         }
                       >
-                        <i
-                          className={`fas fa-envelope mr-2 text-sm`}
-                        ></i>{" "}
+                        <i className={`fas fa-envelope mr-2 text-sm`}></i>{" "}
                         Notification
                       </Link>
                     </li>
@@ -447,7 +444,9 @@ export default function Sidebar() {
                 >
                   <label
                     htmlFor="modalPwd"
-                    className={"text-xs py-3 font-bold block  text-slate-500 cursor-pointer"}
+                    className={
+                      "text-xs py-3 font-bold block  text-slate-500 cursor-pointer"
+                    }
                   >
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Change
                     Password

@@ -95,7 +95,9 @@ export default function AdminSidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => setAdminMenu((p) => !p)}
-                    className={"text-xs py-3 text-slate-500 font-bold block w-full text-left"}
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
                   >
                     <i className={"fas fa-user mr-2 text-sm "}></i> Clients
                   </button>
@@ -108,7 +110,21 @@ export default function AdminSidebar() {
                           className={"text-xs py-3 font-bold block "}
                         >
                           <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
-                            Clients
+                          Clients
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+
+                  {adminMenu && (
+                    <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
+                      <li className="items-center">
+                        <Link
+                          href="/admin/diagnose"
+                          className={"text-xs py-3 font-bold block "}
+                        >
+                          <i className={"fas fa-arrow-right mr-2 text-sm "}></i>{" "}
+                          Diagnose
                         </Link>
                       </li>
                     </ul>
