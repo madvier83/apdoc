@@ -27,12 +27,12 @@ class EmployeeImport implements ToModel, WithStartRow
     
     public function model(array $row)
     {
-        $position = $this->position->where('name', $row[2])->first()->id;
+        $position = $this->position->where('name', $row[2])->first();
 
         return new Employee([
             'nik'         => $row[0],
             'name'        => $row[1],
-            'position_id' => $position,
+            'position_id' => $position ? $position->id : null,
             'birth_place' => $row[3],
             'birth_date'  => Date::excelToDateTimeObject(intval($row[4]))->format('Y-m-d'),
             'gender'      => $row[5],
