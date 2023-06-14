@@ -214,6 +214,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/item', 'ItemController@create');
 	$router->put('/v1/item/{id}', 'ItemController@update');
 	$router->delete('/v1/item/{id}', 'ItemController@destroy');
+
+	$router->get('/v1/item-variants/{clinic}/{perPage}', 'ItemVariantController@index');
+	$router->get('/v1/item-variants/{clinic}/{perPage}/{keyword}', 'ItemVariantController@index');
+	$router->get('/v1/item-variant/{id}', 'ItemVariantController@show');
+	$router->post('/v1/item-variant', 'ItemVariantController@create');
+	$router->put('/v1/item-variant/{id}', 'ItemVariantController@update');
+	$router->delete('/v1/item-variant/{id}', 'ItemVariantController@destroy');
 	
 	$router->get('/v1/item-supplys/{clinic}/{perPage}', 'ItemSupplyController@index');
 	$router->get('/v1/item-supplys/{clinic}/{perPage}/{keyword}', 'ItemSupplyController@index');
@@ -260,11 +267,18 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	// EXCEL
 	$router->get('/v1/export/position', 'ExcelController@exportPosition');
 	$router->post('/v1/import/position', 'ExcelController@importPosition');
+
 	$router->get('/v1/export/employee', 'ExcelController@exportEmployee');
 	$router->post('/v1/import/employee', 'ExcelController@importEmployee');
-	$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
+	
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	
+	
 	// });
 });
+$router->get('/v1/export/item', 'ExcelController@exportItem');
+$router->post('/v1/import/item', 'ExcelController@importItem');
+
+$router->get('/v1/export/diagnose', 'ExcelController@exportDiagnose');
+$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
