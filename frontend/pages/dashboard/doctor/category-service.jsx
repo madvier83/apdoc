@@ -153,7 +153,7 @@ export default function CategoryService() {
     }
     try {
       axios({
-        url: `export/patient?clinic=${clinic}`,
+        url: `export/category?clinic=${clinic}`,
         method: "GET",
         responseType: "blob",
         headers: {
@@ -212,7 +212,7 @@ export default function CategoryService() {
 
     try {
       const response = await axios.post(
-        `import/patient?clinic=${clinic}`,
+        `import/category?clinic=${clinic}`,
         formData,
         {
           data: formData,
@@ -223,7 +223,7 @@ export default function CategoryService() {
         }
       );
       // console.log(response);
-      // getPatients();
+      getCategory();
       exportModalRef.current.click();
     } catch (err) {
       console.log(err);
@@ -303,13 +303,13 @@ export default function CategoryService() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                {/* <label
+                <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-export"
                 >
                   <i className="fas fa-cog"></i>
-                </label> */}
+                </label>
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -572,7 +572,7 @@ export default function CategoryService() {
         </ModalBox>
         
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <h3 className="font-bold text-lg mb-4">Category Service Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

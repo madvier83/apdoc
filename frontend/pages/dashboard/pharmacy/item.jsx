@@ -455,7 +455,7 @@ export default function Item() {
                       ></i>
                     </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
                       onClick={() => {
@@ -502,7 +502,7 @@ export default function Item() {
                         }`}
                       ></i>
                     </div>
-                  </th>
+                  </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
@@ -512,6 +512,22 @@ export default function Item() {
                       }}
                     >
                       <p>Category</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "category_item_id" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "category_item_id" && setOrder((p) => !p);
+                        setSortBy("category_item_id");
+                      }}
+                    >
+                      <p>Factory</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "category_item_id" && "opacity-40"
@@ -581,7 +597,7 @@ export default function Item() {
                             ></Highlighter>
                           </span>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span>{obj.unit}</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -593,9 +609,12 @@ export default function Item() {
                           <span>
                             Rp. {numeral(obj.sell_price).format("0,0")}
                           </span>
-                        </td>
+                        </td> */}
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span>{obj.category_item?.name}</span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.factory}</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span>{obj.distributor}</span>
@@ -862,7 +881,7 @@ export default function Item() {
                   </span>
                 </label>
               )}
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Unit</span>
               </label>
               <input
@@ -920,7 +939,7 @@ export default function Item() {
                     {addFormError.sell_price}
                   </span>
                 </label>
-              )}
+              )} */}
               <label className="label">
                 <span className="label-text">Factory</span>
               </label>
@@ -1088,7 +1107,7 @@ export default function Item() {
                   </span>
                 </label>
               )}
-              <label className="label">
+              {/* <label className="label">
                 <span className="label-text">Unit</span>
               </label>
               <input
@@ -1146,7 +1165,7 @@ export default function Item() {
                     {putFormError.sell_price}
                   </span>
                 </label>
-              )}
+              )} */}
               <label className="label">
                 <span className="label-text">Factory</span>
               </label>

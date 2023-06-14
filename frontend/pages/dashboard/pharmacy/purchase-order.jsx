@@ -693,7 +693,7 @@ export default function PurchaseOrder() {
                               ></ModalDelete>
                               <div
                                 className="tooltip tooltip-left"
-                                data-tip="Fulfill a"
+                                data-tip="Fulfill puchase order"
                               >
                                 <label
                                   className="bg-amber-400 text-white active:bg-amber-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -709,7 +709,7 @@ export default function PurchaseOrder() {
                           ) : (
                             <div
                               className="tooltip tooltip-left"
-                              data-tip="Edit"
+                              data-tip="Details"
                             >
                               <label
                                 className="bg-indigo-400 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
