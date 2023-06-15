@@ -144,7 +144,7 @@
                 </table>
             </center>
             <div class="btn">
-                <a href="http://localhost:3000/dashboard/pharmacy/item" class="btntext">Detail</a>
+                <a href="{{ env('APP_URL') }}/dashboard/pharmacy/item" class="btntext">Detail</a>
             </div>
         </div>
     </div>

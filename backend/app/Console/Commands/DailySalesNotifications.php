@@ -42,9 +42,7 @@ class DailySalesNotifications extends Command
     {
         $ClinicMail = \App\Models\User::where('role_id',2)->where('daily_sales_summary_status', 1)->get();
         foreach($ClinicMail as $dataclinic){
-            
-            $recipient = \App\Models\RecipientMail::where('apdoc_id', $dataclinic->apdoc_id)->with('employee')->get();
-
+                $recipient = \App\Models\RecipientMail::where('apdoc_id', $dataclinic->apdoc_id)->get();
                 $from = Carbon::today()->format('Y-m-d');
                 $to = Carbon::today()->format('Y-m-d');
 
