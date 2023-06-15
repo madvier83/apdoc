@@ -10,7 +10,7 @@ export default function ModalDelete({title, id, callback}) {
     return (
         <>
         <ModalBox id={id}>
-            <div className="text-black">
+            <div className="text-black z-50">
                 <i className="fas fa-warning text-rose-500 text-6xl text-center w-full mt-8"></i>
                 <h3 className="font-bold text-2xl text-center pb-8 pt-4">{title}</h3>
                 <input type="hidden" autoComplete="off" />

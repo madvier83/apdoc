@@ -19,7 +19,7 @@ class ItemVariantController extends Controller
             } else {
                 $variant = ItemVariant::where(function($query) use ($keyword) {
                         $query->where('unit', 'like', '%'.$keyword.'%')
-                            ->orWhere('varian', 'like', '%'.$keyword.'%')
+                            ->orWhere('variant', 'like', '%'.$keyword.'%')
                             ->orWhere('buy_price', 'like', '%'.$keyword.'%')
                             ->orWhere('sell_price', 'like', '%'.$keyword.'%')
                             ->orWhere('created_at', 'like', '%'.$keyword.'%')

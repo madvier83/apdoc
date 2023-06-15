@@ -18,7 +18,7 @@ class Item extends Model
 
     public function itemVariants()
     {
-        return $this->hasMany(ItemVariant::class);
+        return $this->hasMany(ItemVariant::class)->where("is_delete", false);
     }
 
     public function itemSupplys()

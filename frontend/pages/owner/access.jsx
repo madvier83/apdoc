@@ -163,6 +163,11 @@ export default function Access() {
             access: false,
           },
           {
+            name: "apoteker",
+            route: "/dashboard/cashier/apoteker",
+            access: false,
+          },
+          {
             name: "history",
             route: "/dashboard/cashier/history",
             access: false,
@@ -175,14 +180,9 @@ export default function Access() {
         access: false,
         submenu: [
           { name: "sales", route: "/dashboard/report/sales", access: false },
-          {
-            name: "commision",
-            route: "/dashboard/report/commision",
-            access: false,
-          },
         ],
       },
-    ],
+    ]
   };
 
   const [addForm, setAddForm] = useReducer(

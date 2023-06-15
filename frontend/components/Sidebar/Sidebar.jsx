@@ -186,6 +186,11 @@ export default function Sidebar() {
           access: true,
         },
         {
+          name: "apoteker",
+          route: "/dashboard/cashier/apoteker",
+          access: true,
+        },
+        {
           name: "history",
           route: "/dashboard/cashier/history",
           access: true,
@@ -212,7 +217,7 @@ export default function Sidebar() {
     try {
       // setAccesses(JSON.parse(jwt.accesses));
       if (jwt.role_id == 2) {
-        console.log(jwt.role_id)
+        // console.log(jwt.role_id)
         setAccesses(initialAccess);
       } else {
         setAccesses(JSON.parse(jwt.accesses));

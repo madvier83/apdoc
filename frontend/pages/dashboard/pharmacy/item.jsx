@@ -24,6 +24,9 @@ export default function Item() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
+  const addVariantModalRef = useRef();
+  const putVariantModalRef = useRef();
+  const detailModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
   const exportModalRef = useRef();
@@ -43,6 +46,7 @@ export default function Item() {
   const [order, setOrder] = useState(false);
 
   const [item, setItem] = useState([]);
+  const [itemVariant, setItemVariant] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
@@ -52,11 +56,16 @@ export default function Item() {
     category_item_id: "",
     code: "",
     name: "",
-    unit: "",
-    sell_price: "",
-    buy_price: "",
     factory: "",
     distributor: "",
+  };
+  const initialVariantForm = {
+    clinic_id: "",
+    item_id: "",
+    variant: "",
+    unit: "",
+    buy_price: "",
+    sell_price: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -76,6 +85,23 @@ export default function Item() {
     initialItemForm
   );
 
+  const [addVariantForm, setAddVariantForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialVariantForm
+  );
+  const [addVariantFormError, setAddVariantFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialVariantForm
+  );
+  const [putVariantForm, setPutVariantForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialVariantForm
+  );
+  const [putVariantFormError, setPutVariantFormError] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialVariantForm
+  );
+
   const handleAddInput = (event) => {
     const { name, value } = event.target;
     setAddForm({ [name]: value });
@@ -83,6 +109,14 @@ export default function Item() {
   const handlePutInput = (event) => {
     const { name, value } = event.target;
     setPutForm({ [name]: value });
+  };
+  const handleAddVariantInput = (event) => {
+    const { name, value } = event.target;
+    setAddVariantForm({ [name]: value });
+  };
+  const handlePutVariantInput = (event) => {
+    const { name, value } = event.target;
+    setPutVariantForm({ [name]: value });
   };
 
   async function getItem() {
@@ -159,6 +193,30 @@ export default function Item() {
       setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
+      console.log(err);
+      setAddFormError(initialItemForm);
+      setAddFormError(err.response?.data);
+      err.response?.data?.message &&
+        setAddFormError({ code: err.response?.data?.message || "" });
+    }
+  }
+
+  async function addItemVariant(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post("item-variant", addVariantForm, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "application/json",
+        },
+      });
+      addVariantModalRef.current.click();
+      getItem();
+      setAddForm(initialItemForm);
+      setAddForm({ clinic_id: clinic });
+      setAddFormError(initialItemForm);
+    } catch (err) {
+      console.log(err);
       setAddFormError(initialItemForm);
       setAddFormError(err.response?.data);
       err.response?.data?.message &&
@@ -187,9 +245,49 @@ export default function Item() {
     }
   }
 
+  async function putItemVariant(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `item-variant/${putVariantForm.id}`,
+        putVariantForm,
+        {
+          headers: {
+            Authorization: "Bearer" + token.token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      putVariantModalRef.current.click();
+      setPutForm(initialItemForm);
+      setPutFormError(initialItemForm);
+      
+      await getItem();
+      detailModalRef.current.click();
+    } catch (err) {
+      setPutFormError(initialItemForm);
+      setPutFormError(err.response?.data);
+      err.response?.data?.message &&
+        setPutFormError({ code: err.response?.data?.message || "" });
+    }
+  }
+
   async function deleteItem(id) {
     try {
       const response = await axios.delete(`item/${id}`, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      });
+      getItem();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function deleteVariant(id) {
+    try {
+      const response = await axios.delete(`item-variant/${id}`, {
         headers: {
           Authorization: "Bearer" + token.token,
         },
@@ -262,9 +360,9 @@ export default function Item() {
     let formData = new FormData();
     formData.append("file", selectedFile);
 
-    for (let [key, value] of formData) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (let [key, value] of formData) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     try {
       const response = await axios.post(
@@ -278,7 +376,6 @@ export default function Item() {
           },
         }
       );
-      // console.log(response);
       getItem();
       exportModalRef.current.click();
     } catch (err) {
@@ -309,7 +406,10 @@ export default function Item() {
     setPage(1);
     setAddForm(initialItemForm);
     setAddForm({ clinic_id: clinic });
+    setAddVariantForm({ clinic_id: clinic });
   }, [clinic]);
+
+  // console.log(addVariantForm);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -350,7 +450,9 @@ export default function Item() {
   //   }
   // }, []);
 
-  const [data, setData] = useState("No result");
+  // const [data, setData] = useState("No result");
+
+  // console.log(item.data)
 
   return (
     <>
@@ -395,7 +497,7 @@ export default function Item() {
                 <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  htmlFor="modal-export"af
+                  htmlFor="modal-export"
                 >
                   <i className="fas fa-cog"></i>
                 </label>
@@ -628,6 +730,39 @@ export default function Item() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Add Variant"
+                          >
+                            <label
+                              className="bg-indigo-400 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              type="button"
+                              htmlFor="modal-add-variant"
+                              onClick={() => {
+                                setAddVariantForm((prev) => {
+                                  return {
+                                    initialItemForm,
+                                    clinic_id: prev.clinic_id,
+                                  };
+                                });
+                                setAddVariantForm({ item_id: obj.id });
+                              }}
+                            >
+                              <i className="fas fa-folder-plus"></i>
+                            </label>
+                          </div>
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Details"
+                          >
+                            <label
+                              htmlFor={`modal-detail`}
+                              onClick={() => setItemVariant(obj.item_variants)}
+                              className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            >
+                              <i className="fas fa-eye"></i>
+                            </label>
+                          </div>
                           <div className="tooltip tooltip-left" data-tip="Edit">
                             <label
                               className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -992,6 +1127,103 @@ export default function Item() {
           </form>
         </ModalBox>
 
+        <ModalBox id="modal-add-variant">
+          <h3 className="font-bold text-lg mb-4">Add Variant</h3>
+          <form onSubmit={addItemVariant} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Variant</span>
+              </label>
+              <input
+                type="text"
+                name="variant"
+                value={addVariantForm.variant}
+                onChange={(e) => handleAddVariantInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.variant && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.variant}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Unit</span>
+              </label>
+              <input
+                type="text"
+                name="unit"
+                value={addVariantForm.unit}
+                onChange={(e) => handleAddVariantInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.unit && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.unit}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Buy Price</span>
+              </label>
+              <CurrencyInput
+                name="buy_price"
+                defaultValue={0}
+                value={addVariantForm.buy_price}
+                decimalsLimit={2}
+                onValueChange={(value, name) =>
+                  setAddVariantForm({ buy_price: value })
+                }
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.buy_price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.buy_price}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Sell Price</span>
+              </label>
+              <CurrencyInput
+                name="sell_price"
+                defaultValue={0}
+                value={addVariantForm.sell_price}
+                decimalsLimit={2}
+                onValueChange={(value, name) =>
+                  setAddVariantForm({ sell_price: value })
+                }
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {addFormError.sell_price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.sell_price}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-add-variant"
+                ref={addVariantModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-primary rounded-md">Add</button>
+            </div>
+          </form>
+        </ModalBox>
+
         <ModalBox id="modal-put">
           <h3 className="font-bold text-lg mb-4">Update Item</h3>
           <form onSubmit={putItem} autoComplete="off">
@@ -1220,6 +1452,106 @@ export default function Item() {
           </form>
         </ModalBox>
 
+        <ModalBox id="modal-put-variant">
+          <h3 className="font-bold text-lg mb-4">Update Variant</h3>
+          <form onSubmit={putItemVariant} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Variant</span>
+              </label>
+              <input
+                type="text"
+                name="variant"
+                value={putVariantForm.variant}
+                onChange={(e) => handlePutVariantInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putVariantFormError.variant && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putVariantFormError.variant}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Unit</span>
+              </label>
+              <input
+                type="text"
+                name="unit"
+                value={putVariantForm.unit}
+                onChange={(e) => handlePutVariantInput(e)}
+                required
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putVariantFormError.unit && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putVariantFormError.unit}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Buy Price</span>
+              </label>
+              <CurrencyInput
+                name="buy_price"
+                defaultValue={0}
+                value={putVariantForm.buy_price}
+                decimalsLimit={2}
+                onValueChange={(value, name) =>
+                  setPutVariantForm({ buy_price: value })
+                }
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putVariantFormError.buy_price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putVariantFormError.buy_price}
+                  </span>
+                </label>
+              )}
+              <label className="label">
+                <span className="label-text">Sell Price</span>
+              </label>
+              <CurrencyInput
+                name="sell_price"
+                defaultValue={0}
+                value={putVariantForm.sell_price}
+                decimalsLimit={2}
+                onValueChange={(value, name) =>
+                  setPutVariantForm({ sell_price: value })
+                }
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              {putVariantFormError.sell_price && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putVariantFormError.sell_price}
+                  </span>
+                </label>
+              )}
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-put-variant"
+                ref={putVariantModalRef}
+                onClick={() => detailModalRef.current.click()}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
+              <button className="btn btn-success bg-emerald-500 rounded-md">
+                Update
+              </button>
+            </div>
+          </form>
+        </ModalBox>
+
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
@@ -1264,6 +1596,160 @@ export default function Item() {
             </div>
           </form>
         </ModalBox>
+
+        <input
+          type="checkbox"
+          id="modal-detail"
+          className="modal-toggle"
+          ref={detailModalRef}
+        />
+        <div className="modal">
+          <div className="modal-box px-0 p-0 max-w-2xl">
+            <div
+              className={
+                "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
+              }
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
+                  <i className="fa-solid fa-boxes-stacked mr-3"></i> Variants
+                  List
+                </h3>
+                <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                  <label
+                    className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    htmlFor="modal-detail"
+                  >
+                    <i className="fas fa-x"></i>
+                  </label>
+                </div>
+              </div>
+              <form onSubmit={addItem} autoComplete="off">
+                <input type="hidden" autoComplete="off" />
+                <div className="form-control w-full">
+                  <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                    <thead className="sticky top-0">
+                      <tr>
+                        <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                          #
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Variant</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Unit</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Buy Price</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <div
+                            className={`flex items-center justify-between cursor-pointer`}
+                          >
+                            <p>Sell Price</p>
+                          </div>
+                        </th>
+                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                          <p>Actions</p>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      {itemVariant?.map((obj, index) => {
+                        return (
+                          <tr key={obj.id} className="hover:bg-zinc-50">
+                            <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                              <span className={"ml-3 font-bold"}>
+                                {index + 1}
+                              </span>
+                            </th>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 capitalize">
+                              {obj.variant}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {obj.unit}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {numeral(obj.buy_price).format("0,0")}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              {numeral(obj.sell_price).format("0,0")}
+                            </td>
+                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                              <div
+                                className="tooltip tooltip-left"
+                                data-tip="Edit"
+                              >
+                                <label
+                                  className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  type="button"
+                                  htmlFor="modal-put-variant"
+                                  onClick={() => {
+                                    setPutVariantForm(obj);
+                                    setPutVariantFormError("");
+                                    detailModalRef.current.click();
+                                  }}
+                                >
+                                  <i className="fas fa-pen-to-square"></i>
+                                </label>
+                              </div>
+                              <div
+                                className="tooltip tooltip-left"
+                                data-tip="Delete"
+                              >
+                                <label
+                                  className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                  htmlFor={`variant-${obj.id}`}
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </label>
+                              </div>
+                              <ModalDelete
+                                id={`variant-${obj.id}`}
+                                callback={() => deleteVariant(obj.id)}
+                                title={`Delete variant?`}
+                              ></ModalDelete>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      <tr className="bg-gray-100">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {/* {index + itemDb.from} */}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-bold">
+                          {/* {selectedItem.item_supplys?.reduce(
+                            (totalStock, item) => totalStock + item.stock,
+                            0
+                          )} */}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </DashboardLayout>
     </>
   );

@@ -17,7 +17,7 @@ class CreateItemVariantsTable extends Migration
             $table->id();
             $table->foreignId('item_id')->nullable();
             $table->string('unit')->nullable();
-            $table->string('varian')->nullable();
+            $table->string('variant')->nullable();
             $table->integer('sell_price')->nullable();
             $table->integer('buy_price')->nullable();
             $table->boolean('is_delete')->default(false);

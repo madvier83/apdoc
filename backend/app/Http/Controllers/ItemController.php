@@ -15,9 +15,9 @@ class ItemController extends Controller
 
         try {
             if ($keyword == null) {
-                $item = Item::with(['categoryItem', 'itemSupplys'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $item = Item::with(['categoryItem', 'itemSupplys', 'itemVariants'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $item = Item::with(['categoryItem', 'itemSupplys'])
+                $item = Item::with(['categoryItem', 'itemSupplys', 'itemVariants'])
                     ->where(function($query) use ($keyword) {
                         $query->where('code', 'like', '%'.$keyword.'%')
                             ->orWhere('name', 'like', '%'.$keyword.'%')
@@ -65,9 +65,6 @@ class ItemController extends Controller
             'category_item_id'  => 'required',
             'code'              => 'required',
             'name'              => 'required',
-            'unit'              => 'required',
-            'sell_price'        => 'required',
-            'buy_price'         => 'required',
             'factory'           => 'required',
             'distributor'       => 'required',
         ]);
@@ -95,9 +92,6 @@ class ItemController extends Controller
             'category_item_id'  => 'required',
             'code'              => 'required',
             'name'              => 'required',
-            'unit'              => 'required',
-            'sell_price'        => 'required',
-            'buy_price'         => 'required',
             'factory'           => 'required',
             'distributor'       => 'required',
         ]);
