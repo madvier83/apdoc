@@ -612,7 +612,7 @@ export default function Transaction() {
   //   }
   // }, [record]);
 
-  // console.log(cart.array);
+  console.log(category.data);
 
   return (
     <>

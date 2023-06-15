@@ -51,6 +51,8 @@ export default function Item() {
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
 
+  const [selectedItem, setSelectedItem] = useState({});
+
   const initialItemForm = {
     clinic_id: "",
     category_item_id: "",
@@ -143,6 +145,11 @@ export default function Item() {
       );
       setItem(response.data);
       setItemLoading(false);
+      // response.data.data.map(obj => {
+      //   if(obj.id == selectedItem.id) {
+      //     setItemVariant(obj.itemVariants)
+      //   }
+      // })
     } catch (err) {
       console.error(err);
       setItem({});
@@ -212,12 +219,12 @@ export default function Item() {
       });
       addVariantModalRef.current.click();
       getItem();
-      setAddForm(initialItemForm);
+      setAddForm(initialVariantForm);
       setAddForm({ clinic_id: clinic });
-      setAddFormError(initialItemForm);
+      setAddFormError(initialVariantForm);
     } catch (err) {
       console.log(err);
-      setAddFormError(initialItemForm);
+      setAddFormError(initialVariantForm);
       setAddFormError(err.response?.data);
       err.response?.data?.message &&
         setAddFormError({ code: err.response?.data?.message || "" });
@@ -261,7 +268,7 @@ export default function Item() {
       putVariantModalRef.current.click();
       setPutForm(initialItemForm);
       setPutFormError(initialItemForm);
-      
+
       await getItem();
       detailModalRef.current.click();
     } catch (err) {
@@ -293,6 +300,7 @@ export default function Item() {
         },
       });
       getItem();
+      detailModalRef.current.click()
     } catch (err) {
       console.error(err);
     }
@@ -757,7 +765,10 @@ export default function Item() {
                           >
                             <label
                               htmlFor={`modal-detail`}
-                              onClick={() => setItemVariant(obj.item_variants)}
+                              onClick={() => {
+                                setSelectedItem(obj);
+                                setItemVariant(obj.item_variants);
+                              }}
                               className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             >
                               <i className="fas fa-eye"></i>
@@ -1604,7 +1615,7 @@ export default function Item() {
           ref={detailModalRef}
         />
         <div className="modal">
-          <div className="modal-box px-0 p-0 max-w-2xl">
+          <div className="modal-box px-0 p-0 max-w-2xl min-h-[50vh]">
             <div
               className={
                 "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
@@ -1612,10 +1623,28 @@ export default function Item() {
             >
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
-                  <i className="fa-solid fa-boxes-stacked mr-3"></i> Variants
-                  List
+                  <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
+                  {selectedItem.name} Variant
                 </h3>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                  <label
+                    className="bg-indigo-400 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    htmlFor="modal-add-variant"
+                    onClick={() => {
+                      setAddVariantForm((prev) => {
+                        return {
+                          initialItemForm,
+                          clinic_id: prev.clinic_id,
+                        };
+                      });
+                      setAddVariantForm({ item_id: selectedItem.id });
+                      detailModalRef.current.click();
+                    }}
+                  >
+                    <i className="fas fa-folder-plus mr-2"></i>
+                    Add variant
+                  </label>
                   <label
                     className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     htmlFor="modal-detail"
@@ -1624,7 +1653,7 @@ export default function Item() {
                   </label>
                 </div>
               </div>
-              <form onSubmit={addItem} autoComplete="off">
+              {/* <form onSubmit={() => {}} autoComplete="off"> */}
                 <input type="hidden" autoComplete="off" />
                 <div className="form-control w-full">
                   <table className="items-center w-full bg-transparent border-collapse overflow-auto">
@@ -1725,28 +1754,17 @@ export default function Item() {
                           </tr>
                         );
                       })}
-
-                      <tr className="bg-gray-100">
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3 text-left">
-                          <span className={"ml-3 font-bold"}>
-                            {/* {index + itemDb.from} */}
-                          </span>
-                        </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-bold">
-                          {/* {selectedItem.item_supplys?.reduce(
-                            (totalStock, item) => totalStock + item.stock,
-                            0
-                          )} */}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                      </tr>
+                      {itemVariant?.length <= 0 && (
+                        <tr className="">
+                          <td colSpan='9'>
+                            <div className="flex w-full items-center justify-center h-72 text-zinc-400">No variant</div>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-              </form>
+              {/* </form> */}
             </div>
           </div>
         </div>
