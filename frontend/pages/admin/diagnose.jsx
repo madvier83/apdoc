@@ -15,6 +15,7 @@ export default function Diagnose() {
   const token = getCookies("token");
 
   const addModalRef = useRef();
+  const exportModalRef = useRef();
   const putModalRef = useRef();
   const tableRef = useRef();
 
@@ -162,6 +163,86 @@ export default function Diagnose() {
     });
   }, [diagnosis]);
 
+  async function downloadTable() {
+    if (!clinic) {
+      return;
+    }
+    try {
+      axios({
+        url: `export/diagnose?clinic=${clinic}`,
+        method: "GET",
+        responseType: "blob",
+        headers: {
+          Authorization: "Bearer" + token.token,
+        },
+      })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Item_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
+          document.body.appendChild(link);
+
+          link.click();
+
+          link.parentNode.removeChild(link);
+        })
+        .catch((error) => {
+          console.error("Error downloading file:", error);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  const [selectedFile, setSelectedFile] = useState();
+  const [preview, setPreview] = useState();
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  async function uploadTable() {
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const response = await axios.post(
+        `import/diagnose?clinic=${clinic}`,
+        formData,
+        {
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer" + token.token,
+          },
+        }
+      );
+      getDiagnosis();
+      exportModalRef.current.click();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <>
       <AdminLayout title="Diagnose">
@@ -203,6 +284,13 @@ export default function Diagnose() {
               </div>
 
               <div className="relative w-full px-4 text-right">
+                <label
+                  className="bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button"
+                  htmlFor="modal-export"
+                >
+                  <i className="fas fa-download"></i>
+                </label>
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -552,6 +640,52 @@ export default function Diagnose() {
               <button className="btn btn-success bg-success rounded-md">
                 Update
               </button>
+            </div>
+          </form>
+        </ModalBox>
+
+        
+        <ModalBox id="modal-export">
+          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <form onSubmit={() => {}} autoComplete="off">
+            <input type="hidden" autoComplete="off" />
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Export</span>
+              </label>
+              <div
+                className="btn btn-ghost bg-zinc-200 normal-case"
+                onClick={() => downloadTable()}
+              >
+                Download Current Template{" "}
+                <i className="fas fa-download ml-2"></i>
+              </div>
+              <label className="label mt-4">
+                <span className="label-text">Import Template</span>
+              </label>
+
+              <input
+                type="file"
+                name="logo"
+                accept="xlsx"
+                onChange={onSelectFile}
+                className="file-input file-input-ghost input-bordered border rounded-md border-slate-300 w-full"
+              />
+              <div
+                onClick={() => uploadTable()}
+                className="btn btn-success normal-case text-zinc-700 mt-2"
+              >
+                Upload Template <i className="fas fa-upload ml-2"></i>
+              </div>
+            </div>
+            <div className="modal-action rounded-sm">
+              <label
+                htmlFor="modal-export"
+                ref={exportModalRef}
+                className="btn btn-ghost rounded-md"
+              >
+                Cancel
+              </label>
             </div>
           </form>
         </ModalBox>

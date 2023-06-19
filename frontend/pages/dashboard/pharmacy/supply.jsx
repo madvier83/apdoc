@@ -5,7 +5,7 @@ import moment from "moment/moment";
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
-import numeral from "numeral";
+import numeral, { options } from "numeral";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 
@@ -18,13 +18,12 @@ export default function ItemSupply() {
   const tableRef = useRef();
   const exportModalRef = useRef();
 
-  
   const [selectedItem, setSelectedItem] = useState({});
-  
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
 
@@ -41,6 +40,7 @@ export default function ItemSupply() {
   const initialItemForm = {
     clinic_id: "",
     item_id: "",
+    item_variant_id: "",
     total: "",
     manufacturing: "",
     expired: "",
@@ -144,7 +144,7 @@ export default function ItemSupply() {
       addModalRef.current.click();
       getItemDb();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -184,7 +184,7 @@ export default function ItemSupply() {
       console.error(err);
     }
   }
-  
+
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -203,7 +203,10 @@ export default function ItemSupply() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -311,7 +314,7 @@ export default function ItemSupply() {
     });
   }, [itemDb]);
 
-  // console.log(itemDb.data);
+  console.log(itemDb.data);
 
   return (
     <>
@@ -423,6 +426,22 @@ export default function ItemSupply() {
                     <div
                       className={`flex items-center justify-between cursor-pointer`}
                       onClick={() => {
+                        sortBy == "variant" && setOrder((p) => !p);
+                        setSortBy("variant");
+                      }}
+                    >
+                      <p>variant</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "variant" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
                         sortBy == "stock" && setOrder((p) => !p);
                         setSortBy("stock");
                       }}
@@ -457,98 +476,115 @@ export default function ItemSupply() {
                 ></Loading>
                 {!itemDbLoading &&
                   itemDb?.data?.map((obj, index) => {
-                    // if (
-                    //   obj.item_supplys?.reduce(
-                    //     (totalStock, item) => totalStock + item.stock,
-                    //     0
-                    //   ) <= 0
-                    // ) {
-                    //   return;
-                    // }
-                    return (
-                      <tr key={obj.id} className="hover:bg-zinc-50">
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                          <span className={"ml-3 font-bold"}>
-                            {index + itemDb.from}
-                          </span>
-                        </th>
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                          <span className={"font-bold"}>{obj.code}</span>
-                        </th>
-                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                          <span className={"ml-3 font-bold"}>
-                            <Highlighter
-                              highlightClassName="bg-emerald-200"
-                              searchWords={[search]}
-                              autoEscape={true}
-                              textToHighlight={obj.name}
-                            ></Highlighter>
-                          </span>
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          {obj.item_supplys?.reduce(
-                            (totalStock, item) => totalStock + item.stock,
-                            0
+                    if (obj.item_variants?.length <= 0) {
+                      return (
+                        <tr key={obj.id} className="hover:bg-zinc-50">
+                          <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                            <span className={"ml-3 font-bold"}>
+                              {index + itemDb.from}
+                            </span>
+                          </th>
+                          <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                            <span className={"font-bold"}>{obj.code}</span>
+                          </th>
+                          <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                            <span className={"ml-3 font-bold"}>
+                              <Highlighter
+                                highlightClassName="bg-emerald-200"
+                                searchWords={[search]}
+                                autoEscape={true}
+                                textToHighlight={obj.name}
+                              ></Highlighter>
+                            </span>
+                          </td>
+                          <td className="border-t-0 pr-6 align-middle text-gray-400 border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                            No variant
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            -
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
+                            {/* <label
+                              htmlFor={`modal-detail`}
+                              onClick={() => setSelectedItem(obj)}
+                              className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              >
+                              <i className="fas fa-eye"></i>
+                            </label> */}
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return obj.item_variants?.map((variant, index) => {
+                      return (
+                        <tr key={obj.id + variant.id} className="">
+                          {index < 1 && (
+                            <>
+                              <th
+                                rowSpan={obj.item_variants?.length}
+                                className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left"
+                              >
+                                {index < 1 && (
+                                  <span className={"ml-3 font-bold"}>
+                                    {index + itemDb.from}
+                                  </span>
+                                )}
+                              </th>
+                              <th
+                                rowSpan={obj.item_variants?.length}
+                                className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left"
+                              >
+                                {index < 1 && (
+                                  <span className={"font-bold"}>
+                                    {obj.code}
+                                  </span>
+                                )}
+                              </th>
+                              <td
+                                rowSpan={obj.item_variants?.length}
+                                className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left"
+                              >
+                                {index < 1 && (
+                                  <span className={"ml-3 font-bold"}>
+                                    <Highlighter
+                                      highlightClassName="bg-emerald-200"
+                                      searchWords={[search]}
+                                      autoEscape={true}
+                                      textToHighlight={obj.name}
+                                    ></Highlighter>
+                                  </span>
+                                )}
+                              </td>
+                            </>
                           )}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
-                          <label
-                            htmlFor={`modal-detail`}
-                            onClick={() => setSelectedItem(obj)}
-                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          >
-                            <i className="fas fa-eye"></i>
-                          </label>
-                        </td>
-                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          {moment(obj.manufacturing).format("DD MMM YYYY")}
-                        </td> */}
-                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                          {moment(obj.expired).format("DD MMM YYYY")}{" "}
-                          <span
-                            className={`font-semibold ${
-                              moment(obj.expired).format() <
-                                moment().subtract(-7, "d").format() &&
-                              "text-rose-400 animate-pulse"
-                            }`}
-                          >
-                            {" "}
-                            - Expired {moment(obj.expired).fromNow()}
-                          </span>
-                        </td> */}
-                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.created_at).format("DD MMM YYYY")}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {moment(obj.updated_at).fromNow()}
-                      </td> */}
-                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                        - */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit">
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError("");
-                            }}
-                          >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
-                          <button
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            onClick={() => deleteItem(obj.id)}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div> */}
-                        {/* </td> */}
-                      </tr>
-                    );
+                          <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                            <span className={"font-bold"}>
+                              <Highlighter
+                                highlightClassName="bg-emerald-200"
+                                searchWords={[search]}
+                                autoEscape={true}
+                                textToHighlight={variant.variant || ""}
+                              ></Highlighter>
+                            </span>
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {variant?.item_supplys.reduce(
+                              (totalStock, item) => totalStock + item.stock,
+                              0
+                            )}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
+                            <label
+                              htmlFor={`modal-detail`}
+                              onClick={() => setSelectedItem(variant)}
+                              className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            >
+                              <i className="fas fa-eye"></i>
+                            </label>
+                          </td>
+                        </tr>
+                      );
+                    });
                   })}
               </tbody>
             </table>
@@ -820,6 +856,38 @@ export default function ItemSupply() {
                   </span>
                 </label>
               )}
+
+              <label className="label">
+                <span className="label-text">Variant</span>
+              </label>
+              <select
+                type="number"
+                name="item_variant_id"
+                value={addForm.item_variant_id || ""}
+                onChange={(e) => handleAddInput(e)}
+                required
+                className="input input-bordered input-primary border-slate-300 w-full"
+              >
+                <option disabled value={""}>
+                  Select item variant
+                </option>
+                {selectedCategory?.item_variants?.map((variant) => {
+                  return (
+                    <>
+                      <option key={variant.id} value={variant.id}>
+                        {variant.variant} - {variant.unit}
+                      </option>
+                    </>
+                  );
+                })}
+              </select>
+              {addFormError.item_variant_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.item_variant_id}
+                  </span>
+                </label>
+              )}
               <label className="label">
                 <span className="label-text">Total</span>
               </label>
@@ -992,13 +1060,11 @@ export default function ItemSupply() {
           </form>
         </ModalBox> */}
 
-        
-<ModalBox id="modal-export">
+        <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

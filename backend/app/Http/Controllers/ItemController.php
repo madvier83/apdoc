@@ -21,9 +21,6 @@ class ItemController extends Controller
                     ->where(function($query) use ($keyword) {
                         $query->where('code', 'like', '%'.$keyword.'%')
                             ->orWhere('name', 'like', '%'.$keyword.'%')
-                            ->orWhere('unit', 'like', '%'.$keyword.'%')
-                            ->orWhere('sell_price', 'like', '%'.$keyword.'%')
-                            ->orWhere('buy_price', 'like', '%'.$keyword.'%')
                             ->orWhere('factory', 'like', '%'.$keyword.'%')
                             ->orWhere('distributor', 'like', '%'.$keyword.'%')
                             ->orWhere('created_at', 'like', '%'.$keyword.'%')

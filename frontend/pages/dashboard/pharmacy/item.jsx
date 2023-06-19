@@ -145,11 +145,14 @@ export default function Item() {
       );
       setItem(response.data);
       setItemLoading(false);
-      // response.data.data.map(obj => {
-      //   if(obj.id == selectedItem.id) {
-      //     setItemVariant(obj.itemVariants)
-      //   }
-      // })
+      if (selectedItem.id) {
+        response.data.data.map((obj) => {
+          if (obj.id == selectedItem.id) {
+            setSelectedItem(obj);
+            setItemVariant(obj.item_variants);
+          }
+        });
+      }
     } catch (err) {
       console.error(err);
       setItem({});
@@ -208,29 +211,6 @@ export default function Item() {
     }
   }
 
-  async function addItemVariant(e) {
-    e.preventDefault();
-    try {
-      const response = await axios.post("item-variant", addVariantForm, {
-        headers: {
-          Authorization: "Bearer" + token.token,
-          "Content-Type": "application/json",
-        },
-      });
-      addVariantModalRef.current.click();
-      getItem();
-      setAddForm(initialVariantForm);
-      setAddForm({ clinic_id: clinic });
-      setAddFormError(initialVariantForm);
-    } catch (err) {
-      console.log(err);
-      setAddFormError(initialVariantForm);
-      setAddFormError(err.response?.data);
-      err.response?.data?.message &&
-        setAddFormError({ code: err.response?.data?.message || "" });
-    }
-  }
-
   async function putItem(e) {
     e.preventDefault();
     try {
@@ -252,6 +232,30 @@ export default function Item() {
     }
   }
 
+  // console.log(selectedItem)
+  async function addItemVariant(e) {
+    e.preventDefault();
+    try {
+      const response = await axios.post("item-variant", addVariantForm, {
+        headers: {
+          Authorization: "Bearer" + token.token,
+          "Content-Type": "application/json",
+        },
+      });
+      setAddVariantForm(initialVariantForm);
+      setAddVariantForm({ clinic_id: clinic });
+      setAddVariantFormError(initialVariantForm);
+
+      getItem();
+      addVariantModalRef.current.click();
+    } catch (err) {
+      console.log(err);
+      setAddVariantFormError(initialVariantForm);
+      setAddVariantFormError(err.response?.data);
+      err.response?.data?.message &&
+        setAddVariantFormError({ code: err.response?.data?.message || "" });
+    }
+  }
   async function putItemVariant(e) {
     e.preventDefault();
     try {
@@ -265,17 +269,17 @@ export default function Item() {
           },
         }
       );
+      setPutVariantForm(initialVariantForm);
+      setPutVariantFormError(initialVariantForm);
+      setPutVariantFormError(initialVariantForm)
+      
+      getItem();
       putVariantModalRef.current.click();
-      setPutForm(initialItemForm);
-      setPutFormError(initialItemForm);
-
-      await getItem();
-      detailModalRef.current.click();
     } catch (err) {
-      setPutFormError(initialItemForm);
-      setPutFormError(err.response?.data);
+      setPutVariantFormError(initialVariantForm);
+      setPutVariantFormError(err.response?.data);
       err.response?.data?.message &&
-        setPutFormError({ code: err.response?.data?.message || "" });
+        setPutVariantFormError({ code: err.response?.data?.message || "" });
     }
   }
 
@@ -300,7 +304,6 @@ export default function Item() {
         },
       });
       getItem();
-      detailModalRef.current.click()
     } catch (err) {
       console.error(err);
     }
@@ -417,7 +420,7 @@ export default function Item() {
     setAddVariantForm({ clinic_id: clinic });
   }, [clinic]);
 
-  // console.log(addVariantForm);
+  // console.log(selectedItem);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -503,11 +506,11 @@ export default function Item() {
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                 <label
-                  className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="bg-emerald-500 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-export"
                 >
-                  <i className="fas fa-cog"></i>
+                  <i className="fas fa-download"></i>
                 </label>
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -753,6 +756,8 @@ export default function Item() {
                                     clinic_id: prev.clinic_id,
                                   };
                                 });
+                                setItemVariant(obj.item_variants)
+                                setSelectedItem(obj)
                                 setAddVariantForm({ item_id: obj.id });
                               }}
                             >
@@ -1155,10 +1160,10 @@ export default function Item() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.variant && (
+              {addVariantFormError.variant && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.variant}
+                    {addVariantFormError.variant}
                   </span>
                 </label>
               )}
@@ -1174,10 +1179,10 @@ export default function Item() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.unit && (
+              {addVariantFormError.unit && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.unit}
+                    {addVariantFormError.unit}
                   </span>
                 </label>
               )}
@@ -1194,10 +1199,10 @@ export default function Item() {
                 }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.buy_price && (
+              {addVariantFormError.buy_price && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.buy_price}
+                    {addVariantFormError.buy_price}
                   </span>
                 </label>
               )}
@@ -1214,10 +1219,10 @@ export default function Item() {
                 }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {addFormError.sell_price && (
+              {addVariantFormError.sell_price && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {addFormError.sell_price}
+                    {addVariantFormError.sell_price}
                   </span>
                 </label>
               )}
@@ -1226,6 +1231,7 @@ export default function Item() {
               <label
                 htmlFor="modal-add-variant"
                 ref={addVariantModalRef}
+                onClick={() => detailModalRef.current.click()}
                 className="btn btn-ghost rounded-md"
               >
                 Cancel
@@ -1654,116 +1660,118 @@ export default function Item() {
                 </div>
               </div>
               {/* <form onSubmit={() => {}} autoComplete="off"> */}
-                <input type="hidden" autoComplete="off" />
-                <div className="form-control w-full">
-                  <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-                    <thead className="sticky top-0">
-                      <tr>
-                        <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          #
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Variant</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Unit</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Buy Price</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Sell Price</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <p>Actions</p>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="">
-                      {itemVariant?.map((obj, index) => {
-                        return (
-                          <tr key={obj.id} className="hover:bg-zinc-50">
-                            <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                              <span className={"ml-3 font-bold"}>
-                                {index + 1}
-                              </span>
-                            </th>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 capitalize">
-                              {obj.variant}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {obj.unit}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {numeral(obj.buy_price).format("0,0")}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {numeral(obj.sell_price).format("0,0")}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              <div
-                                className="tooltip tooltip-left"
-                                data-tip="Edit"
+              <input type="hidden" autoComplete="off" />
+              <div className="form-control w-full">
+                <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                  <thead className="sticky top-0">
+                    <tr>
+                      <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                        #
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Variant</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Unit</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Buy Price</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Sell Price</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <p>Actions</p>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="">
+                    {itemVariant?.map((obj, index) => {
+                      return (
+                        <tr key={obj.id} className="hover:bg-zinc-50">
+                          <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                            <span className={"ml-3 font-bold"}>
+                              {index + 1}
+                            </span>
+                          </th>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 capitalize">
+                            {obj.variant}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {obj.unit}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {numeral(obj.buy_price).format("0,0")}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {numeral(obj.sell_price).format("0,0")}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Edit"
+                            >
+                              <label
+                                className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                type="button"
+                                htmlFor="modal-put-variant"
+                                onClick={() => {
+                                  setPutVariantForm(obj);
+                                  setPutVariantFormError("");
+                                  detailModalRef.current.click();
+                                }}
                               >
-                                <label
-                                  className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                  type="button"
-                                  htmlFor="modal-put-variant"
-                                  onClick={() => {
-                                    setPutVariantForm(obj);
-                                    setPutVariantFormError("");
-                                    detailModalRef.current.click();
-                                  }}
-                                >
-                                  <i className="fas fa-pen-to-square"></i>
-                                </label>
-                              </div>
-                              <div
-                                className="tooltip tooltip-left"
-                                data-tip="Delete"
+                                <i className="fas fa-pen-to-square"></i>
+                              </label>
+                            </div>
+                            <div
+                              className="tooltip tooltip-left"
+                              data-tip="Delete"
+                            >
+                              <label
+                                className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                htmlFor={`variant-${obj.id}`}
                               >
-                                <label
-                                  className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                  htmlFor={`variant-${obj.id}`}
-                                >
-                                  <i className="fas fa-trash"></i>
-                                </label>
-                              </div>
-                              <ModalDelete
-                                id={`variant-${obj.id}`}
-                                callback={() => deleteVariant(obj.id)}
-                                title={`Delete variant?`}
-                              ></ModalDelete>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                      {itemVariant?.length <= 0 && (
-                        <tr className="">
-                          <td colSpan='9'>
-                            <div className="flex w-full items-center justify-center h-72 text-zinc-400">No variant</div>
+                                <i className="fas fa-trash"></i>
+                              </label>
+                            </div>
+                            <ModalDelete
+                              id={`variant-${obj.id}`}
+                              callback={() => deleteVariant(obj.id)}
+                              title={`Delete variant?`}
+                            ></ModalDelete>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                      );
+                    })}
+                    {itemVariant?.length <= 0 && (
+                      <tr className="">
+                        <td colSpan="9">
+                          <div className="flex w-full items-center justify-center h-72 text-zinc-400">
+                            No variant
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
               {/* </form> */}
             </div>
           </div>

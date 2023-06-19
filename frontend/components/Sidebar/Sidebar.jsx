@@ -69,11 +69,6 @@ export default function Sidebar() {
           access: true,
         },
         {
-          name: "diagnose",
-          route: "/dashboard/admin/diagnose",
-          access: true,
-        },
-        {
           name: "category-payment",
           route: "/dashboard/admin/category-payment",
           access: true,
@@ -186,7 +181,7 @@ export default function Sidebar() {
           access: true,
         },
         {
-          name: "apoteker",
+          name: "transaction apoteker",
           route: "/dashboard/cashier/apoteker",
           access: true,
         },

@@ -46,11 +46,6 @@ export default function Access() {
             access: false,
           },
           {
-            name: "diagnose",
-            route: "/dashboard/admin/diagnose",
-            access: false,
-          },
-          {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
             access: false,
@@ -163,7 +158,7 @@ export default function Access() {
             access: false,
           },
           {
-            name: "apoteker",
+            name: "transaction apoteker",
             route: "/dashboard/cashier/apoteker",
             access: false,
           },
