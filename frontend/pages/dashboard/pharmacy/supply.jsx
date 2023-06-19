@@ -457,15 +457,6 @@ export default function ItemSupply() {
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                     <p>Actions</p>
                   </th>
-                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Created At
-                  </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Updated At
-                  </th> */}
-                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Actions
-                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -576,7 +567,7 @@ export default function ItemSupply() {
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
                             <label
                               htmlFor={`modal-detail`}
-                              onClick={() => setSelectedItem(variant)}
+                              onClick={() => setSelectedItem({...variant, name: obj.name || ""})}
                               className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             >
                               <i className="fas fa-eye"></i>
@@ -676,7 +667,7 @@ export default function ItemSupply() {
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
                   <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
-                  {selectedItem.name || "Item"} Supply List
+                  {selectedItem.name + " - " + selectedItem.variant + " " + selectedItem.unit || "Item"} 
                 </h3>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                   <label
