@@ -15,9 +15,9 @@ class ItemSupplyController extends Controller
 
         try {
             if ($keyword == null) {
-                $itemSupply = ItemSupply::with('item')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $itemSupply = ItemSupply::with('itemVariant')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $itemSupply = ItemSupply::with('item')->where(function($query) use ($keyword) {
+                $itemSupply = ItemSupply::with('itemVariant')->where(function($query) use ($keyword) {
                     $query->where('total', 'like', '%'.$keyword.'%')
                         ->orWhere('before', 'like', '%'.$keyword.'%')
                         ->orWhere('after', 'like', '%'.$keyword.'%')
@@ -25,8 +25,7 @@ class ItemSupplyController extends Controller
                         ->orWhere('expired', 'like', '%'.$keyword.'%')
                         ->orWhere('stock', 'like', '%'.$keyword.'%')
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
-                        ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                        ->orWhereRelation('item', 'name', 'like', '%'.$keyword.'%');
+                        ->orWhere('updated_at', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
@@ -42,7 +41,7 @@ class ItemSupplyController extends Controller
     public function show($item)
     {
         try {
-            $itemSupply = ItemSupply::where('item_id', $item)->orderBy('created_at', 'desc')->get();
+            $itemSupply = ItemSupply::where('item_variant_id', $item)->orderBy('created_at', 'desc')->get();
     
             return response()->json($itemSupply);
         } catch (Throwable $e) {
@@ -53,24 +52,24 @@ class ItemSupplyController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'item_id'       => 'required',
-            'total'         => 'required|numeric|min:1',
-            'manufacturing' => 'required|date|before:now',
-            'expired'       => 'required|date|after:now',
+            'item_variant_id' => 'required',
+            'total'           => 'required|numeric|min:1',
+            'manufacturing'   => 'required|date|before:now',
+            'expired'         => 'required|date|after:now',
         ]);
 
         try {
-            $before = ItemSupply::where('item_id', $request->item_id)->get()->sum('stock');
+            $before = ItemSupply::where('item_variant_id', $request->item_variant_id)->get()->sum('stock');
     
             $data = [
-                'item_id'       => $request->item_id,
-                'total'         => $request->total,
-                'before'        => $before,
-                'after'         => $before + $request->total,
-                'manufacturing' => $request->manufacturing,
-                'expired'       => $request->expired,
-                'note'          => $request->note ?? '-',
-                'stock'         => $request->total,
+                'item_variant_id' => $request->item_variant_id,
+                'total'           => $request->total,
+                'before'          => $before,
+                'after'           => $before + $request->total,
+                'manufacturing'   => $request->manufacturing,
+                'expired'         => $request->expired,
+                'note'            => $request->note ?? '-',
+                'stock'           => $request->total,
             ];
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
             $itemSupply = ItemSupply::create($data);

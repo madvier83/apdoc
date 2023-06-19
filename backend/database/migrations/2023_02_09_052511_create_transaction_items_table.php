@@ -17,6 +17,7 @@ class CreateTransactionItemsTable extends Migration
             $table->id();
             $table->foreignId('transaction_id')->nullable();
             $table->foreignId('item_id')->nullable();
+            $table->foreignId('item_variant_id')->nullable();
             $table->foreignId('promotion_id')->nullable();
             $table->integer('qty');
             $table->integer('discount');

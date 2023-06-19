@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\TransactionService;
 use App\Events\ItemLowStockNotification;
+use App\Models\ItemVariant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Throwable;
@@ -105,9 +106,9 @@ class TransactionController extends Controller
         //
     }
 
-    public function updateStock($item_id, $qty)
+    public function updateStock($item_variant_id, $qty)
     {
-        $oldStock = ItemSupply::where('item_id', $item_id)->where('stock', '>', 0)->orderBy('expired')->first();
+        $oldStock = ItemSupply::where('item_variant_id', $item_variant_id)->where('stock', '>', 0)->orderBy('expired')->first();
 
         if($oldStock === '') {
             return response()->json(['message' => 'Not enough stock'], 400);
@@ -123,14 +124,14 @@ class TransactionController extends Controller
                 $oldStock->fill(['stock' => 0]);
                 $oldStock->save();
 
-                $oldStock = ItemSupply::where('item_id', $item_id)->where('stock', '>', 0)->orderBy('expired')->first();
+                $oldStock = ItemSupply::where('item_variant_id', $item_variant_id)->where('stock', '>', 0)->orderBy('expired')->first();
                 $newStock = $oldStock->stock + $newStock;
                 $oldStock->fill(['stock' => $newStock]);
                 $oldStock->save();
             }
             
             if($newStock < 50){
-                $data = ItemSupply::where('item_id', $item_id)->where('stock', '!=', 0)->where('stock','<=',50)->get();
+                $data = ItemSupply::where('item_variant_id', $item_variant_id)->where('stock', '!=', 0)->where('stock','<=',50)->get();
                 $message = 'stock item under 50';
                 event(new ItemLowStockNotification($message, $data));
             }
@@ -164,9 +165,9 @@ class TransactionController extends Controller
             $totalPayment = 0;
             
             foreach ($items as $data) {
-                $this->updateStock($data['id'], $data['qty']);
+                $this->updateStock($data['item_variant_id'], $data['qty']);
     
-                $item = Item::find($data['id']);
+                $item = ItemVariant::find($data['item_variant_id']);
                 $promotion = Promotion::find($data['promotion_id']);
     
                 $qty = $data['qty'];
@@ -176,6 +177,7 @@ class TransactionController extends Controller
                 $dataItem = [
                     'transaction_id'    => $transaction->id,
                     'item_id'           => $data['id'],
+                    'item_variant_id'   => $data['item_variant_id'],
                     'promotion_id'      => $data['promotion_id'] ?? null,
                     'qty'               => $qty,
                     'discount'          => $discount,

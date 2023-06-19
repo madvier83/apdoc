@@ -13,9 +13,9 @@ class ItemSupply extends Model
 
     protected $guarded = ['id'];
 
-    public function item()
+    public function itemVariant()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(ItemVariant::class);
     }
 
     public function stockAdjustments()

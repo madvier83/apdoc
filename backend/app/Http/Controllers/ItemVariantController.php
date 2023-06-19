@@ -15,7 +15,7 @@ class ItemVariantController extends Controller
 
         try {
             if ($keyword == null) {
-                $variant = ItemVariant::where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $variant = ItemVariant::with('itemSupplys')->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
                 $variant = ItemVariant::where(function($query) use ($keyword) {
                         $query->where('unit', 'like', '%'.$keyword.'%')

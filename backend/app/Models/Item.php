@@ -20,9 +20,4 @@ class Item extends Model
     {
         return $this->hasMany(ItemVariant::class)->where("is_delete", false);
     }
-
-    public function itemSupplys()
-    {
-        return $this->hasMany(ItemSupply::class);
-    }
 }

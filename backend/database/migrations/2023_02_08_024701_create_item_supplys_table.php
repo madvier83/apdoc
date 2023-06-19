@@ -15,7 +15,7 @@ class CreateItemSupplysTable extends Migration
     {
         Schema::create('item_supplys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_id')->nullable();
+            $table->foreignId('item_variant_id')->nullable();
             $table->integer('total');
             $table->integer('before');
             $table->integer('after');

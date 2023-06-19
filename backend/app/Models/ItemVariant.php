@@ -15,4 +15,9 @@ class ItemVariant extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function itemSupplys()
+    {
+        return $this->hasMany(ItemSupply::class);
+    }
 }

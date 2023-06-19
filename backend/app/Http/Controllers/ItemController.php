@@ -15,9 +15,9 @@ class ItemController extends Controller
 
         try {
             if ($keyword == null) {
-                $item = Item::with(['categoryItem', 'itemSupplys', 'itemVariants'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $item = Item::with(['categoryItem', 'itemVariants', 'itemVariants.itemSupplys'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $item = Item::with(['categoryItem', 'itemSupplys', 'itemVariants'])
+                $item = Item::with(['categoryItem', 'itemVariants', 'itemVariants.itemSupplys'])
                     ->where(function($query) use ($keyword) {
                         $query->where('code', 'like', '%'.$keyword.'%')
                             ->orWhere('name', 'like', '%'.$keyword.'%')

@@ -8,7 +8,6 @@ use App\Models\ItemSupply;
 use App\Models\Outcome;
 use App\Models\Payment;
 use App\Models\Promotion;
-use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
 class DummySeeder extends Seeder
@@ -84,105 +83,105 @@ class DummySeeder extends Seeder
             'clinic_id' => 2
 		]);
 
-		ItemSupply::create([
-			'item_id' 		=> 1,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 2,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 3,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 4,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 5,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);ItemSupply::create([
-			'item_id' 		=> 6,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 7,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 8,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 9,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
-		ItemSupply::create([
-			'item_id' 		=> 10,
-			'total' 		=> 500,
-			'before' 		=> 0,
-			'after' 		=> 500,
-			'manufacturing' => '2023-02-05',
-			'expired' 		=> '2024-02-05',
-			'stock' 		=> 500,
-			'clinic_id'		=> 2
-		]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 1,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 2,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 3,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 4,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 5,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);ItemSupply::create([
+		// 	'item_id' 		=> 6,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 7,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 8,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 9,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
+		// ItemSupply::create([
+		// 	'item_id' 		=> 10,
+		// 	'total' 		=> 500,
+		// 	'before' 		=> 0,
+		// 	'after' 		=> 500,
+		// 	'manufacturing' => '2023-02-05',
+		// 	'expired' 		=> '2024-02-05',
+		// 	'stock' 		=> 500,
+		// 	'clinic_id'		=> 2
+		// ]);
 
 		// Setting::create([
 		// 	'logo'        => null,
