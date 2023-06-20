@@ -16,7 +16,7 @@ class CreatePurchaseOrderItemsTable extends Migration
         Schema::create('purchase_order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('purchase_order_id')->nullable();
-            $table->foreignId('item_id')->nullable();
+            $table->foreignId('item_variant_id')->nullable();
             $table->integer('qty')->nullable();
             $table->integer('cost')->nullable();
             $table->date('manufacturing')->nullable();

@@ -22,7 +22,8 @@ class CategoryItemController extends Controller
                     $query->where('name', 'like', '%'.$keyword.'%')
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%')
-                        ->orWhereRelation('items', 'name', 'like', '%'.$keyword.'%');
+                        ->orWhereRelation('items', 'name', 'like', '%'.$keyword.'%')
+                        ->orWhereRelation('items.itemVariants', 'variant', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
@@ -38,7 +39,7 @@ class CategoryItemController extends Controller
     public function show($id)
     {
         try {
-            $category = CategoryItem::find($id);
+            $category = CategoryItem::with(['items.itemVariants.itemSupplys'])->find($id);
     
             return response()->json($category);
         } catch (Throwable $e) {

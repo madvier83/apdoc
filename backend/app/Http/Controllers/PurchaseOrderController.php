@@ -18,16 +18,16 @@ class PurchaseOrderController extends Controller
 
         try {
             if ($keyword == null) {
-                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])
+                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems.itemVariant.item'])
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             } else {
-                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])
+                $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems.itemVariant.item'])
                     ->where(function($query) use ($keyword) {
                         $query->where('note', 'like', '%'.$keyword.'%')
                             ->orWhereRelation('supplier', 'name', 'like', '%'.$keyword.'%')
-                            ->orWhereRelation('purchaseOrderItems.item', 'name', 'like', '%'.$keyword.'%');
+                            ->orWhereRelation('purchaseOrderItems.itemVariant', 'variant', 'like', '%'.$keyword.'%');
                     })
                     ->where('clinic_id', $clinic)
                     ->orderBy($sortBy, $order)
@@ -42,7 +42,7 @@ class PurchaseOrderController extends Controller
 
     public function show($id)
     {
-        $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems', 'purchaseOrderItems.item'])->find('id');
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems.itemVariant.item'])->find($id);
         return response()->json($purchaseOrder);
     }
 
@@ -64,7 +64,7 @@ class PurchaseOrderController extends Controller
                 foreach ($request->items as $data) {
                     $data = [
                         'purchase_order_id' => $purchaseOrder->id,
-                        'item_id'           => $data["item_id"] ?? null,
+                        'item_variant_id'   => $data["item_variant_id"] ?? null,
                         'qty'               => $data["qty"] ?? null,
                         'cost'              => $data["cost"] ?? null,
                         'manufacturing'     => $data["manufacturing"] ?? null,
@@ -107,7 +107,7 @@ class PurchaseOrderController extends Controller
                 foreach ($request->items as $data) {
                     $data = [
                         'purchase_order_id' => $purchaseOrder->id,
-                        'item_id'           => $data["item_id"] ?? null,
+                        'item_variant_id'   => $data["item_variant_id"] ?? null,
                         'qty'               => $data["qty"] ?? null,
                         'cost'              => $data["cost"] ?? null,
                         'manufacturing'     => $data["manufacturing"] ?? null,
@@ -137,18 +137,19 @@ class PurchaseOrderController extends Controller
             $items = PurchaseOrderItem::where('purchase_order_id', $id)->where('is_finished', 0)->get();
 
             foreach($items as $data) {
-                $before = ItemSupply::where('item_id', $data->item_id)->get()->sum('stock');
+                $before = ItemSupply::where('item_variant_id', $data->item_variant_id)->get()->sum('stock');
     
                 $data = [
-                    'item_id'       => $data->item_id,
-                    'total'         => $data->qty,
-                    'before'        => $before,
-                    'after'         => $before + $data->qty,
-                    'manufacturing' => $data->manufacturing,
-                    'expired'       => $data->expired,
-                    'note'          => $purchaseOrder->note ?? '-',
-                    'stock'         => $data->qty,
+                    'item_variant_id' => $data->item_variant_id,
+                    'total'           => $data->qty,
+                    'before'          => $before,
+                    'after'           => $before + $data->qty,
+                    'manufacturing'   => $data->manufacturing,
+                    'expired'         => $data->expired,
+                    'note'            => $purchaseOrder->note ?? '-',
+                    'stock'           => $data->qty,
                 ];
+
                 $data['clinic_id'] = $purchaseOrder->clinic_id ?? auth()->user()->employee->clinic_id;
                 ItemSupply::create($data);
             }
