@@ -16,9 +16,9 @@ class CategoryItemController extends Controller
 
         try {
             if ($keyword == null) {
-                $category = CategoryItem::with('items')->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $category = CategoryItem::with(['items.itemVariants.itemSupplys'])->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $category = CategoryItem::with('items')->where(function($query) use ($keyword) {
+                $category = CategoryItem::with(['items.itemVariants.itemSupplys'])->where(function($query) use ($keyword) {
                     $query->where('name', 'like', '%'.$keyword.'%')
                         ->orWhere('created_at', 'like', '%'.$keyword.'%')
                         ->orWhere('updated_at', 'like', '%'.$keyword.'%')
