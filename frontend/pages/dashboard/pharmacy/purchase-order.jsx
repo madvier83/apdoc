@@ -425,7 +425,7 @@ export default function PurchaseOrder() {
     let items = [];
     selectedItems.map((obj) => {
       let data = {
-        item_id: obj.id,
+        item_variant_id: obj.item_variant_id,
         qty: obj.qty,
         cost: obj.buy_price,
         manufacturing: obj.manufacturing,
@@ -438,7 +438,7 @@ export default function PurchaseOrder() {
     setPutForm({ items: items });
   }, [JSON.stringify(selectedItems)]);
 
-  console.log(item);
+  // console.log(items.data);
 
   return (
     <>
@@ -935,20 +935,23 @@ export default function PurchaseOrder() {
                       </li>
                     )}
                     {items?.data?.map((obj) => {
-                      return (
-                        <li key={obj.id} className="p-0 overflow-hidden">
-                          <div
-                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
-                            onClick={() => {
-                              addMultiItem(obj);
-                              setSearchItem("");
-                            }}
-                          >
-                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
-                            {obj.name.length > 50 && "..."}
-                          </div>
-                        </li>
-                      );
+                      return obj.item_variants?.map((variant) => {
+                        return (
+                          <li key={variant.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                addMultiItem({...obj, ...variant, item_variant_id: variant.id});
+                                setSearchItem("");
+                              }}
+                            >
+                              {obj.code + " - " + obj.name.substring(0, 20)}{" "}
+                              {obj.name.length > 20 && "..."}
+                              {" - " + variant.variant +" "+ variant.unit}
+                            </div>
+                          </li>
+                        );
+                      });
                     })}
                   </ul>
                 )}
@@ -963,7 +966,7 @@ export default function PurchaseOrder() {
                               <div className="flex justify-between">
                                 <p className="text-[1rem] font-semibold">
                                   <span>{obj.code}</span>
-                                  {" - " + obj.name}{" "}
+                                  {" - " + obj.name}{" "}{" - " + obj.variant +" "+ obj.unit}
                                 </p>
                                 <div
                                   className="flex justify-center font-bold"
@@ -1330,7 +1333,6 @@ export default function PurchaseOrder() {
           </form>
         </ModalBox>
 
-        
         <ModalBox id="modal-details">
           <h3 className="font-bold text-lg mb-4">Purchase Order</h3>
           <form onSubmit={putItem} autoComplete="off">
@@ -1343,9 +1345,7 @@ export default function PurchaseOrder() {
               <div className="dropdown w-full">
                 {selectedCategory?.id && (
                   <div className="p-0 overflow-hidden mb-1">
-                    <div
-                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs border border-slate-300 rounded-md cursor-not-allowed bg-zinc-100"
-                    >
+                    <div className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs border border-slate-300 rounded-md cursor-not-allowed bg-zinc-100">
                       <div className="flex justify-end font-bold">
                         {/* <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i> */}
                       </div>

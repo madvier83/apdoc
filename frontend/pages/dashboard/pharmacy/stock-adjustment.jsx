@@ -21,6 +21,7 @@ export default function StockAdjustment() {
 
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedVariant, setSelectedVariant] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
@@ -327,7 +328,7 @@ export default function StockAdjustment() {
     return () => clearTimeout(getData);
   }, [searchCategory]);
 
-  // console.log(item);
+  console.log(item.data);
 
   return (
     <>
@@ -515,7 +516,7 @@ export default function StockAdjustment() {
                               highlightClassName="bg-emerald-200"
                               searchWords={[search]}
                               autoEscape={true}
-                              textToHighlight={obj.item_supply.item.name}
+                              textToHighlight={obj.item_supply?.item_variant?.variant + " " + obj.item_supply?.item_variant?.unit}
                             ></Highlighter>
                           </span>
                         </td>
@@ -707,6 +708,31 @@ export default function StockAdjustment() {
                 </label>
               )}
               <label className="label">
+                  <span className="label-text">Item Variant</span>
+              </label>
+              <select
+                name="item_supply_id"
+                onChange={(e) => setSelectedVariant(selectedCategory?.item_variants[e.target.value])}
+                required
+                className="input input-bordered without-ring input-primary border-slate-300 w-full"
+              >
+                <option value="">Select</option>
+                {selectedCategory?.item_variants?.map((obj, index) => {
+                  return (
+                    <option key={obj.id} value={index}>
+                      {obj.variant}
+                    </option>
+                  );
+                })}
+              </select>
+              {addFormError.item_supply_id && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.item_supply_id}
+                  </span>
+                </label>
+              )}
+              <label className="label">
                 <span className="label-text">Item Supply</span>
               </label>
               <select
@@ -717,7 +743,7 @@ export default function StockAdjustment() {
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
                 <option value="">Select</option>
-                {supplyDb?.map((obj) => {
+                {selectedVariant?.item_supplys?.map((obj) => {
                   return (
                     <option key={obj.id} value={obj.id}>
                       Stock: {obj.stock} | Exp:{" "}

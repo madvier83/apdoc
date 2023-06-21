@@ -222,7 +222,9 @@ export default function Transaction() {
     }
     try {
       const response = await axios.get(
-        `category-items/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        `category-items/${
+          clinic && clinic + "/"
+        }${9999999}?page=${1}&sortBy=${"name"}&order=${"asc"}`,
         {
           headers: {
             Authorization: "Bearer" + token.token,
@@ -599,9 +601,9 @@ export default function Transaction() {
   }, [search]);
 
   useEffect(() => {
-    setRecord([])
+    setRecord([]);
     getRecord();
-    setSearch("")
+    setSearch("");
   }, [selectedQueue]);
 
   // useEffect(() => {
@@ -612,7 +614,7 @@ export default function Transaction() {
   //   }
   // }, [record]);
 
-  console.log(cart.array);
+  console.log(category.data);
 
   return (
     <>
@@ -670,7 +672,9 @@ export default function Transaction() {
                             );
                           }}
                           className={`input border-none py-4 rounded-sm mt-1 h-full text-white ${
-                            selectedQueue?.id ? "bg-indigo-800 bg-opacity-90" : "bg-slate-800"
+                            selectedQueue?.id
+                              ? "bg-indigo-800 bg-opacity-90"
+                              : "bg-slate-800"
                           } w-full`}
                         >
                           <option value={dummyQueue.id}>Select patient</option>
@@ -690,17 +694,16 @@ export default function Transaction() {
                       !selectedQueue?.id && "opacity-30"
                     } bg-opacity-50 rounded-md shadow-md mb-0 mt-2`}
                   >
-                    
                     <div className="">
-                        <label className="label px-0">
-                          <span className="label-text text-white pl-1 mt-3">
-                            Promotions
-                          </span>
-                          <span className="label-text opacity-50 ml-auto text-white">
-                            {/* {items?.length} Items */}
-                          </span>
-                        </label>
-                      </div>
+                      <label className="label px-0">
+                        <span className="label-text text-white pl-1 mt-3">
+                          Promotions
+                        </span>
+                        <span className="label-text opacity-50 ml-auto text-white">
+                          {/* {items?.length} Items */}
+                        </span>
+                      </label>
+                    </div>
                     <div className="px-0 flex flex-col">
                       <div className="bg-slate-800 rounded-md">
                         <div
@@ -767,18 +770,26 @@ export default function Transaction() {
                           {search &&
                             items?.length > 0 &&
                             items?.map((item) => {
-                              return (
-                                <div
-                                  className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                  key={item.id}
-                                  onClick={() => addToCart(item)}
-                                >
-                                  <span>{item.name}</span>
-                                  <span>
-                                    {numeral(item.sell_price).format("0,0")}
-                                  </span>
-                                </div>
-                              );
+                              return item.item_variants.map((variant) => {
+                                return (
+                                  <div
+                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                    key={variant.id}
+                                    onClick={() => addToCart({...item,name: `${item.name + " - " + variant.variant + " " + variant.unit}`, sell_price: variant.sell_price, id: variant.id})}
+                                  >
+                                    <div className="">
+                                      <span>{item.name} - </span>
+                                      <span>{variant.variant} </span>
+                                      <span>{variant.unit}</span>
+                                    </div>
+                                    <span>
+                                      {numeral(variant.sell_price).format(
+                                        "0,0"
+                                      )}
+                                    </span>
+                                  </div>
+                                );
+                              });
                             })}
                           {search && items?.length <= 0 && (
                             <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
@@ -788,7 +799,11 @@ export default function Transaction() {
                         </div>
                       </div>
 
-                      <div className={`${record.length <= 0 && "hidden"} bg-slate-800 rounded-md mb-4`}>
+                      <div
+                        className={`${
+                          record.length <= 0 && "hidden"
+                        } bg-slate-800 rounded-md mb-4`}
+                      >
                         <div
                           tabIndex={0}
                           className="collapse collapse-open p-0 m-0 rounded-md  text-white bg-amber-500 bg-opacity-10 border-amber-400 group"
@@ -843,18 +858,26 @@ export default function Transaction() {
                               </div>
                               <div className="collapse-content font-normal capitalize">
                                 {obj.items?.map((item) => {
-                                  return (
-                                    <div
-                                      className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                      key={item.id}
-                                      onClick={() => addToCart(item)}
-                                    >
-                                      <span>{item.name}</span>
-                                      <span>
-                                        {numeral(item.sell_price).format("0,0")}
-                                      </span>
-                                    </div>
-                                  );
+                                  return item.item_variants.map((variant) => {
+                                    return (
+                                      <div
+                                        className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                        key={variant.id}
+                                        onClick={() => addToCart({...item,name: `${item.name + " - " + variant.variant + " " + variant.unit}`, sell_price: variant.sell_price, id: variant.id})}
+                                      >
+                                        <div className="">
+                                          <span>{item.name} - </span>
+                                          <span>{variant.variant} </span>
+                                          <span>{variant.unit}</span>
+                                        </div>
+                                        <span>
+                                          {numeral(variant.sell_price).format(
+                                            "0,0"
+                                          )}
+                                        </span>
+                                      </div>
+                                    );
+                                  });
                                 })}
                                 {obj.items?.length <= 0 && (
                                   <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
