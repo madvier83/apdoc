@@ -144,7 +144,7 @@ class RecordController extends Controller
                     if ($diagnose[$i]) {
                         $data = [
                             'record_id'     => $record->id,
-                            'diagnose_id'  => $diagnose[$i],
+                            'diagnose_id'   => $diagnose[$i],
                         ];
                         RecordDiagnose::create($data);
                     }
@@ -157,8 +157,8 @@ class RecordController extends Controller
                 for ($i = 0; $i < count($item); $i++) {
                     if ($item[$i]) {
                         $data = [
-                            'record_id'     => $record->id,
-                            'item_id'  => $item[$i],
+                            'record_id'        => $record->id,
+                            'item_variant_id'  => $item[$i],
                         ];
                         RecordItem::create($data);
                     }
@@ -172,7 +172,7 @@ class RecordController extends Controller
                     if ($service[$i]) {
                         $data = [
                             'record_id'     => $record->id,
-                            'service_id'  => $service[$i],
+                            'service_id'    => $service[$i],
                         ];
                         RecordService::create($data);
                     }

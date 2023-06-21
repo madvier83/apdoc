@@ -16,7 +16,7 @@ class CreateRecordItemsTable extends Migration
         Schema::create('record_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('record_id');
-            $table->foreignId('item_id');
+            $table->foreignId('item_variant_id');
             $table->timestamps();
         });
     }

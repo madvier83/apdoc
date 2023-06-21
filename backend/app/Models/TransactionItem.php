@@ -21,6 +21,11 @@ class TransactionItem extends Model
         return $this->belongsTo(Item::class);
     }
 
+    public function itemVariant()
+    {
+        return $this->belongsTo(ItemVariant::class);
+    }
+
     public function promotion()
     {
         return $this->belongsTo(Promotion::class);
