@@ -438,7 +438,7 @@ export default function PurchaseOrder() {
     setPutForm({ items: items });
   }, [JSON.stringify(selectedItems)]);
 
-  // console.log(items.data);
+  console.log(putForm);
 
   return (
     <>

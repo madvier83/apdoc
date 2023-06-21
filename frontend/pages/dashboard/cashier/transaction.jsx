@@ -263,6 +263,7 @@ export default function Transaction() {
     let newCart = [];
     let newItem = {
       id: obj?.id,
+      item_variant_id: obj?.item_variant_id,
       qty: 1,
       promotion_id: null,
 
@@ -275,7 +276,7 @@ export default function Transaction() {
     };
     let isNewItem = true;
     prevCart.map((item) => {
-      if (item.id == obj?.id) {
+      if (item.item_variant_id == obj?.item_variant_id) {
         let oldItem;
         if (remove == true) {
           oldItem = {
@@ -614,7 +615,7 @@ export default function Transaction() {
   //   }
   // }, [record]);
 
-  console.log(category.data);
+  // console.log(transaction);
 
   return (
     <>
@@ -775,7 +776,20 @@ export default function Transaction() {
                                   <div
                                     className="btn btn-ghost normal-case flex justify-between cursor-pointer"
                                     key={variant.id}
-                                    onClick={() => addToCart({...item,name: `${item.name + " - " + variant.variant + " " + variant.unit}`, sell_price: variant.sell_price, id: variant.id})}
+                                    onClick={() =>
+                                      addToCart({
+                                        ...item,
+                                        name: `${
+                                          item.name +
+                                          " - " +
+                                          variant.variant +
+                                          " " +
+                                          variant.unit
+                                        }`,
+                                        sell_price: variant.sell_price,
+                                        item_variant_id: variant.id,
+                                      })
+                                    }
                                   >
                                     <div className="">
                                       <span>{item.name} - </span>
@@ -863,7 +877,20 @@ export default function Transaction() {
                                       <div
                                         className="btn btn-ghost normal-case flex justify-between cursor-pointer"
                                         key={variant.id}
-                                        onClick={() => addToCart({...item,name: `${item.name + " - " + variant.variant + " " + variant.unit}`, sell_price: variant.sell_price, id: variant.id})}
+                                        onClick={() =>
+                                          addToCart({
+                                            ...item,
+                                            name: `${
+                                              item.name +
+                                              " - " +
+                                              variant.variant +
+                                              " " +
+                                              variant.unit
+                                            }`,
+                                            sell_price: variant.sell_price,
+                                            item_variant_id: variant.id,
+                                          })
+                                        }
                                       >
                                         <div className="">
                                           <span>{item.name} - </span>

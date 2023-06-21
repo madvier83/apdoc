@@ -168,7 +168,6 @@ export default function StockAdjustment() {
 
   async function putItem(e) {
     e.preventDefault();
-    console.log(putForm);
     try {
       const response = await axios.put(
         `stock-adjustment/${putForm.id}`,
@@ -263,9 +262,9 @@ export default function StockAdjustment() {
     let formData = new FormData();
     formData.append("file", selectedFile);
 
-    for (let [key, value] of formData) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (let [key, value] of formData) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     try {
       const response = await axios.post(
@@ -328,7 +327,7 @@ export default function StockAdjustment() {
     return () => clearTimeout(getData);
   }, [searchCategory]);
 
-  console.log(item.data);
+  // console.log(selectedCategory);
 
   return (
     <>

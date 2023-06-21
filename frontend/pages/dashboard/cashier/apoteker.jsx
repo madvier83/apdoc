@@ -261,6 +261,7 @@ export default function Transaction() {
     let newCart = [];
     let newItem = {
       id: obj?.id,
+      item_variant_id: obj?.item_variant_id,
       qty: 1,
       promotion_id: null,
 
@@ -273,7 +274,7 @@ export default function Transaction() {
     };
     let isNewItem = true;
     prevCart.map((item) => {
-      if (item.id == obj?.id) {
+      if (item.item_variant_id == obj?.item_variant_id) {
         let oldItem;
         if (remove == true) {
           oldItem = {
@@ -758,64 +759,45 @@ export default function Transaction() {
                           {search &&
                             items?.length > 0 &&
                             items?.map((item) => {
-                              return (
-                                <div
-                                  className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                  key={item.id}
-                                  onClick={() => addToCart(item)}
-                                >
-                                  <span>{item.name}</span>
-                                  <span>
-                                    {numeral(item.sell_price).format("0,0")}
-                                  </span>
-                                </div>
-                              );
+                              return item.item_variants.map((variant) => {
+                                return (
+                                  <div
+                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                    key={variant.id}
+                                    onClick={() =>
+                                      addToCart({
+                                        ...item,
+                                        name: `${
+                                          item.name +
+                                          " - " +
+                                          variant.variant +
+                                          " " +
+                                          variant.unit
+                                        }`,
+                                        sell_price: variant.sell_price,
+                                        item_variant_id: variant.id,
+                                      })
+                                    }
+                                  >
+                                    <div className="">
+                                      <span>{item.name} - </span>
+                                      <span>{variant.variant} </span>
+                                      <span>{variant.unit}</span>
+                                    </div>
+                                    <span>
+                                      {numeral(variant.sell_price).format(
+                                        "0,0"
+                                      )}
+                                    </span>
+                                  </div>
+                                );
+                              });
                             })}
                           {search && items?.length <= 0 && (
                             <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
                               No Item Found
                             </div>
                           )}
-                        </div>
-                      </div>
-
-                      <div
-                        className={`${
-                          record.length <= 0 && "hidden"
-                        } bg-slate-800 rounded-md mb-4`}
-                      >
-                        <div
-                          tabIndex={0}
-                          className="collapse collapse-open p-0 m-0 rounded-md  text-white bg-amber-500 bg-opacity-10 border-amber-400 group"
-                        >
-                          <div className="collapse-title font-semibold capitalize text-sm text-amber-400  flex items-center gap-4">
-                            <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                            <p>Recomendation</p>
-                          </div>
-                          <div className="collapse-content font-normal capitalize">
-                            {record?.map((obj) => {
-                              console.log(obj);
-                              return (
-                                <div
-                                  className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                  key={obj.item?.id}
-                                  onClick={() => addToCart(obj.item)}
-                                >
-                                  <span>{obj.item?.name}</span>
-                                  <span>
-                                    {numeral(obj.item?.sell_price).format(
-                                      "0,0"
-                                    )}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                            {record?.length <= 0 && (
-                              <div className="btn btn-disabled bg-amber-100 bg-opacity-5 text-zinc-400 normal-case flex justify-between cursor-pointer transition-none">
-                                No recomendation
-                              </div>
-                            )}
-                          </div>
                         </div>
                       </div>
 
@@ -838,18 +820,39 @@ export default function Transaction() {
                               </div>
                               <div className="collapse-content font-normal capitalize">
                                 {obj.items?.map((item) => {
-                                  return (
-                                    <div
-                                      className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                      key={item.id}
-                                      onClick={() => addToCart(item)}
-                                    >
-                                      <span>{item.name}</span>
-                                      <span>
-                                        {numeral(item.sell_price).format("0,0")}
-                                      </span>
-                                    </div>
-                                  );
+                                  return item.item_variants.map((variant) => {
+                                    return (
+                                      <div
+                                        className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                        key={variant.id}
+                                        onClick={() =>
+                                          addToCart({
+                                            ...item,
+                                            name: `${
+                                              item.name +
+                                              " - " +
+                                              variant.variant +
+                                              " " +
+                                              variant.unit
+                                            }`,
+                                            sell_price: variant.sell_price,
+                                            item_variant_id: variant.id,
+                                          })
+                                        }
+                                      >
+                                        <div className="">
+                                          <span>{item.name} - </span>
+                                          <span>{variant.variant} </span>
+                                          <span>{variant.unit}</span>
+                                        </div>
+                                        <span>
+                                          {numeral(variant.sell_price).format(
+                                            "0,0"
+                                          )}
+                                        </span>
+                                      </div>
+                                    );
+                                  });
                                 })}
                                 {obj.items?.length <= 0 && (
                                   <div className="btn btn-disabled text-zinc-500 normal-case flex justify-between cursor-pointer transition-none">
@@ -916,7 +919,7 @@ export default function Transaction() {
                                     <tbody>
                                       {cart?.array?.map((obj) => {
                                         return (
-                                          <React.Fragment key={obj?.id}>
+                                          <React.Fragment key={obj?.item_variant_id}>
                                             <tr className="rounded-md transition-all duration-300">
                                               <td
                                                 className={`w-2/3 py-2 overflow-hidden`}
@@ -1098,7 +1101,9 @@ export default function Transaction() {
                     </div>
                   </div>
 
-                  <div className={`${total <= 0 && "hidden"} flex gap-2 flex-col`}>
+                  <div
+                    className={`${total <= 0 && "hidden"} flex gap-2 flex-col`}
+                  >
                     <div className="flex justify-between w-full text-sm border-dashed border-t pt-2">
                       <p className="font-semibold ml-1">Subtotal</p>
                       <p className="font-semibold ml-1 text-right">
@@ -1212,7 +1217,7 @@ export default function Transaction() {
                   )}
                   {cart?.array?.map((obj) => {
                     return (
-                      <React.Fragment key={obj.id}>
+                      <React.Fragment key={obj?.item_variant_id}>
                         <div className="flex w-full justify-between items-center font-semibold">
                           <small>
                             {obj.name}{" "}
