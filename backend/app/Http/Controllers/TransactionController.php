@@ -26,12 +26,12 @@ class TransactionController extends Controller
 
         try {
             if ($keyword == null) {
-                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.itemVariant', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])
                 ->where('clinic_id', $clinic)
                 ->orderBy($sortBy, $order)
                 ->paginate($perPage);
             } else {
-                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where(function($query) use ($keyword) {
+                $transaction = Transaction::with(['patient', 'paymentMethod', 'employee', 'transactionItems', 'transactionItems.item', 'transactionItems.itemVariant', 'transactionItems.promotion', 'transactionServices', 'transactionServices.service', 'transactionServices.promotion'])->where(function($query) use ($keyword) {
                     $query->where('discount', 'like', '%'.$keyword.'%')
                         ->orWhere('total', 'like', '%'.$keyword.'%')
                         ->orWhere('payment', 'like', '%'.$keyword.'%')
