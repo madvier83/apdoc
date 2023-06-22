@@ -73,7 +73,7 @@ export default function Diagnose() {
             search
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
+              // .replace(/[^a-zA-Z0-9]/, "")
               .replace(".", "")
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
@@ -164,12 +164,9 @@ export default function Diagnose() {
   }, [diagnosis]);
 
   async function downloadTable() {
-    if (!clinic) {
-      return;
-    }
     try {
       axios({
-        url: `export/diagnose?clinic=${clinic}`,
+        url: `export/diagnose`,
         method: "GET",
         responseType: "blob",
         headers: {
@@ -183,7 +180,7 @@ export default function Diagnose() {
           link.href = url;
           link.setAttribute(
             "download",
-            `Item_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+            `Diagnosa_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
           );
           document.body.appendChild(link);
 
@@ -226,7 +223,7 @@ export default function Diagnose() {
 
     try {
       const response = await axios.post(
-        `import/diagnose?clinic=${clinic}`,
+        `import/diagnose`,
         formData,
         {
           data: formData,

@@ -7,6 +7,7 @@ use App\Exports\EmployeeExport;
 use App\Exports\ItemExport;
 use App\Exports\PatientExport;
 use App\Exports\PositionExport;
+use App\Imports\DiagnoseImport;
 use App\Imports\EmployeeImport;
 use App\Imports\ItemImport;
 use App\Imports\PatientImport;
@@ -28,7 +29,7 @@ class ExcelController extends Controller
         $file = $request->file('file');
 
         if ($file) {
-            Excel::import(new PatientImport($request), $file);
+            Excel::import(new DiagnoseImport($request), $file);
 
             return response()->json(['message' => 'Data imported successfully']);
         }

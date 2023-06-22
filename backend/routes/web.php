@@ -274,11 +274,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
 	
+	$router->get('/v1/export/item', 'ExcelController@exportItem');
+	$router->post('/v1/import/item', 'ExcelController@importItem');
+	
+	$router->get('/v1/export/diagnose', 'ExcelController@exportDiagnose');
+	$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
 	
 	// });
 });
-$router->get('/v1/export/item', 'ExcelController@exportItem');
-$router->post('/v1/import/item', 'ExcelController@importItem');
-
-$router->get('/v1/export/diagnose', 'ExcelController@exportDiagnose');
-$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
