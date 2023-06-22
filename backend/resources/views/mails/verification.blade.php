@@ -82,7 +82,6 @@
     <div class="body">
         <div class="bar"></div>
         <div class="container body">
-            <h1 class="logo">APDOC</h1>
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
             <h1>Thanks for signing up!</h1>
             <div class="btn">

@@ -116,12 +116,12 @@
         <div class="container body">
             <h1 class="logo">APDOC</h1>
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
-            <h1>Stok Item on your Clinic is low</h1>
             <center>
                 <table id="table-data">
                     <thead>
                     <tr>
                         <td>name</td>
+                        <td>variant</td>
                         <td>categories</td>
                         <td>stok</td>
                         <td>unit</td>
@@ -132,10 +132,11 @@
                     <tbody>
                     @foreach ( $data as $item)
                     <tr>
-                        <td>{{$item->item?->name}}</td>
-                        <td>{{$item->item?->categoryItem?->name}}</td>
+                        <td>{{$item->itemVariant?->item?->name}}</td>
+                        <td>{{$item->itemVariant?->variant}}</td>
+                        <td>{{$item->itemVariant?->item?->categoryItem?->name}}</td>
                         <td>{{$item->stock}}</td>
-                        <td>{{$item->item?->unit}}</td>
+                        <td>{{$item->itemVariant?->unit}}</td>
                         <td>{{$item->manufacturing}}</td>
                         <td>{{$item->expired}}</td>
                     </tr>
