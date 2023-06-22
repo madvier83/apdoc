@@ -139,7 +139,7 @@ class RecordController extends Controller
             
             // Record Diagnosa
             if ($request->diagnoses) {
-                $diagnose = $request->diagnoses;
+                $diagnose = json_decode($request->diagnoses);
                 for ($i = 0; $i < count($diagnose); $i++) {
                     if ($diagnose[$i]) {
                         $data = [
@@ -153,7 +153,7 @@ class RecordController extends Controller
             
             // Record Item
             if ($request->items) {
-                $item = $request->items;
+                $item = json_decode($request->items);
                 for ($i = 0; $i < count($item); $i++) {
                     if ($item[$i]) {
                         $data = [
