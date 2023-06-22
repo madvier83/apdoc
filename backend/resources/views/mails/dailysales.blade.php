@@ -117,7 +117,6 @@
         <div class="container body">
             <h1 class="logo">APDOC</h1>
             <img src="https://i.postimg.cc/tJs5fwmH/email-8697-1.png" alt="email" width="128" class="mainsvg">
-            <h1>Daily Sales Mail</h1>
             <center>
                 <table id="table-data">
                     <thead>
