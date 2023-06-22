@@ -19,12 +19,12 @@ class RecordController extends Controller
     {
         try {
             if ($keyword == null) {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.item', 'recordServices', 'recordServices.service')
+                $record = Record::with('recordFiles', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.itemVariant.item', 'recordServices.service')
                 ->where('clinic_id', $clinic)
                 ->orderBy('updated_at', 'desc')
                 ->paginate($perPage);
             } else {
-                $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.item', 'recordServices', 'recordServices.service')->where(function($query) use ($keyword) {
+                $record = Record::with('recordFiles', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.itemVariant.item', 'recordServices.service')->where(function($query) use ($keyword) {
                     $query->where('complaint', 'like', '%'.$keyword.'%')
                         ->orWhere('inspection', 'like', '%'.$keyword.'%')
                         ->orWhere('therapy', 'like', '%'.$keyword.'%')
