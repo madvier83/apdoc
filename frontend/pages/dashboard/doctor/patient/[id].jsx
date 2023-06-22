@@ -154,7 +154,7 @@ export default function Patients() {
           Authorization: "Bearer" + token.token,
         },
       });
-      console.log(response);
+      // console.log(response);
       setRecord(response.data);
       setRecordLoading(false);
     } catch (err) {
@@ -433,7 +433,7 @@ export default function Patients() {
     formData.append("description", putForm.description);
     formData.append(`diagnoses`, JSON.stringify(putForm.diagnoses));
     formData.append(`services`, JSON.stringify(putForm.services));
-    formData.append(`items`, JSON.stringify(putForm.diagnoses));
+    formData.append(`items`, JSON.stringify(putForm.items));
 
     try {
       const response = await axios.post(`/record/${putForm.id}`, formData, {
@@ -448,6 +448,8 @@ export default function Patients() {
       setPutForm({ patient_id: selectedPatient.id });
       setPutForm(initialRecordForm);
       setPutFormError(initialRecordForm);
+
+      // console.log(response);
     } catch (err) {
       console.error(err);
       setPutFormError(initialRecordForm);
@@ -591,7 +593,8 @@ export default function Patients() {
     return () => clearTimeout(getData);
   }, [searchItem, selectedPatient]);
 
-  // console.log(addForm);
+  // console.log(record);
+  console.log(selectedItems);
   return (
     <>
       <DashboardLayout title="Patient Records">
@@ -900,11 +903,12 @@ export default function Patients() {
                                       className="btn btn-sm flex justify-between  btn-ghost font-semibold rounded-md"
                                       htmlFor="modal-put"
                                       onClick={() => {
-                                        let diagnoses = obj.record_diagnoses?.map(
-                                          (e) => e.diagnose
-                                        );
+                                        let diagnoses =
+                                          obj.record_diagnoses?.map(
+                                            (e) => e.diagnose
+                                          );
                                         let items = obj.record_items?.map(
-                                          (e) => e.item
+                                          (e) => {return {...e.item_variant.item, ...e.item_variant}}
                                         );
                                         let services = obj.record_services?.map(
                                           (e) => e.service
@@ -1012,8 +1016,14 @@ export default function Patients() {
                                                 className="text-justify mb-1 px-4 py-3 bg-amber-50 border border-amber-400 rounded-md"
                                                 key={obj.id}
                                               >
-                                                <b>{obj.item?.code}</b> -{" "}
-                                                {obj.item?.name}
+                                                <b>
+                                                  {obj.item_variant?.item?.code}
+                                                </b>{" "}
+                                                - {obj.item_variant?.item?.name}{" "}
+                                                -{" "}
+                                                {obj.item_variant.variant +
+                                                  " " +
+                                                  obj.item_variant.unit}
                                               </p>
                                             );
                                           })}
@@ -1069,7 +1079,7 @@ export default function Patients() {
                                                 id={`filePreview` + obj.id}
                                               >
                                                 <img
-                                                  src={`http://localhost:8000/${obj.file}`}
+                                                  src={`${process.env.NEXT_PUBLIC_SERVER_URL}${obj.file}`}
                                                   alt=""
                                                 />
                                                 <div className="modal-action pt-0 mt-0">
@@ -1361,20 +1371,27 @@ export default function Patients() {
                       </li>
                     )}
                     {items?.data?.map((obj) => {
-                      return (
-                        <li key={obj.id} className="p-0 overflow-hidden">
-                          <div
-                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
-                            onClick={() => {
-                              addMultiItem(obj);
-                              setSearchItem("");
-                            }}
-                          >
-                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
-                            {obj.name.length > 50 && "..."}
-                          </div>
-                        </li>
-                      );
+                      return obj.item_variants?.map((variant) => {
+                        return (
+                          <li key={variant.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                addMultiItem({
+                                  ...obj,
+                                  ...variant,
+                                  id: variant.id,
+                                });
+                                setSearchItem("");
+                              }}
+                            >
+                              {obj.code + " - " + obj.name.substring(0, 20)}{" "}
+                              {obj.name.length > 20 && "..."}
+                              {" - " + variant.variant + " " + variant.unit}
+                            </div>
+                          </li>
+                        );
+                      });
                     })}
                   </ul>
                 )}
@@ -1383,7 +1400,7 @@ export default function Patients() {
                   {selectedItems.length > 0 &&
                     selectedItems?.map((obj) => {
                       return (
-                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                        <div key={obj?.id} className="p-0 overflow-hidden mb-1">
                           <div
                             className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-amber-50 border border-amber-400 rounded-md cursor-pointer"
                             onClick={() => {
@@ -1391,8 +1408,10 @@ export default function Patients() {
                             }}
                           >
                             <div>
-                              <b>{obj.code}</b>
-                              {" - " + obj.name}{" "}
+                              <b>{obj?.code}</b>
+                              {" - " + obj?.name}
+                              {" - "}
+                              {obj?.variant + " " + obj?.unit}
                             </div>
                             <div className="flex justify-center font-bold">
                               <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>
@@ -1768,29 +1787,35 @@ export default function Patients() {
                       </li>
                     )}
                     {items?.data?.map((obj) => {
-                      return (
-                        <li key={obj.id} className="p-0 overflow-hidden">
-                          <div
-                            className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
-                            onClick={() => {
-                              addMultiItem(obj);
-                              setSearchItem("");
-                            }}
-                          >
-                            {obj.code + " - " + obj.name.substring(0, 50)}{" "}
-                            {obj.name.length > 50 && "..."}
-                          </div>
-                        </li>
-                      );
+                      return obj.item_variants?.map((variant) => {
+                        return (
+                          <li key={variant.id} className="p-0 overflow-hidden">
+                            <div
+                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
+                              onClick={() => {
+                                addMultiItem({
+                                  ...obj,
+                                  ...variant,
+                                  id: variant.id,
+                                });
+                                setSearchItem("");
+                              }}
+                            >
+                              {obj.code + " - " + obj.name.substring(0, 20)}{" "}
+                              {obj.name.length > 20 && "..."}
+                              {" - " + variant.variant + " " + variant.unit}
+                            </div>
+                          </li>
+                        );
+                      });
                     })}
                   </ul>
                 )}
-
                 <div className="mt-2 bg-amber-200 rounded-md">
                   {selectedItems.length > 0 &&
                     selectedItems?.map((obj) => {
                       return (
-                        <div key={obj.id} className="p-0 overflow-hidden mb-1">
+                        <div key={obj?.id} className="p-0 overflow-hidden mb-1">
                           <div
                             className="group font-normal flex items-center justify-between p-4 normal-case text-justify transition-all text-xs hover:bg-rose-200 bg-amber-50 border border-amber-400 rounded-md cursor-pointer"
                             onClick={() => {
@@ -1798,8 +1823,10 @@ export default function Patients() {
                             }}
                           >
                             <div>
-                              <b>{obj.code}</b>
-                              {" - " + obj.name}{" "}
+                              <b>{obj?.code}</b>
+                              {" - " + obj?.name}
+                              {" - "}
+                              {obj?.variant + " " + obj?.unit}
                             </div>
                             <div className="flex justify-center font-bold">
                               <i className="fas fa-x collapse hidden group-hover:flex ml-3 transition-all text-rose-600"></i>

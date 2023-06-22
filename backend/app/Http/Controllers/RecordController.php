@@ -97,7 +97,7 @@ class RecordController extends Controller
 
     public function show($patient)
     {
-        $record = Record::with('recordFiles', 'recordDiagnoses', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.item', 'recordServices', 'recordServices.service')->where("patient_id", $patient)->latest()->get();
+        $record = Record::with('recordFiles', 'recordDiagnoses.diagnose', 'recordItems', 'recordItems.itemVariant.item', 'recordServices.service')->where("patient_id", $patient)->latest()->get();
         return response()->json($record);
     }
 
@@ -239,7 +239,7 @@ class RecordController extends Controller
                     if ($item[$i]) {
                         $data = [
                             'record_id'     => $record->id,
-                            'item_id'  => $item[$i],
+                            'item_variant_id'  => $item[$i],
                         ];
                         RecordItem::create($data);
                     }

@@ -427,7 +427,7 @@ export default function PurchaseOrder() {
       let data = {
         item_variant_id: obj.item_variant_id,
         qty: obj.qty,
-        cost: obj.buy_price,
+        cost: obj.cost || obj.buy_price,
         manufacturing: obj.manufacturing,
         expired: obj.expired,
       };
@@ -438,6 +438,7 @@ export default function PurchaseOrder() {
     setPutForm({ items: items });
   }, [JSON.stringify(selectedItems)]);
 
+  // console.log(item?.data[0]);
   console.log(putForm);
 
   return (
@@ -941,13 +942,18 @@ export default function PurchaseOrder() {
                             <div
                               className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
                               onClick={() => {
-                                addMultiItem({...obj, ...variant, item_variant_id: variant.id});
+                                addMultiItem({
+                                  ...obj,
+                                  ...variant,
+                                  cost: obj.buy_price,
+                                  item_variant_id: variant.id,
+                                });
                                 setSearchItem("");
                               }}
                             >
                               {obj.code + " - " + obj.name.substring(0, 20)}{" "}
                               {obj.name.length > 20 && "..."}
-                              {" - " + variant.variant +" "+ variant.unit}
+                              {" - " + variant.variant + " " + variant.unit}
                             </div>
                           </li>
                         );
@@ -966,7 +972,8 @@ export default function PurchaseOrder() {
                               <div className="flex justify-between">
                                 <p className="text-[1rem] font-semibold">
                                   <span>{obj.code}</span>
-                                  {" - " + obj.name}{" "}{" - " + obj.variant +" "+ obj.unit}
+                                  {" - " + obj.name}{" "}
+                                  {" - " + obj.variant + " " + obj.unit}
                                 </p>
                                 <div
                                   className="flex justify-center font-bold"
@@ -1223,8 +1230,9 @@ export default function PurchaseOrder() {
                             <div>
                               <div className="flex justify-between">
                                 <p className="text-[1rem] font-semibold">
-                                  <span>{obj.item?.code}</span>
-                                  {" - " + obj.item?.name}{" "}
+                                  <span>{obj.item_variant?.item?.code}</span>
+                                  {" - " + obj.item_variant?.item?.name}{" "}
+                                  {" - " + obj.item_variant?.variant + " " + obj.item_variant?.unit}
                                 </p>
                                 <div
                                   className="flex justify-center font-bold"
@@ -1253,9 +1261,7 @@ export default function PurchaseOrder() {
                                   <input
                                     type="text"
                                     disabled
-                                    value={numeral(obj.item?.buy_price).format(
-                                      "0,0"
-                                    )}
+                                    value={numeral(obj.cost).format("0,0")}
                                     className="input input-bordered input-sm bg-amber-100 bg-opacity-50 border-amber-300 w-full mt-2"
                                   />
                                 </div>
@@ -1265,7 +1271,7 @@ export default function PurchaseOrder() {
                                     type="text"
                                     disabled
                                     value={numeral(
-                                      obj.item?.buy_price * obj.qty
+                                      obj.cost * obj.qty
                                     ).format("0,0")}
                                     className="input input-bordered input-sm bg-amber-100  bg-opacity-50 border-amber-300 w-full mt-2"
                                   />
@@ -1308,8 +1314,7 @@ export default function PurchaseOrder() {
                     <p>
                       {numeral(
                         selectedItems?.reduce(
-                          (total, item) =>
-                            total + item.item?.buy_price * item.qty,
+                          (total, item) => total + item.cost * item.qty,
                           0
                         )
                       ).format("0,0")}
@@ -1392,8 +1397,8 @@ export default function PurchaseOrder() {
                             <div>
                               <div className="flex justify-between">
                                 <p className="text-[1rem] font-semibold">
-                                  <span>{obj.item?.code}</span>
-                                  {" - " + obj.item?.name}{" "}
+                                  <span>{obj.item_variant?.item?.code}</span>
+                                  {" - " + obj.item_variant?.item?.name}{" - "}{obj.item_variant?.variant + " " + obj.item_variant?.unit}
                                 </p>
                                 <div
                                   className="flex justify-center font-bold"
@@ -1423,9 +1428,7 @@ export default function PurchaseOrder() {
                                   <input
                                     type="text"
                                     disabled
-                                    value={numeral(obj.item?.buy_price).format(
-                                      "0,0"
-                                    )}
+                                    value={numeral(obj.cost).format("0,0")}
                                     className="input input-bordered input-sm bg-gray-100 bg-opacity-50 border-gray-300 w-full mt-2"
                                   />
                                 </div>
@@ -1434,9 +1437,9 @@ export default function PurchaseOrder() {
                                   <input
                                     type="text"
                                     disabled
-                                    value={numeral(
-                                      obj.item?.buy_price * obj.qty
-                                    ).format("0,0")}
+                                    value={numeral(obj.cost * obj.qty).format(
+                                      "0,0"
+                                    )}
                                     className="input input-bordered input-sm bg-gray-100  bg-opacity-50 border-gray-300 w-full mt-2"
                                   />
                                 </div>
@@ -1481,7 +1484,7 @@ export default function PurchaseOrder() {
                       {numeral(
                         selectedItems?.reduce(
                           (total, item) =>
-                            total + item.item?.buy_price * item.qty,
+                            total + item.cost * item.qty,
                           0
                         )
                       ).format("0,0")}

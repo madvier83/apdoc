@@ -103,7 +103,7 @@ export default function History() {
     getItem();
   }, []);
 
-  // console.log(item)
+  console.log(item)
 
   return (
     <>
@@ -672,12 +672,13 @@ export default function History() {
                                                 //   setSelectedCart(obj);
                                                 // }}
                                               >
-                                                {obj.item?.name}
+                                                {obj.item?.name}{" - "}
+                                                {obj.item_variant?.variant + " " + obj.item_variant?.unit}
                                               </span>
                                               <span className="ml-2 opacity-50">
                                                 #{" "}
                                                 {numeral(
-                                                  obj.item?.sell_price
+                                                  obj.item_variant?.sell_price
                                                 ).format("0,0")}
                                               </span>
                                             </td>
@@ -734,7 +735,7 @@ export default function History() {
                                                   <span>
                                                     {" "}
                                                     {numeral(
-                                                      obj.item.sell_price *
+                                                      obj.item_variant?.sell_price *
                                                         obj.qty
                                                     ).format("0,0")}
                                                   </span>
