@@ -12,6 +12,11 @@ class Employee extends Model
     protected $guarded = ['id'];
 
     // one to many employee with position
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
+
     public function position()
     {
         return $this->belongsTo(Position::class);
