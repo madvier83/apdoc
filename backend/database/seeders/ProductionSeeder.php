@@ -5,10 +5,13 @@ namespace Database\Seeders;
 use App\Models\Access;
 use App\Models\Clinic;
 use App\Models\Employee;
-use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Laravolt\Indonesia\Seeds\CitiesSeeder;
+use Laravolt\Indonesia\Seeds\VillagesSeeder;
+use Laravolt\Indonesia\Seeds\DistrictsSeeder;
+use Laravolt\Indonesia\Seeds\ProvincesSeeder;
 
 class ProductionSeeder extends Seeder
 {
