@@ -13,7 +13,7 @@ class ClinicController extends Controller
     public function index()
     {
         try {
-            $clinic = Clinic::where('apdoc_id', auth()->user()->apdoc_id)->where('is_delete', false)->get();
+            $clinic = Clinic::with(['province', 'city', 'district', 'village'])->where('apdoc_id', auth()->user()->apdoc_id)->where('is_delete', false)->get();
     
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -24,7 +24,7 @@ class ClinicController extends Controller
     public function getByApdocId($id)
     {
         try {
-            $clinic = Clinic::where('apdoc_id', $id)->where('is_delete', false)->get();
+            $clinic = Clinic::with(['province', 'city', 'district', 'village'])->where('apdoc_id', $id)->where('is_delete', false)->get();
     
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -56,7 +56,7 @@ class ClinicController extends Controller
     public function show($id)
     {
         try {
-            $clinic = Clinic::find($id);
+            $clinic = Clinic::with(['province', 'city', 'district', 'village'])->find($id);
 
             return response()->json($clinic);
         } catch (Throwable $e) {
@@ -67,13 +67,16 @@ class ClinicController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name'        => 'required',
-            'address'     => 'required',
-            'province'    => 'required',
-            'city'        => 'required',
-            'district'    => 'required',
-            'postal_code' => 'required',
-            'phone'       => 'required',
+            'name'              => 'required',
+            'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         try {
@@ -85,9 +88,13 @@ class ClinicController extends Controller
                 'logo'        => null,
                 'name'        => $clinic->name,
                 'phone'       => $clinic->phone,
+                'province_id' => $clinic->province_id,
+                'city_id'     => $clinic->city_id,
+                'district_id' => $clinic->district_id,
+                'village_id'  => $clinic->village_id,
                 'address'     => $clinic->address,
-                'city'        => $clinic->city,
-                'country'     => $clinic->province,
+                'rt'          => $clinic->rt,
+                'rw'          => $clinic->rw,
                 'postal_code' => $clinic->postal_code,
                 'clinic_id'   => $clinic->id
             ]);
@@ -113,13 +120,16 @@ class ClinicController extends Controller
         }
 
         $this->validate($request, [
-            'name'        => 'required',
-            'address'     => 'required',
-            'province'    => 'required',
-            'city'        => 'required',
-            'district'    => 'required',
-            'postal_code' => 'required',
-            'phone'       => 'required',
+            'name'              => 'required',
+            'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         try {

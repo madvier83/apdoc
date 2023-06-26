@@ -28,11 +28,6 @@ class ProductionSeeder extends Seeder
 
         $clinic = Clinic::create([
             'name'        => null,
-            'address'     => null,
-            'province'    => null,
-            'city'        => null,
-            'district'    => null,
-            'postal_code' => null,
             'phone'       => null,
             'apdoc_id'    => time() . 'AP1',
             'status'      => 'active'
@@ -41,12 +36,11 @@ class ProductionSeeder extends Seeder
         $employee = Employee::create([
             'nik'         => null,
             'name'        => 'Administrator',
+            'position_id' => null,
             'birth_place' => null,
             'birth_date'  => null,
             'gender'      => null,
-            'address'     => null,
             'phone'       => null,
-            'position_id' => null,
             'clinic_id'   => $clinic->id
         ]);
 
@@ -54,7 +48,7 @@ class ProductionSeeder extends Seeder
             'email'             => 'cursor.id',
             'password'          => app('hash')->make('Cursor123'),
             'role_id'           => 1,
-            'phone'             => '+6289518223591',
+            'phone'             => '628995754988',
             'otp_verification'  => '750587',
             'created_at_otp'    => Carbon::now(),
             'expired_otp'       => Carbon::now(),

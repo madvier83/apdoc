@@ -40,13 +40,17 @@ class SettingController extends Controller
         }
 
         $this->validate($request, [
-            'logo'        => 'image',
-            'name'        => 'required',
-            'phone'       => 'required',
-            'address'     => 'required',
-            'city'        => 'required',
-            'country'     => 'required',
-            'postal_code' => 'required',
+            'logo'              => 'image',
+            'name'              => 'required',
+            'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         try {

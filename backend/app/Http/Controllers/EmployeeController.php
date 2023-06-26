@@ -15,7 +15,7 @@ class EmployeeController extends Controller
 
         try {
             if ($keyword == null) {
-                $employee = Employee::with(['position', 'users'])
+                $employee = Employee::with(['position', 'users', 'province', 'city', 'district', 'village'])
                     ->where(function($query) {
                         $query->doesntHave('users')->orWhereRelation('users', 'apdoc_id', null);
                     })
@@ -24,7 +24,7 @@ class EmployeeController extends Controller
                     ->orderBy($sortBy, $order)
                     ->paginate($perPage);
             } else {
-                $employee = Employee::with(['position', 'users'])
+                $employee = Employee::with(['position', 'users', 'province', 'city', 'district', 'village'])
                     ->where(function($query) use ($keyword) {
                         $query->where('nik', 'like', '%'.$keyword.'%')
                             ->orWhere('name', 'like', '%'.$keyword.'%')
@@ -55,7 +55,7 @@ class EmployeeController extends Controller
     public function show($id)
     {
         try {
-            $employee = Employee::with('position')->find($id);
+            $employee = Employee::with(['position', 'province', 'city', 'district', 'village'])->find($id);
     
             return response()->json($employee);
         } catch (Throwable $e) {
@@ -74,12 +74,19 @@ class EmployeeController extends Controller
         $this->validate($request, [
             'nik'               => 'required',
             'name'              => 'required|string',
+            'position_id'       => 'required',
             'birth_place'       => 'required|string',
             'birth_date'        => 'required|date|before:now',
             'gender'            => 'required|in:male,female',
-            'address'           => 'required',
             'phone'             => 'required',
-            'position_id'       => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         try {
@@ -107,8 +114,15 @@ class EmployeeController extends Controller
             'birth_place'       => 'required|string',
             'birth_date'        => 'required|date|before:now',
             'gender'            => 'required|in:male,female',
-            'address'           => 'required',
             'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         if($employee->nik != $request->nik) {
