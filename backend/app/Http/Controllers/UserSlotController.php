@@ -14,7 +14,7 @@ class UserSlotController extends Controller
     public function index()
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
+            $user = UserSlot::with(['user.employee.clinic', 'user.role'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {
@@ -25,7 +25,7 @@ class UserSlotController extends Controller
     public function getByClinicId($id)
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee', 'user.role'])->where('clinic_id', $id)->get();
+            $user = UserSlot::with(['user.employee.clinic', 'user.role'])->where('clinic_id', $id)->get();
     
             return response()->json($user);
         } catch (Throwable $e) {
@@ -36,7 +36,7 @@ class UserSlotController extends Controller
     public function show($id)
     {
         try {
-            $user = UserSlot::with(['user', 'user.employee'])->find($id);
+            $user = UserSlot::with(['user.employee.clinic', 'user.role'])->find($id);
     
             return response()->json($user);
         } catch (Throwable $e) {
