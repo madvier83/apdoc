@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import axios from "../api/axios";
-import jwt_decode from "jwt-decode"
+import jwt_decode from "jwt-decode";
+import { gzip, ungzip } from "pako";
+import { GetCookieChunk, SetCookieChunk } from "../../services/CookieChunk";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
@@ -36,31 +38,32 @@ export default function Login() {
       const response = await axios.post("/auth/login", data, {
         "Content-Type": "application/json",
       });
-      console.log(response)
       var payload = parseJwt(response.data.access_token);
 
-      if (payload.role_id >= 2) {
-        setCookie("token", response.data.access_token, {
-          maxAge: 60 * 60 * 12,
-        });
-        // setCredential("");
-        // setPwd("");
-        router.push("/dashboard");
-      }
+      const token = response.data.access_token;
+
+      SetCookieChunk("token_", token);
+
+      // console.log(GetCookieChunk("token_"));
+
+      // console.log(response.data.access_token)
+      // Set the cookie with the compressed token
+      // setCookie("token", compressedString, {
+      //   maxAge: 60 * 60 * 12, // Set the desired max age of the cookie
+      // });
+
+      // window.sessionStorage.setItem("token", response.data.access_token);
+      // setCredential("");
+      // setPwd("");
+
+      router.push("/dashboard");
+      // if (payload.role_id >= 2) {
+      // }
       // setLoading(false);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       setLoading(false);
       setLoginError(e.response?.data?.message || "Login failed");
-      // if (e.response?.status == 403) {
-      //   router.push(
-      //     {
-      //       pathname: "/auth/verify",
-      //       query: { email: credential },
-      //     },
-      //     "/auth/verify"
-      //   );
-      // }
     }
   }
 

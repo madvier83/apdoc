@@ -10,9 +10,10 @@ import numeral, { Numeral } from "numeral";
 import ReactToPrint from "react-to-print";
 import ModalDelete from "../../components/Modals/ModalDelete";
 import jwtDecode from "jwt-decode";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Settings() {
-  const token = getCookie("token");
+  const token = GetCookieChunk("token_");
   const settingsFormRef = useRef();
   const structRef = useRef();
 
@@ -252,7 +253,7 @@ export default function Settings() {
 
   useEffect(() => {
     if (token) {
-      setPayload(jwtDecode(getCookie("token")));
+      setPayload(jwtDecode(token));
     }
   }, [token]);
 

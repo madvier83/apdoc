@@ -8,9 +8,10 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function CategoryItem() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -77,7 +78,7 @@ export default function CategoryItem() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -95,7 +96,7 @@ export default function CategoryItem() {
     try {
       const response = await axios.post("category-item", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -117,7 +118,7 @@ export default function CategoryItem() {
     try {
       const response = await axios.put(`category-item/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -135,7 +136,7 @@ export default function CategoryItem() {
     try {
       const response = await axios.delete(`category-item/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getCategory();
@@ -155,7 +156,7 @@ export default function CategoryItem() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -216,7 +217,7 @@ export default function CategoryItem() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -256,7 +257,7 @@ export default function CategoryItem() {
     });
   }, [category]);
 
-  console.log(addForm)
+  // console.log(addForm)
 
   return (
     <>

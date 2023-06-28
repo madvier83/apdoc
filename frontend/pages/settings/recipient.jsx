@@ -8,9 +8,10 @@ import axios from "../api/axios";
 import moment from "moment";
 import numeral, { Numeral } from "numeral";
 import ReactToPrint from "react-to-print";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Settings() {
-  const token = getCookie("token");
+  const token = GetCookieChunk("token_");
   const settingsFormRef = useRef();
   const structRef = useRef();
 

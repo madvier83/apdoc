@@ -10,9 +10,10 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Supplier() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -89,11 +90,11 @@ export default function Supplier() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       setItem(response.data);
       setItemLoading(false);
     } catch (err) {
@@ -120,7 +121,7 @@ export default function Supplier() {
   //       }?page=${page}`,
   //       {
   //         headers: {
-  //           Authorization: "Bearer" + token.token,
+  //           Authorization: "Bearer" + token,
   //         },
   //       }
   //     );
@@ -136,7 +137,7 @@ export default function Supplier() {
     try {
       const response = await axios.post("supplier", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -158,7 +159,7 @@ export default function Supplier() {
     try {
       const response = await axios.put(`supplier/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -178,7 +179,7 @@ export default function Supplier() {
     try {
       const response = await axios.delete(`supplier/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -197,7 +198,7 @@ export default function Supplier() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -261,7 +262,7 @@ export default function Supplier() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

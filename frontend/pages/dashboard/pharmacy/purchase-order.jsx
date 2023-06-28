@@ -10,6 +10,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 // import { Html5QrcodeScanner } from "html5-qrcode";
 // import { Html5Qrcode } from "html5-qrcode";
@@ -21,7 +22,7 @@ import Loading from "../../../components/loading";
 // import { QrReader } from "react-qr-reader";
 
 export default function PurchaseOrder() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -101,13 +102,13 @@ export default function PurchaseOrder() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
       setItem(response.data);
       setItemLoading(false);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (err) {
       console.error(err);
       setItem({});
@@ -132,12 +133,12 @@ export default function PurchaseOrder() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
       setItems(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (err) {
       console.error(err);
       setItem({});
@@ -161,7 +162,7 @@ export default function PurchaseOrder() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -177,7 +178,7 @@ export default function PurchaseOrder() {
     try {
       const response = await axios.post("purchase-order", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -203,7 +204,7 @@ export default function PurchaseOrder() {
         {},
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -222,7 +223,7 @@ export default function PurchaseOrder() {
         putForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -243,7 +244,7 @@ export default function PurchaseOrder() {
     try {
       const response = await axios.delete(`purchase-order/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -262,7 +263,7 @@ export default function PurchaseOrder() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -326,7 +327,7 @@ export default function PurchaseOrder() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -439,7 +440,7 @@ export default function PurchaseOrder() {
   }, [JSON.stringify(selectedItems)]);
 
   // console.log(item?.data[0]);
-  console.log(putForm);
+  // console.log(putForm);
 
   return (
     <>

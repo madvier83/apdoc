@@ -6,9 +6,10 @@ import axios from "../../api/axios";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { useRouter } from "next/router";
 import Highlighter from "react-highlight-words";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Clients() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
 
   const tableRef = useRef();
@@ -34,7 +35,7 @@ export default function Clients() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

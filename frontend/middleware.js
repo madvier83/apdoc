@@ -1,6 +1,7 @@
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
+import { ungzip } from "pako";
 // import dotenv from "dotenv";
 
 // dotenv.convig();
@@ -13,9 +14,32 @@ export async function middleware(req) {
     }
 
     const url = req.nextUrl.clone()
+    
+    // Retrieve the cookie chunks
+    const cookieChunks = [];
 
-    const jwt = req.cookies.get("token")?.value;
+    for (let i = 0; i < 9; i++) {
+        const cookieName = `${"token_"}${i}`;
+        const chunkCookie = req.cookies.get(cookieName)?.value;
+
+        if (chunkCookie) {
+            cookieChunks.push(chunkCookie);
+        }
+    }
+
+    // Combine the cookie chunks
+    const originalToken = cookieChunks.join('');
+    // console.log(cookieChunks)
+
+    
+    let jwt = originalToken
     const secret =  new TextEncoder().encode(process.env.JWT_SECRET);
+    
+    // const {payload} = await jwtVerify(jwt, secret);
+    // console.log(payload)
+    console.log(jwt)
+    // return;
+    
     
     if(pathname == "/") {
         return NextResponse.next()
@@ -264,6 +288,7 @@ export async function middleware(req) {
         url.pathname = "/dashboard"
         return NextResponse.redirect(url);
     }
+    
 }
 
 export const config = { matcher: "/((?!.*\\.).*)" };

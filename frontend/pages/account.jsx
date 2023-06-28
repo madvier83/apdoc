@@ -5,6 +5,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ModalBox from "../components/Modals/ModalBox";
 import axios from "./api/axios";
 import ModalDelete from "../components/Modals/ModalDelete";
+import { GetCookieChunk } from "../services/CookieChunk";
 
 export default function Account() {
   const userFormRef = useRef();
@@ -23,7 +24,7 @@ export default function Account() {
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
 
-  const token = getCookie("token");
+  const token = GetCookieChunk("token_");
   function parseJwt() {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }
@@ -42,6 +43,11 @@ export default function Account() {
     birth_place: "",
     birth_date: "",
     gender: "",
+
+    district: "",
+    city: "",
+    province: "",
+    postal_code: "",
   };
   const initialClinicForm = {
     id: "",
@@ -110,6 +116,7 @@ export default function Account() {
         birth_place: response.data.employee.birth_place,
         birth_date: response.data.employee.birth_date,
         gender: response.data.employee.gender,
+        role_id: response.data.role_id
       };
       setUser(userData);
       setUserForm(userData);
@@ -494,7 +501,7 @@ export default function Account() {
   //   return () => clearTimeout(getData);
   // }, [putClinicForm.district]);
 
-  // console.log(codes);
+  // console.log(user); 
   return (
     <>
       <DashboardLayout title="Account">
@@ -595,7 +602,7 @@ export default function Account() {
                             />
                           </div>
                         </div>
-                        <div className="relative w-full mb-3">
+                        <div className="relative w-full">
                           <label
                             className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                             htmlFor="grid-password"
@@ -618,99 +625,144 @@ export default function Account() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>Provice</span>
+                          <div className="form-control w-full">
+                            <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                              <span className="mt-2 ">Province</span>
                             </label>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.birth_place || ""}
-                                disabled={!isEditUser}
-                                name="birth_place"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              />
-                            </div>
+                            <select
+                              type="text"
+                              name="province"
+                              value={userForm.province}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              placeholder=""
+                              className="input input-bordered input-primary border-slate-300 w-full"
+                            >
+                              <option className="text-black">Select</option>
+                              {provinces?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            {putClinicFormError.province && (
+                              <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                                <span className="mt-2 -alt text-rose-300">
+                                  {putClinicFormError.province}
+                                </span>
+                              </label>
+                            )}
                           </div>
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>City</span>
+                          <div className="form-control w-full">
+                            <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                              <span className="mt-2 ">City</span>
                             </label>
-                            <div className="relative">
-                              <input
-                                type="date"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.birth_date || ""}
-                                disabled={!isEditUser}
-                                name="birth_date"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              />
-                            </div>
+                            <select
+                              type="text"
+                              name="city"
+                              value={userForm.city}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              placeholder=""
+                              className="input input-bordered input-primary border-slate-300 w-full"
+                            >
+                              <option className="text-black">Select</option>
+                              {cities?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            {putClinicFormError.city && (
+                              <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                                <span className="mt-2 -alt text-rose-300">
+                                  {putClinicFormError.city}
+                                </span>
+                              </label>
+                            )}
                           </div>
                         </div>
+
                         <div className="flex gap-4">
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>District</span>
+                          <div className="form-control w-full">
+                            <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                              <span className="mt-2 ">District</span>
                             </label>
-                            <div className="relative">
-                              <select
-                                type="text"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.gender || ""}
-                                disabled={!isEditUser}
-                                name="gender"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              >
-                                <option>Select</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                              </select>
-                            </div>
+                            <select
+                              type="text"
+                              name="district"
+                              value={userForm.district}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              placeholder=""
+                              className="input input-bordered input-primary border-slate-300 w-full"
+                            >
+                              <option className="text-black">Select</option>
+                              {districts?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            {putClinicFormError.district && (
+                              <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                                <span className="mt-2 -alt text-rose-300">
+                                  {putClinicFormError.district}
+                                </span>
+                              </label>
+                            )}
                           </div>
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>Postal Code</span>
+                          <div className="form-control w-full">
+                            <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                              <span className="mt-2 ">Postal Code</span>
                             </label>
-                            <div className="relative">
-                              <select
-                                type="text"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.gender || ""}
-                                disabled={!isEditUser}
-                                name="gender"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              >
-                                <option>Select</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                              </select>
-                            </div>
+                            <select
+                              type="text"
+                              name="postal_code"
+                              value={userForm.postal_code}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              placeholder=""
+                              className="input input-bordered input-primary border-slate-300 w-full"
+                            >
+                              <option className="text-black">Select</option>
+                              {codes?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-black"
+                                    value={obj.id}
+                                  >
+                                    {obj.meta?.pos + " : " + obj.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            {putClinicFormError.postal_code && (
+                              <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
+                                <span className="mt-2 -alt text-rose-300">
+                                  {putClinicFormError.postal_code}
+                                </span>
+                              </label>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -900,7 +952,7 @@ export default function Account() {
             </div>
           </div>
 
-          <div className="w-full mt-1 mb-16">
+          <div className={`w-full mt-1 mb-16 ${userData?.role_id > 2 && "hidden"}`}>
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 bg-gray-900 rounded-md border-0">
               {/* Personal detail form */}
               <div className="rounded-md bg-gray-900 text-white mb-0 px-6 py-6">
@@ -1035,7 +1087,7 @@ export default function Account() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              <input
+              {/* <input
                 type="text"
                 name="phone"
                 value={addClinicForm.phone}
@@ -1043,7 +1095,7 @@ export default function Account() {
                 required
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
-              />
+              /> */}
               {addClinicFormError.phone && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">

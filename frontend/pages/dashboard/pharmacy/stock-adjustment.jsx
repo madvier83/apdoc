@@ -8,9 +8,10 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function StockAdjustment() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -88,7 +89,7 @@ export default function StockAdjustment() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -105,7 +106,7 @@ export default function StockAdjustment() {
     try {
       const response = await axios.get(`item-supply/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setSupplyDb(response.data);
@@ -133,7 +134,7 @@ export default function StockAdjustment() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -151,7 +152,7 @@ export default function StockAdjustment() {
     try {
       const response = await axios.post("stock-adjustment", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -174,7 +175,7 @@ export default function StockAdjustment() {
         putForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -193,7 +194,7 @@ export default function StockAdjustment() {
     try {
       const response = await axios.delete(`stock-adjustment/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -213,7 +214,7 @@ export default function StockAdjustment() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -274,7 +275,7 @@ export default function StockAdjustment() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

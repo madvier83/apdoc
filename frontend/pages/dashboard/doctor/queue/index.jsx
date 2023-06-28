@@ -16,6 +16,7 @@ import DashboardLayout from "../../../../layouts/DashboardLayout";
 import axios from "../../../api/axios";
 import Link from "next/link";
 import ModalDelete from "../../../../components/Modals/ModalDelete";
+import { GetCookieChunk } from "../../../../services/CookieChunk";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -69,7 +70,7 @@ export default function Queue() {
   // add queue ref
   let listRef = useRef();
 
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
 
@@ -77,7 +78,7 @@ export default function Queue() {
     try {
       const response = await axios.get("patients", {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setPatients(response.data);
@@ -95,7 +96,7 @@ export default function Queue() {
         {},
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -116,7 +117,7 @@ export default function Queue() {
         {},
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -139,7 +140,7 @@ export default function Queue() {
     try {
       const response = await axios.get(`queues/${clinic && clinic + "/"}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response.data);
@@ -175,7 +176,7 @@ export default function Queue() {
         `appointments/${clinic && clinic + "/"}${999999}?page=${1}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -220,7 +221,7 @@ export default function Queue() {
         {},
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }

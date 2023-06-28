@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { deleteCookie } from "cookies-next";
 
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
+import { DeleteAllCookies } from "../../services/CookieChunk";
 
 export default function AdminSidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
@@ -157,7 +158,7 @@ export default function AdminSidebar() {
                 <li className="items-center">
                   <button
                     onClick={() => {
-                      deleteCookie("token");
+                      DeleteAllCookies();
                       router.push("/auth/admin");
                     }}
                     className={"text-xs py-3 font-bold block  text-slate-500"}

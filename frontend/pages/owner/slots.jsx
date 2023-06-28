@@ -6,9 +6,10 @@ import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import ModalDelete from "../../components/Modals/ModalDelete";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Slots() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const [clinic, setClinic] = useState();
 
@@ -74,7 +75,7 @@ export default function Slots() {
     try {
       const response = await axios.get(`/user-slots/${clinic && clinic}/clinic`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setUsers(response.data);
@@ -91,7 +92,7 @@ export default function Slots() {
     try {
       const response = await axios.get(`accesses/${clinic && clinic}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setRoles(response.data);
@@ -118,7 +119,7 @@ export default function Slots() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -135,7 +136,7 @@ export default function Slots() {
     try {
       const response = await axios.post(`/user-slot/${addForm.id}`, addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response);
@@ -154,7 +155,7 @@ export default function Slots() {
     try {
       const response = await axios.put(`/user-slot/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setPutForm(initialForm);
@@ -172,7 +173,7 @@ export default function Slots() {
     try {
       const response = await axios.delete(`/user-slot/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response);

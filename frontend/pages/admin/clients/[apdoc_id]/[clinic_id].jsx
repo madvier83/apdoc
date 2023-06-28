@@ -6,9 +6,10 @@ import axios from "../../../api/axios";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { useRouter } from "next/router";
 import Highlighter from "react-highlight-words";
+import { GetCookieChunk } from "../../../../services/CookieChunk";
 
 export default function Client() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
 
   const tableRef = useRef();
@@ -24,7 +25,7 @@ export default function Client() {
     try {
       const response = await axios.get(`/user-slots/${router.query?.clinic_id}/clinic`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       console.log(response);

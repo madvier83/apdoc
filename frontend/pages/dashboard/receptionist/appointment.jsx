@@ -8,9 +8,10 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import numeral from "numeral";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Appointment() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -83,7 +84,7 @@ export default function Appointment() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -114,7 +115,7 @@ export default function Appointment() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -133,7 +134,7 @@ export default function Appointment() {
         addForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -156,7 +157,7 @@ export default function Appointment() {
     try {
       const response = await axios.put(`appointment/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -174,7 +175,7 @@ export default function Appointment() {
     try {
       const response = await axios.delete(`appointment/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -218,7 +219,7 @@ export default function Appointment() {
     return () => clearTimeout(getData);
   }, [searchPatients, clinic]);
 
-  console.log(item)
+  // console.log(item)
   return (
     <>
       <DashboardLayout

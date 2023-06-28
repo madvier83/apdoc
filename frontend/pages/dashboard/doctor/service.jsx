@@ -11,9 +11,10 @@ import Highlighter from "react-highlight-words";
 
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Service() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -92,7 +93,7 @@ export default function Service() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -110,7 +111,7 @@ export default function Service() {
     try {
       const response = await axios.post("service", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -133,7 +134,7 @@ export default function Service() {
     try {
       const response = await axios.put(`service/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -153,7 +154,7 @@ export default function Service() {
     try {
       const response = await axios.delete(`service/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getServices();
@@ -178,7 +179,7 @@ export default function Service() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -199,7 +200,7 @@ export default function Service() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -260,7 +261,7 @@ export default function Service() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -306,7 +307,7 @@ export default function Service() {
     }, 500);
     return () => clearTimeout(getData);
   }, [searchCategory]);
-  console.log(services.data)
+  // console.log(services.data)
   return (
     <>
       <DashboardLayout title="Services" clinic={clinic} setClinic={setClinic}>

@@ -7,9 +7,10 @@ import DashboardLayout from "../../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../../components/loading";
+import { GetCookieChunk } from "../../../../services/CookieChunk";
 
 export default function Patients() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
 
   const tableRef = useRef();
@@ -43,7 +44,7 @@ export default function Patients() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

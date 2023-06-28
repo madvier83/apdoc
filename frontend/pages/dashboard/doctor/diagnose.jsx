@@ -10,9 +10,10 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Diagnose() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -77,7 +78,7 @@ export default function Diagnose() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -95,7 +96,7 @@ export default function Diagnose() {
     try {
       const response = await axios.post("diagnose", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -117,7 +118,7 @@ export default function Diagnose() {
     try {
       const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -135,7 +136,7 @@ export default function Diagnose() {
   //   try {
   //     const response = await axios.delete(`diagnose/${id}`, {
   //       headers: {
-  //         Authorization: "Bearer" + token.token,
+  //         Authorization: "Bearer" + token,
   //       },
   //     });
   //     getDiagnosis();

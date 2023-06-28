@@ -18,9 +18,10 @@ import axios from "../../api/axios";
 import numeral from "numeral";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import CurrencyInput from "react-currency-input-field";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Transaction() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   // Drag to scroll ref
   const servicesRef = useRef();
@@ -115,7 +116,7 @@ export default function Transaction() {
     try {
       const response = await axios.get(`setting/${clinic}/clinic`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response.data);
@@ -133,7 +134,7 @@ export default function Transaction() {
     try {
       const response = await axios.get(`queues/${clinic && clinic}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setQueues(response.data);
@@ -166,7 +167,7 @@ export default function Transaction() {
         }?page=${1}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -185,7 +186,7 @@ export default function Transaction() {
         `/record/${selectedQueue?.patient?.id}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -205,7 +206,7 @@ export default function Transaction() {
         `promotions/${clinic && clinic + "/"}${9999999}?page=${1}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -227,7 +228,7 @@ export default function Transaction() {
         }${9999999}?page=${1}&sortBy=${"name"}&order=${"asc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -247,7 +248,7 @@ export default function Transaction() {
         `category-payments/${clinic && clinic + "/"}${9999999}?page=${1}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -515,7 +516,7 @@ export default function Transaction() {
     try {
       const response = await axios.post(`transaction`, transaction, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });

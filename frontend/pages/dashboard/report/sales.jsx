@@ -12,9 +12,10 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Sales() {
-  const token = getCookies("token"); 
+  const token = GetCookieChunk("token_");
   
   const [clinic, setClinic] = useState();
 
@@ -92,7 +93,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -118,7 +119,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -140,7 +141,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -162,7 +163,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -184,7 +185,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -206,7 +207,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -228,7 +229,7 @@ export default function Sales() {
         )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

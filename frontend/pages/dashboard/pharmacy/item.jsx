@@ -10,6 +10,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 // import { Html5QrcodeScanner } from "html5-qrcode";
 // import { Html5Qrcode } from "html5-qrcode";
@@ -21,7 +22,7 @@ import Loading from "../../../components/loading";
 // import { QrReader } from "react-qr-reader";
 
 export default function Item() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const addVariantModalRef = useRef();
@@ -139,7 +140,7 @@ export default function Item() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -177,7 +178,7 @@ export default function Item() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -193,7 +194,7 @@ export default function Item() {
     try {
       const response = await axios.post("item", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -216,7 +217,7 @@ export default function Item() {
     try {
       const response = await axios.put(`item/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -238,7 +239,7 @@ export default function Item() {
     try {
       const response = await axios.post("item-variant", addVariantForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -264,7 +265,7 @@ export default function Item() {
         putVariantForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -287,7 +288,7 @@ export default function Item() {
     try {
       const response = await axios.delete(`item/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -300,7 +301,7 @@ export default function Item() {
     try {
       const response = await axios.delete(`item-variant/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -319,7 +320,7 @@ export default function Item() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -383,7 +384,7 @@ export default function Item() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
