@@ -15,9 +15,9 @@ class PatientController extends Controller
 
         try {
             if ($keyword == null) {
-                $patient = Patient::with('queues')->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
+                $patient = Patient::with(['queues', 'province', 'city', 'district', 'village'])->where('is_delete', false)->where('clinic_id', $clinic)->orderBy($sortBy, $order)->paginate($perPage);
             } else {
-                $patient = Patient::with('queues')->where(function($query) use ($keyword) {
+                $patient = Patient::with(['queues', 'province', 'city', 'district', 'village'])->where(function($query) use ($keyword) {
                     $query->where('nik', 'like', '%'.$keyword.'%')
                         ->orWhere('name', 'like', '%'.$keyword.'%')
                         ->orWhere('birth_place', 'like', '%'.$keyword.'%')
@@ -43,7 +43,7 @@ class PatientController extends Controller
     public function show($id)
     {
         try {
-            $patient = Patient::find($id);
+            $patient = Patient::with(['queues', 'province', 'city', 'district', 'village'])->find($id);
     
             return response()->json($patient);
         } catch (Throwable $e) {
@@ -65,8 +65,15 @@ class PatientController extends Controller
             'birth_place'       => 'required|string',
             'birth_date'        => 'required|date|before:now',
             'gender'            => 'required|in:male,female',
-            'address'           => 'required',
             'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         try {
@@ -94,8 +101,15 @@ class PatientController extends Controller
             'birth_place'       => 'required|string',
             'birth_date'        => 'required|date|before:now',
             'gender'            => 'required|in:male,female',
-            'address'           => 'required',
             'phone'             => 'required',
+            'province_id'       => 'required',
+            'city_id'           => 'required',
+            'district_id'       => 'required',
+            'village_id'        => 'required',
+            'address'           => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'postal_code'       => 'required',
         ]);
 
         if($patient->nik != $request->nik) {

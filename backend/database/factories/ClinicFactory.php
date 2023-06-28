@@ -23,11 +23,11 @@ class ClinicFactory extends Factory
     {
         return [
             'name'        => $this->faker->name,
-            'address'     => $this->faker->streetAddress,
-            'province'    => $this->faker->citySuffix,
-            'city'        => $this->faker->city,
-            'district'    => $this->faker->streetName,
-            'postal_code' => $this->faker->postcode,
+            // 'address'     => $this->faker->streetAddress,
+            // 'province'    => $this->faker->citySuffix,
+            // 'city'        => $this->faker->city,
+            // 'district'    => $this->faker->streetName,
+            // 'postal_code' => $this->faker->postcode,
             'phone'       => $this->faker->phoneNumber,
             'apdoc_id'    => $this->faker->unique()->postcode,
         ];

@@ -18,9 +18,13 @@ class CreateSettingsTable extends Migration
             $table->string('logo')->nullable();
             $table->string('name')->nullable();
             $table->string('phone')->nullable();
+            $table->foreignId('province_id')->nullable();
+            $table->foreignId('city_id')->nullable();
+            $table->foreignId('district_id')->nullable();
+            $table->foreignId('village_id')->nullable();
             $table->longText('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('country')->nullable();
+            $table->string('rt')->nullable();
+            $table->string('rw')->nullable();
             $table->string('postal_code')->nullable();
             $table->foreignId('clinic_id')->nullable();
             $table->timestamps();

@@ -44,11 +44,6 @@ class DatabaseSeeder extends Seeder
 
         $clinic = Clinic::create([
             'name'        => null,
-            'address'     => null,
-            'province'    => null,
-            'city'        => null,
-            'district'    => null,
-            'postal_code' => null,
             'phone'       => null,
             'apdoc_id'    => time() . 'AP1',
             'status'      => 'active'
@@ -60,7 +55,6 @@ class DatabaseSeeder extends Seeder
             'birth_place' => null,
             'birth_date'  => null,
             'gender'      => null,
-            'address'     => null,
             'phone'       => null,
             'position_id' => null,
             'clinic_id'   => $clinic->id
@@ -85,12 +79,15 @@ class DatabaseSeeder extends Seeder
 
         $clinic = Clinic::create([
             'name'        => 'Ngafee',
-            'address'     => 'Jl. Dalem Kaum no. 112',
-            'province'    => 'Jawa Barat',
-            'city'        => 'Kota Bandung',
-            'district'    => 'Lengkong',
-            'postal_code' => '40261',
             'phone'       => '628995754988',
+            'province_id' => 12,
+            'city_id'     => 181,
+            'district_id' => 2557,
+            'village_id'  => 31432,
+            'address'     => "Jl. Dalem Kaum No. 112",
+            'rt'          => "03",
+            'rw'          => "03",
+            'postal_code' => "40261",
             'apdoc_id'    => time() . 'AP2',
             'status'      => 'active'
         ]);
@@ -98,11 +95,15 @@ class DatabaseSeeder extends Seeder
         Setting::create([
 			'logo'        => null,
             'name'        => 'Cursor ID',
-            'phone'       => '628995754988',
-            'address'     => 'Jl. Dalem Kaum',
-            'city'        => 'Bandung',
-            'country'     => 'Jawa Barat',
-            'postal_code' => '40228',
+            'phone'       => '6282376932441',
+            'province_id' => 12,
+            'city_id'     => 181,
+            'district_id' => 2557,
+            'village_id'  => 31432,
+            'address'     => "Jl. Dalem Kaum No. 112",
+            'rt'          => "03",
+            'rw'          => "03",
+            'postal_code' => "40261",
             'clinic_id'   => $clinic->id
 		]);
 
@@ -116,13 +117,16 @@ class DatabaseSeeder extends Seeder
         // Klinik ke-2 Umanis
 
         $clinic = Clinic::create([
-            'name'        => 'Umanis Klinik',
-            'address'     => 'Jl. Kopo Sayati',
-            'province'    => 'Jawa Barat',
-            'city'        => 'Bandung',
-            'district'    => 'Margahayu',
-            'postal_code' => '40228',
-            'phone'       => '6282376932441',
+            'name'        => 'ZStore',
+            'phone'       => '628995754988',
+            'province_id' => 12,
+            'city_id'     => 164,
+            'district_id' => 2116,
+            'village_id'  => 27017,
+            'address'     => "Jl. Kopo Sayati Gg. Narsani",
+            'rt'          => "03",
+            'rw'          => "03",
+            'postal_code' => "40228",
             'apdoc_id'    => $clinic->apdoc_id,
             'status'      => 'active'
         ]);
@@ -131,10 +135,14 @@ class DatabaseSeeder extends Seeder
 			'logo'        => null,
             'name'        => 'Umanis Klinik',
             'phone'       => '6282376932441',
-            'address'     => 'Jl. Kopo Sayati',
-            'city'        => 'Bandung',
-            'country'     => 'Jawa Barat',
-            'postal_code' => '40228',
+            'province_id' => 12,
+            'city_id'     => 164,
+            'district_id' => 2116,
+            'village_id'  => 27017,
+            'address'     => "Jl. Kopo Sayati Gg. Narsani",
+            'rt'          => "03",
+            'rw'          => "03",
+            'postal_code' => "40228",
             'clinic_id'   => $clinic->id
 		]);
 
@@ -148,12 +156,19 @@ class DatabaseSeeder extends Seeder
         $employee = Employee::create([
             'nik'         => '21110533',
             'name'        => 'M Advie Rifaldy',
+            'position_id' => 1,
             'birth_place' => 'Bandung',
             'birth_date'  => '2002-07-09',
             'gender'      => 'male',
-            'address'     => 'Jl. Kopo Sayati',
             'phone'       => '+6282376932445',
-            'position_id' => 1,
+            'province_id' => 12,
+            'city_id'     => 164,
+            'district_id' => 2116,
+            'village_id'  => 27017,
+            'address'     => "Jl. Kopo Sayati Gg. Narsani",
+            'rt'          => "03",
+            'rw'          => "03",
+            'postal_code' => "40228",
             'clinic_id'   => 2
         ]);
 

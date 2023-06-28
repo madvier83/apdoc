@@ -260,12 +260,15 @@ class AuthController extends Controller
             
             $clinic = Clinic::create([
                 'name'        => $request->clinic_name,
-                'address'     => $request->clinic_address,
-                'province'    => $request->province,
-                'city'        => $request->city,
-                'district'    => $request->district,
-                'postal_code' => $request->postal_code,
                 'phone'       => $request->clinic_phone,
+                'province_id' => $request->clinic_province_id,
+                'city_id'     => $request->clinic_city_id,
+                'district_id' => $request->clinic_district_id,
+                'village_id'  => $request->clinic_village_id,
+                'address'     => $request->clinic_address,
+                'rt'          => $request->clinic_rt,
+                'rw'          => $request->clinic_rw,
+                'postal_code' => $request->clinic_postal_code,
                 'apdoc_id'    => $apdoc_id,
                 'status'      => 'active'
             ]);
@@ -273,21 +276,32 @@ class AuthController extends Controller
                 'logo'        => null,
                 'name'        => $clinic->name,
                 'phone'       => $clinic->phone,
+                'province_id' => $clinic->province_id,
+                'city_id'     => $clinic->city_id,
+                'district_id' => $clinic->district_id,
+                'village_id'  => $clinic->village_id,
                 'address'     => $clinic->address,
-                'city'        => $clinic->city,
-                'country'     => $clinic->province,
+                'rt'          => $clinic->rt,
+                'rw'          => $clinic->rw,
                 'postal_code' => $clinic->postal_code,
                 'clinic_id'   => $clinic->id
             ]);
             $employee = Employee::create([
+                'position_id' => null,
                 'nik'         => $request->nik,
                 'name'        => $request->name,
                 'birth_place' => $request->birth_place,
                 'birth_date'  => $request->birth_date,
                 'gender'      => $request->gender,
-                'address'     => $request->owner_address,
                 'phone'       => $request->owner_phone,
-                'position_id' => null,
+                'province_id' => $request->owner_province_id,
+                'city_id'     => $request->owner_city_id,
+                'district_id' => $request->owner_district_id,
+                'village_id'  => $request->owner_village_id,
+                'address'     => $request->owner_address,
+                'rt'          => $request->owner_rt,
+                'rw'          => $request->owner_rw,
+                'postal_code' => $request->owner_postal_code,
                 'clinic_id'   => $clinic->id,
             ]);
             // free slot
@@ -296,6 +310,7 @@ class AuthController extends Controller
                     'clinic_id' => $clinic->id
                 ]);
             }
+            
             $data->name        = $request->name;
             $data->phone       = $request->owner_phone;
             $data->apdoc_id    = $apdoc_id;
