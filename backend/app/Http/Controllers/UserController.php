@@ -10,17 +10,17 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::with('employee')->get();
+        $user = User::with(['employee.province', 'employee.city', 'employee.district', 'employee.village'])->get();
         return response()->json($user);
     }
 
     public function getClient($perPage, $keyword=null)
     {
         try {
-            $user = User::with('employee')->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+            $user = User::with(['employee.province', 'employee.city', 'employee.district', 'employee.village'])->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
 
             if ($keyword == null) {
-                $user = User::with('employee')->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
+                $user = User::with(['employee.province', 'employee.city', 'employee.district', 'employee.village'])->where('role_id', 2)->orderBy('updated_at', 'desc')->paginate($perPage);
             } else {
                 $user = User::with('employee')->where('role_id', 2)
                     ->where('name', 'like', '%'.$keyword.'%')
@@ -69,7 +69,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::with('employee')->find($id);
+        $user = User::with(['employee.province', 'employee.city', 'employee.district', 'employee.village'])->find($id);
         return response()->json($user);
     }
 
