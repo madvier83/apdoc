@@ -1,5 +1,6 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import React, { useEffect, useReducer, useRef, useState } from "react";
+import moment from "moment/moment";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import ModalBox from "../components/Modals/ModalBox";
@@ -19,7 +20,7 @@ export default function Account() {
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [codes, setCodes] = useState([]);
+  const [codes, setVilages] = useState([]);
 
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
@@ -44,22 +45,36 @@ export default function Account() {
     birth_date: "",
     gender: "",
 
-    district: "",
-    city: "",
-    province: "",
     postal_code: "",
+    rt: "",
+    rw: "",
+
+    district_id: "",
+    city_id: "",
+    province_id: "",
+    village_id: "",
   };
+
   const initialClinicForm = {
     id: "",
     name: "",
     phone: "",
     address: "",
-    district: "",
-    city: "",
-    province: "",
+
     postal_code: "",
+    rt: "",
+    rw: "",
+
+    district_id: "",
+    city_id: "",
+    province_id: "",
+    village_id: "",
   };
   const [userForm, setUserForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    initialUserForm
+  );
+  const [userFormError, setUserFormError] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     initialUserForm
   );
@@ -102,7 +117,7 @@ export default function Account() {
           Authorization: "Bearer" + token,
         },
       });
-      // console.log(response.data);
+      // console.log(response);
       let userData = {
         id: response.data.id,
         employee_id: response.data.employee_id,
@@ -116,7 +131,20 @@ export default function Account() {
         birth_place: response.data.employee.birth_place,
         birth_date: response.data.employee.birth_date,
         gender: response.data.employee.gender,
-        role_id: response.data.role_id
+        role_id: response.data.role_id,
+
+        postal_code: response.data.employee.postal_code,
+        rt: response.data.employee.rt,
+        rw: response.data.employee.rw,
+
+        province: response.data.employee.province,
+        province_id: response.data.employee.province_id,
+        city: response.data.employee.city,
+        city_id: response.data.employee.city_id,
+        district: response.data.employee.district,
+        district_id: response.data.employee.district_id,
+        village: response.data.employee.village,
+        village_id: response.data.employee.village_id,
       };
       setUser(userData);
       setUserForm(userData);
@@ -212,11 +240,14 @@ export default function Account() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       setIsEditUser(false);
       getUser();
+      setUserFormError({});
     } catch (err) {
       console.error(err);
+      setUserFormError({});
+      setUserFormError(err.response?.data);
     }
   }
 
@@ -249,6 +280,7 @@ export default function Account() {
         },
       });
       setProvinces(response.data?.data);
+      // return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -260,7 +292,8 @@ export default function Account() {
           "Content-Type": "application/json",
         },
       });
-      setCities(response.data?.data);
+      // setCities(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -275,12 +308,13 @@ export default function Account() {
           },
         }
       );
-      setDistricts(response.data?.data);
+      // setDistricts(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
   }
-  async function getCodes(id) {
+  async function getVilages(id) {
     try {
       const response = await axios.get(
         `location/province/city/district/villages/${id}`,
@@ -290,7 +324,8 @@ export default function Account() {
           },
         }
       );
-      setCodes(response.data?.data);
+      // setVilages(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -308,7 +343,7 @@ export default function Account() {
       email: user?.email,
       phone: user?.phone?.replace(/\D/g, ""),
     };
-    console.log(data);
+    // console.log(data);
     try {
       const response = await axios.post("auth/send/otp", data, {
         "Content-Type": "application/json",
@@ -349,84 +384,128 @@ export default function Account() {
     }
   }
 
-  // console.log(provinces)
   useEffect(() => {
     getProvinces();
+    // setProvinces(getProvinces());
   }, []);
 
   useEffect(() => {
-    const getData = setTimeout(() => {
-      if (!addClinicForm.province) {
+    const getData = setTimeout(async () => {
+      if (!userForm.province_id) {
         setCities([]);
         return;
       }
-      setAddClinicForm({ city: "", districts: "", postal_code: "" });
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
       setCities([]);
       setDistricts([]);
-      setCodes([]);
-      getCities(addClinicForm.province);
+      setVilages([]);
+      setCities(await getCities(userForm.province_id));
     }, 500);
     return () => clearTimeout(getData);
-  }, [addClinicForm.province]);
+  }, [userForm.province_id]);
 
   useEffect(() => {
-    const getData = setTimeout(() => {
-      if (!addClinicForm.city) {
+    const getData = setTimeout(async () => {
+      if (!userForm.city_id) {
         setDistricts([]);
         return;
       }
-      setAddClinicForm({ districts: "", postal_code: "" });
+      // setUserForm({ districts_id: "", village_id: "" });
       setDistricts([]);
-      setCodes([]);
-      getDistricts(addClinicForm.city);
+      setVilages([]);
+      setDistricts(await getDistricts(userForm.city_id));
     }, 500);
     return () => clearTimeout(getData);
-  }, [addClinicForm.city]);
+  }, [userForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!userForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(userForm.district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [userForm.district_id]);
+
+  // console.log(userForm)
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      if (!addClinicForm.district) {
-        setCodes([]);
+      if (!addClinicForm.province_id) {
+        setCities([]);
         return;
       }
-      setAddClinicForm({ postal_code: "" });
-      setCodes([]);
-      getCodes(addClinicForm.district);
+      setAddClinicForm({ city_id: "", district_id: "", postal_code: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      getCities(addClinicForm.province_id);
     }, 500);
     return () => clearTimeout(getData);
-  }, [addClinicForm.district]);
+  }, [addClinicForm.province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      if (!addClinicForm.city_id) {
+        setDistricts([]);
+        return;
+      }
+      setAddClinicForm({ district_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      getDistricts(addClinicForm.city_id);
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addClinicForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      if (!addClinicForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      setAddClinicForm({ village_id: "" });
+      setVilages([]);
+      getVilages(addClinicForm.district_id);
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addClinicForm.district_id]);
 
   useEffect(() => {
     if (isGetUpdateAddress) {
       return;
     }
     const getData = setTimeout(() => {
-      if (!putClinicForm.province) {
+      if (!putClinicForm.province_id) {
         setCities([]);
         return;
       }
-      setPutClinicForm({ city: "", districts: "", postal_code: "" });
+      setPutClinicForm({ city_id: "", district_id: "", village_id: "" });
       setCities([]);
       setDistricts([]);
-      setCodes([]);
-      getCities(putClinicForm.province);
+      setVilages([]);
+      getCities(putClinicForm.province_id);
     }, 500);
     return () => clearTimeout(getData);
-  }, [putClinicForm.province]);
+  }, [putClinicForm.province_id]);
 
   useEffect(() => {
     if (isGetUpdateAddress) {
       return;
     }
     const getData = setTimeout(() => {
-      if (!putClinicForm.city) {
+      if (!putClinicForm.city_id) {
         setDistricts([]);
         return;
       }
-      setPutClinicForm({ districts: "", postal_code: "" });
+      setPutClinicForm({ district_id: "", village_id: "" });
       setDistricts([]);
-      setCodes([]);
-      getDistricts(putClinicForm.city);
+      setVilages([]);
+      getDistricts(putClinicForm.city_id);
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.city]);
@@ -436,72 +515,27 @@ export default function Account() {
       return;
     }
     const getData = setTimeout(() => {
-      if (!putClinicForm.district) {
-        setCodes([]);
+      if (!putClinicForm.district_id) {
+        setVilages([]);
         return;
       }
-      setCodes([]);
-      setPutClinicForm({ postal_code: "" });
-      getCodes(putClinicForm.district);
+      setVilages([]);
+      setPutClinicForm({ village_id: "" });
+      getVilages(putClinicForm.district_id);
     }, 500);
     return () => clearTimeout(getData);
-  }, [putClinicForm.district]);
+  }, [putClinicForm.district_id]);
 
   const [isGetUpdateAddress, setIsGetUpdateAddress] = useState(false);
   async function getUpdateAddress(obj) {
     setIsGetUpdateAddress(true);
-    await getCities(obj.province);
-    await getDistricts(obj.city);
-    await getCodes(obj.district);
+    await getCities(obj.province_id);
+    await getDistricts(obj.city_id);
+    await getVilages(obj.district_id);
     setIsGetUpdateAddress(false);
   }
 
-  // useEffect(() => {
-  //   const getData = setTimeout(() => {
-  //     Object.keys(provinces).map((keyName, i) => {
-  //       if (provinces[keyName] === putClinicForm.province) {
-  //         getCities(keyName);
-  //         setPutClinicForm((prev) => {
-  //           city: prev.city;
-  //         });
-  //       }
-  //     });
-  //     setPutClinicForm({ postal_code: "", district: "", city: "" });
-  //     setDistricts({});
-  //     setCodes({});
-  //   }, 500);
-  //   return () => clearTimeout(getData);
-  // }, [putClinicForm.province]);
-
-  // useEffect(() => {
-  //   const getData = setTimeout(() => {
-  //     Object.keys(cities).map((keyName, i) => {
-  //       if (cities[keyName] === putClinicForm.city) {
-  //         getDistricts(keyName);
-  //         setPutClinicForm((prev) => {
-  //           district: "";
-  //         });
-  //       }
-  //     });
-  //     setPutClinicForm({ postal_code: "", district: "" });
-  //     setCodes({});
-  //   }, 500);
-  //   return () => clearTimeout(getData);
-  // }, [putClinicForm.city]);
-
-  // useEffect(() => {
-  //   const getData = setTimeout(() => {
-  //     Object.keys(districts).map((keyName, i) => {
-  //       if (districts[keyName] === putClinicForm.district) {
-  //         getCodes(keyName);
-  //       }
-  //     });
-  //     setPutClinicForm({ postal_code: "" });
-  //   }, 500);
-  //   return () => clearTimeout(getData);
-  // }, [putClinicForm.district]);
-
-  // console.log(user); 
+  // console.log(provinces);
   return (
     <>
       <DashboardLayout title="Account">
@@ -520,13 +554,18 @@ export default function Account() {
                             ? "bg-rose-500 active:bg-rose-400"
                             : "bg-indigo-500 active:bg-indigo-400"
                         } text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 cursor-pointer`}
-                        onClick={() => {
+                        onClick={async () => {
                           setIsEditUser((prev) => {
                             return !prev;
                           });
                           setTimeout(() => userFormRef.current.focus(), 10);
                           getUser();
+                          // setProvinces();
+                          setCities(await getCities(user.province_id));
+                          setDistricts(await getDistricts(user.city_id));
+                          setVilages(await getVilages(user.district_id));
                           // console.log(userForm);
+                          setUserFormError({});
                         }}
                       >
                         {isEditUser ? "Cancel" : "Edit"}{" "}
@@ -540,7 +579,7 @@ export default function Account() {
                         <button
                           className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                         >
-                          Save
+                          Save Changes
                           <i className={`fas fa-save ml-2`}></i>
                         </button>
                       ) : (
@@ -550,56 +589,657 @@ export default function Account() {
                   </div>
                 </div>
                 <div
+                  className={`flex-auto pb-8 px-4 pt-0 ${
+                    !isEditUser ? "block" : "hidden"
+                  } transition-all text-gray-300 flex flex-wrap"`}
+                >
+                  <table className="mx-8 text-sm w-3/5">
+                    <tbody>
+                      <tr className="text-white">
+                        <td className="py-[9.1px] font-semibold text-lg w-1/4">
+                          NIK
+                        </td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 text-lg tracking-wider">
+                          {user?.nik}
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Name</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.name || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Birth</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          {user?.birth_place +
+                            ", " +
+                            moment(user?.birth_date).format("DD MMMM yyyy") ||
+                            "-"}
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Gender</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 capitalize">
+                          {user?.gender || "-"}
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="py-1">~</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Address</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.address || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">RT/RW</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.rt + " / " + user?.rw}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Postal Code</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.postal_code || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Village</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.village?.name || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">District</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.district?.name || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">City</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.city?.name || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Province</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.province?.name || "-"}</td>
+                      </tr>
+                      <tr className="">
+                        <td className="py-1">~</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Email</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="relative">
+                            <input
+                              type="email"
+                              className={`bg-transparent border-0 px-0 placeholder-blueGray-300 text-gray-400 rounded text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                              value={userForm.email}
+                              disabled
+                            />
+                            {!user?.email_verified_at ? (
+                              emailSent ? (
+                                sendEmailLoading ? (
+                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                    {/* <p>Loading</p> */}
+                                    <img
+                                      src="/loading.svg"
+                                      alt="now loading"
+                                      className="absolute"
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                    Verification Email Sent
+                                  </span>
+                                )
+                              ) : (
+                                <span
+                                  onClick={sendVerifyEmail}
+                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                >
+                                  Verify now{" "}
+                                  <i className="fas fa-arrow-right"></i>
+                                </span>
+                              )
+                            ) : (
+                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Verified <i className="fas fa-check"></i>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Phone</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="relative">
+                            <div className="flex">
+                              <input
+                                type="select"
+                                className={`bg-transparent border-0 w-6 placeholder-blueGray-300 text-gray-400 rounded-l text-sm shadow ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={"+62"}
+                                disabled
+                              />
+                              <input
+                                type="text"
+                                className={`bg-transparent border-0 placeholder-blueGray-300 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={userForm.phone
+                                  .replace("+", "")
+                                  .substring(2)}
+                                disabled
+                              />
+                            </div>
+                            {!user?.phone_verified_at ? (
+                              emailSent ? (
+                                sendEmailLoading ? (
+                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                    {/* <p>Loading</p> */}
+                                    <img
+                                      src="/loading.svg"
+                                      alt="now loading"
+                                      className="absolute"
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                    Verification Email Sent
+                                  </span>
+                                )
+                              ) : (
+                                <label
+                                  htmlFor="verifyPhoneModal"
+                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                >
+                                  Verify now{" "}
+                                  <i className="fas fa-arrow-right"></i>
+                                </label>
+                              )
+                            ) : (
+                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Verified <i className="fas fa-check"></i>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div
+                  className={`flex-auto pb-8 px-4 pt-0 ${
+                    !isEditUser ? "hidden" : "block"
+                  } transition-all text-gray-300 flex flex-wrap"`}
+                >
+                  <table className="mx-8 text-sm w-3/5">
+                    <tbody>
+                      <tr className="text-white">
+                        <td className="py-2 font-semibold text-lg w-1/4">
+                          NIK
+                        </td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 text-lg tracking-wider">
+                          <input
+                            type="text"
+                            name="nik"
+                            value={userForm.nik || ""}
+                            disabled={!isEditUser}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-lg placeholder-blueGray-300 text-white rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Name</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <input
+                            type="text"
+                            name="name"
+                            value={userForm.name || ""}
+                            disabled={!isEditUser}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Birth</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              name="birth_place"
+                              value={userForm.birth_place || ""}
+                              disabled={!isEditUser}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              className={`${
+                                isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                              } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                            <p className="font-bold w-[4%] text-center">/</p>
+                            <input
+                              type="date"
+                              name="birth_date"
+                              value={userForm.birth_date || ""}
+                              disabled={!isEditUser}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              className={`${
+                                isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                              } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Gender</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 capitalize">
+                          <select
+                            type="text"
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 placeholder-blueGray-300 text-slate-300 rounded text-sm shadow w-full ease-linear transition-all duration-150`}
+                            value={userForm.gender || ""}
+                            disabled={!isEditUser}
+                            name="gender"
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                          >
+                            <option disabled>Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="py-1">~</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Address</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <input
+                            type="text"
+                            name="address"
+                            value={userForm.address || ""}
+                            disabled={!isEditUser}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">RT/RW</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              name="rt"
+                              value={userForm.rt || ""}
+                              disabled={!isEditUser}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              className={`${
+                                isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                              } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                            <p className="font-bold w-[4%] text-center">/</p>
+                            <input
+                              type="text"
+                              name="rw"
+                              value={userForm.rw || ""}
+                              disabled={!isEditUser}
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                              className={`${
+                                isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                              } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Postal Code</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <input
+                            type="text"
+                            name="postal_code"
+                            value={userForm.postal_code || ""}
+                            disabled={!isEditUser}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Village</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <select
+                            type="text"
+                            name="village_id"
+                            value={userForm.village_id}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            placeholder=""
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {codes?.map((obj) => {
+                              return (
+                                <option
+                                  key={obj.id}
+                                  className="text-white"
+                                  value={obj.id}
+                                >
+                                  {obj.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">District</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <select
+                            type="text"
+                            name="district_id"
+                            value={userForm.district_id}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            placeholder=""
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {districts.length &&
+                              districts?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-white"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">City</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <select
+                            type="text"
+                            name="city_id"
+                            value={userForm.city_id}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            placeholder=""
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {cities?.map((obj) => {
+                              return (
+                                <option
+                                  key={obj.id}
+                                  className="text-white"
+                                  value={obj.id}
+                                >
+                                  {obj.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Province</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <select
+                            type="text"
+                            name="province_id"
+                            value={userForm.province_id}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            placeholder=""
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {provinces.length &&
+                              provinces?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-white"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="py-1">~</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Email</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="relative">
+                            <input
+                              type="email"
+                              className={`${
+                                isEditUser ? "bg-slate-800" : "bg-slate-900"
+                              } border-0 px-2 placeholder-blueGray-300 text-gray-400 rounded text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                              value={userForm.email}
+                              disabled
+                            />
+                            {!user?.email_verified_at ? (
+                              emailSent ? (
+                                sendEmailLoading ? (
+                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                    {/* <p>Loading</p> */}
+                                    <img
+                                      src="/loading.svg"
+                                      alt="now loading"
+                                      className="absolute"
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                    Verification Email Sent
+                                  </span>
+                                )
+                              ) : (
+                                <span
+                                  onClick={sendVerifyEmail}
+                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                >
+                                  Verify now{" "}
+                                  <i className="fas fa-arrow-right"></i>
+                                </span>
+                              )
+                            ) : (
+                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Verified <i className="fas fa-check"></i>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Phone</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <div className="relative">
+                            <div className="flex">
+                              <input
+                                type="select"
+                                className={`${
+                                  isEditUser ? "bg-slate-700" : "bg-slate-900"
+                                } border-0 w-11 pl-2 placeholder-blueGray-300 text-gray-400 rounded-l text-sm shadow ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={"+62"}
+                                disabled
+                              />
+                              <input
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-slate-800" : "bg-slate-900"
+                                } border-0 placeholder-blueGray-300 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={userForm.phone
+                                  .replace("+", "")
+                                  .substring(2)}
+                                disabled
+                              />
+                            </div>
+                            {!user?.phone_verified_at ? (
+                              emailSent ? (
+                                sendEmailLoading ? (
+                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                    {/* <p>Loading</p> */}
+                                    <img
+                                      src="/loading.svg"
+                                      alt="now loading"
+                                      className="absolute"
+                                    />
+                                  </span>
+                                ) : (
+                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                    Verification Email Sent
+                                  </span>
+                                )
+                              ) : (
+                                <label
+                                  htmlFor="verifyPhoneModal"
+                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                >
+                                  Verify now{" "}
+                                  <i className="fas fa-arrow-right"></i>
+                                </label>
+                              )
+                            ) : (
+                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                Verified <i className="fas fa-check"></i>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div
                   className={`flex-auto px-4 pt-0 ${
-                    !isEditUser ? "pb-8" : "pb-16"
+                    !isEditUser ? "pb-8 hidden" : "pb-16 hidden"
                   } transition-all`}
                 >
                   <div className="flex flex-wrap">
-                    <div className="flex gap-8 w-full px-4">
+                    <div className="flex gap-8 flex-row-reverse w-full px-4">
                       <div className="w-full">
-                        <div className="relative w-full mb-3">
-                          <label
-                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                            htmlFor="grid-password"
-                          >
-                            <span>NIK</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              className={`${
-                                isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                `}
-                              value={userForm.nik || ""}
-                              disabled={!isEditUser}
-                              name="nik"
-                              onChange={(e) => handleUserForm(e)}
-                              required
-                            />
+                        <div className="relative w-full flex gap-4 items-center">
+                          <div className="relative w-full mb-2">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth place</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_place || ""}
+                                disabled={!isEditUser}
+                                name="birth_place"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <div className="relative w-full mb-3">
-                          <label
-                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                            htmlFor="grid-password"
-                          >
-                            <span>Full Name </span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              className={`${
-                                isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                `}
-                              value={userForm.name || ""}
-                              disabled={!isEditUser}
-                              ref={userFormRef}
-                              name="name"
-                              onChange={(e) => handleUserForm(e)}
-                              required
-                            />
+                          <div className="relative w-full mb-2">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Birth date</span>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="date"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150`}
+                                value={userForm.birth_date || ""}
+                                disabled={!isEditUser}
+                                name="birth_date"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="relative w-full mb-2">
+                            <label
+                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                              htmlFor="grid-password"
+                            >
+                              <span>Gender</span>
+                            </label>
+                            <div className="relative">
+                              <select
+                                type="text"
+                                className={`${
+                                  isEditUser ? "bg-white" : "bg-zinc-100"
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150`}
+                                value={userForm.gender || ""}
+                                disabled={!isEditUser}
+                                name="gender"
+                                onChange={(e) => handleUserForm(e)}
+                                required
+                              >
+                                <option>Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
+                            </div>
                           </div>
                         </div>
                         <div className="relative w-full">
@@ -614,10 +1254,11 @@ export default function Account() {
                               type="text"
                               className={`${
                                 isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                              } border-0 p-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150"
                 `}
                               value={userForm.address || ""}
                               disabled={!isEditUser}
+                              rows={1}
                               name="address"
                               onChange={(e) => handleUserForm(e)}
                               required
@@ -631,30 +1272,32 @@ export default function Account() {
                             </label>
                             <select
                               type="text"
-                              name="province"
-                              value={userForm.province}
+                              name="province_id"
+                              value={userForm.province_id}
                               onChange={(e) => handleUserForm(e)}
                               required
+                              disabled={!isEditUser}
                               placeholder=""
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {provinces?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.name}
-                                  </option>
-                                );
-                              })}
+                              {provinces.length &&
+                                provinces?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-black"
+                                      value={obj.id}
+                                    >
+                                      {obj.name}
+                                    </option>
+                                  );
+                                })}
                             </select>
-                            {putClinicFormError.province && (
+                            {putClinicFormError.province_id && (
                               <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                                 <span className="mt-2 -alt text-rose-300">
-                                  {putClinicFormError.province}
+                                  {putClinicFormError.province_id}
                                 </span>
                               </label>
                             )}
@@ -665,30 +1308,32 @@ export default function Account() {
                             </label>
                             <select
                               type="text"
-                              name="city"
-                              value={userForm.city}
+                              name="city_id"
+                              value={userForm.city_id}
                               onChange={(e) => handleUserForm(e)}
                               required
+                              disabled={!isEditUser}
                               placeholder=""
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {cities?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.name}
-                                  </option>
-                                );
-                              })}
+                              {cities.length &&
+                                cities?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-black"
+                                      value={obj.id}
+                                    >
+                                      {obj.name}
+                                    </option>
+                                  );
+                                })}
                             </select>
-                            {putClinicFormError.city && (
+                            {putClinicFormError.city_id && (
                               <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                                 <span className="mt-2 -alt text-rose-300">
-                                  {putClinicFormError.city}
+                                  {putClinicFormError.city_id}
                                 </span>
                               </label>
                             )}
@@ -702,30 +1347,32 @@ export default function Account() {
                             </label>
                             <select
                               type="text"
-                              name="district"
-                              value={userForm.district}
+                              name="district_id"
+                              value={userForm.district_id}
                               onChange={(e) => handleUserForm(e)}
                               required
+                              disabled={!isEditUser}
                               placeholder=""
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {districts?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.name}
-                                  </option>
-                                );
-                              })}
+                              {districts.length &&
+                                districts?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-black"
+                                      value={obj.id}
+                                    >
+                                      {obj.name}
+                                    </option>
+                                  );
+                                })}
                             </select>
-                            {putClinicFormError.district && (
+                            {putClinicFormError.district_id && (
                               <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                                 <span className="mt-2 -alt text-rose-300">
-                                  {putClinicFormError.district}
+                                  {putClinicFormError.district_id}
                                 </span>
                               </label>
                             )}
@@ -740,21 +1387,23 @@ export default function Account() {
                               value={userForm.postal_code}
                               onChange={(e) => handleUserForm(e)}
                               required
+                              disabled={!isEditUser}
                               placeholder=""
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {codes?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.meta?.pos + " : " + obj.name}
-                                  </option>
-                                );
-                              })}
+                              {codes?.length &&
+                                codes?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-black"
+                                      value={obj.id}
+                                    >
+                                      {obj.meta?.pos + " : " + obj.name}
+                                    </option>
+                                  );
+                                })}
                             </select>
                             {putClinicFormError.postal_code && (
                               <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
@@ -773,6 +1422,51 @@ export default function Account() {
                             className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
                             htmlFor="grid-password"
                           >
+                            <span>NIK</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150"
+                `}
+                              value={userForm.nik || ""}
+                              disabled={!isEditUser}
+                              name="nik"
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
+                            <span>Name </span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className={`${
+                                isEditUser ? "bg-white" : "bg-zinc-100"
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150"
+                `}
+                              value={userForm.name || ""}
+                              disabled={!isEditUser}
+                              ref={userFormRef}
+                              name="name"
+                              onChange={(e) => handleUserForm(e)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="relative w-full mb-3">
+                          <label
+                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
+                            htmlFor="grid-password"
+                          >
                             <span>Email </span>
                           </label>
                           <div className="relative">
@@ -780,7 +1474,7 @@ export default function Account() {
                               type="email"
                               className={`${
                                 isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
                               value={userForm.email}
                               disabled
                             />
@@ -830,7 +1524,7 @@ export default function Account() {
                                 type="select"
                                 className={`${
                                   isEditUser ? "bg-zinc-100" : "bg-zinc-200"
-                                } border-0 w-14 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-l text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150 cursor-not-allowed`}
+                                } border-0 w-14 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-l text-sm shadow ease-linear transition-all duration-150 cursor-not-allowed`}
                                 value={"+62"}
                                 disabled
                               />
@@ -838,7 +1532,7 @@ export default function Account() {
                                 type="text"
                                 className={`${
                                   isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-r text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 cursor-not-allowed`}
+                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded-r text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
                                 value={userForm.phone.substring(2)}
                                 disabled
                               />
@@ -875,75 +1569,6 @@ export default function Account() {
                             )}
                           </div>
                         </div>
-                        <div className="relative w-full flex gap-4 items-center mt-3">
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>Birth place</span>
-                            </label>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.birth_place || ""}
-                                disabled={!isEditUser}
-                                name="birth_place"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              />
-                            </div>
-                          </div>
-                          <div className="relative w-full mb-3">
-                            <label
-                              className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                              htmlFor="grid-password"
-                            >
-                              <span>Birth date</span>
-                            </label>
-                            <div className="relative">
-                              <input
-                                type="date"
-                                className={`${
-                                  isEditUser ? "bg-white" : "bg-zinc-100"
-                                } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                                value={userForm.birth_date || ""}
-                                disabled={!isEditUser}
-                                name="birth_date"
-                                onChange={(e) => handleUserForm(e)}
-                                required
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="relative w-full mb-3">
-                          <label
-                            className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between"
-                            htmlFor="grid-password"
-                          >
-                            <span>Gender</span>
-                          </label>
-                          <div className="relative">
-                            <select
-                              type="text"
-                              className={`${
-                                isEditUser ? "bg-white" : "bg-zinc-100"
-                              } border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                              value={userForm.gender || ""}
-                              disabled={!isEditUser}
-                              name="gender"
-                              onChange={(e) => handleUserForm(e)}
-                              required
-                            >
-                              <option>Select</option>
-                              <option value="male">Male</option>
-                              <option value="female">Female</option>
-                            </select>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -952,7 +1577,9 @@ export default function Account() {
             </div>
           </div>
 
-          <div className={`w-full mt-1 mb-16 ${userData?.role_id > 2 && "hidden"}`}>
+          <div
+            className={`w-full mt-1 mb-16 ${userData?.role_id > 2 && "hidden"}`}
+          >
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 bg-gray-900 rounded-md border-0">
               {/* Personal detail form */}
               <div className="rounded-md bg-gray-900 text-white mb-0 px-6 py-6">
@@ -967,7 +1594,7 @@ export default function Account() {
                       onClick={() => {
                         setCities([]);
                         setDistricts([]);
-                        setCodes([]);
+                        setVilages([]);
                       }}
                       className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                     >
@@ -999,8 +1626,8 @@ export default function Account() {
                             )}
                           </h2>
                           <p className="mt-2">
-                            {obj.address || "-"}, {obj.district || "-"},{" "}
-                            {obj.city || "-"}, {obj.province || "-"},{" "}
+                            {obj.address || "-"}, {obj.district.name || "-"},{" "}
+                            {obj.city.name || "-"}, {obj.province.name || "-"},{" "}
                             {obj.postal_code || "-"}.
                           </p>
                           <p>
@@ -1087,15 +1714,6 @@ export default function Account() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-              {/* <input
-                type="text"
-                name="phone"
-                value={addClinicForm.phone}
-                onChange={(e) => handleAddClinicForm(e)}
-                required
-                placeholder=""
-                className="input input-bordered input-primary border-slate-300 w-full"
-              /> */}
               {addClinicFormError.phone && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
@@ -1132,42 +1750,32 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="province"
-                  value={addClinicForm.province}
+                  name="province_id"
+                  value={addClinicForm.province_id}
                   onChange={(e) => handleAddClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {provinces?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
-                  {/* {Object.keys(provinces).map((keyName, i) => (
-                    <option
-                      key={provinces[keyName]}
-                      className="text-black"
-                      value={provinces[keyName]}
-                    >
-                      {provinces[keyName]}
-                    </option>
-                  ))} */}
+                  {provinces.length &&
+                    provinces?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
-                {addClinicFormError.province && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {addClinicFormError.province}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.province_id}
+                  </span>
+                </label>
               </div>
               <div className="form-control w-full">
                 <label className="label">
@@ -1175,33 +1783,32 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="city"
-                  value={addClinicForm.city}
+                  name="city_id"
+                  value={addClinicForm.city_id}
                   onChange={(e) => handleAddClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {cities?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
+                  {cities.length &&
+                    cities?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
-                {addClinicFormError.city && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {addClinicFormError.city}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.city_id}
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -1212,39 +1819,72 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="district"
-                  value={addClinicForm.district}
+                  name="district_id"
+                  value={addClinicForm.district_id}
                   onChange={(e) => handleAddClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {districts?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
+                  {districts.length &&
+                    districts?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
-                {addClinicFormError.district && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {addClinicFormError.district}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.district_id}
+                  </span>
+                </label>
               </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Village</span>
+                </label>
+                <select
+                  type="text"
+                  name="village_id"
+                  value={addClinicForm.village_id}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                >
+                  <option className="text-black">Select</option>
+                  {codes?.length &&
+                    codes?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.meta?.pos + " : " + obj.name}
+                        </option>
+                      );
+                    })}
+                </select>
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addClinicFormError.village_id}
+                  </span>
+                </label>
+              </div>
+
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Postal Code</span>
                 </label>
-                <select
+                <input
                   type="text"
                   name="postal_code"
                   value={addClinicForm.postal_code}
@@ -1252,24 +1892,56 @@ export default function Account() {
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
-                >
-                  <option className="text-black">Select</option>
-                  {codes?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.meta?.pos + " : " + obj.name}
-                      </option>
-                    );
-                  })}
-                </select>
+                />
                 {addClinicFormError.postal_code && (
                   <label className="label">
                     <span className="label-text-alt text-rose-300">
                       {addClinicFormError.postal_code}
+                    </span>
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">RT</span>
+                </label>
+                <input
+                  type="text"
+                  name="rt"
+                  value={addClinicForm.rt}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {addClinicFormError.rt && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.rt}
+                    </span>
+                  </label>
+                )}
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">RW</span>
+                </label>
+                <input
+                  type="text"
+                  name="rw"
+                  value={addClinicForm.rw}
+                  onChange={(e) => handleAddClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {addClinicFormError.rw && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addClinicFormError.rw}
                     </span>
                   </label>
                 )}
@@ -1372,17 +2044,18 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {provinces?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
+                  {provinces.length &&
+                    provinces?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
                 {putClinicFormError.province && (
                   <label className="label">
@@ -1406,17 +2079,18 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {cities?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
+                  {cities.length &&
+                    cities?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
                 {putClinicFormError.city && (
                   <label className="label">
@@ -1443,17 +2117,18 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {districts?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.name}
-                      </option>
-                    );
-                  })}
+                  {districts.length &&
+                    districts?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
                 {putClinicFormError.district && (
                   <label className="label">
@@ -1477,17 +2152,18 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {codes?.map((obj) => {
-                    return (
-                      <option
-                        key={obj.id}
-                        className="text-black"
-                        value={obj.id}
-                      >
-                        {obj.meta?.pos + " : " + obj.name}
-                      </option>
-                    );
-                  })}
+                  {codes?.length &&
+                    codes?.map((obj) => {
+                      return (
+                        <option
+                          key={obj.id}
+                          className="text-black"
+                          value={obj.id}
+                        >
+                          {obj.meta?.pos + " : " + obj.name}
+                        </option>
+                      );
+                    })}
                 </select>
                 {putClinicFormError.postal_code && (
                   <label className="label">
