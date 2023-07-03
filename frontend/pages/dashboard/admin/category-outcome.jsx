@@ -7,9 +7,10 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function CategoryOutcome() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -77,7 +78,7 @@ export default function CategoryOutcome() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -95,7 +96,7 @@ export default function CategoryOutcome() {
     try {
       const response = await axios.post("category-outcome", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -119,7 +120,7 @@ export default function CategoryOutcome() {
         putForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -138,7 +139,7 @@ export default function CategoryOutcome() {
     try {
       const response = await axios.delete(`category-outcome/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getCategory();
@@ -157,7 +158,7 @@ export default function CategoryOutcome() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -218,7 +219,7 @@ export default function CategoryOutcome() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

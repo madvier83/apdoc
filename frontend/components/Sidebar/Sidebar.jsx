@@ -6,6 +6,7 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import NotificationDropdown from "../Dropdowns/NotificationDropdown";
 import ModalBox from "../Modals/ModalBox";
 import axios from "../../pages/api/axios";
+import { DeleteAllCookies, GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -202,7 +203,7 @@ export default function Sidebar() {
     },
   ];
 
-  const token = getCookie("token");
+  const token = GetCookieChunk("token_");
   function parseJwt(token) {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }
@@ -211,11 +212,11 @@ export default function Sidebar() {
     let jwt = parseJwt(token);
     try {
       // setAccesses(JSON.parse(jwt.accesses));
-      if (jwt.role_id == 2) {
+      if (jwt?.role_id == 2) {
         // console.log(jwt.role_id)
         setAccesses(initialAccess);
       } else {
-        setAccesses(JSON.parse(jwt.accesses));
+        setAccesses(JSON.parse(jwt?.accesses));
       }
     } catch (e) {}
     setUser(jwt);
@@ -528,69 +529,72 @@ export default function Sidebar() {
                   </Link>
                 </li> */}
 
-                <li
-                  // key={index}
-                  className={`items-center list-none ${
-                    router.pathname == "/" && "text-emerald-500 "
-                  }`}
-                >
-                  <button
-                    onClick={() =>
-                      setSidebar({
-                        ...initialSidebar,
-                        settings: !sidebar.settings,
-                      })
-                    }
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
-                    }
-                  >
-                    <i className={`fas fa-cogs mr-2 text-sm `}></i> Settings
-                  </button>
-
-                  <ul
-                    className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
-                      sidebar.settings == true ? "block" : "hidden"
+                {user?.role_id == 2 && (
+                  <li
+                    // key={index}
+                    className={`items-center list-none ${
+                      router.pathname == "/" && "text-emerald-500 "
                     }`}
                   >
-                    <li
-                      // key={index}
-                      className={`items-center list-none ${
-                        router.pathname.startsWith("/settings/recipient") &&
-                        "text-emerald-500"
+                    <button
+                      onClick={() =>
+                        setSidebar({
+                          ...initialSidebar,
+                          settings: !sidebar.settings,
+                        })
+                      }
+                      className={
+                        "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                      }
+                    >
+                      <i className={`fas fa-cogs mr-2 text-sm `}></i> Settings
+                    </button>
+
+                    <ul
+                      className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                        sidebar.settings == true ? "block" : "hidden"
                       }`}
                     >
-                      <Link
-                        scroll={false}
-                        href={"/settings/recipient"}
-                        className={
-                          "text-xs py-3 font-semibold block capitalize"
-                        }
+                      <li
+                        // key={index}
+                        className={`items-center list-none ${
+                          router.pathname.startsWith("/settings/recipient") &&
+                          "text-emerald-500"
+                        }`}
                       >
-                        <i className={`fas fa-scroll mr-2 text-sm`}></i>{" "}
-                        Recipient
-                      </Link>
-                    </li>
-                    <li
-                      // key={index}
-                      className={`items-center list-none ${
-                        router.pathname.startsWith("/settings/notification") &&
-                        "text-emerald-500"
-                      }`}
-                    >
-                      <Link
-                        scroll={false}
-                        href={"/settings/notification"}
-                        className={
-                          "text-xs py-3 font-semibold block capitalize"
-                        }
+                        <Link
+                          scroll={false}
+                          href={"/settings/recipient"}
+                          className={
+                            "text-xs py-3 font-semibold block capitalize"
+                          }
+                        >
+                          <i className={`fas fa-scroll mr-2 text-sm`}></i>{" "}
+                          Recipient
+                        </Link>
+                      </li>
+                      <li
+                        // key={index}
+                        className={`items-center list-none ${
+                          router.pathname.startsWith(
+                            "/settings/notification"
+                          ) && "text-emerald-500"
+                        }`}
                       >
-                        <i className={`fas fa-envelope mr-2 text-sm`}></i>{" "}
-                        Notification
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
+                        <Link
+                          scroll={false}
+                          href={"/settings/notification"}
+                          className={
+                            "text-xs py-3 font-semibold block capitalize"
+                          }
+                        >
+                          <i className={`fas fa-envelope mr-2 text-sm`}></i>{" "}
+                          Notification
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
 
                 <li
                   className={`items-center ${
@@ -614,8 +618,9 @@ export default function Sidebar() {
                 >
                   <button
                     onClick={() => {
-                      deleteCookie("clinic");
-                      deleteCookie("token");
+                      // deleteCookie("clinic");
+                      // deleteCookie("token");
+                      DeleteAllCookies();
                       router.push("/auth/login");
                     }}
                     className={"text-xs py-3 font-bold block  text-slate-500"}

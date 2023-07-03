@@ -6,9 +6,10 @@ import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import ModalDelete from "../../components/Modals/ModalDelete";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Access() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const addModalScrollRef = useRef();
@@ -213,7 +214,7 @@ export default function Access() {
     try {
       const response = await axios.get(`accesses/${clinic}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setUsers(response.data);
@@ -304,7 +305,7 @@ export default function Access() {
         { ...addForm, accesses: JSON.stringify(addForm.accesses) },
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -329,7 +330,7 @@ export default function Access() {
         { ...putForm, accesses: JSON.stringify(putForm.accesses) },
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -349,7 +350,7 @@ export default function Access() {
     try {
       const response = await axios.delete(`/access/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       console.log(response);
@@ -373,7 +374,7 @@ export default function Access() {
     getUser();
   }, []);
 
-  console.log(users);
+  // console.log(users);
 
   return (
     <>

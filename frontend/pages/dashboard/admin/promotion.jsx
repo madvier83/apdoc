@@ -7,9 +7,10 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Promotion() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -78,7 +79,7 @@ export default function Promotion() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -96,7 +97,7 @@ export default function Promotion() {
     try {
       const response = await axios.post("promotion", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -117,7 +118,7 @@ export default function Promotion() {
     try {
       const response = await axios.put(`promotion/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -135,7 +136,7 @@ export default function Promotion() {
     try {
       const response = await axios.delete(`promotion/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getPromotion();
@@ -154,7 +155,7 @@ export default function Promotion() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -215,7 +216,7 @@ export default function Promotion() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

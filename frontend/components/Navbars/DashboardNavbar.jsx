@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import axios from "../../pages/api/axios";
 import { getCookie, setCookie } from "cookies-next";
 import Script from "next/script";
+import { GetCookieChunk } from "../../services/CookieChunk";
 // import veri
 
 export default function Navbar({ title, clinic, setClinic }) {
@@ -13,7 +14,7 @@ export default function Navbar({ title, clinic, setClinic }) {
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
 
-  const token = getCookie("token");
+  const token = GetCookieChunk("token_");
   function parseJwt(token) {
     return JSON.parse(Buffer?.from(token?.split(".")[1], "base64").toString());
   }

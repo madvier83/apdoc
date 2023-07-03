@@ -7,9 +7,10 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Payment() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -82,7 +83,7 @@ export default function Payment() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -111,7 +112,7 @@ export default function Payment() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -127,7 +128,7 @@ export default function Payment() {
     try {
       const response = await axios.post("payment", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -148,7 +149,7 @@ export default function Payment() {
     try {
       const response = await axios.put(`payment/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -166,7 +167,7 @@ export default function Payment() {
     try {
       const response = await axios.delete(`payment/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -186,7 +187,7 @@ export default function Payment() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -247,7 +248,7 @@ export default function Payment() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

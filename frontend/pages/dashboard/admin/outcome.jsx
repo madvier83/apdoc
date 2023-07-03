@@ -9,9 +9,10 @@ import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Outcome() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -86,7 +87,7 @@ export default function Outcome() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -116,7 +117,7 @@ export default function Outcome() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -132,7 +133,7 @@ export default function Outcome() {
     try {
       const response = await axios.post("outcome", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -153,7 +154,7 @@ export default function Outcome() {
     try {
       const response = await axios.put(`outcome/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -171,7 +172,7 @@ export default function Outcome() {
     try {
       const response = await axios.delete(`outcome/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -190,7 +191,7 @@ export default function Outcome() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -251,7 +252,7 @@ export default function Outcome() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

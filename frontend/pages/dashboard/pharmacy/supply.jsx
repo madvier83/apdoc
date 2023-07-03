@@ -8,9 +8,10 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral, { options } from "numeral";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function ItemSupply() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const detailModalRef = useRef();
   const addModalRef = useRef();
@@ -90,7 +91,7 @@ export default function ItemSupply() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -120,7 +121,7 @@ export default function ItemSupply() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -137,7 +138,7 @@ export default function ItemSupply() {
     try {
       const response = await axios.post("item-supply", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -158,7 +159,7 @@ export default function ItemSupply() {
     try {
       const response = await axios.put(`item-supply/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -176,7 +177,7 @@ export default function ItemSupply() {
     try {
       const response = await axios.delete(`item-supply/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getItem();
@@ -195,7 +196,7 @@ export default function ItemSupply() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -259,7 +260,7 @@ export default function ItemSupply() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -314,7 +315,7 @@ export default function ItemSupply() {
     });
   }, [itemDb]);
 
-  console.log(itemDb.data);
+  // console.log(itemDb.data);
 
   return (
     <>

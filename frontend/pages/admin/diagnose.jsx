@@ -4,15 +4,16 @@ import moment from "moment/moment";
 import numeral from "numeral";
 
 import axios from "../api/axios";
-import AdminLayout from "../../layouts/AdminLayout"
+import AdminLayout from "../../layouts/AdminLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import ModalDelete from "../../components/Modals/ModalDelete";
 
 import Highlighter from "react-highlight-words";
 import Loading from "../../components/loading";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Diagnose() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const exportModalRef = useRef();
@@ -22,7 +23,7 @@ export default function Diagnose() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(false);
 
@@ -62,9 +63,9 @@ export default function Diagnose() {
     const { name, value } = event.target;
     setPutForm({ [name]: value });
   };
-  
+
   async function getDiagnosis() {
-    setDiagnosisLoading(true)
+    setDiagnosisLoading(true);
     try {
       const response = await axios.get(
         `diagnoses/${perpage}${
@@ -78,7 +79,7 @@ export default function Diagnose() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -87,7 +88,7 @@ export default function Diagnose() {
       setDiagnosisLoading(false);
     } catch (err) {
       console.error(err);
-      setDiagnosisLoading(false)
+      setDiagnosisLoading(false);
     }
   }
 
@@ -96,7 +97,7 @@ export default function Diagnose() {
     try {
       const response = await axios.post("diagnose", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -118,7 +119,7 @@ export default function Diagnose() {
     try {
       const response = await axios.put(`diagnose/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -136,7 +137,7 @@ export default function Diagnose() {
     try {
       const response = await axios.delete(`diagnose/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getDiagnosis();
@@ -170,7 +171,7 @@ export default function Diagnose() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -217,10 +218,11 @@ export default function Diagnose() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
+  const [uploadLoading, setUploadLoading] = useState(false);
   async function uploadTable() {
     let formData = new FormData();
     formData.append("file", selectedFile);
-
+    setUploadLoading(true);
     try {
       const response = await axios.post(
         `import/diagnose`,
@@ -229,14 +231,16 @@ export default function Diagnose() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
       getDiagnosis();
       exportModalRef.current.click();
+      setUploadLoading(false);
     } catch (err) {
       console.log(err);
+      setUploadLoading(false);
     }
   }
 
@@ -353,101 +357,106 @@ export default function Diagnose() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={diagnosis} dataLoading={diagnosisLoading} reload={getDiagnosis}></Loading>
-                {!diagnosisLoading && diagnosis?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + diagnosis.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
-                        <label htmlFor={`detail-${obj.id}`}>
-                          <span className={"font-bold ml-3"}>
+                <Loading
+                  data={diagnosis}
+                  dataLoading={diagnosisLoading}
+                  reload={getDiagnosis}
+                ></Loading>
+                {!diagnosisLoading &&
+                  diagnosis?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + diagnosis.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs p-2 min-w-full">
+                          <label htmlFor={`detail-${obj.id}`}>
+                            <span className={"font-bold ml-3"}>
+                              <Highlighter
+                                highlightClassName="bg-emerald-200"
+                                searchWords={[search]}
+                                autoEscape={true}
+                                textToHighlight={obj.code}
+                              ></Highlighter>
+                            </span>
+                          </label>
+                        </td>
+                        <td className="border-t-0 pr-6 pl-6 w-2/3 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <div className="w-full whitespace-pre-wrap line-clamp-2">
                             <Highlighter
                               highlightClassName="bg-emerald-200"
                               searchWords={[search]}
                               autoEscape={true}
-                              textToHighlight={obj.code}
+                              textToHighlight={obj.description}
                             ></Highlighter>
-                          </span>
-                        </label>
-                      </td>
-                      <td className="border-t-0 pr-6 pl-6 w-2/3 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <div className="w-full whitespace-pre-wrap line-clamp-2">
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.description}
-                          ></Highlighter>
-                        </div>
-                        <input
-                          type="checkbox"
-                          id={`detail-${obj.id}`}
-                          className="modal-toggle"
-                        />
-                        <label
-                          htmlFor={`detail-${obj.id}`}
-                          className="modal cursor-pointer"
-                        >
+                          </div>
+                          <input
+                            type="checkbox"
+                            id={`detail-${obj.id}`}
+                            className="modal-toggle"
+                          />
                           <label
-                            className="modal-box px-16 py-16 bg-indigo-600 text-primary-content max-w-md relative"
-                            htmlFor=""
+                            htmlFor={`detail-${obj.id}`}
+                            className="modal cursor-pointer"
                           >
-                            <h3 className="text-4xl font-bold">{obj.code}</h3>
-                            <p className="py-4 opacity-90 text-base text-justify whitespace-pre-wrap">
-                              {obj.description}
-                            </p>
+                            <label
+                              className="modal-box px-16 py-16 bg-indigo-600 text-primary-content max-w-md relative"
+                              htmlFor=""
+                            >
+                              <h3 className="text-4xl font-bold">{obj.code}</h3>
+                              <p className="py-4 opacity-90 text-base text-justify whitespace-pre-wrap">
+                                {obj.description}
+                              </p>
+                            </label>
                           </label>
-                        </label>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                       {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
-                        {/* <div className="tooltip tooltip-left " data-tip="Detail"> */}
-                        <label
-                          htmlFor={`detail-${obj.id}`}
-                          className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                        >
-                          <i className="fas fa-eye"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left " data-tip="Edit"> */}
-                        <label
-                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-put"
-                          onClick={() => {
-                            setPutForm(obj);
-                            setPutFormError(initialDiagnosisForm);
-                          }}
-                        >
-                          <i className="fas fa-pen-to-square"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
-                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          htmlFor={obj.id}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </label>
-                        {/* </div> */}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteDiagnosis(obj.id)}
-                          title={`Delete diagnosis?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
+                          {/* <div className="tooltip tooltip-left " data-tip="Detail"> */}
+                          <label
+                            htmlFor={`detail-${obj.id}`}
+                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left " data-tip="Edit"> */}
+                          <label
+                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-put"
+                            onClick={() => {
+                              setPutForm(obj);
+                              setPutFormError(initialDiagnosisForm);
+                            }}
+                          >
+                            <i className="fas fa-pen-to-square"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
+                          <label
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            htmlFor={obj.id}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </label>
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteDiagnosis(obj.id)}
+                            title={`Delete diagnosis?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -641,9 +650,8 @@ export default function Diagnose() {
           </form>
         </ModalBox>
 
-        
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <h3 className="font-bold text-lg mb-4">Diagnose Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -668,12 +676,25 @@ export default function Diagnose() {
                 onChange={onSelectFile}
                 className="file-input file-input-ghost input-bordered border rounded-md border-slate-300 w-full"
               />
-              <div
-                onClick={() => uploadTable()}
-                className="btn btn-success normal-case text-zinc-700 mt-2"
-              >
-                Upload Template <i className="fas fa-upload ml-2"></i>
-              </div>
+              {!uploadLoading ? (
+                <div
+                  onClick={() => uploadTable()}
+                  className={`btn btn-success normal-case text-zinc-700 mt-2`}
+                >
+                  Upload Template <i className="fas fa-upload ml-2"></i>
+                </div>
+              ) : (
+                <div
+                  className={`btn btn-ghost normal-case text-zinc-100 animate-pulse bg-emerald-800 mt-2 h-8`}
+                >
+                  Importing Data
+                  <img
+                    src="/loading.svg"
+                    alt="now loading"
+                    className="h-12 ml-2"
+                  />
+                </div>
+              )}
             </div>
             <div className="modal-action rounded-sm">
               <label

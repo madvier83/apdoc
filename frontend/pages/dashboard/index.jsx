@@ -27,9 +27,10 @@ import Loading from "../../components/loading";
 import Highlighter from "react-highlight-words";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { GetCookieChunk } from "../../services/CookieChunk";
 
 export default function Dashboard() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
 
   const [clinic, setClinic] = useState();
@@ -112,7 +113,7 @@ export default function Dashboard() {
         )}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -139,7 +140,7 @@ export default function Dashboard() {
         )}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -169,7 +170,7 @@ export default function Dashboard() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

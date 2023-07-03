@@ -7,9 +7,10 @@ import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function CategoryService() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const addModalRef = useRef();
   const putModalRef = useRef();
@@ -77,7 +78,7 @@ export default function CategoryService() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -95,7 +96,7 @@ export default function CategoryService() {
     try {
       const response = await axios.post("category-service", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -118,7 +119,7 @@ export default function CategoryService() {
         putForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "application/json",
           },
         }
@@ -137,7 +138,7 @@ export default function CategoryService() {
     try {
       const response = await axios.delete(`category-service/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getCategory();
@@ -157,7 +158,7 @@ export default function CategoryService() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -218,7 +219,7 @@ export default function CategoryService() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -303,13 +304,13 @@ export default function CategoryService() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                <label
+                {/* <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   htmlFor="modal-export"
                 >
                   <i className="fas fa-cog"></i>
-                </label>
+                </label> */}
                 <label
                   className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"

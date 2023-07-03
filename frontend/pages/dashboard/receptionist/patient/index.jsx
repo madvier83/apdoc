@@ -10,9 +10,10 @@ import DashboardLayout from "../../../../layouts/DashboardLayout";
 import Loading from "../../../../components/loading";
 import ModalBox from "../../../../components/Modals/ModalBox";
 import ModalDelete from "../../../../components/Modals/ModalDelete";
+import { GetCookieChunk } from "../../../../services/CookieChunk";
 
 export default function Patients() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
 
   const addModalRef = useRef();
@@ -89,7 +90,7 @@ export default function Patients() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -107,7 +108,7 @@ export default function Patients() {
     try {
       const response = await axios.post("/patient", addForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -129,7 +130,7 @@ export default function Patients() {
     try {
       const response = await axios.put(`/patient/${putForm.id}`, putForm, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "application/json",
         },
       });
@@ -147,7 +148,7 @@ export default function Patients() {
     try {
       const response = await axios.delete(`/patient/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getPatients();
@@ -166,7 +167,7 @@ export default function Patients() {
         method: "GET",
         responseType: "blob",
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       })
         .then((response) => {
@@ -227,7 +228,7 @@ export default function Patients() {
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );

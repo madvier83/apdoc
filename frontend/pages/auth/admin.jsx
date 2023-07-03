@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 
 import Link from "next/link";
 import AuthLayout from "../../layouts/AuthLayout";
+import { SetCookieChunk } from "../../services/CookieChunk";
 
 export default function Login() {
   const router = useRouter();
@@ -40,9 +41,10 @@ export default function Login() {
       var payload = parseJwt(response.data.access_token);
 
       if (payload.role_id == 1) {
-        setCookie("token", response.data.access_token, {
-          maxAge: 60 * 60 * 12,
-        });
+        // setCookie("token", response.data.access_token, {
+        //   maxAge: 60 * 60 * 12,
+        // });
+        SetCookieChunk("token_", response.data.access_token)
         // setCredential("");
         // setPwd("");
         router.push("/admin");

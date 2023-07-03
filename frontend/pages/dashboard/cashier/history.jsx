@@ -8,9 +8,10 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import numeral from "numeral";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
+import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function History() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
 
   const tableRef = useRef();
 
@@ -45,7 +46,7 @@ export default function History() {
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -66,7 +67,7 @@ export default function History() {
         {},
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -103,7 +104,7 @@ export default function History() {
     getItem();
   }, []);
 
-  console.log(item)
+  // console.log(item)
 
   return (
     <>

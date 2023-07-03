@@ -9,9 +9,10 @@ import ModalDelete from "../../../../components/Modals/ModalDelete";
 import { Chart } from "react-google-charts";
 import { MultiSelect } from "react-multi-select-component";
 import { useRouter } from "next/router";
+import { GetCookieChunk } from "../../../../services/CookieChunk";
 
 export default function Patients() {
-  const token = getCookies("token");
+  const token = GetCookieChunk("token_");
   const router = useRouter();
   const [patientId, setPatientId] = useState(null);
 
@@ -136,7 +137,7 @@ export default function Patients() {
     try {
       const response = await axios.get(`/patient/${router.query.id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setSelectedPatient(response.data);
@@ -151,7 +152,7 @@ export default function Patients() {
     try {
       const response = await axios.get(`/record/${router.query.id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response);
@@ -167,7 +168,7 @@ export default function Patients() {
     try {
       const response = await axios.get(`/growth/${router.query.id}/patient`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       // console.log(response.data);
@@ -213,7 +214,7 @@ export default function Patients() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -242,7 +243,7 @@ export default function Patients() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -271,7 +272,7 @@ export default function Patients() {
         }?page=${page}`,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
           },
         }
       );
@@ -302,7 +303,7 @@ export default function Patients() {
     try {
       const response = await axios.post(`/record`, formData, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -328,7 +329,7 @@ export default function Patients() {
         { patient_id: router.query.id, ...addGrowthForm },
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -349,7 +350,7 @@ export default function Patients() {
     try {
       const response = await axios.delete(`/growth/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       setAddGrowthForm(initialGrowthForm);
@@ -368,7 +369,7 @@ export default function Patients() {
         putGrowthForm,
         {
           headers: {
-            Authorization: "Bearer" + token.token,
+            Authorization: "Bearer" + token,
             "Content-Type": "aplication/json",
           },
         }
@@ -392,7 +393,7 @@ export default function Patients() {
     try {
       const response = await axios.post(`/record-image/${id}`, formData, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -409,7 +410,7 @@ export default function Patients() {
     try {
       const response = await axios.delete(`/record-image/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -438,7 +439,7 @@ export default function Patients() {
     try {
       const response = await axios.post(`/record/${putForm.id}`, formData, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -461,7 +462,7 @@ export default function Patients() {
     try {
       const response = await axios.delete(`/record/${id}`, {
         headers: {
-          Authorization: "Bearer" + token.token,
+          Authorization: "Bearer" + token,
         },
       });
       getRecord();
