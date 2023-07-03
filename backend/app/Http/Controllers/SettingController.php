@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class SettingController extends Controller
@@ -18,7 +17,7 @@ class SettingController extends Controller
     public function show($clinic)
     {
         try {
-            $setting = Setting::where('clinic_id', $clinic)->first();
+            $setting = Setting::with(['province', 'city', 'district', 'village'])->where('clinic_id', $clinic)->first();
     
             return response()->json($setting);
         } catch (Throwable $e) {
