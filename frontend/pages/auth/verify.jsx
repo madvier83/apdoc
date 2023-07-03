@@ -14,7 +14,12 @@ export default function Register() {
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [codes, setCodes] = useState([]);
+  const [villages, setVilages] = useState([]);
+
+  const [provincesClinic, setProvincesClinic] = useState([]);
+  const [citiesClinic, setCitiesClinic] = useState([]);
+  const [districtsClinic, setDistrictsClinic] = useState([]);
+  const [villagesClinic, setVilagesClinic] = useState([]);
 
   const initialVerifyForm = {
     email: "",
@@ -22,19 +27,28 @@ export default function Register() {
 
     nik: "",
     name: "",
-    owner_phone: "",
     birth_place: "",
     birth_date: "",
     gender: "",
+    owner_phone: "",
+    owner_province_id: "",
+    owner_city_id: "",
+    owner_district_id: "",
+    owner_village_id: "",
     owner_address: "",
+    owner_rt: "",
+    owner_rw: "",
+    owner_postal_code: "",
 
     clinic_name: "",
-    clinic_address: "",
-    province: "",
-    city: "",
-    district: "",
-    postal_code: "",
     clinic_phone: "",
+    clinic_province_id: "",
+    clinic_city_id: "",
+    clinic_district_id: "",
+    clinic_address: "",
+    clinic_rt: "",
+    clinic_rw: "",
+    clinic_postal_code: "",
   };
 
   const [registerForm, setRegisterForm] = useReducer(
@@ -93,6 +107,7 @@ export default function Register() {
         },
       });
       setProvinces(response.data?.data);
+      // return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -104,7 +119,8 @@ export default function Register() {
           "Content-Type": "application/json",
         },
       });
-      setCities(response.data?.data);
+      // setCities(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -119,12 +135,13 @@ export default function Register() {
           },
         }
       );
-      setDistricts(response.data?.data);
+      // setDistricts(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
   }
-  async function getCodes(id) {
+  async function getVilages(id) {
     try {
       const response = await axios.get(
         `location/province/city/district/villages/${id}`,
@@ -134,7 +151,8 @@ export default function Register() {
           },
         }
       );
-      setCodes(response.data?.data);
+      // setVilages(response.data?.data);
+      return response.data?.data;
     } catch (e) {
       console.error(e);
     }
@@ -146,48 +164,6 @@ export default function Register() {
   }, []);
 
   useEffect(() => {
-    const getData = setTimeout(() => {
-      if (!registerForm.province) {
-        setCities([]);
-        return;
-      }
-      setRegisterForm({ city: "", districts: "", postal_code: "" });
-      setCities([]);
-      setDistricts([]);
-      setCodes([]);
-      getCities(registerForm.province);
-    }, 500);
-    return () => clearTimeout(getData);
-  }, [registerForm.province]);
-
-  useEffect(() => {
-    const getData = setTimeout(() => {
-      if (!registerForm.city) {
-        setDistricts([]);
-        return;
-      }
-      setRegisterForm({ districts: "", postal_code: "" });
-      setDistricts([]);
-      setCodes([]);
-      getDistricts(registerForm.city);
-    }, 500);
-    return () => clearTimeout(getData);
-  }, [registerForm.city]);
-
-  useEffect(() => {
-    const getData = setTimeout(() => {
-      if (!registerForm.district) {
-        setCodes([]);
-        return;
-      }
-      setRegisterForm({ postal_code: "" });
-      setCodes([]);
-      getCodes(registerForm.district);
-    }, 500);
-    return () => clearTimeout(getData);
-  }, [registerForm.district]);
-
-  useEffect(() => {
     if (router.isReady) {
       setRegisterForm({
         email: router.query.email,
@@ -196,350 +172,276 @@ export default function Register() {
     }
   }, [router.isReady]);
 
-  // console.log(registerForm)
+  
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.owner_province_id) {
+        setCities([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      setCities(await getCities(registerForm.owner_province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.owner_province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.owner_city_id) {
+        setDistricts([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      setDistricts(await getDistricts(registerForm.owner_city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.owner_city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.owner_district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(registerForm.owner_district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.owner_district_id]);
+
+  // clinic region
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.clinic_province_id) {
+        setCitiesClinic([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCitiesClinic([]);
+      setDistrictsClinic([]);
+      setVilagesClinic([]);
+      setCitiesClinic(await getCities(registerForm.clinic_province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.clinic_province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.clinic_city_id) {
+        setDistrictsClinic([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistrictsClinic([]);
+      setVilagesClinic([]);
+      setDistrictsClinic(await getDistricts(registerForm.clinic_city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.clinic_city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!registerForm.clinic_district_id) {
+        setVilagesClinic([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilagesClinic([]);
+      setVilagesClinic(await getVilages(registerForm.clinic_district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [registerForm.clinic_district_id]);
+
+  console.log(registerForm)
 
   return (
     <>
-      <AuthLayout title={"APDOC | Accunt Verification"}>
-        <div className="container mx-auto px-4 h-[60vh]">
-          <div className="flex content-center items-center justify-center h-full">
-            <div className="w-full lg:w-8/12 px-4">
-              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 -lg rounded-lg border-0">
-                {/* <div className="rounded-t mb-0 px-6 py-6">
-                  <div className="text-center mb-3">
-                    <h6 className="text-white text-4xl mt-4 font-bold">
-                      APDOC
-                    </h6>
-                  </div>
-                </div> */}
-
-                <div className="flex-auto px-4 lg:px-10 py-10 pt-8 mt-16">
-                  <form onSubmit={(e) => handleVerify(e)}>
-                    <div className="flex w-full gap-8">
-                      <div className="w-full">
-                        <div className="relative flex py-5 items-center">
-                          <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white">
-                            Personal Information
-                          </span>
-                        </div>
-                        <div className="relative w-full">
-                          <label className="block text-zinc-400 text-xs font-bold mb-2">
+      <AuthLayout title={"APDOC | Account Verification"}>
+        <div className="w-screen">
+          <div className="rounded-t mb-0 px-6 py-6">
+            <div className="text-center mb-3">
+              <h6 className="text-white text-4xl mt-4 font-bold">APDOC</h6>
+            </div>
+          </div>
+          <div className="flex items-center justify-center h-full">
+            <div className="flex-auto px-4 lg:px-10 py-10 pt-8 max-w-xl">
+              <form onSubmit={(e) => handleVerify(e)}>
+                <div className="w-full">
+                  <div className="relative items-center">
+                    <span className="text-2xl font-semibold p-0 flex-shrink text-white">
+                      Personal Information
+                    </span>
+                    <table className="mt-8 text-sm w-full z-50">
+                      <tbody>
+                        <tr className="text-white">
+                          <td className="py-2 font-semibold text-lg w-1/4">
                             NIK
-                          </label>
-                          <input
-                            required={true}
-                            name="nik"
-                            value={registerForm.nik}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="text"
-                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.nik[0]
-                                ? "border-rose-500"
-                                : "border-indigo-500"
-                            }`}
-                            // placeholder="example@mail.com"
-                          />
-                          <label className="block text-rose-500 text-xs mb-2 mt-2">
-                            {registerFormError.nik[0]}
-                          </label>
-                        </div>
-
-                        <div className="relative w-full">
-                          <label className="block text-zinc-400 text-xs font-bold mb-2">
-                            Full Name
-                          </label>
-                          <input
-                            required={true}
-                            name="name"
-                            value={registerForm.name}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="text"
-                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.name[0]
-                                ? "border-rose-500"
-                                : "border-indigo-500"
-                            }`}
-                            // placeholder="example@mail.com"
-                          />
-                          <label className="block text-rose-500 text-xs mb-2 mt-2">
-                            {registerFormError.name[0]}
-                          </label>
-                        </div>
-
-                        <div className="relative w-full">
-                          <label className="block text-zinc-400 text-xs font-bold mb-2">
-                            Address
-                          </label>
-                          <textarea
-                            name="owner_address"
-                            value={registerForm.owner_address}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="text"
-                            className={`input w-full h-[68px] border-indigo-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.owner_address[0]
-                                ? "border-rose-500"
-                                : "border-indigo-500"
-                            }`}
-                            // placeholder="+62 xxx xxxx xxxx"
-                          />
-                          <label className="block text-rose-500 text-xs mb-2 mt-2">
-                            {registerFormError.owner_address[0]}
-                          </label>
-                        </div>
-
-                        <div className="relative w-full">
-                          <label className="block text-zinc-400 text-xs font-bold mb-2">
-                            Phone
-                          </label>
-                          <div
-                            className={`flex border rounded-sm ${
-                              registerFormError.owner_phone[0]
-                                ? "border-rose-500"
-                                : "border-indigo-500"
-                            }`}
-                          >
+                          </td>
+                          <td className=" "></td>
+                          <td className="pl-4 text-lg tracking-wider">
                             <input
-                              value={"+62"}
                               type="text"
-                              className={`input w-14 rounded-none border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-zinc-300 ${
-                                registerFormError.clinic_phone
-                                  ? "border-rose-500"
-                                  : null
-                              }`}
-                              disabled
-                            />
-                            <input
-                              required={true}
-                              name="owner_phone"
-                              value={registerForm.owner_phone}
+                              name="nik"
+                              value={registerForm.nik || ""}
                               onChange={(e) => handleRegisterInput(e)}
-                              type="number"
-                              className={`input pl-0 w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.owner_phone[0]
-                                  ? "border-rose-500"
-                                  : "border-none"
-                              }`}
-                              // placeholder="+62 xxx xxxx xxxx"
+                              required
+                              className={` border-0 px-3 text-lg bg-zinc-800 text-white rounded shadow w-full ease-linear transition-all duration-150`}
                             />
-                          </div>
-                          <label className="block text-rose-500 text-xs mb-2 mt-2">
-                            {registerFormError.owner_phone[0]}
-                          </label>
-                        </div>
-
-                        <div className="flex gap-4">
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              Birth Place
-                            </label>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Name</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
                             <input
-                              required={true}
-                              name="birth_place"
-                              value={registerForm.birth_place}
-                              onChange={(e) => handleRegisterInput(e)}
                               type="text"
-                              className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.birth_place[0]
-                                  ? "border-rose-500"
-                                  : "border-indigo-500"
-                              }`}
-                              // placeholder="+62 xxx xxxx xxxx"
-                            />
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.birth_place[0]}
-                            </label>
-                          </div>
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              Birth Date
-                            </label>
-                            <input
-                              required={true}
-                              name="birth_date"
-                              value={registerForm.birth_date}
+                              name="name"
+                              value={registerForm.name || ""}
                               onChange={(e) => handleRegisterInput(e)}
-                              type="date"
-                              className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.birth_date[0]
-                                  ? "border-rose-500"
-                                  : "border-indigo-500"
-                              }`}
-                              // placeholder="+62 xxx xxxx xxxx"
+                              required
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             />
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.birth_date[0]}
-                            </label>
-                          </div>
-                        </div>
-
-                        <div className="relative w-full">
-                          <label className="block text-zinc-400 text-xs font-bold mb-2">
-                            Gender
-                          </label>
-                          <select
-                            name="gender"
-                            value={registerForm.gender}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="date"
-                            className={`input w-full border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.gender[0]
-                                ? "border-rose-500"
-                                : "border-indigo-500"
-                            }`}
-                          >
-                            <option className="text-black">Select</option>
-                            <option className="text-black" value="male">
-                              Male
-                            </option>
-                            <option className="text-black" value="female">
-                              Female
-                            </option>
-                          </select>
-                          <label className="block text-rose-500 text-xs mb-2 mt-2">
-                            {registerFormError.gender[0]}
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="w-full">
-                        <div className="relative flex py-5 items-center">
-                          <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white">
-                            Clinic Information
-                          </span>
-                        </div>
-
-                        <label className="block text-zinc-400 text-xs font-bold mb-2">
-                          Clinic Name
-                        </label>
-                        <input
-                          required={true}
-                          name="clinic_name"
-                          value={registerForm.clinic_name}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="text"
-                          className={`input w-full border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                            registerFormError.clinic_name
-                              ? "border-rose-500"
-                              : null
-                          }`}
-                          // placeholder="example@mail.com"
-                        />
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.clinic_name}
-                        </label>
-
-                        <label className="block text-zinc-400 text-xs font-bold mb-2">
-                          Phone
-                        </label>
-                        <div
-                          className={`flex border rounded-sm ${
-                            registerFormError.owner_phone[0]
-                              ? "border-rose-500"
-                              : "border-emerald-500"
-                          }`}
-                        >
-                          <input
-                            value={"+62"}
-                            type="text"
-                            className={`input w-14 rounded-none border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-zinc-300 ${
-                              registerFormError.clinic_phone
-                                ? "border-rose-500"
-                                : null
-                            }`}
-                            disabled
-                          />
-                          <input
-                            required={true}
-                            name="clinic_phone"
-                            value={registerForm.clinic_phone}
-                            onChange={(e) => handleRegisterInput(e)}
-                            type="number"
-                            className={`input pl-0 w-full border-none border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                              registerFormError.clinic_phone
-                                ? "border-rose-500"
-                                : null
-                            }`}
-                            // placeholder="example@mail.com"
-                          />
-                        </div>
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.clinic_phone}
-                        </label>
-
-                        <label className="block text-zinc-400 text-xs font-bold mb-2">
-                          Address
-                        </label>
-                        <textarea
-                          name="clinic_address"
-                          rows={2}
-                          value={registerForm.clinic_address}
-                          onChange={(e) => handleRegisterInput(e)}
-                          type="text"
-                          className={`input w-full h-[68px] border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                            registerFormError.clinic_address
-                              ? "border-rose-500"
-                              : null
-                          }`}
-                          // placeholder="example@mail.com"
-                        />
-                        <label className="block text-rose-500 text-xs mb-2 mt-2">
-                          {registerFormError.clinic_address}
-                        </label>
-
-                        <div className="flex gap-4  ">
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              Province
-                            </label>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Birth</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <div className="flex gap-2 items-center">
+                              <input
+                                type="text"
+                                name="birth_place"
+                                value={registerForm.birth_place || ""}
+                                onChange={(e) => handleRegisterInput(e)}
+                                required
+                                className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                              />
+                              <p className="font-bold w-[4%] text-center">/</p>
+                              <input
+                                type="date"
+                                name="birth_date"
+                                value={registerForm.birth_date || ""}
+                                onChange={(e) => handleRegisterInput(e)}
+                                required
+                                className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Gender</td>
+                          <td className=" "></td>
+                          <td className="pl-4 capitalize">
                             <select
-                              name="province"
-                              value={registerForm.province}
+                              type="text"
+                              className={` border-0 px-3 bg-zinc-800 rounded text-sm shadow w-full ease-linear transition-all duration-150`}
+                              value={registerForm.gender || ""}
+                              name="gender"
                               onChange={(e) => handleRegisterInput(e)}
-                              type="date"
-                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.province
-                                  ? "border-rose-500"
-                                  : null
-                              }`}
+                              required
                             >
-                              <option className="text-black">Select</option>
-                              {provinces?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.name}
-                                  </option>
-                                );
-                              })}
+                              <option>Select</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
                             </select>
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.province}
-                            </label>
-                          </div>
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              City
-                            </label>
-                            <select
-                              name="city"
-                              value={registerForm.city}
+                          </td>
+                        </tr>
+                        <tr className="">
+                          <td className="py-1 text-slate-200">~</td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Address</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <input
+                              type="text"
+                              name="owner_address"
+                              value={registerForm.owner_address || ""}
                               onChange={(e) => handleRegisterInput(e)}
-                              type="date"
-                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.city
-                                  ? "border-rose-500"
-                                  : null
-                              }`}
+                              required
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                            />
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">RT/RW</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <div className="flex gap-2 items-center">
+                              <input
+                                type="text"
+                                name="owner_rt"
+                                value={registerForm.owner_rt || ""}
+                                onChange={(e) => handleRegisterInput(e)}
+                                required
+                                className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                              />
+                              <p className="font-bold w-[4%] text-center">/</p>
+                              <input
+                                type="text"
+                                name="owner_rw"
+                                value={registerForm.owner_rw || ""}
+                                onChange={(e) => handleRegisterInput(e)}
+                                required
+                                className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Province</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <select
+                              type="text"
+                              name="owner_province_id"
+                              value={registerForm.owner_province_id}
+                              onChange={(e) => handleRegisterInput(e)}
+                              required
+                              placeholder=""
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             >
-                              <option className="text-black">Select</option>
+                              <option className="">Select</option>
+                              {provinces.length &&
+                                provinces?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-white"
+                                      value={obj.id}
+                                    >
+                                      {obj.name}
+                                    </option>
+                                  );
+                                })}
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">City</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <select
+                              type="text"
+                              name="owner_city_id"
+                              value={registerForm.owner_city_id}
+                              onChange={(e) => handleRegisterInput(e)}
+                              required
+                              placeholder=""
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                            >
+                              <option className="">Select</option>
                               {cities?.map((obj) => {
                                 return (
                                   <option
                                     key={obj.id}
-                                    className="text-black"
+                                    className="text-white"
                                     value={obj.id}
                                   >
                                     {obj.name}
@@ -547,33 +449,56 @@ export default function Register() {
                                 );
                               })}
                             </select>
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.city}
-                            </label>
-                          </div>
-                        </div>
-                        <div className="flex gap-4  ">
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              District
-                            </label>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">District</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
                             <select
-                              name="district"
-                              value={registerForm.district}
+                              type="text"
+                              name="owner_district_id"
+                              value={registerForm.owner_district_id}
                               onChange={(e) => handleRegisterInput(e)}
-                              type="date"
-                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.district
-                                  ? "border-rose-500"
-                                  : null
-                              }`}
+                              required
+                              placeholder=""
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             >
-                              <option className="text-black">Select</option>
-                              {districts?.map((obj) => {
+                              <option className="">Select</option>
+                              {districts.length &&
+                                districts?.map((obj) => {
+                                  return (
+                                    <option
+                                      key={obj.id}
+                                      className="text-white"
+                                      value={obj.id}
+                                    >
+                                      {obj.name}
+                                    </option>
+                                  );
+                                })}
+                            </select>
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Village</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <select
+                              type="text"
+                              name="owner_village_id"
+                              value={registerForm.owner_village_id}
+                              onChange={(e) => handleRegisterInput(e)}
+                              required
+                              placeholder=""
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                            >
+                              <option className="">Select</option>
+                              {villages?.map((obj) => {
                                 return (
                                   <option
                                     key={obj.id}
-                                    className="text-black"
+                                    className="text-white"
                                     value={obj.id}
                                   >
                                     {obj.name}
@@ -581,64 +506,288 @@ export default function Register() {
                                 );
                               })}
                             </select>
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.district}
-                            </label>
-                          </div>
-                          <div className="relative w-full">
-                            <label className="block text-zinc-400 text-xs font-bold mb-2">
-                              Postal Code
-                            </label>
-                            <select
-                              name="postal_code"
-                              value={registerForm.postal_code}
+                          </td>
+                        </tr>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-2">Postal Code</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <input
+                              type="number"
+                              name="owner_postal_code"
+                              value={registerForm.owner_postal_code || ""}
                               onChange={(e) => handleRegisterInput(e)}
-                              type="date"
-                              className={`input w-full text-sm truncate pr-4 border-emerald-500 border-opacity-50 border-2 bg-white bg-opacity-5 text-white ${
-                                registerFormError.postal_code
-                                  ? "border-rose-500"
-                                  : null
-                              }`}
-                            >
-                              <option className="text-black">Select</option>
-                              {codes?.map((obj) => {
-                                return (
-                                  <option
-                                    key={obj.id}
-                                    className="text-black"
-                                    value={obj.id}
-                                  >
-                                    {obj.district_code + " : " + obj.name}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                            <label className="block text-rose-500 text-xs mb-2 mt-2">
-                              {registerFormError.postal_code}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                              required
+                              className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                            />
+                          </td>
+                        </tr>
+                        <tr className="">
+                          <td className="py-1 text-slate-200">~</td>
+                        </tr>
 
-                    <div className="text-center mt-8 w-1/2 mx-auto">
-                      {verifyLoading ? (
-                        <div
-                          className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
-                          disabled
-                        >
-                          Loading ...
-                        </div>
-                      ) : (
-                        <button className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
-                          Verify Account
-                        </button>
-                      )}
-                    </div>
-                  </form>
+                        <tr className="text-gray-400 w-full">
+                          <td className="py-[9.1px]">Phone</td>
+                          <td className=" "></td>
+                          <td className="pl-4 ">
+                            <div className="flex">
+                              <input
+                                type="select"
+                                className={`bg-transparent border-0 w-12 px-2 bg-zinc-700 text-gray-400 rounded-l text-sm shadow ease-linear transition-all duration-150 cursor-not-allowed`}
+                                value={"+62"}
+                                disabled
+                              />
+                              <input
+                                type="text"
+                                name="owner_phone"
+                                className={`bg-transparent border-0 bg-zinc-800 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150`}
+                                value={registerForm.owner_phone}
+                                onChange={e => handleRegisterInput(e)}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-wrap mt-6 relative justify-center"></div>
+
+                <div className="w-full">
+                  <div className="relative flex items-center">
+                    <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white mt-16">
+                      Add Clinic
+                    </span>
+                  </div>
+
+                  <table className="mt-8 text-sm w-full z-50">
+                    <tbody>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2 w-1/4">Clinic Name</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <input
+                            type="text"
+                            name="clinic_name"
+                            value={registerForm.clinic_name || ""}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Phone</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <div className="flex">
+                            <input
+                              type="select"
+                              className={`bg-transparent border-0 w-12 px-2 bg-zinc-700 text-gray-400 rounded-l text-sm shadow ease-linear transition-all duration-150 cursor-not-allowed`}
+                              value={"+62"}
+                              disabled
+                            />
+                            <input
+                              type="text"
+                              name="clinic_phone"
+                              className={`bg-transparent border-0 bg-zinc-800 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150`}
+                              value={registerForm.clinic_phone}
+                              onChange={e => handleRegisterInput(e)}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <td className="py-1 text-slate-200">~</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Address</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <input
+                            type="text"
+                            name="clinic_address"
+                            value={registerForm.clinic_address || ""}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">RT/RW</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              name="clinic_rt"
+                              value={registerForm.clinic_rt || ""}
+                              onChange={(e) => handleRegisterInput(e)}
+                              required
+                              className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                            <p className="font-bold w-[4%] text-center">/</p>
+                            <input
+                              type="text"
+                              name="clinic_rw"
+                              value={registerForm.clinic_rw || ""}
+                              onChange={(e) => handleRegisterInput(e)}
+                              required
+                              className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Province</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <select
+                            type="text"
+                            name="clinic_province_id"
+                            value={registerForm.clinic_province_id}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            placeholder=""
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {provinces.length &&
+                              provinces?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-white"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">City</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <select
+                            type="text"
+                            name="clinic_city_id"
+                            value={registerForm.clinic_city_id}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            placeholder=""
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {citiesClinic?.map((obj) => {
+                              return (
+                                <option
+                                  key={obj.id}
+                                  className="text-white"
+                                  value={obj.id}
+                                >
+                                  {obj.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">District</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <select
+                            type="text"
+                            name="clinic_district_id"
+                            value={registerForm.clinic_district_id}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            placeholder=""
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {districtsClinic.length &&
+                              districtsClinic?.map((obj) => {
+                                return (
+                                  <option
+                                    key={obj.id}
+                                    className="text-white"
+                                    value={obj.id}
+                                  >
+                                    {obj.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Village</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <select
+                            type="text"
+                            name="clinic_village_id"
+                            value={registerForm.clinic_village_id}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            placeholder=""
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          >
+                            <option className="">Select</option>
+                            {villagesClinic?.map((obj) => {
+                              return (
+                                <option
+                                  key={obj.id}
+                                  className="text-white"
+                                  value={obj.id}
+                                >
+                                  {obj.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Postal Code</td>
+                        <td className=" "></td>
+                        <td className="pl-4 ">
+                          <input
+                            type="number"
+                            name="clinic_postal_code"
+                            value={registerForm.clinic_postal_code || ""}
+                            onChange={(e) => handleRegisterInput(e)}
+                            required
+                            className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
+                        </td>
+                      </tr>
+                      {/* <tr className="">
+                          <td className="py-1 text-slate-200">~</td>
+                        </tr> */}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="text-center mt-8 w-1/2 mx-auto">
+                  {verifyLoading ? (
+                    <div
+                      className="cursor-progress bg-zinc-700 text-white text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear"
+                      disabled
+                    >
+                      Loading ...
+                    </div>
+                  ) : (
+                    <button className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
+                      Verify Account
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
         </div>

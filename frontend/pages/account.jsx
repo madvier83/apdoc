@@ -20,7 +20,7 @@ export default function Account() {
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [codes, setVilages] = useState([]);
+  const [villages, setVilages] = useState([]);
 
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
@@ -152,6 +152,7 @@ export default function Account() {
       console.log(err);
     }
   }
+  // ?.replace("+", "").substring(2)
 
   async function getClinics() {
     let user = parseJwt();
@@ -431,109 +432,144 @@ export default function Account() {
     return () => clearTimeout(getData);
   }, [userForm.district_id]);
 
-  // console.log(userForm)
-
+  // ADD CLINIC REGION
   useEffect(() => {
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!addClinicForm.province_id) {
         setCities([]);
         return;
       }
-      setAddClinicForm({ city_id: "", district_id: "", postal_code: "" });
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
       setCities([]);
       setDistricts([]);
       setVilages([]);
-      getCities(addClinicForm.province_id);
+      setCities(await getCities(addClinicForm.province_id));
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.province_id]);
 
   useEffect(() => {
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!addClinicForm.city_id) {
         setDistricts([]);
         return;
       }
-      setAddClinicForm({ district_id: "", village_id: "" });
+      // setUserForm({ districts_id: "", village_id: "" });
       setDistricts([]);
       setVilages([]);
-      getDistricts(addClinicForm.city_id);
+      setDistricts(await getDistricts(addClinicForm.city_id));
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.city_id]);
 
   useEffect(() => {
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!addClinicForm.district_id) {
         setVilages([]);
         return;
       }
-      setAddClinicForm({ village_id: "" });
+      // setUserForm({ village_id: "" });
       setVilages([]);
-      getVilages(addClinicForm.district_id);
+      setVilages(await getVilages(addClinicForm.district_id));
     }, 500);
     return () => clearTimeout(getData);
   }, [addClinicForm.district_id]);
 
+  // PUT CLINIC REGION
   useEffect(() => {
-    if (isGetUpdateAddress) {
-      return;
-    }
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!putClinicForm.province_id) {
         setCities([]);
         return;
       }
-      setPutClinicForm({ city_id: "", district_id: "", village_id: "" });
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
       setCities([]);
       setDistricts([]);
       setVilages([]);
-      getCities(putClinicForm.province_id);
+      setCities(await getCities(putClinicForm.province_id));
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.province_id]);
 
   useEffect(() => {
-    if (isGetUpdateAddress) {
-      return;
-    }
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!putClinicForm.city_id) {
         setDistricts([]);
         return;
       }
-      setPutClinicForm({ district_id: "", village_id: "" });
+      // setUserForm({ districts_id: "", village_id: "" });
       setDistricts([]);
       setVilages([]);
-      getDistricts(putClinicForm.city_id);
+      setDistricts(await getDistricts(putClinicForm.city_id));
     }, 500);
     return () => clearTimeout(getData);
-  }, [putClinicForm.city]);
+  }, [putClinicForm.city_id]);
 
   useEffect(() => {
-    if (isGetUpdateAddress) {
-      return;
-    }
-    const getData = setTimeout(() => {
+    const getData = setTimeout(async () => {
       if (!putClinicForm.district_id) {
         setVilages([]);
         return;
       }
+      // setUserForm({ village_id: "" });
       setVilages([]);
-      setPutClinicForm({ village_id: "" });
-      getVilages(putClinicForm.district_id);
+      setVilages(await getVilages(putClinicForm.district_id));
     }, 500);
     return () => clearTimeout(getData);
   }, [putClinicForm.district_id]);
 
-  const [isGetUpdateAddress, setIsGetUpdateAddress] = useState(false);
-  async function getUpdateAddress(obj) {
-    setIsGetUpdateAddress(true);
-    await getCities(obj.province_id);
-    await getDistricts(obj.city_id);
-    await getVilages(obj.district_id);
-    setIsGetUpdateAddress(false);
-  }
+  // console.log(userForm)
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     if (!addClinicForm.province_id) {
+  //       setCities([]);
+  //       return;
+  //     }
+  //     setAddClinicForm({ city_id: "", district_id: "", postal_code: "" });
+  //     setCities([]);
+  //     setDistricts([]);
+  //     setVilages([]);
+  //     getCities(addClinicForm.province_id);
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [addClinicForm.province_id]);
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     if (!addClinicForm.city_id) {
+  //       setDistricts([]);
+  //       return;
+  //     }
+  //     setAddClinicForm({ district_id: "", village_id: "" });
+  //     setDistricts([]);
+  //     setVilages([]);
+  //     getDistricts(addClinicForm.city_id);
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [addClinicForm.city_id]);
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     if (!addClinicForm.district_id) {
+  //       setVilages([]);
+  //       return;
+  //     }
+  //     setAddClinicForm({ village_id: "" });
+  //     setVilages([]);
+  //     getVilages(addClinicForm.district_id);
+  //   }, 500);
+  //   return () => clearTimeout(getData);
+  // }, [addClinicForm.district_id]);
+
+  // const [isGetUpdateAddress, setIsGetUpdateAddress] = useState(false);
+  // async function getUpdateAddress(obj) {
+  //   setIsGetUpdateAddress(true);
+  //   await getCities(obj.province_id);
+  //   await getDistricts(obj.city_id);
+  //   await getVilages(obj.district_id);
+  //   setIsGetUpdateAddress(false);
+  // }
 
   // console.log(provinces);
   return (
@@ -559,7 +595,7 @@ export default function Account() {
                             return !prev;
                           });
                           setTimeout(() => userFormRef.current.focus(), 10);
-                          getUser();
+                          // getUser();
                           // setProvinces();
                           setCities(await getCities(user.province_id));
                           setDistricts(await getDistricts(user.city_id));
@@ -640,11 +676,6 @@ export default function Account() {
                         <td className="px-4 ">{user?.rt + " / " + user?.rw}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Postal Code</td>
-                        <td className="px-4 "></td>
-                        <td className="px-4 ">{user?.postal_code || "-"}</td>
-                      </tr>
-                      <tr className="text-gray-400 w-full">
                         <td className="py-[9.1px]">Village</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.village?.name || "-"}</td>
@@ -663,6 +694,11 @@ export default function Account() {
                         <td className="py-[9.1px]">Province</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.province?.name || "-"}</td>
+                      </tr>
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-[9.1px]">Postal Code</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">{user?.postal_code || "-"}</td>
                       </tr>
                       <tr className="">
                         <td className="py-1">~</td>
@@ -726,9 +762,10 @@ export default function Account() {
                               <input
                                 type="text"
                                 className={`bg-transparent border-0 placeholder-blueGray-300 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
-                                value={userForm.phone
-                                  .replace("+", "")
-                                  .substring(2)}
+                                value={
+                                  user?.phone.replace("+", "").substring(2) ||
+                                  ""
+                                }
                                 disabled
                               />
                             </div>
@@ -916,23 +953,6 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Postal Code</td>
-                        <td className="px-4 "></td>
-                        <td className="px-4 ">
-                          <input
-                            type="text"
-                            name="postal_code"
-                            value={userForm.postal_code || ""}
-                            disabled={!isEditUser}
-                            onChange={(e) => handleUserForm(e)}
-                            required
-                            className={`${
-                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
-                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
-                          />
-                        </td>
-                      </tr>
-                      <tr className="text-gray-400 w-full">
                         <td className="py-2">Village</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
@@ -948,7 +968,7 @@ export default function Account() {
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           >
                             <option className="">Select</option>
-                            {codes?.map((obj) => {
+                            {villages?.map((obj) => {
                               return (
                                 <option
                                   key={obj.id}
@@ -978,7 +998,7 @@ export default function Account() {
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           >
                             <option className="">Select</option>
-                            {districts.length &&
+                            {districts?.length &&
                               districts?.map((obj) => {
                                 return (
                                   <option
@@ -1039,7 +1059,7 @@ export default function Account() {
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           >
                             <option className="">Select</option>
-                            {provinces.length &&
+                            {provinces?.length &&
                               provinces?.map((obj) => {
                                 return (
                                   <option
@@ -1052,6 +1072,24 @@ export default function Account() {
                                 );
                               })}
                           </select>
+                        </td>
+                      </tr>
+
+                      <tr className="text-gray-400 w-full">
+                        <td className="py-2">Postal Code</td>
+                        <td className="px-4 "></td>
+                        <td className="px-4 ">
+                          <input
+                            type="number"
+                            name="postal_code"
+                            value={userForm.postal_code || ""}
+                            disabled={!isEditUser}
+                            onChange={(e) => handleUserForm(e)}
+                            required
+                            className={`${
+                              isEditUser ? "bg-slate-800" : "bg-zinc-100"
+                            } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                          />
                         </td>
                       </tr>
                       <tr className="">
@@ -1070,36 +1108,6 @@ export default function Account() {
                               value={userForm.email}
                               disabled
                             />
-                            {!user?.email_verified_at ? (
-                              emailSent ? (
-                                sendEmailLoading ? (
-                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
-                                    {/* <p>Loading</p> */}
-                                    <img
-                                      src="/loading.svg"
-                                      alt="now loading"
-                                      className="absolute"
-                                    />
-                                  </span>
-                                ) : (
-                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                    Verification Email Sent
-                                  </span>
-                                )
-                              ) : (
-                                <span
-                                  onClick={sendVerifyEmail}
-                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
-                                >
-                                  Verify now{" "}
-                                  <i className="fas fa-arrow-right"></i>
-                                </span>
-                              )
-                            ) : (
-                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                Verified <i className="fas fa-check"></i>
-                              </span>
-                            )}
                           </div>
                         </td>
                       </tr>
@@ -1119,45 +1127,14 @@ export default function Account() {
                               />
                               <input
                                 type="text"
+                                name="phone"
+                                onChange={(e) => handleUserForm(e)}
                                 className={`${
                                   isEditUser ? "bg-slate-800" : "bg-slate-900"
-                                } border-0 placeholder-blueGray-300 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150 cursor-not-allowed`}
-                                value={userForm.phone
-                                  .replace("+", "")
-                                  .substring(2)}
-                                disabled
+                                } border-0 placeholder-blueGray-300 text-gray-300 rounded-r text-sm shadow w-full ease-linear transition-all duration-150`}
+                                value={userForm.phone}
                               />
                             </div>
-                            {!user?.phone_verified_at ? (
-                              emailSent ? (
-                                sendEmailLoading ? (
-                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
-                                    {/* <p>Loading</p> */}
-                                    <img
-                                      src="/loading.svg"
-                                      alt="now loading"
-                                      className="absolute"
-                                    />
-                                  </span>
-                                ) : (
-                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                    Verification Email Sent
-                                  </span>
-                                )
-                              ) : (
-                                <label
-                                  htmlFor="verifyPhoneModal"
-                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
-                                >
-                                  Verify now{" "}
-                                  <i className="fas fa-arrow-right"></i>
-                                </label>
-                              )
-                            ) : (
-                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                Verified <i className="fas fa-check"></i>
-                              </span>
-                            )}
                           </div>
                         </td>
                       </tr>
@@ -1281,7 +1258,7 @@ export default function Account() {
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {provinces.length &&
+                              {provinces?.length &&
                                 provinces?.map((obj) => {
                                   return (
                                     <option
@@ -1317,7 +1294,7 @@ export default function Account() {
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {cities.length &&
+                              {cities?.length &&
                                 cities?.map((obj) => {
                                   return (
                                     <option
@@ -1356,7 +1333,7 @@ export default function Account() {
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {districts.length &&
+                              {districts?.length &&
                                 districts?.map((obj) => {
                                   return (
                                     <option
@@ -1382,7 +1359,7 @@ export default function Account() {
                               <span className="mt-2 ">Postal Code</span>
                             </label>
                             <select
-                              type="text"
+                              type="number"
                               name="postal_code"
                               value={userForm.postal_code}
                               onChange={(e) => handleUserForm(e)}
@@ -1392,15 +1369,15 @@ export default function Account() {
                               className="input input-bordered input-primary border-slate-300 w-full"
                             >
                               <option className="text-black">Select</option>
-                              {codes?.length &&
-                                codes?.map((obj) => {
+                              {villages?.length &&
+                                villages?.map((obj) => {
                                   return (
                                     <option
                                       key={obj.id}
                                       className="text-black"
                                       value={obj.id}
                                     >
-                                      {obj.meta?.pos + " : " + obj.name}
+                                      {obj.name}
                                     </option>
                                   );
                                 })}
@@ -1595,6 +1572,7 @@ export default function Account() {
                         setCities([]);
                         setDistricts([]);
                         setVilages([]);
+                        setAddClinicForm(initialClinicForm);
                       }}
                       className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                     >
@@ -1626,9 +1604,9 @@ export default function Account() {
                             )}
                           </h2>
                           <p className="mt-2">
-                            {obj.address || "-"}, {obj.district.name || "-"},{" "}
-                            {obj.city.name || "-"}, {obj.province.name || "-"},{" "}
-                            {obj.postal_code || "-"}.
+                            {obj.address || "-"}, {obj.district?.name || "-"},{" "}
+                            {obj.city?.name || "-"}, {obj.province?.name || "-"}
+                            , {obj.postal_code || "-"}.
                           </p>
                           <p>
                             {obj.phone || "-"}
@@ -1645,9 +1623,13 @@ export default function Account() {
                           </p>
                           <div className="card-actions justify-end">
                             <label
-                              onClick={() => {
+                              onClick={async () => {
                                 setPutClinicForm(obj);
-                                getUpdateAddress(obj);
+                                // getUpdateAddress(obj);
+
+                                setCities(await getCities(obj.province_id));
+                                setDistricts(await getDistricts(obj.city_id));
+                                setVilages(await getVilages(obj.district_id));
                               }}
                               htmlFor="updateClinicModal"
                               className="btn btn-xs bg-emerald-400 border-none text-white"
@@ -1758,7 +1740,7 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {provinces.length &&
+                  {provinces?.length &&
                     provinces?.map((obj) => {
                       return (
                         <option
@@ -1791,7 +1773,7 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {cities.length &&
+                  {cities?.length &&
                     cities?.map((obj) => {
                       return (
                         <option
@@ -1827,7 +1809,7 @@ export default function Account() {
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {districts.length &&
+                  {districts?.length &&
                     districts?.map((obj) => {
                       return (
                         <option
@@ -1853,22 +1835,32 @@ export default function Account() {
                 <select
                   type="text"
                   name="village_id"
-                  value={addClinicForm.village_id}
-                  onChange={(e) => handleAddClinicForm(e)}
+                  // value={addClinicForm.village_id}
+                  onChange={(e) => {
+                    let value = JSON.parse(e.target.value);
+                    // console.log(addClinicForm)
+                    setAddClinicForm({
+                      village_id: value.id,
+                      postal_code:
+                        value.meta?.pos !== "NULL" ? value.meta?.pos : "",
+                    });
+                  }}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
-                  <option className="text-black">Select</option>
-                  {codes?.length &&
-                    codes?.map((obj) => {
+                  <option className="" disabled>
+                    Select
+                  </option>
+                  {villages?.length &&
+                    villages?.map((obj) => {
                       return (
                         <option
                           key={obj.id}
                           className="text-black"
-                          value={obj.id}
+                          value={JSON.stringify(obj)}
                         >
-                          {obj.meta?.pos + " : " + obj.name}
+                          {obj.name}
                         </option>
                       );
                     })}
@@ -1879,13 +1871,15 @@ export default function Account() {
                   </span>
                 </label>
               </div>
+            </div>
 
+            <div className="flex gap-4">
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Postal Code</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   name="postal_code"
                   value={addClinicForm.postal_code}
                   onChange={(e) => handleAddClinicForm(e)}
@@ -1901,8 +1895,7 @@ export default function Account() {
                   </label>
                 )}
               </div>
-            </div>
-            <div className="flex gap-4">
+
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">RT</span>
@@ -2036,15 +2029,15 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="province"
-                  value={putClinicForm.province}
+                  name="province_id"
+                  value={putClinicForm.province_id}
                   onChange={(e) => handlePutClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {provinces.length &&
+                  {provinces?.length &&
                     provinces?.map((obj) => {
                       return (
                         <option
@@ -2057,13 +2050,11 @@ export default function Account() {
                       );
                     })}
                 </select>
-                {putClinicFormError.province && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {putClinicFormError.province}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putClinicFormError.province_id}
+                  </span>
+                </label>
               </div>
               <div className="form-control w-full">
                 <label className="label">
@@ -2071,15 +2062,15 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="city"
-                  value={putClinicForm.city}
+                  name="city_id"
+                  value={putClinicForm.city_id}
                   onChange={(e) => handlePutClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {cities.length &&
+                  {cities?.length &&
                     cities?.map((obj) => {
                       return (
                         <option
@@ -2092,13 +2083,11 @@ export default function Account() {
                       );
                     })}
                 </select>
-                {putClinicFormError.city && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {putClinicFormError.city}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putClinicFormError.city_id}
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -2109,15 +2098,15 @@ export default function Account() {
                 </label>
                 <select
                   type="text"
-                  name="district"
-                  value={putClinicForm.district}
+                  name="district_id"
+                  value={putClinicForm.district_id}
                   onChange={(e) => handlePutClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {districts.length &&
+                  {districts?.length &&
                     districts?.map((obj) => {
                       return (
                         <option
@@ -2130,41 +2119,61 @@ export default function Account() {
                       );
                     })}
                 </select>
-                {putClinicFormError.district && (
-                  <label className="label">
-                    <span className="label-text-alt text-rose-300">
-                      {putClinicFormError.district}
-                    </span>
-                  </label>
-                )}
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putClinicFormError.district_id}
+                  </span>
+                </label>
               </div>
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Postal Code</span>
+                  <span className="label-text">Village</span>
                 </label>
                 <select
                   type="text"
-                  name="postal_code"
-                  value={putClinicForm.postal_code}
+                  name="village_id"
+                  value={putClinicForm.village_id}
                   onChange={(e) => handlePutClinicForm(e)}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
                   <option className="text-black">Select</option>
-                  {codes?.length &&
-                    codes?.map((obj) => {
+                  {villages?.length &&
+                    villages?.map((obj) => {
                       return (
                         <option
                           key={obj.id}
                           className="text-black"
                           value={obj.id}
                         >
-                          {obj.meta?.pos + " : " + obj.name}
+                          {obj.name}
                         </option>
                       );
                     })}
                 </select>
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putClinicFormError.village_id}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Postal Code</span>
+                </label>
+                <input
+                  type="number"
+                  name="postal_code"
+                  value={putClinicForm.postal_code}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
                 {putClinicFormError.postal_code && (
                   <label className="label">
                     <span className="label-text-alt text-rose-300">
@@ -2173,7 +2182,52 @@ export default function Account() {
                   </label>
                 )}
               </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">RT</span>
+                </label>
+                <input
+                  type="text"
+                  name="rt"
+                  value={putClinicForm.rt}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {putClinicFormError.rt && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.rt}
+                    </span>
+                  </label>
+                )}
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">RW</span>
+                </label>
+                <input
+                  type="text"
+                  name="rw"
+                  value={putClinicForm.rw}
+                  onChange={(e) => handlePutClinicForm(e)}
+                  required
+                  placeholder=""
+                  className="input input-bordered input-primary border-slate-300 w-full"
+                />
+                {putClinicFormError.rw && (
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putClinicFormError.rw}
+                    </span>
+                  </label>
+                )}
+              </div>
             </div>
+
             <div className="modal-action rounded-sm">
               <label
                 htmlFor="updateClinicModal"

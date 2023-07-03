@@ -212,11 +212,11 @@ export default function Sidebar() {
     let jwt = parseJwt(token);
     try {
       // setAccesses(JSON.parse(jwt.accesses));
-      if (jwt.role_id == 2) {
+      if (jwt?.role_id == 2) {
         // console.log(jwt.role_id)
         setAccesses(initialAccess);
       } else {
-        setAccesses(JSON.parse(jwt.accesses));
+        setAccesses(JSON.parse(jwt?.accesses));
       }
     } catch (e) {}
     setUser(jwt);
