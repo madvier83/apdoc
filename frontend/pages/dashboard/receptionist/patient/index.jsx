@@ -34,6 +34,11 @@ export default function Patients() {
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
 
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [villages, setVilages] = useState([]);
+
   const initialPatientForm = {
     clinic_id: "",
     id: "",
@@ -44,6 +49,15 @@ export default function Patients() {
     gender: "",
     birth_date: "",
     birth_place: "",
+
+    postal_code: "",
+    rt: "",
+    rw: "",
+
+    district_id: "",
+    city_id: "",
+    province_id: "",
+    village_id: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -116,7 +130,7 @@ export default function Patients() {
       addModalRef.current.click();
       getPatients();
       setAddForm(initialPatientForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialPatientForm);
     } catch (err) {
       setAddFormError(initialPatientForm);
@@ -175,7 +189,10 @@ export default function Patients() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -240,6 +257,154 @@ export default function Patients() {
     }
   }
 
+  async function getProvinces() {
+    try {
+      const response = await axios.get(`location/provinces`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setProvinces(response.data?.data);
+      // return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCities(id) {
+    try {
+      const response = await axios.get(`location/province/cities/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // setCities(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getDistricts(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/districts/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // setDistricts(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getVilages(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/district/villages/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // setVilages(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  useEffect(() => {
+    getProvinces();
+  }, []);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.province_id) {
+        setCities([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      setCities(await getCities(addForm.province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.city_id) {
+        setDistricts([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      setDistricts(await getDistricts(addForm.city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(addForm.district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.district_id]);
+
+  // put clinic region
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.province_id) {
+        setCities([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      setCities(await getCities(putForm.province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.city_id) {
+        setDistricts([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      setDistricts(await getDistricts(putForm.city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(putForm.district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.district_id]);
+
   useEffect(() => {
     getPatients();
   }, []);
@@ -267,6 +432,8 @@ export default function Patients() {
       top: 0,
     });
   }, [patients]);
+
+  console.log(putForm)
 
   return (
     <>
@@ -480,26 +647,29 @@ export default function Patients() {
                       </td> */}
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           {/* <div className="tooltip tooltip-left" data-tip="Detail"> */}
-                          <label
+                          <button
                             className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
-                            htmlFor="modal-details"
+                            // htmlFor="modal-details"
                             onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError(initialPatientForm);
+                              router.push(`/dashboard/receptionist/patient/${obj.id}`)
                             }}
                           >
-                            <i className="fas fa-eye"></i>
-                          </label>
+                            <i className="fa-solid fa-heart-pulse"></i>
+                          </button>
                           {/* </div> */}
                           {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
                           <label
                             className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
                             htmlFor="modal-put"
-                            onClick={() => {
+                            onClick={async () => {
                               setPutForm(obj);
                               setPutFormError(initialPatientForm);
+
+                              setCities(await getCities(obj.province_id));
+                              setDistricts(await getDistricts(obj.city_id));
+                              setVilages(await getVilages(obj.district_id));
                             }}
                           >
                             <i className="fas fa-pen-to-square"></i>
@@ -663,25 +833,6 @@ export default function Patients() {
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={addForm.address}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {addFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.address}
-                  </span>
-                </label>
-              )}
 
               <div className="flex gap-4 w-full">
                 <div className="w-full">
@@ -747,6 +898,244 @@ export default function Patients() {
                   )}
                 </div>
               </div>
+              
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
+
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={addForm.address}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered input-primary border-slate-300 w-full h-16"
+              ></textarea>
+              {addFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.address}
+                  </span>
+                </label>
+              )}
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Province</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="province_id"
+                    value={addForm.province_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {provinces?.length &&
+                      provinces?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.province_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">City</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="city_id"
+                    value={addForm.city_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {cities?.length &&
+                      cities?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.city_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">District</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="district_id"
+                    value={addForm.district_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {districts?.length &&
+                      districts?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.district_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Village</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="village_id"
+                    // value={addForm.village_id}
+                    onChange={(e) => {
+                      let value = JSON.parse(e.target.value);
+                      // console.log(addForm)
+                      setAddForm({
+                        village_id: value.id,
+                        postal_code:
+                          value.meta?.pos !== "NULL" ? value.meta?.pos : "",
+                      });
+                    }}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="" disabled>
+                      Select
+                    </option>
+                    {villages?.length &&
+                      villages?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={JSON.stringify(obj)}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.village_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Postal Code</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="postal_code"
+                    value={addForm.postal_code}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.postal_code && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.postal_code}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RT</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rt"
+                    value={addForm.rt}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.rt && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.rt}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RW</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rw"
+                    value={addForm.rw}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.rw && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.rw}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="modal-action rounded-sm">
               <label
@@ -778,11 +1167,11 @@ export default function Patients() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.message || putFormError.nik}
-                  </span>
-                </label>
+              <label className="label">
+                <span className="label-text-alt text-rose-300">
+                  {putFormError.message || putFormError.nik}
+                </span>
+              </label>
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
@@ -819,25 +1208,6 @@ export default function Patients() {
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {putFormError.phone}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={putForm.address}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered input-primary border-slate-300 w-full h-16"
-              ></textarea>
-              {putFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.address}
                   </span>
                 </label>
               )}
@@ -901,6 +1271,236 @@ export default function Patients() {
                     <label className="label">
                       <span className="label-text-alt text-rose-300">
                         {putFormError.gender}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
+              
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
+
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={putForm.address}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered border-slate-300 w-full h-16"
+              ></textarea>
+              {putFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.address}
+                  </span>
+                </label>
+              )}
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Province</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="province_id"
+                    value={putForm.province_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {provinces?.length &&
+                      provinces?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.province_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">City</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="city_id"
+                    value={putForm.city_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {cities?.length &&
+                      cities?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.city_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">District</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="district_id"
+                    value={putForm.district_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {districts?.length &&
+                      districts?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.district_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Village</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="village_id"
+                    value={putForm.village_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="" disabled>
+                      Select
+                    </option>
+                    {villages?.length &&
+                      villages?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={JSON.stringify(obj)}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.village_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Postal Code</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="postal_code"
+                    value={putForm.postal_code}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.postal_code && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.postal_code}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RT</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rt"
+                    value={putForm.rt}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.rt && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.rt}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RW</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rw"
+                    value={putForm.rw}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.rw && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.rw}
                       </span>
                     </label>
                   )}
@@ -1036,7 +1636,6 @@ export default function Patients() {
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

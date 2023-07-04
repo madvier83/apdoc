@@ -14,6 +14,7 @@ export default function Settings() {
   const token = GetCookieChunk("token_");
   const settingsFormRef = useRef();
   const structRef = useRef();
+  const logoRef = useRef();
 
   const [clinic, setClinic] = useState();
   const [payload, setPayload] = useState({});
@@ -37,8 +38,9 @@ export default function Settings() {
     name: "",
     phone: "",
     address: "",
-    city: "",
-    country: "",
+    city_id: "",
+    province_id: "",
+    village_id: "",
     postal_code: "",
     clinic_id: null,
     created_at: "",
@@ -90,8 +92,15 @@ export default function Settings() {
           Authorization: "Bearer" + token,
         },
       });
+      // console.log(response.data);
       setSettings(response.data);
-      setSettingsForm(response.data);
+      setSettingsForm({
+        ...response.data,
+        province_id: response.data.province_id,
+        district_id: response.data.district_id,
+        city_id: response.data.city_id,
+        village_id: response.data.village_id,
+      });
       setSettingsLoading(false);
       // console.log(settings);
     } catch (err) {
@@ -116,8 +125,12 @@ export default function Settings() {
     formData.append("name", settingsForm.name);
     formData.append("phone", settingsForm.phone);
     formData.append("address", settingsForm.address);
-    formData.append("city", settingsForm.city);
-    formData.append("country", settingsForm.country);
+    formData.append("district_id", settingsForm.district_id);
+    formData.append("province_id", settingsForm.province_id);
+    formData.append("city_id", settingsForm.city_id);
+    formData.append("village_id", settingsForm.village_id);
+    formData.append("rt", settingsForm.rt);
+    formData.append("rw", settingsForm.rw);
     formData.append("postal_code", settingsForm.postal_code);
     // Object.keys(settingsForm).forEach((key) =>
     //   formData.append(key, settingsForm[key])
@@ -141,7 +154,7 @@ export default function Settings() {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       setIsEditSettings(false);
       getSettings();
     } catch (err) {
@@ -155,6 +168,7 @@ export default function Settings() {
     setIsEditSettings(false);
   }, [clinic]);
 
+  // console.log(settingsForm)
 
   return (
     <>
@@ -178,7 +192,7 @@ export default function Settings() {
                           setIsEditSettings((prev) => {
                             return !prev;
                           });
-                          setTimeout(() => settingsFormRef.current.focus(), 10);
+                          // setTimeout(() => settingsFormRef.current.focus(), 10);
                           getSettings();
                           // console.log(settingForm);
                         }}
@@ -204,21 +218,21 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <div className="flex-auto px-4 py-10 pt-0">
+                <div className="flex-auto px-4 pt-0">
                   <div className="flex flex-wrap">
-                    <div className="w-full px-4 mt-4">
-                      <div className="relative w-full mb-3">
+                    <div className="w-full">
+                      <div className="relative w-full hidden">
                         <div className="w-full gap-8">
                           <div className="w-full">
                             <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
                               <span>Logo</span>
                             </label>
                             <input
+                              ref={logoRef}
                               type="file"
                               name="logo"
                               accept="image/*"
                               onChange={onSelectFile}
-                              disabled={!isEditSettings}
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                             />
                           </div>
@@ -229,151 +243,282 @@ export default function Settings() {
                           </label>
                         </div>
                       </div>
-                      <div className="w-full border-b-gray-700 border-dotted border-b-2 pb-4 mb-4"></div>
-                      <div className="relative w-full mb-3">
-                        <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
-                          <span>Clinic Name</span>
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            name="name"
-                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={settingsForm.name}
-                            onChange={(e) => handleSettingsForm(e)}
-                            disabled={!isEditSettings}
-                            ref={settingsFormRef}
-                          />
-                          <label className="">
-                            <span className="label-text-alt text-rose-300">
-                              {settingsFormError?.name}
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                      <div className="relative w-full mb-3">
-                        <label className="normal-case text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
-                          <span>Phone Number</span>
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            name="phone"
-                            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                            value={settingsForm.phone}
-                            onChange={(e) => handleSettingsForm(e)}
-                            disabled={!isEditSettings}
-                          />
-                          <label className="">
-                            <span className="label-text-alt text-rose-300">
-                              {settingsFormError?.phone}
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap">
-                    <div className="w-full lg:w-12/12 px-4">
-                      <div className="w-full border-b-gray-700 border-dotted border-b-2 pb-4 mb-4"></div>
-                      <div className="relative w-full mb-3">
-                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
-                          Address
-                        </label>
-                        <input
-                          type="text"
-                          name="address"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          value={settingsForm.address}
-                          onChange={(e) => handleSettingsForm(e)}
-                          disabled={!isEditSettings}
-                        />
-                        <label className="">
-                          <span className="label-text-alt text-rose-300">
-                            {settingsFormError?.address}
-                          </span>
-                        </label>
+                      <div className={`${isEditSettings ? "hidden" : "block"}`}>
+                        <table className="mx-8 text-sm w-11/12">
+                          <tbody>
+                            <tr className="text-white">
+                              <td className=" font-semibold text-lg w-1/4 align-top">
+                                Logo
+                              </td>
+                              <td className="px-4 "></td>
+                              <td className="pl-4 text-lg tracking-wider">
+                                {selectedFile ? (
+                                  <img
+                                    src={preview}
+                                    className="max-h-28 max-w-sm grayscale mb-1 mt-2"
+                                  />
+                                ) : (
+                                  <React.Fragment>
+                                    {settingsForm.logo ? (
+                                      <img
+                                        src={
+                                          process.env.NEXT_PUBLIC_SERVER_URL +
+                                          settingsForm.logo
+                                        }
+                                        className="max-h-28 min-w-[32px] max-w-sm mb-1 border border-zinc-600 rounded-lg border-dashed"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={"/apdocLogo.png"}
+                                        className="max-h-28 min-w-[32px] max-w-sm mb-1 border border-zinc-600 rounded-lg border-dashed"
+                                      />
+                                    )}
+                                  </React.Fragment>
+                                )}
+                              </td>
+                            </tr>
+                            <tr className="text-white">
+                              <td className="py-[9.1px] font-semibold text-lg w-1/4">
+                                Name
+                              </td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 text-lg tracking-wider">
+                                {settingsForm?.name}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Phone</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.phone || "-"}
+                              </td>
+                            </tr>
+                            <tr className="">
+                              <td className="py-1 text-slate-300">~</td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Address</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.address || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">RT/RW</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.rt + " / " + settingsForm?.rw}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Village</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.village?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">District</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.district?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">City</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.city?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Province</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.province?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Postal Code</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.postal_code || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]"></td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                <div className="">
+                                  <ReactToPrint
+                                    trigger={() => (
+                                      <div className="btn outline-none w-full text-white mt-4">
+                                        Test print{" "}
+                                        <i className="fas fa-print ml-2"></i>
+                                      </div>
+                                    )}
+                                    content={() => structRef.current}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                    </div>
-                    <div className="w-full lg:w-3/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          value={settingsForm.city}
-                          onChange={(e) => handleSettingsForm(e)}
-                          disabled={!isEditSettings}
-                        />
-                        <label className="">
-                          <span className="label-text-alt text-rose-300">
-                            {settingsFormError?.city}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-3/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
-                          Country
-                        </label>
-                        <input
-                          type="text"
-                          name="country"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          value={settingsForm.country}
-                          onChange={(e) => handleSettingsForm(e)}
-                          disabled={!isEditSettings}
-                        />
-                        <label className="">
-                          <span className="label-text-alt text-rose-300">
-                            {settingsFormError?.country}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-3/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
-                          District
-                        </label>
-                        <input
-                          type="text"
-                          name="country"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          value={settingsForm.district}
-                          onChange={(e) => handleSettingsForm(e)}
-                          disabled={!isEditSettings}
-                        />
-                        <label className="">
-                          <span className="label-text-alt text-rose-300">
-                            {settingsFormError?.district}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-3/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className="block normal-case text-gray-400 text-xs font-bold mb-2">
-                          Postal Code
-                        </label>
-                        <input
-                          type="text"
-                          name="postal_code"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          value={settingsForm.postal_code}
-                          onChange={(e) => handleSettingsForm(e)}
-                          disabled={!isEditSettings}
-                        />
-                        <label className="">
-                          <span className="label-text-alt text-rose-300">
-                            {settingsFormError?.postal_code}
-                          </span>
-                        </label>
+                      <div
+                        className={`${!isEditSettings ? "hidden" : "block"}`}
+                      >
+                        <table className="mx-8 text-sm w-11/12">
+                          <tbody>
+                            <tr className="text-white">
+                              <td className=" font-semibold text-lg w-1/4 align-top">
+                                Logo
+                              </td>
+                              <td className="px-4 "></td>
+                              <td className=" pl-4 text-lg tracking-wider flex gap-4">
+                                {selectedFile ? (
+                                  <img
+                                    src={preview}
+                                    className="max-h-28 max-w-sm mb-1 overflow-hidden"
+                                  />
+                                ) : (
+                                  <React.Fragment>
+                                    {settingsForm.logo ? (
+                                      <img
+                                        onClick={() => logoRef.current.click()}
+                                        src={
+                                          process.env.NEXT_PUBLIC_SERVER_URL +
+                                          settingsForm.logo
+                                        }
+                                        className="max-h-28 max-w-sm mb-1 bg-slate-800 rounded-lg overflow-hidden"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={"/apdocLogo.png"}
+                                        className="max-h-28 max-w-sm mb-1 bg-slate-800 rounded-lg overflow-hidden"
+                                      />
+                                    )}
+                                  </React.Fragment>
+                                )}
+                                <i
+                                  className="fas fa-edit mt-2 text-slate-300"
+                                  onClick={() => logoRef.current.click()}
+                                ></i>
+                              </td>
+                            </tr>
+                            <tr className="text-white">
+                              <td className="py-[9.1px] font-semibold text-lg w-1/4">
+                                Name
+                              </td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 text-lg tracking-wider">
+                                <input
+                                  ref={settingsFormRef}
+                                  type="text"
+                                  name="name"
+                                  value={settingsForm.name || ""}
+                                  disabled={!isEditSettings}
+                                  onChange={(e) => handleSettingsForm(e)}
+                                  required
+                                  className={`${
+                                    isEditSettings
+                                      ? "bg-slate-800"
+                                      : "bg-zinc-100"
+                                  } border-0 px-3 text-lg placeholder-blueGray-300 text-white rounded shadow w-full ease-linear transition-all duration-150`}
+                                />
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Phone</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                <input
+                                  type="text"
+                                  name="phone"
+                                  value={settingsForm.phone || ""}
+                                  disabled={!isEditSettings}
+                                  onChange={(e) => handleSettingsForm(e)}
+                                  required
+                                  className={`${
+                                    isEditSettings
+                                      ? "bg-slate-800"
+                                      : "bg-zinc-100"
+                                  } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
+                                />
+                              </td>
+                            </tr>
+                            <tr className="">
+                              <td className="py-1 text-slate-300">~</td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Address</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.address || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">RT/RW</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.rt + " / " + settingsForm?.rw}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Village</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.village?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">District</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.district?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">City</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.city?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Province</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settings?.province?.name || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]">Postal Code</td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                {settingsForm?.postal_code || "-"}
+                              </td>
+                            </tr>
+                            <tr className="text-gray-400 w-full">
+                              <td className="py-[9.1px]"></td>
+                              <td className="px-4 "></td>
+                              <td className="px-4 ">
+                                <div className="">
+                                  <ReactToPrint
+                                    trigger={() => (
+                                      <div className="btn outline-none w-full text-white mt-4">
+                                        Test print{" "}
+                                        <i className="fas fa-print ml-2"></i>
+                                      </div>
+                                    )}
+                                    content={() => structRef.current}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -412,9 +557,11 @@ export default function Settings() {
                   </React.Fragment>
                 )}
                 <div className="font-bold text-xl">{settingsForm.name}</div>
-                <div className="text-xs text-center mt-1">
-                  {settingsForm.address}, {settingsForm.city},{" "}
-                  {settingsForm.country}, {settingsForm.postal_code}
+                <div className="text-xs text-center mt-1 uppercase">
+                  {settingsForm.address}, RT {settingsForm?.rt}, RW{" "}
+                  {settingsForm?.rw}, {settingsForm.district?.name},{" "}
+                  {settingsForm.city?.name}, {settingsForm.village?.name},{" "}
+                  {settingsForm.postal_code}
                 </div>
                 <div className="text-xs mt-1">
                   <i className="fa-brands fa-whatsapp mr-1"></i>
@@ -478,14 +625,6 @@ export default function Settings() {
               </div>
             </div>
             <img src="/jagged2.svg" className=""></img>
-            <ReactToPrint
-              trigger={() => (
-                <button className="btn outline-none bg-rose-500 text-white mt-3 ">
-                  Test print <i className="fas fa-print ml-2"></i>
-                </button>
-              )}
-              content={() => structRef.current}
-            />
           </div>
         </div>
       </DashboardLayout>

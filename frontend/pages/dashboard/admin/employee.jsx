@@ -24,7 +24,7 @@ export default function Employee() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState(true);
 
@@ -35,6 +35,11 @@ export default function Employee() {
   const [employeesLoading, setEmployeesLoading] = useState(true);
   const [positions, setPositions] = useState([]);
   const [positionsLoading, setPositionsLoading] = useState(true);
+
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [villages, setVilages] = useState([]);
 
   const initialEmployeeForm = {
     clinic_id: "",
@@ -47,6 +52,15 @@ export default function Employee() {
     birth_date: "",
     birth_place: "",
     position_id: "",
+
+    postal_code: "",
+    rt: "",
+    rw: "",
+
+    district_id: "",
+    city_id: "",
+    province_id: "",
+    village_id: "",
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -79,7 +93,7 @@ export default function Employee() {
     if (!clinic) {
       return;
     }
-    setEmployeesLoading(true)
+    setEmployeesLoading(true);
     try {
       const response = await axios.get(
         `employees/${clinic && clinic + "/"}${perpage}${
@@ -101,8 +115,8 @@ export default function Employee() {
       setEmployeesLoading(false);
     } catch (err) {
       console.error(err);
-      setEmployees({})
-      setEmployeesLoading(false)
+      setEmployees({});
+      setEmployeesLoading(false);
     }
   }
 
@@ -146,10 +160,10 @@ export default function Employee() {
       addModalRef.current.click();
       getEmployee();
       setAddForm(initialEmployeeForm);
-      setAddForm({clinic_id: clinic});
-      setAddFormError(initialEmployeeForm);
+      setAddForm({ clinic_id: clinic });
+      setAddFormError({});
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setAddFormError(initialEmployeeForm);
       setAddFormError(err.response?.data);
     }
@@ -168,14 +182,13 @@ export default function Employee() {
       putModalRef.current.click();
       getEmployee();
       setPutForm(initialEmployeeForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setPutFormError(initialEmployeeForm);
     } catch (err) {
       setPutFormError(initialEmployeeForm);
       setPutFormError(err.response?.data);
     }
   }
-
   async function deleteEmployee(id) {
     try {
       const response = await axios.delete(`/employee/${id}`, {
@@ -188,7 +201,155 @@ export default function Employee() {
       console.error(err);
     }
   }
-  
+
+  async function getProvinces() {
+    try {
+      const response = await axios.get(`location/provinces`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setProvinces(response.data?.data);
+      // return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getCities(id) {
+    try {
+      const response = await axios.get(`location/province/cities/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // setCities(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getDistricts(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/districts/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // setDistricts(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function getVilages(id) {
+    try {
+      const response = await axios.get(
+        `location/province/city/district/villages/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // setVilages(response.data?.data);
+      return response.data?.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  useEffect(() => {
+    getProvinces();
+  }, []);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.province_id) {
+        setCities([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      setCities(await getCities(addForm.province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.city_id) {
+        setDistricts([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      setDistricts(await getDistricts(addForm.city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!addForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(addForm.district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [addForm.district_id]);
+
+  // put clinic region
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.province_id) {
+        setCities([]);
+        return;
+      }
+      // setUserForm({ city_id: "", districts_id: "", village_id: "" });
+      setCities([]);
+      setDistricts([]);
+      setVilages([]);
+      setCities(await getCities(putForm.province_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.province_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.city_id) {
+        setDistricts([]);
+        return;
+      }
+      // setUserForm({ districts_id: "", village_id: "" });
+      setDistricts([]);
+      setVilages([]);
+      setDistricts(await getDistricts(putForm.city_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.city_id]);
+
+  useEffect(() => {
+    const getData = setTimeout(async () => {
+      if (!putForm.district_id) {
+        setVilages([]);
+        return;
+      }
+      // setUserForm({ village_id: "" });
+      setVilages([]);
+      setVilages(await getVilages(putForm.district_id));
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [putForm.district_id]);
+
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
   const onSelectFile = (e) => {
@@ -277,6 +438,8 @@ export default function Employee() {
     return () => clearTimeout(getData);
   }, [searchPosition]);
 
+  // console.log(addForm)
+
   return (
     <>
       <DashboardLayout title="Employees" clinic={clinic} setClinic={setClinic}>
@@ -331,6 +494,11 @@ export default function Employee() {
                   htmlFor="modal-add"
                   onClick={() => {
                     setSelectedPositions({});
+                    setAddForm({ ...initialEmployeeForm, clinic_id: clinic });
+                    setCities([]);
+                    setDistricts([]);
+                    setVilages([]);
+                    setAddFormError({});
                   }}
                 >
                   Add <i className="fas fa-add"></i>
@@ -409,60 +577,68 @@ export default function Employee() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={employees} dataLoading={employeesLoading} reload={getEmployee}></Loading>
-                {!employeesLoading && employees?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
-                        <span className={"ml-3 font-bold"}>
-                          {index + employees.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <span className={" capitalize"}>
-                          {/* <i
+                <Loading
+                  data={employees}
+                  dataLoading={employeesLoading}
+                  reload={getEmployee}
+                ></Loading>
+                {!employeesLoading &&
+                  employees?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 border-l-0 border-r-0 text-xs whitespace-nowrap text-left py-4 flex items-center">
+                          <span className={"ml-3 font-bold"}>
+                            {index + employees.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          <span className={"font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          <span className={" capitalize"}>
+                            {/* <i
                             className={`fas fa-circle mr-2 ${
                               obj.position?.name
                                 ? "text-emerald-400"
                                 : "text-orange-400"
                             }`}
                           ></i>{" "} */}
-                          {obj.position?.name ? obj.position.name : "unasigned"}
-                        </span>
-                      </td>
+                            {obj.position?.name
+                              ? obj.position.name
+                              : "unasigned"}
+                          </span>
+                        </td>
 
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        <a
-                          href={`${
-                            obj.phone
-                              ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
-                              : ""
-                          }`}
-                          target="_blank"
-                          className={""}
-                        >
-                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                          {obj.phone}
-                        </a>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          <a
+                            href={`${
+                              obj.phone
+                                ? `https://wa.me/` +
+                                  obj.phone?.replace(/\D/g, "")
+                                : ""
+                            }`}
+                            target="_blank"
+                            className={""}
+                          >
+                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                            {obj.phone}
+                          </a>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                        {/* <div className="tooltip tooltip-left" data-tip="Detail">
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
+                          {/* <div className="tooltip tooltip-left" data-tip="Detail">
                           <label
                             className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             type="button"
@@ -475,39 +651,43 @@ export default function Employee() {
                             <i className="fas fa-eye"></i>
                           </label>
                         </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                        <label
-                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-put"
-                          onClick={() => {
-                            setPutForm(obj);
-                            setPutFormError(initialEmployeeForm);
-                            setSelectedPositions(obj.position);
-                          }}
-                        >
-                          <i className="fas fa-pen-to-square"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        {!obj.users.length > 0 && (
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
                           <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
+                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-put"
+                            onClick={async () => {
+                              setPutForm(obj);
+                              setPutFormError(initialEmployeeForm);
+                              setSelectedPositions(obj.position);
+
+                              setCities(await getCities(obj.province_id));
+                              setDistricts(await getDistricts(obj.city_id));
+                              setVilages(await getVilages(obj.district_id));
+                            }}
                           >
-                            <i className="fas fa-trash"></i>
+                            <i className="fas fa-pen-to-square"></i>
                           </label>
-                        )}
-                        {/* </div> */}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteEmployee(obj.id)}
-                          title={`Delete employee?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
+                          {!obj.users.length > 0 && (
+                            <label
+                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              htmlFor={obj.id}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </label>
+                          )}
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteEmployee(obj.id)}
+                            title={`Delete employee?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -650,25 +830,6 @@ export default function Employee() {
                   </span>
                 </label>
               )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={addForm.address}
-                onChange={(e) => handleAddInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered border-slate-300 w-full h-16"
-              ></textarea>
-              {addFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {addFormError.address}
-                  </span>
-                </label>
-              )}
 
               <div className="flex gap-4 w-full">
                 <div className="w-full">
@@ -734,6 +895,247 @@ export default function Employee() {
                   )}
                 </div>
               </div>
+
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
+
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={addForm.address}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered border-slate-300 w-full h-16"
+              ></textarea>
+              {addFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {addFormError.address}
+                  </span>
+                </label>
+              )}
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Province</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="province_id"
+                    value={addForm.province_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {provinces?.length &&
+                      provinces?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.province_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">City</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="city_id"
+                    value={addForm.city_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {cities?.length &&
+                      cities?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.city_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">District</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="district_id"
+                    value={addForm.district_id}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {districts?.length &&
+                      districts?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.district_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Village</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="village_id"
+                    // value={addForm.village_id}
+                    onChange={(e) => {
+                      let value = JSON.parse(e.target.value);
+                      // console.log(addForm)
+                      setAddForm({
+                        village_id: value.id,
+                        postal_code:
+                          value.meta?.pos !== "NULL" ? value.meta?.pos : "",
+                      });
+                    }}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="" disabled>
+                      Select
+                    </option>
+                    {villages?.length &&
+                      villages?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={JSON.stringify(obj)}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {addFormError.village_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Postal Code</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="postal_code"
+                    value={addForm.postal_code}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.postal_code && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.postal_code}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RT</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rt"
+                    value={addForm.rt}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.rt && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.rt}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RW</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rw"
+                    value={addForm.rw}
+                    onChange={(e) => handleAddInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {addFormError.rw && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {addFormError.rw}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
+
+
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
                 <span className="label-text">Position</span>
@@ -839,10 +1241,10 @@ export default function Employee() {
                 placeholder=""
                 className="input input-bordered border-slate-300 w-full"
               />
-              {putFormError.nik && (
+              {putFormError.message && (
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
-                    {putFormError.nik}
+                    {putFormError.message}
                   </span>
                 </label>
               )}
@@ -871,7 +1273,7 @@ export default function Employee() {
               </label>
               <input
                 required
-                type="text"
+                type="number"
                 name="phone"
                 value={putForm.phone}
                 onChange={(e) => handlePutInput(e)}
@@ -882,25 +1284,6 @@ export default function Employee() {
                 <label className="label">
                   <span className="label-text-alt text-rose-300">
                     {putFormError.phone}
-                  </span>
-                </label>
-              )}
-              <label className="label">
-                <span className="label-text">Address</span>
-              </label>
-              <textarea
-                type="text"
-                name="address"
-                value={putForm.address}
-                onChange={(e) => handlePutInput(e)}
-                placeholder=""
-                rows={3}
-                className="input input-bordered border-slate-300 w-full h-16"
-              ></textarea>
-              {putFormError.address && (
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
-                    {putFormError.address}
                   </span>
                 </label>
               )}
@@ -969,6 +1352,238 @@ export default function Employee() {
                   )}
                 </div>
               </div>
+
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
+
+              <label className="label">
+                <span className="label-text">Address</span>
+              </label>
+              <textarea
+                type="text"
+                name="address"
+                value={putForm.address}
+                onChange={(e) => handlePutInput(e)}
+                placeholder=""
+                rows={3}
+                className="input input-bordered border-slate-300 w-full h-16"
+              ></textarea>
+              {putFormError.address && (
+                <label className="label">
+                  <span className="label-text-alt text-rose-300">
+                    {putFormError.address}
+                  </span>
+                </label>
+              )}
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Province</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="province_id"
+                    value={putForm.province_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {provinces?.length &&
+                      provinces?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.province_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">City</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="city_id"
+                    value={putForm.city_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {cities?.length &&
+                      cities?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.city_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">District</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="district_id"
+                    value={putForm.district_id}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="text-black">Select</option>
+                    {districts?.length &&
+                      districts?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.district_id}
+                    </span>
+                  </label>
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Village</span>
+                  </label>
+                  <select
+                    type="text"
+                    name="village_id"
+                    value={putForm.village_id}
+                    onChange={e => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  >
+                    <option className="">
+                      Select
+                    </option>
+                    {villages?.length &&
+                      villages?.map((obj) => {
+                        return (
+                          <option
+                            key={obj.id}
+                            className="text-black"
+                            value={obj.id}
+                          >
+                            {obj.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt text-rose-300">
+                      {putFormError.village_id}
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">Postal Code</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="postal_code"
+                    value={putForm.postal_code}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.postal_code && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.postal_code}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RT</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rt"
+                    value={putForm.rt}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.rt && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.rt}
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text">RW</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="rw"
+                    value={putForm.rw}
+                    onChange={(e) => handlePutInput(e)}
+                    required
+                    placeholder=""
+                    className="input input-bordered input-primary border-slate-300 w-full"
+                  />
+                  {putFormError.rw && (
+                    <label className="label">
+                      <span className="label-text-alt text-rose-300">
+                        {putFormError.rw}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </div>
+              
+              <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
                 <span className="label-text">Position</span>
@@ -1052,194 +1667,16 @@ export default function Employee() {
               >
                 Cancel
               </label>
-              <button className="btn btn-success bg-success rounded-md">
-                Save
-              </button>
+              <button className="btn btn-success rounded-md">Update</button>
             </div>
           </form>
         </ModalBox>
 
-        {/* <ModalBox id="modal-details">
-          <h3 className="font-bold text-lg mb-4">Detail Employee</h3>
-
-          <input type="hidden" autoComplete="off" />
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">NIK</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.nik}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.name}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Phone</span>
-            </label>
-            <input
-              type="text"
-              value={putForm.phone}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-            />
-            <label className="label">
-              <span className="label-text">Address</span>
-            </label>
-            <textarea
-              type="text"
-              rows={3}
-              value={putForm.address}
-              onChange={() => {}}
-              disabled
-              className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full h-16"
-            ></textarea>
-            <div className="flex gap-4 w-full">
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Place</span>
-                </label>
-                <input
-                  type="text"
-                  value={putForm.birth_place}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Birth Date</span>
-                </label>
-                <input
-                  type="date"
-                  value={putForm.birth_date}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-                />
-              </div>
-              <div className="w-full">
-                <label className="label">
-                  <span className="label-text">Gender</span>
-                </label>
-                <select
-                  name="gender"
-                  value={putForm.gender}
-                  onChange={() => {}}
-                  disabled
-                  className="input input-bordered border-slate-100 bg-slate-200 cursor-text w-full"
-                >
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-            </div>
-
-            <label className="label">
-              <span className="label-text">Position</span>
-            </label>
-            
-            <div className="dropdown w-full">
-                {selectedPositions?.id && (
-                  <div className="p-0 overflow-hidden mb-1">
-                    <div
-                      className="group font-normal justify-start p-3 normal-case text-justify transition-all text-xs hover:bg-rose-200 border border-slate-300 rounded-md cursor-pointer"
-                      onClick={() => {
-                        setSelectedCategory({});
-                        setAddForm({ position_id: null });
-                      }}
-                    >
-                      <div className="flex justify-end font-bold">
-                        <i className="fas fa-x absolute collapse hidden group-hover:flex mt-1 transition-all text-rose-600"></i>
-                      </div>
-                      <div className="text-sm font-semibold flex">
-                        <p className="text-left">{selectedPositions.name}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {!selectedPositions?.id && (
-                  <>
-                    <input
-                      tabIndex={0}
-                      type="text"
-                      name="searchAdd"
-                      value={searchPosition}
-                      onChange={(e) => setSearchPosition(e.target.value)}
-                      placeholder="Search service ..."
-                      className="input input-bordered border-slate-300 w-full"
-                    />
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content menu border bg-white w-full rounded-md border-slate-300 overflow-hidden"
-                    >
-                      {!positions?.data?.length && (
-                        <li className="rounded-sm text-sm">
-                          <div className="btn btn-ghost font-semibold btn-sm justify-start p-0 pl-4 normal-case">
-                            No data found
-                          </div>
-                        </li>
-                      )}
-                      {positions?.data?.map((obj) => {
-                        return (
-                          <li key={obj.id} className="p-0 overflow-hidden">
-                            <div
-                              className="btn btn-ghost font-normal btn-sm justify-start p-0 pl-4 normal-case truncate"
-                              onClick={() => {
-                                setSelectedPositions(obj);
-                                setAddForm({ position_id: obj.id });
-                                setSearchPosition("");
-                              }}
-                            >
-                              <p className="text-left">{obj.name}</p>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </>
-                )}
-              </div>
-          </div>
-          <div className="modal-action rounded-sm">
-            <button
-              className="btn btn-ghost rounded-md"
-              onClick={() => {
-                detailModalRef.current.click();
-                setTimeout(() => putModalRef.current.click(), 120);
-              }}
-            >
-              Edit
-            </button>
-            <label
-              htmlFor="modal-details"
-              ref={detailModalRef}
-              className="btn bg-slate-600 border-none text-white rounded-md"
-            >
-              Close
-            </label>
-          </div>
-        </ModalBox> */}
-        
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

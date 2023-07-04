@@ -387,7 +387,6 @@ export default function Account() {
 
   useEffect(() => {
     getProvinces();
-    // setProvinces(getProvinces());
   }, []);
 
   useEffect(() => {
