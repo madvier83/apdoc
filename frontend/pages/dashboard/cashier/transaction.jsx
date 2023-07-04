@@ -1373,8 +1373,10 @@ export default function Transaction() {
                   {settings?.name && (
                     <React.Fragment>
                       <div className="font-bold text-xl">{settings.name}</div>
-                      <div className="text-xs text-center mt-2">
-                        {settings.address}, {settings.city}, {settings.country},{" "}
+                      <div className="text-xs text-center mt-1 uppercase">
+                        {settings.address}, RT {settings?.rt}, RW{" "}
+                        {settings?.rw}, {settings.district?.name},{" "}
+                        {settings.city?.name}, {settings.village?.name},{" "}
                         {settings.postal_code}
                       </div>
                       <div className="text-xs mt-1">

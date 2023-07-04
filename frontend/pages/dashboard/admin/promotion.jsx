@@ -8,6 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Promotion() {
   const token = GetCookieChunk("token_");
@@ -503,7 +504,7 @@ export default function Promotion() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Payment</h3>
+          <h3 className="font-bold text-lg mb-4  flex justify-between">Add Promotion <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -560,7 +561,7 @@ export default function Promotion() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Payment</h3>
+          <h3 className="font-bold text-lg mb-4">Update Promotion</h3>
           <form onSubmit={putPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

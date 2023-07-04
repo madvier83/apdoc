@@ -13,6 +13,7 @@ import ModalDelete from "../../../../components/Modals/ModalDelete";
 import { GetCookieChunk } from "../../../../services/CookieChunk";
 import { useAtom } from "jotai";
 import { clinicAtom } from "../../../../services/Atom";
+import SelectedClinicBadge from "../../../../components/SelectedClinicBadge";
 
 export default function Patients() {
   const token = GetCookieChunk("token_");
@@ -624,7 +625,7 @@ export default function Patients() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span className="">
                             {obj.address?.substring(0, 50)}{" "}
-                            {obj.address?.length > 50 && "..."}
+                            {obj.address?.length > 50 && "..."}, {obj.village?.name}, {obj.city?.name}, {obj.district?.name}, {obj.province?.name}
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -778,9 +779,7 @@ export default function Patients() {
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
             Add Patient
-            <small className="font-semibold bg-emerald-300 rounded-md px-2">
-              Clinic: {clinicInfo?.name}
-            </small>
+            <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addPatients} autoComplete="off">
             <input type="hidden" autoComplete="off" />
@@ -1439,7 +1438,7 @@ export default function Patients() {
                           <option
                             key={obj.id}
                             className="text-black"
-                            value={JSON.stringify(obj)}
+                            value={obj.id}
                           >
                             {obj.name}
                           </option>

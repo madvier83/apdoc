@@ -8,6 +8,7 @@ import ModalBox from "../../../components/Modals/ModalBox";
 import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Payment() {
   const token = GetCookieChunk("token_");
@@ -547,7 +548,7 @@ export default function Payment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Payment</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Payment <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

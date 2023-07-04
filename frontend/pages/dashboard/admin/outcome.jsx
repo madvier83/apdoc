@@ -10,6 +10,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Outcome() {
   const token = GetCookieChunk("token_");
@@ -579,7 +580,7 @@ export default function Outcome() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Outcome</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Outcome <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <label className="label">

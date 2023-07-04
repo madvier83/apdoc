@@ -11,6 +11,7 @@ import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
 import { useAtom } from "jotai";
 import { clinicAtom } from "../../../services/Atom";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Employee() {
   const token = GetCookieChunk("token_");
@@ -772,9 +773,7 @@ export default function Employee() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">Add Employee 
-            <small className="font-semibold bg-emerald-300 rounded-md px-2">
-              Clinic: {clinicInfo?.name}
-            </small></h3>
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

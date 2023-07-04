@@ -9,6 +9,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Position() {
   const token = GetCookieChunk("token_");
@@ -484,7 +485,7 @@ export default function Position() {
         </label> */}
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Position</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Position <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addPosition}>
             <div className="form-control w-full">
               <label className="label">
