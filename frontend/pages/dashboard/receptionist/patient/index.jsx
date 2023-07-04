@@ -11,6 +11,8 @@ import Loading from "../../../../components/loading";
 import ModalBox from "../../../../components/Modals/ModalBox";
 import ModalDelete from "../../../../components/Modals/ModalDelete";
 import { GetCookieChunk } from "../../../../services/CookieChunk";
+import { useAtom } from "jotai";
+import { clinicAtom } from "../../../../services/Atom";
 
 export default function Patients() {
   const token = GetCookieChunk("token_");
@@ -22,6 +24,7 @@ export default function Patients() {
   const exportModalRef = useRef();
   const tableRef = useRef();
 
+  const [clinicInfo, setClinicInfo] = useAtom(clinicAtom);
   const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
@@ -433,7 +436,7 @@ export default function Patients() {
     });
   }, [patients]);
 
-  console.log(putForm)
+  // console.log(putForm)
 
   return (
     <>
@@ -621,7 +624,7 @@ export default function Patients() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span className="">
                             {obj.address?.substring(0, 50)}{" "}
-                            {obj.address.length > 50 && "..."}
+                            {obj.address?.length > 50 && "..."}
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -652,7 +655,9 @@ export default function Patients() {
                             type="button"
                             // htmlFor="modal-details"
                             onClick={() => {
-                              router.push(`/dashboard/receptionist/patient/${obj.id}`)
+                              router.push(
+                                `/dashboard/receptionist/patient/${obj.id}`
+                              );
                             }}
                           >
                             <i className="fa-solid fa-heart-pulse"></i>
@@ -771,7 +776,12 @@ export default function Patients() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Patient</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Patient
+            <small className="font-semibold bg-emerald-300 rounded-md px-2">
+              Clinic: {clinicInfo?.name}
+            </small>
+          </h3>
           <form onSubmit={addPatients} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -898,7 +908,7 @@ export default function Patients() {
                   )}
                 </div>
               </div>
-              
+
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
@@ -1151,7 +1161,12 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Edit Patient</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Edit Patient{" "}
+            <small className="font-semibold bg-emerald-300 rounded-md px-2">
+              Clinic: {clinicInfo?.name}
+            </small>
+          </h3>
           <form onSubmit={putPatients} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1276,7 +1291,7 @@ export default function Patients() {
                   )}
                 </div>
               </div>
-              
+
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">

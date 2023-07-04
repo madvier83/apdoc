@@ -6,10 +6,13 @@ import axios from "../../pages/api/axios";
 import { getCookie, setCookie } from "cookies-next";
 import Script from "next/script";
 import { GetCookieChunk } from "../../services/CookieChunk";
+import { atom, useAtom } from "jotai";
+import { clinicAtom } from "../../services/Atom";
 // import veri
 
 export default function Navbar({ title, clinic, setClinic }) {
   const router = useRouter();
+  const [clinicInfo, setClinicInfo] = useAtom(clinicAtom)
 
   const [clinics, setClinics] = useState();
   const [clinicsLoading, setClinicsLoading] = useState();
@@ -86,8 +89,19 @@ export default function Navbar({ title, clinic, setClinic }) {
       setApdoc(parseJwt(token));
     }, []);
 
-    // console.log(clinic);
+    useEffect(() => {
+      let selectedClinic = {}
+      clinics?.map(obj => {
+        if(obj.id == clinic) {
+          selectedClinic = obj
+        }
+      })
+      // console.log(selectedClinic)
+      setClinicInfo(selectedClinic)
+    }, [clinic, clinics])
   }
+  // console.log(clinicInfo);
+
 
   return (
     <>

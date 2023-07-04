@@ -380,7 +380,7 @@ export default function Settings() {
                                 {selectedFile ? (
                                   <img
                                     src={preview}
-                                    className="max-h-28 max-w-sm mb-1 overflow-hidden"
+                                    className="max-h-28 max-w-sm mb-1 overflow-hidden cursor-pointer"
                                   />
                                 ) : (
                                   <React.Fragment>
@@ -391,7 +391,7 @@ export default function Settings() {
                                           process.env.NEXT_PUBLIC_SERVER_URL +
                                           settingsForm.logo
                                         }
-                                        className="max-h-28 max-w-sm mb-1 bg-slate-800 rounded-lg overflow-hidden"
+                                        className="max-h-28 max-w-sm mb-1 bg-slate-800 rounded-lg overflow-hidden cursor-pointer"
                                       />
                                     ) : (
                                       <img

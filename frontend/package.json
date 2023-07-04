@@ -25,6 +25,7 @@
     "dynamsoft-javascript-barcode": "^9.6.20",
     "gsap": "^3.11.4",
     "jose": "^4.11.1",
+    "jotai": "^2.2.1",
     "jquery": "^3.6.1",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.0",
