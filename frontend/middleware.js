@@ -37,7 +37,7 @@ export async function middleware(req) {
     
     // const {payload} = await jwtVerify(jwt, secret);
     // console.log(payload)
-    console.log(jwt)
+    // console.log(jwt)
     // return;
     
     

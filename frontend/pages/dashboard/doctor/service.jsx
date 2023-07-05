@@ -12,6 +12,7 @@ import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Service() {
   const token = GetCookieChunk("token_");
@@ -32,7 +33,7 @@ export default function Service() {
 
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(true);
-  
+
   const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(false);
 
@@ -79,7 +80,7 @@ export default function Service() {
     if (!clinic) {
       return;
     }
-    setServicesLoading(true)
+    setServicesLoading(true);
     try {
       const response = await axios.get(
         `services/${clinic && clinic + "/"}${perpage}${
@@ -101,7 +102,7 @@ export default function Service() {
       setServicesLoading(false);
     } catch (err) {
       console.error(err);
-      setClinic({})
+      setClinic({});
       setServicesLoading(false);
     }
   }
@@ -118,13 +119,14 @@ export default function Service() {
       addModalRef.current.click();
       getServices();
       setAddForm(initialServiceForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialServiceForm);
-      setSelectedCategory({})
+      setSelectedCategory({});
     } catch (err) {
       setAddFormError(initialServiceForm);
       setAddFormError(err.response?.data);
-      err.response?.data?.message && setAddFormError({code: err.response?.data?.message || ""})
+      err.response?.data?.message &&
+        setAddFormError({ code: err.response?.data?.message || "" });
     }
   }
 
@@ -142,11 +144,12 @@ export default function Service() {
       getServices();
       setPutForm(initialServiceForm);
       setPutFormError(initialServiceForm);
-      setSelectedCategory({})
+      setSelectedCategory({});
     } catch (err) {
       setPutFormError(initialServiceForm);
       setPutFormError(err.response?.data);
-      err.response?.data?.message && setPutFormError({code: err.response?.data?.message || ""})
+      err.response?.data?.message &&
+        setPutFormError({ code: err.response?.data?.message || "" });
     }
   }
 
@@ -162,9 +165,9 @@ export default function Service() {
       console.error(err);
     }
   }
-  
+
   async function getCategory() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -175,7 +178,8 @@ export default function Service() {
             searchCategory
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -189,7 +193,7 @@ export default function Service() {
       console.error(err);
     }
   }
-  
+
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -208,7 +212,10 @@ export default function Service() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -300,7 +307,7 @@ export default function Service() {
       top: 0,
     });
   }, [services]);
-  
+
   useEffect(() => {
     const getData = setTimeout(() => {
       getCategory();
@@ -469,88 +476,93 @@ export default function Service() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={services} dataLoading={servicesLoading} reload={getServices}></Loading>
-                {!servicesLoading && services?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
-                        <span className={"ml-3 font-bold "}>
-                          {index + services.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.code}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold capitalize"}>
-                          {obj.category_service?.name || "Uncategorized"}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold capitalize"}>
-                          Rp. {numeral(obj.price).format("0,0")}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"font-semibold"}>
-                          Rp. {numeral(obj.commission).format("0,0")}
-                        </span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={services}
+                  dataLoading={servicesLoading}
+                  reload={getServices}
+                ></Loading>
+                {!servicesLoading &&
+                  services?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left flex items-center">
+                          <span className={"ml-3 font-bold "}>
+                            {index + services.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.code}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-semibold capitalize"}>
+                            {obj.category_service?.name || "Uncategorized"}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-semibold capitalize"}>
+                            Rp. {numeral(obj.price).format("0,0")}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"font-semibold"}>
+                            Rp. {numeral(obj.commission).format("0,0")}
+                          </span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
-                        <label
-                          className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          htmlFor="modal-put"
-                          onClick={() => {
-                            setPutForm(obj);
-                            setPutFormError(initialServiceForm);
-                            setSelectedCategory(obj.category_service)
-                          }}
-                        >
-                          <i className="fas fa-pen-to-square"></i>
-                        </label>
-                        {/* </div> */}
-                        {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
-                        <label
-                          className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          htmlFor={obj.id}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </label>
-                        {/* </div> */}
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteService(obj.id)}
-                          title={`Delete service?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <div className="tooltip tooltip-left" data-tip="Edit"> */}
+                          <label
+                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            htmlFor="modal-put"
+                            onClick={() => {
+                              setPutForm(obj);
+                              setPutFormError(initialServiceForm);
+                              setSelectedCategory(obj.category_service);
+                            }}
+                          >
+                            <i className="fas fa-pen-to-square"></i>
+                          </label>
+                          {/* </div> */}
+                          {/* <div className="tooltip tooltip-left" data-tip="Delete"> */}
+                          <label
+                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            htmlFor={obj.id}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </label>
+                          {/* </div> */}
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteService(obj.id)}
+                            title={`Delete service?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -631,7 +643,10 @@ export default function Service() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Service</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Service
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -750,7 +765,7 @@ export default function Service() {
                 defaultValue={0}
                 value={addForm.price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setAddForm({price: value})}
+                onValueChange={(value, name) => setAddForm({ price: value })}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.price && (
@@ -768,7 +783,9 @@ export default function Service() {
                 defaultValue={0}
                 value={addForm.commission}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setAddForm({commission: value})}
+                onValueChange={(value, name) =>
+                  setAddForm({ commission: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {addFormError.commission && (
@@ -833,7 +850,7 @@ export default function Service() {
                   </span>
                 </label>
               )}
-              
+
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
@@ -913,7 +930,7 @@ export default function Service() {
                 defaultValue={0}
                 value={putForm.price}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setPutForm({price: value})}
+                onValueChange={(value, name) => setPutForm({ price: value })}
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.price && (
@@ -931,7 +948,9 @@ export default function Service() {
                 defaultValue={0}
                 value={putForm.commission}
                 decimalsLimit={2}
-                onValueChange={(value, name) => setPutForm({commission: value})}
+                onValueChange={(value, name) =>
+                  setPutForm({ commission: value })
+                }
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
               {putFormError.commission && (
@@ -957,13 +976,11 @@ export default function Service() {
           </form>
         </ModalBox>
 
-        
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

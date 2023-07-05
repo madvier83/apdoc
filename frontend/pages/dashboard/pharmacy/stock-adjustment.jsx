@@ -9,6 +9,7 @@ import numeral from "numeral";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function StockAdjustment() {
   const token = GetCookieChunk("token_");
@@ -631,7 +632,8 @@ export default function StockAdjustment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Stock Adjustment</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Stock Adjustment 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

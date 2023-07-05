@@ -9,6 +9,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function CategoryItem() {
   const token = GetCookieChunk("token_");
@@ -498,7 +499,8 @@ export default function CategoryItem() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Category Item</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Category Item 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

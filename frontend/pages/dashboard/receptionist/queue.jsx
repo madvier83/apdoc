@@ -19,6 +19,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -42,7 +43,7 @@ export default function Queue() {
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState(true);
 
@@ -93,7 +94,7 @@ export default function Queue() {
     if (!clinic) {
       return;
     }
-    setPatientsLoading(true)
+    setPatientsLoading(true);
     try {
       const response = await axios.get(
         `/patients/${clinic && clinic + "/"}${perpage}${
@@ -115,7 +116,7 @@ export default function Queue() {
       setPatientsLoading(false);
     } catch (err) {
       console.error(err);
-      setPatients({})
+      setPatients({});
       setPatientsLoading(false);
     }
   }
@@ -464,6 +465,8 @@ export default function Queue() {
       top: 0,
     });
   }, [patients]);
+
+  console.log(patients);
 
   return (
     <>
@@ -1087,8 +1090,11 @@ export default function Queue() {
             <div className="rounded-t-md mb-0 px-4 py-4 border-0">
               <div className="flex flex-wrap items-center">
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                  <h3 className={"font-semibold text-lg "}>
+                  <h3 className={"font-semibold text-lg flex items-center"}>
                     <i className="fas fa-filter mr-3"></i> Patients Table
+                    <div className="ml-4">
+                      <SelectedClinicBadge></SelectedClinicBadge>
+                    </div>
                   </h3>
                 </div>
                 <div className="relative">
@@ -1254,7 +1260,7 @@ export default function Queue() {
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                             <span className="">
                               {obj.address?.substring(0, 50)}{" "}
-                              {obj.address.length > 50 && "..."}
+                              {obj.address?.length > 50 && "..."}
                             </span>
                           </td>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">

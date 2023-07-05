@@ -11,6 +11,7 @@ import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 // import { Html5QrcodeScanner } from "html5-qrcode";
 // import { Html5Qrcode } from "html5-qrcode";
@@ -894,7 +895,8 @@ export default function Item() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Item</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Item 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1571,7 +1573,8 @@ export default function Item() {
         </ModalBox>
 
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Items Table Config 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

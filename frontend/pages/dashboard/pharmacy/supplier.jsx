@@ -11,6 +11,7 @@ import Highlighter from "react-highlight-words";
 import CurrencyInput from "react-currency-input-field";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
+import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
 
 export default function Supplier() {
   const token = GetCookieChunk("token_");
@@ -628,7 +629,8 @@ export default function Supplier() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Supplier</h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Supplier 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
