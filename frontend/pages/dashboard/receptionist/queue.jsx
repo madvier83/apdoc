@@ -466,7 +466,7 @@ export default function Queue() {
     });
   }, [patients]);
 
-  console.log(patients);
+  // console.log(queues);
 
   return (
     <>
@@ -731,7 +731,9 @@ export default function Queue() {
                           <small className="text-zinc-400">Address</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
-                            {selectedQueue?.patient?.address}
+                              {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
+                              {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
+                              {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
                           </span>
                         </div>
                         {!isRegular && (
@@ -1257,10 +1259,11 @@ export default function Queue() {
                             {obj.birth_place} */}
                             </span>
                           </td>
-                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <td className="border-t-0 max-w-xs overflow-hidden px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                             <span className="">
-                              {obj.address?.substring(0, 50)}{" "}
-                              {obj.address?.length > 50 && "..."}
+                              {obj.address?.substring(0, 50)} ,{" "}
+                              {obj.village?.name}, {obj.city?.name},{" "}
+                              {obj.district?.name}, {obj.province?.name}
                             </span>
                           </td>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">

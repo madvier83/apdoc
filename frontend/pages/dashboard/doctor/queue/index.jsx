@@ -533,7 +533,9 @@ export default function Queue() {
                           <small className="text-zinc-400">Address</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
-                            {selectedQueue?.patient?.address}
+                              {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
+                              {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
+                              {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
                           </span>
                         </div>
                         {!isRegular && (

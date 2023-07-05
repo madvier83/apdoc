@@ -15,12 +15,12 @@ export default function Patients() {
 
   const tableRef = useRef();
 
-  const [clinic, setClinic] = useState()
-  
+  const [clinic, setClinic] = useState();
+
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState(true);
 
@@ -28,7 +28,7 @@ export default function Patients() {
   const [patientsLoading, setPatientsLoading] = useState(true);
 
   async function getPatients() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -71,11 +71,11 @@ export default function Patients() {
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic, sortBy, order]);
 
-  useEffect(()=> {
-    setSearch("")
-    setPage(1)
-  }, [clinic])
-  
+  useEffect(() => {
+    setSearch("");
+    setPage(1);
+  }, [clinic]);
+
   useEffect(() => {
     tableRef.current.scroll({
       top: 0,
@@ -84,7 +84,11 @@ export default function Patients() {
 
   return (
     <>
-      <DashboardLayout title="Patient Records" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout
+        title="Patient Records"
+        clinic={clinic}
+        setClinic={setClinic}
+      >
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -210,83 +214,99 @@ export default function Patients() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={patients} dataLoading={patientsLoading} reload={getPatients}></Loading>
-                {!patientsLoading && patients?.data?.map((obj, index) => {
-                  return (
-                    <tr
-                      key={obj.id}
-                      className="hover:bg-zinc-50 cursor-pointer"
-                      onClick={() => {
-                        router.push(`/dashboard/doctor/patient/${obj.id}`);
-                      }}
-                    >
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold "}>
-                          {index + patients.from}
-                        </span>
-                      </th>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <i
-                          className={`text-md mr-2 ${
-                            obj.gender == "male"
-                              ? "text-blue-400 fas fa-mars"
-                              : "text-pink-400 fas fa-venus"
-                          }`}
-                        ></i>{" "}
-                        <span className={"font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className={"capitalize"}>
-                          {moment(obj.birth_date).format("DD MMM YYYY")} 
-                          {/* -{" "}
+                <Loading
+                  data={patients}
+                  dataLoading={patientsLoading}
+                  reload={getPatients}
+                ></Loading>
+                {!patientsLoading &&
+                  patients?.data?.map((obj, index) => {
+                    return (
+                      <tr
+                        key={obj.id}
+                        className="hover:bg-zinc-50 cursor-pointer"
+                        onClick={() => {
+                          router.push(`/dashboard/doctor/patient/${obj.id}`);
+                        }}
+                      >
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold "}>
+                            {index + patients.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <i
+                            className={`text-md mr-2 ${
+                              obj.gender == "male"
+                                ? "text-blue-400 fas fa-mars"
+                                : "text-pink-400 fas fa-venus"
+                            }`}
+                          ></i>{" "}
+                          <span className={"font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className={"capitalize"}>
+                            {moment(obj.birth_date).format("DD MMM YYYY")}
+                            {/* -{" "}
                           {obj.birth_place} */}
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span className="">{obj.address?.substring(0, 50)} {obj.address.length > 50 && "..."}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <a
-                          href={`${obj.phone ? `https://wa.me/` + obj.phone?.replace(/\D/g, "") : ""}`}
-                          target="_blank"
-                          className={""}
-                        >
-                          <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
-                          {obj.phone}
-                        </a>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          </span>
+                        </td>
+                        <td className="border-t-0 max-w-xs overflow-hidden px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span className="">
+                            {obj.address?.substring(0, 50)} ,{" "}
+                            {obj.village?.name}, {obj.city?.name},{" "}
+                            {obj.district?.name}, {obj.province?.name}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <a
+                            href={`${
+                              obj.phone
+                                ? `https://wa.me/` +
+                                  obj.phone?.replace(/\D/g, "")
+                                : ""
+                            }`}
+                            target="_blank"
+                            className={""}
+                          >
+                            <i className="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>{" "}
+                            {obj.phone}
+                          </a>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <div
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <div
                           className="tooltip tooltip-left"
                           data-tip="Records"
                         > */}
-                        <label
-                          className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                          type="button"
-                          onClick={() => {
-                            router.push(`/dashboard/doctor/patient/${obj.id}`);
-                          }}
-                        >
-                          <i className="fa-solid fa-heart-pulse"></i>{" "}
-                        </label>
-                        {/* </div> */}
-                      </td>
-                    </tr>
-                  );
-                })}
+                          <label
+                            className="bg-violet-500 text-white active:bg-violet-500 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={() => {
+                              router.push(
+                                `/dashboard/doctor/patient/${obj.id}`
+                              );
+                            }}
+                          >
+                            <i className="fa-solid fa-heart-pulse"></i>{" "}
+                          </label>
+                          {/* </div> */}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

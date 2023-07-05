@@ -7,6 +7,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ModalBox from "../../components/Modals/ModalBox";
 import ModalDelete from "../../components/Modals/ModalDelete";
 import { GetCookieChunk } from "../../services/CookieChunk";
+import SelectedClinicBadge from "../../components/SelectedClinicBadge";
 
 export default function Access() {
   const token = GetCookieChunk("token_");
@@ -691,7 +692,8 @@ export default function Access() {
       <ModalBox id="modal-add">
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll h-[75vh]" ref={addModalScrollRef}>
-            <h3 className="font-bold text-lg mb-4">Add Role Access</h3>
+            <h3 className="font-bold text-lg mb-4 flex justify-between">Add Role Access 
+            <SelectedClinicBadge></SelectedClinicBadge></h3>
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">

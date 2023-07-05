@@ -622,10 +622,9 @@ export default function Patients() {
                             {/* {obj.birth_place} */}
                           </span>
                         </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        <td className="border-t-0 max-w-xs overflow-hidden px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span className="">
-                            {obj.address?.substring(0, 50)}{" "}
-                            {obj.address?.length > 50 && "..."}, {obj.village?.name}, {obj.city?.name}, {obj.district?.name}, {obj.province?.name}
+                            {obj.address?.substring(0, 50)}{" "}, {obj.village?.name}, {obj.city?.name}, {obj.district?.name}, {obj.province?.name}
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -671,7 +670,7 @@ export default function Patients() {
                             htmlFor="modal-put"
                             onClick={async () => {
                               setPutForm(obj);
-                              setPutFormError(initialPatientForm);
+                              setPutFormError({...initialPatientForm, message:""});
 
                               setCities(await getCities(obj.province_id));
                               setDistricts(await getDistricts(obj.city_id));
