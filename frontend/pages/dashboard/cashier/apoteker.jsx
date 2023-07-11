@@ -1223,7 +1223,7 @@ export default function Transaction() {
                   {cart?.array?.map((obj) => {
                     return (
                       <React.Fragment key={obj?.item_variant_id}>
-                        <div className="flex w-full justify-between items-center font-semibold">
+                        <div className="flex w-full gap-2 justify-between items-center font-semibold">
                           <small>
                             {obj.name}{" "}
                             <span className="text-gray-800 font-normal">

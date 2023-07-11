@@ -722,7 +722,7 @@ export default function StockAdjustment() {
                 {selectedCategory?.item_variants?.map((obj, index) => {
                   return (
                     <option key={obj.id} value={index}>
-                      {obj.variant}
+                      {obj.variant} - {obj.unit}
                     </option>
                   );
                 })}

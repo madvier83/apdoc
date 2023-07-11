@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function ResetPassword() {
   return (
     <>
-      <AuthLayout title={"APDOC | Change Password"}>
+      <AuthLayout title={"APDOC | Verify Your Email"}>
         <div className="container mx-auto px-4 h-[60vh]">
           <div className="flex content-center items-center justify-center h-full">
             <div className="w-full lg:w-4/12 px-4">

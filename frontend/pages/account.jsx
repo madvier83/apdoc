@@ -570,7 +570,7 @@ export default function Account() {
   //   setIsGetUpdateAddress(false);
   // }
 
-  // console.log(provinces);
+  // console.log(userData);
   return (
     <>
       <DashboardLayout title="Account">
@@ -713,35 +713,39 @@ export default function Account() {
                               value={userForm.email}
                               disabled
                             />
-                            {!user?.email_verified_at ? (
-                              emailSent ? (
-                                sendEmailLoading ? (
-                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
-                                    {/* <p>Loading</p> */}
-                                    <img
-                                      src="/loading.svg"
-                                      alt="now loading"
-                                      className="absolute"
-                                    />
-                                  </span>
+                            {userData?.role_id == 2 && (
+                              <>
+                                {!user?.email_verified_at ? (
+                                  emailSent ? (
+                                    sendEmailLoading ? (
+                                      <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                        {/* <p>Loading</p> */}
+                                        <img
+                                          src="/loading.svg"
+                                          alt="now loading"
+                                          className="absolute"
+                                        />
+                                      </span>
+                                    ) : (
+                                      <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                        Verification Email Sent
+                                      </span>
+                                    )
+                                  ) : (
+                                    <span
+                                      onClick={sendVerifyEmail}
+                                      className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                    >
+                                      Verify now{" "}
+                                      <i className="fas fa-arrow-right"></i>
+                                    </span>
+                                  )
                                 ) : (
-                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                    Verification Email Sent
+                                  <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                    Verified <i className="fas fa-check"></i>
                                   </span>
-                                )
-                              ) : (
-                                <span
-                                  onClick={sendVerifyEmail}
-                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
-                                >
-                                  Verify now{" "}
-                                  <i className="fas fa-arrow-right"></i>
-                                </span>
-                              )
-                            ) : (
-                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                Verified <i className="fas fa-check"></i>
-                              </span>
+                                )}
+                              </>
                             )}
                           </div>
                         </td>
@@ -768,35 +772,39 @@ export default function Account() {
                                 disabled
                               />
                             </div>
-                            {!user?.phone_verified_at ? (
-                              emailSent ? (
-                                sendEmailLoading ? (
-                                  <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
-                                    {/* <p>Loading</p> */}
-                                    <img
-                                      src="/loading.svg"
-                                      alt="now loading"
-                                      className="absolute"
-                                    />
-                                  </span>
+                            {userData?.role_id == 2 && (
+                              <>
+                                {!user?.phone_verified_at ? (
+                                  emailSent ? (
+                                    sendEmailLoading ? (
+                                      <span className="absolute w-16 -top-[20%] h-16 right-8 ml-2 px-4 flex">
+                                        {/* <p>Loading</p> */}
+                                        <img
+                                          src="/loading.svg"
+                                          alt="now loading"
+                                          className="absolute"
+                                        />
+                                      </span>
+                                    ) : (
+                                      <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
+                                        Verification Email Sent
+                                      </span>
+                                    )
+                                  ) : (
+                                    <label
+                                      htmlFor="verifyPhoneModal"
+                                      className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
+                                    >
+                                      Verify now{" "}
+                                      <i className="fas fa-arrow-right"></i>
+                                    </label>
+                                  )
                                 ) : (
-                                  <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                    Verification Email Sent
+                                  <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
+                                    Verified <i className="fas fa-check"></i>
                                   </span>
-                                )
-                              ) : (
-                                <label
-                                  htmlFor="verifyPhoneModal"
-                                  className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
-                                >
-                                  Verify now{" "}
-                                  <i className="fas fa-arrow-right"></i>
-                                </label>
-                              )
-                            ) : (
-                              <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                Verified <i className="fas fa-check"></i>
-                              </span>
+                                )}
+                              </>
                             )}
                           </div>
                         </td>

@@ -107,6 +107,7 @@ export default function Register() {
         },
       });
       setProvinces(response.data?.data);
+      // console.log(response)
       // return response.data?.data;
     } catch (e) {
       console.error(e);
@@ -258,7 +259,7 @@ export default function Register() {
     return () => clearTimeout(getData);
   }, [registerForm.clinic_district_id]);
 
-  console.log(registerForm)
+  // console.log(provinces)
 
   return (
     <>
@@ -293,6 +294,7 @@ export default function Register() {
                               required
                               className={` border-0 px-3 text-lg bg-zinc-800 text-white rounded shadow w-full ease-linear transition-all duration-150`}
                             />
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.nik}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -307,6 +309,7 @@ export default function Register() {
                               required
                               className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             />
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.name}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -332,6 +335,7 @@ export default function Register() {
                                 className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
                               />
                             </div>
+                              <p className="text-rose-400 font-normal text-xs">{registerFormError?.birth_place || registerFormError?.birth_date}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -350,6 +354,7 @@ export default function Register() {
                               <option value="male">Male</option>
                               <option value="female">Female</option>
                             </select>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.gender}</p>
                           </td>
                         </tr>
                         <tr className="">
@@ -367,6 +372,7 @@ export default function Register() {
                               required
                               className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             />
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_address}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -392,6 +398,8 @@ export default function Register() {
                                 className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
                               />
                             </div>
+                            
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_rt || registerFormError?.owner_rw}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -421,6 +429,7 @@ export default function Register() {
                                   );
                                 })}
                             </select>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_province_id}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -449,6 +458,7 @@ export default function Register() {
                                 );
                               })}
                             </select>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_city_id}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -465,7 +475,7 @@ export default function Register() {
                               className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             >
                               <option className="">Select</option>
-                              {districts.length &&
+                              {districts?.length &&
                                 districts?.map((obj) => {
                                   return (
                                     <option
@@ -478,6 +488,7 @@ export default function Register() {
                                   );
                                 })}
                             </select>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_district_id}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -506,6 +517,7 @@ export default function Register() {
                                 );
                               })}
                             </select>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_village_id}</p>
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
@@ -520,6 +532,7 @@ export default function Register() {
                               required
                               className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                             />
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_postal_code}</p>
                           </td>
                         </tr>
                         <tr className="">
@@ -538,13 +551,15 @@ export default function Register() {
                                 disabled
                               />
                               <input
-                                type="text"
+                                type="number"
                                 name="owner_phone"
+                                required
                                 className={`bg-transparent border-0 bg-zinc-800 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150`}
                                 value={registerForm.owner_phone}
                                 onChange={e => handleRegisterInput(e)}
                               />
                             </div>
+                            <p className="text-rose-400 font-normal text-xs">{registerFormError?.owner_phone}</p>
                           </td>
                         </tr>
                       </tbody>
@@ -573,6 +588,7 @@ export default function Register() {
                             required
                             className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_name}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -587,13 +603,15 @@ export default function Register() {
                               disabled
                             />
                             <input
-                              type="text"
+                              type="number"
                               name="clinic_phone"
+                              required
                               className={`bg-transparent border-0 bg-zinc-800 text-gray-400 rounded-r text-sm shadow w-full ease-linear transition-all duration-150`}
                               value={registerForm.clinic_phone}
                               onChange={e => handleRegisterInput(e)}
                             />
                           </div>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_phone}</p>
                         </td>
                       </tr>
                       <tr className="">
@@ -611,6 +629,7 @@ export default function Register() {
                             required
                             className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_address}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -636,6 +655,7 @@ export default function Register() {
                               className={`border-0 px-3 text-sm bg-zinc-800 rounded shadow w-[48%] ease-linear transition-all duration-150`}
                             />
                           </div>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_rt || registerFormError?.clinic_rw}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -665,6 +685,7 @@ export default function Register() {
                                 );
                               })}
                           </select>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_province_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -693,6 +714,7 @@ export default function Register() {
                               );
                             })}
                           </select>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_city_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -709,7 +731,7 @@ export default function Register() {
                             className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                           >
                             <option className="">Select</option>
-                            {districtsClinic.length &&
+                            {districtsClinic?.length &&
                               districtsClinic?.map((obj) => {
                                 return (
                                   <option
@@ -722,6 +744,7 @@ export default function Register() {
                                 );
                               })}
                           </select>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_district_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -750,6 +773,7 @@ export default function Register() {
                               );
                             })}
                           </select>
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_village_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -764,6 +788,7 @@ export default function Register() {
                             required
                             className={` border-0 px-3 text-sm bg-zinc-800 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400 font-normal text-xs">{registerFormError?.clinic_postal_code}</p>
                         </td>
                       </tr>
                       {/* <tr className="">
