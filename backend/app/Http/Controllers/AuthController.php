@@ -243,12 +243,31 @@ class AuthController extends Controller
     public function registration(Request $request){
         
         $validator = Validator::make($request->all(), [
-            'clinic_name','clinic_address','province',
-            'city','district','clinic_phone',
-            'nik','birth_place','name',
-            'birth_date','gender','owner_address','owner_phone' => 'required',
-            'owner_phone' => 'unique:users,phone',
-            'postal_code','nik' => 'numeric',
+            'clinic_name'             => 'required',
+            'clinic_phone'            => 'required',
+            'clinic_province_id'      => 'required',
+            'clinic_city_id'          => 'required',
+            'clinic_district_id'      => 'required',
+            'clinic_village_id'       => 'required',
+            'clinic_address'          => 'required',
+            'clinic_rt'               => 'required',
+            'clinic_rw'               => 'required',
+            'clinic_postal_code'      => 'required',
+
+            'nik'                     => 'required',
+            'name'                    => 'required|string',
+            'birth_place'             => 'required|string',
+            'birth_date'              => 'required|date|before:now',
+            'gender'                  => 'required|in:male,female',
+            'owner_phone'             => 'required',
+            'owner_province_id'       => 'required',
+            'owner_city_id'           => 'required',
+            'owner_district_id'       => 'required',
+            'owner_village_id'        => 'required',
+            'owner_address'           => 'required',
+            'owner_rt'                => 'required',
+            'owner_rw'                => 'required',
+            'owner_postal_code'       => 'required',
         ]);
         if($validator->fails()){
             return response()->json(['status' => 'error', 'message' => 'error', 'errors' => $validator->errors()], 422);
