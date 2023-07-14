@@ -44,6 +44,9 @@ export async function middleware(req) {
     if(pathname == "/") {
         return NextResponse.next()
     }
+    if(pathname == "/dashboard") {
+        return NextResponse.next()
+    }
 
     if(pathname.startsWith("/auth")) {
         if (!jwt) {
@@ -73,13 +76,11 @@ export async function middleware(req) {
         } else {
             try {
                 const { payload } = await jwtVerify(jwt, secret)
-                if(payload.role_id >= 2) {
+                if(payload.role_id == 2) {
                     return NextResponse.next()
                 }else if(payload.role_id == 1) {
                     url.pathname = "/admin"
                     return NextResponse.redirect(url)
-                }else{
-                    return NextResponse.next()
                 }
             } catch(e) {
                 req.cookies.set("token", "", { expires: new Date(Date.now()) });
@@ -284,6 +285,7 @@ export async function middleware(req) {
     //     );
     // }
 
+    console.log(isRouteAllowed)
     if(isRouteAllowed == false) {
         url.pathname = "/dashboard"
         return NextResponse.redirect(url);

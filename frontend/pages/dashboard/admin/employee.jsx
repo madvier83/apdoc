@@ -29,7 +29,7 @@ export default function Employee() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("created_at");
   const [order, setOrder] = useState(true);
 
   const [searchPosition, setSearchPosition] = useState("");
@@ -1033,21 +1033,15 @@ export default function Employee() {
                   <select
                     type="text"
                     name="village_id"
-                    // value={addForm.village_id}
+                    value={addForm.village_id}
                     onChange={(e) => {
-                      let value = JSON.parse(e.target.value);
-                      // console.log(addForm)
-                      setAddForm({
-                        village_id: value.id,
-                        postal_code:
-                          value.meta?.pos !== "NULL" ? value.meta?.pos : "",
-                      });
+                      handleAddInput(e)
                     }}
                     required
                     placeholder=""
                     className="input input-bordered input-primary border-slate-300 w-full"
                   >
-                    <option className="" disabled>
+                  <option className="">
                       Select
                     </option>
                     {villages?.length &&
@@ -1056,7 +1050,7 @@ export default function Employee() {
                           <option
                             key={obj.id}
                             className="text-black"
-                            value={JSON.stringify(obj)}
+                            value={obj.id}
                           >
                             {obj.name}
                           </option>

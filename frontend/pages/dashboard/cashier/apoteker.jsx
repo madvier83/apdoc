@@ -763,7 +763,7 @@ export default function Transaction() {
                               return item.item_variants.map((variant) => {
                                 return (
                                   <div
-                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer mx-4"
                                     key={variant.id}
                                     onClick={() =>
                                       addToCart({

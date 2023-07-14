@@ -1842,21 +1842,15 @@ export default function Account() {
                 <select
                   type="text"
                   name="village_id"
-                  // value={addClinicForm.village_id}
+                  value={addClinicForm.village_id}
                   onChange={(e) => {
-                    let value = JSON.parse(e.target.value);
-                    // console.log(addClinicForm)
-                    setAddClinicForm({
-                      village_id: value.id,
-                      postal_code:
-                        value.meta?.pos !== "NULL" ? value.meta?.pos : "",
-                    });
+                    handleAddClinicForm(e)
                   }}
                   required
                   placeholder=""
                   className="input input-bordered input-primary border-slate-300 w-full"
                 >
-                  <option className="" disabled>
+                  <option className="">
                     Select
                   </option>
                   {villages?.length &&
@@ -1865,7 +1859,7 @@ export default function Account() {
                         <option
                           key={obj.id}
                           className="text-black"
-                          value={JSON.stringify(obj)}
+                          value={obj.id}
                         >
                           {obj.name}
                         </option>

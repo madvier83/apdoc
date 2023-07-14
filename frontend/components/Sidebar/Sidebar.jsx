@@ -468,32 +468,34 @@ export default function Sidebar() {
                           }`}
                         >
                           {menu.submenu.map((obj, index) => {
-                            return (
-                              <li
-                                key={index}
-                                className={`items-center ${
-                                  router.pathname.startsWith(obj.route) &&
-                                  "text-emerald-500"
-                                }`}
-                              >
-                                <Link
-                                  scroll={false}
-                                  href={obj.route}
-                                  className={
-                                    "text-xs py-3 font-semibold block capitalize"
-                                  }
+                            if (obj.access) {
+                              return (
+                                <li
+                                  key={index}
+                                  className={`items-center ${
+                                    router.pathname.startsWith(obj.route) &&
+                                    "text-emerald-500"
+                                  }`}
                                 >
-                                  <i
-                                    className={`fa-regular ${
-                                      router.pathname.startsWith(obj.route)
-                                        ? "fa-folder-open"
-                                        : "fa-folder"
-                                    } mr-2 text-sm`}
-                                  ></i>{" "}
-                                  {obj.name.replace("-", " ")}
-                                </Link>
-                              </li>
-                            );
+                                  <Link
+                                    scroll={false}
+                                    href={obj.route}
+                                    className={
+                                      "text-xs py-3 font-semibold block capitalize"
+                                    }
+                                  >
+                                    <i
+                                      className={`fa-regular ${
+                                        router.pathname.startsWith(obj.route)
+                                          ? "fa-folder-open"
+                                          : "fa-folder"
+                                      } mr-2 text-sm`}
+                                    ></i>{" "}
+                                    {obj.name.replace("-", " ")}
+                                  </Link>
+                                </li>
+                              );
+                            }
                           })}
                         </ul>
                       </li>

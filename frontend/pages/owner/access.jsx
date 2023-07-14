@@ -27,6 +27,161 @@ export default function Access() {
   const [positions, setPositions] = useState([]);
   const [positionsLoading, setPositionsLoading] = useState(true);
 
+  // const initialAccessForm = {
+  //   clinic_id: "",
+  //   role_id: "",
+  //   role: "",
+  //   accesses: [
+  //     {
+  //       name: "admin",
+  //       route: "/dashboard/admin",
+  //       access: false,
+  //       submenu: [
+  //         {
+  //           name: "position",
+  //           route: "/dashboard/admin/position",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "employee",
+  //           route: "/dashboard/admin/employee",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "category-payment",
+  //           route: "/dashboard/admin/category-payment",
+  //           access: false,
+  //         },
+  //         { name: "payment", route: "/dashboard/admin/payment", access: false },
+  //         {
+  //           name: "category-outcome",
+  //           route: "/dashboard/admin/category-outcome",
+  //           access: false,
+  //         },
+  //         { name: "outcome", route: "/dashboard/admin/outcome", access: false },
+  //         {
+  //           name: "promotion",
+  //           route: "/dashboard/admin/promotion",
+  //           access: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "receptionist",
+  //       route: "/dashboard/receptionist",
+  //       access: false,
+  //       submenu: [
+  //         {
+  //           name: "patient",
+  //           route: "/dashboard/receptionist/patient",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "appointment",
+  //           route: "/dashboard/receptionist/appointment",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "queue",
+  //           route: "/dashboard/receptionist/queue",
+  //           access: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "doctor",
+  //       route: "/dashboard/doctor",
+  //       access: false,
+  //       submenu: [
+  //         {
+  //           name: "diagnose",
+  //           route: "/dashboard/doctor/diagnose",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "category-service",
+  //           route: "/dashboard/doctor/category-service",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "service",
+  //           route: "/dashboard/doctor/service",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "patient",
+  //           route: "/dashboard/doctor/patient",
+  //           access: false,
+  //         },
+  //         { name: "queue", route: "/dashboard/doctor/queue", access: false },
+  //       ],
+  //     },
+  //     {
+  //       name: "pharmacy",
+  //       route: "/dashboard/pharmacy",
+  //       access: false,
+  //       submenu: [
+  //         {
+  //           name: "category-item",
+  //           route: "/dashboard/pharmacy/category-item",
+  //           access: false,
+  //         },
+  //         { name: "item", route: "/dashboard/pharmacy/item", access: false },
+  //         {
+  //           name: "item-supply",
+  //           route: "/dashboard/pharmacy/supply",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "supplier",
+  //           route: "/dashboard/pharmacy/supplier",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "purchase-order",
+  //           route: "/dashboard/pharmacy/purchase-order",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "stock-adjustment",
+  //           route: "/dashboard/pharmacy/stock-adjustment",
+  //           access: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "cashier",
+  //       route: "/dashboard/cashier",
+  //       access: false,
+  //       submenu: [
+  //         {
+  //           name: "transaction",
+  //           route: "/dashboard/cashier/transaction",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "transaction apoteker",
+  //           route: "/dashboard/cashier/apoteker",
+  //           access: false,
+  //         },
+  //         {
+  //           name: "history",
+  //           route: "/dashboard/cashier/history",
+  //           access: false,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "report",
+  //       route: "/dashboard/report",
+  //       access: false,
+  //       submenu: [
+  //         { name: "sales", route: "/dashboard/report/sales", access: false },
+  //       ],
+  //     },
+  //   ],
+  // };
+
   const initialAccessForm = {
     clinic_id: "",
     role_id: "",
@@ -36,33 +191,57 @@ export default function Access() {
         name: "admin",
         route: "/dashboard/admin",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
           {
             name: "position",
             route: "/dashboard/admin/position",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "employee",
             route: "/dashboard/admin/employee",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
-          { name: "payment", route: "/dashboard/admin/payment", access: false },
+          {
+            name: "payment",
+            route: "/dashboard/admin/payment",
+            access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          },
           {
             name: "category-outcome",
             route: "/dashboard/admin/category-outcome",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
-          { name: "outcome", route: "/dashboard/admin/outcome", access: false },
+          {
+            name: "outcome",
+            route: "/dashboard/admin/outcome",
+            access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          },
           {
             name: "promotion",
             route: "/dashboard/admin/promotion",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
         ],
       },
@@ -70,21 +249,29 @@ export default function Access() {
         name: "receptionist",
         route: "/dashboard/receptionist",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
           {
             name: "patient",
             route: "/dashboard/receptionist/patient",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "appointment",
             route: "/dashboard/receptionist/appointment",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "queue",
             route: "/dashboard/receptionist/queue",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
         ],
       },
@@ -92,60 +279,94 @@ export default function Access() {
         name: "doctor",
         route: "/dashboard/doctor",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
           {
             name: "diagnose",
             route: "/dashboard/doctor/diagnose",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "category-service",
             route: "/dashboard/doctor/category-service",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "service",
             route: "/dashboard/doctor/service",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "patient",
             route: "/dashboard/doctor/patient",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
-          { name: "queue", route: "/dashboard/doctor/queue", access: false },
+          {
+            name: "queue",
+            route: "/dashboard/doctor/queue",
+            access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          },
         ],
       },
       {
         name: "pharmacy",
         route: "/dashboard/pharmacy",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
           {
             name: "category-item",
             route: "/dashboard/pharmacy/category-item",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
-          { name: "item", route: "/dashboard/pharmacy/item", access: false },
+          {
+            name: "item",
+            route: "/dashboard/pharmacy/item",
+            access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          },
           {
             name: "item-supply",
             route: "/dashboard/pharmacy/supply",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "supplier",
             route: "/dashboard/pharmacy/supplier",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "purchase-order",
             route: "/dashboard/pharmacy/purchase-order",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "stock-adjustment",
             route: "/dashboard/pharmacy/stock-adjustment",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
         ],
       },
@@ -153,21 +374,29 @@ export default function Access() {
         name: "cashier",
         route: "/dashboard/cashier",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
           {
             name: "transaction",
             route: "/dashboard/cashier/transaction",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "transaction apoteker",
             route: "/dashboard/cashier/apoteker",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
           {
             name: "history",
             route: "/dashboard/cashier/history",
             access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
           },
         ],
       },
@@ -175,11 +404,19 @@ export default function Access() {
         name: "report",
         route: "/dashboard/report",
         access: false,
+        description:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
         submenu: [
-          { name: "sales", route: "/dashboard/report/sales", access: false },
+          {
+            name: "sales",
+            route: "/dashboard/report/sales",
+            access: false,
+            description:
+              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          },
         ],
       },
-    ]
+    ],
   };
 
   const [addForm, setAddForm] = useReducer(
@@ -261,6 +498,7 @@ export default function Access() {
     // console.log(newAccess);
     setAddForm({ accesses: newAccess });
   }
+
   function handlePutSelection(toggle) {
     // console.log(toggle.submenu == null)
     const prevAccess = putForm.accesses;
@@ -629,7 +867,7 @@ export default function Access() {
                     <div className="flex items-center justify-between px-4">
                       <h1 className="font-semibold py-4">{menu.name}</h1>
                       <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                        {menu.route}
+                        {/* {menu.route} */}
                       </small>
                       <input
                         type="checkbox"
@@ -652,10 +890,12 @@ export default function Access() {
                               : "cursor-pointer"
                           } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
                         >
-                          <h2 className="pl-4 py-2">{obj.name}</h2>
-                          <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                            {obj.route}
-                          </small>
+                          <div className="pl-4 py-2">
+                            <h2 className="">{obj.name}</h2>
+                            <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                              {obj.description}
+                            </small>
+                          </div>
                           <input
                             type="checkbox"
                             checked={obj.access}
@@ -692,8 +932,10 @@ export default function Access() {
       <ModalBox id="modal-add">
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll h-[75vh]" ref={addModalScrollRef}>
-            <h3 className="font-bold text-lg mb-4 flex justify-between">Add Role Access 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+            <h3 className="font-bold text-lg mb-4 flex justify-between">
+              Add Role Access
+              <SelectedClinicBadge></SelectedClinicBadge>
+            </h3>
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
@@ -716,7 +958,7 @@ export default function Access() {
               )}
             </div>
             <h1 className="mt-4 mb-2">Access</h1>
-            {addForm.accesses?.map((menu) => {
+            {addForm?.accesses?.map((menu) => {
               return (
                 <div className="mb-4" key={menu.route}>
                   <label
@@ -726,7 +968,7 @@ export default function Access() {
                     <div className="flex items-center justify-between px-4">
                       <h1 className="font-semibold py-4">{menu.name}</h1>
                       <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                        {menu.route}
+                        {/* {menu.route} */}
                       </small>
                       <input
                         type="checkbox"
@@ -745,14 +987,16 @@ export default function Access() {
                           htmlFor={obj.route + "add"}
                           className={`${
                             menu.access == false || obj.access == false
-                              ? "opacity-25 cursor-pointer"
+                              ? "opacity-40 cursor-pointer"
                               : "cursor-pointer"
                           } flex items-center justify-between border-t border-b px-4 hover:bg-zinc-100 duration-300 transition-all`}
                         >
-                          <h2 className="pl-4 py-2">{obj.name}</h2>
-                          <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
-                            {obj.route}
-                          </small>
+                          <div className="pl-4 py-2">
+                            <h2 className="">{obj.name}</h2>
+                            <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                              {obj.description}
+                            </small>
+                          </div>
                           <input
                             type="checkbox"
                             checked={obj.access}

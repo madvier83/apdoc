@@ -775,7 +775,7 @@ export default function Transaction() {
                               return item.item_variants.map((variant) => {
                                 return (
                                   <div
-                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer"
+                                    className="btn btn-ghost normal-case flex justify-between cursor-pointer mx-4"
                                     key={variant.id}
                                     onClick={() =>
                                       addToCart({
@@ -833,14 +833,31 @@ export default function Transaction() {
                               return (
                                 <div
                                   className="btn btn-ghost normal-case flex justify-between cursor-pointer"
-                                  key={obj.item?.id}
-                                  onClick={() => addToCart(obj.item)}
+                                  key={obj.item_variant?.id}
+                                  onClick={() =>
+                                    addToCart({
+                                      ...obj.item_variant?.item,
+                                      name: `${
+                                        obj.item_variant?.item.name +
+                                        " - " +
+                                        obj.item_variant?.variant +
+                                        " " +
+                                        obj.item_variant?.unit
+                                      }`,
+                                      sell_price: obj.item_variant?.sell_price,
+                                      item_variant_id: obj.item_variant?.id,
+                                    })
+                                  }
                                 >
-                                  <span>{obj.item?.name}</span>
                                   <span>
-                                    {numeral(obj.item?.sell_price).format(
-                                      "0,0"
-                                    )}
+                                    {obj.item_variant?.item?.name} -{" "}
+                                    {obj.item_variant?.variant}{" "}
+                                    {obj.item_variant?.unit}
+                                  </span>
+                                  <span>
+                                    {numeral(
+                                      obj.item_variant?.sell_price
+                                    ).format("0,0")}
                                   </span>
                                 </div>
                               );
@@ -1374,10 +1391,9 @@ export default function Transaction() {
                     <React.Fragment>
                       <div className="font-bold text-xl">{settings.name}</div>
                       <div className="text-xs text-center mt-1 uppercase">
-                        {settings.address}, RT {settings?.rt}, RW{" "}
-                        {settings?.rw}, {settings.district?.name},{" "}
-                        {settings.city?.name}, {settings.village?.name},{" "}
-                        {settings.postal_code}
+                        {settings.address}, RT {settings?.rt}, RW {settings?.rw}
+                        , {settings.district?.name}, {settings.city?.name},{" "}
+                        {settings.village?.name}, {settings.postal_code}
                       </div>
                       <div className="text-xs mt-1">
                         <i className="fa-brands fa-whatsapp mr-1"></i>
