@@ -71,8 +71,8 @@ class PatientController extends Controller
             'district_id'       => 'required',
             'village_id'        => 'required',
             'address'           => 'required',
-            'rt'                => 'required',
-            'rw'                => 'required',
+            'rt'                => 'required|max:3',
+            'rw'                => 'required|max:3',
             'postal_code'       => 'required',
         ]);
 
@@ -107,8 +107,8 @@ class PatientController extends Controller
             'district_id'       => 'required',
             'village_id'        => 'required',
             'address'           => 'required',
-            'rt'                => 'required',
-            'rw'                => 'required',
+            'rt'                => 'required|max:3',
+            'rw'                => 'required|max:3',
             'postal_code'       => 'required',
         ]);
 

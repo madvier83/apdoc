@@ -105,10 +105,13 @@ class UserSlotController extends Controller
             return response()->json(['message' => 'User not found!'], 404);
         }
 
-        $employee = Employee::find($request->employee_id);
-
-        if ($employee) {
-            return response()->json(['message' => 'Employee already registered!'], 404);
+        if($slot->user->employee_id != $request->employee_id)
+        {
+            $employee = Employee::find($request->employee_id);
+    
+            if ($employee) {
+                return response()->json(['message' => 'Employee already registered!'], 404);
+            }
         }
 
         $this->validate($request, [
@@ -154,7 +157,7 @@ class UserSlotController extends Controller
         }
 
         try {
-            Employee::where('id', $slot->user->employee_id)->delete();
+            // Employee::where('id', $slot->user->employee_id)->delete();
             User::where('id', $slot->user_id)->delete();
             $slot->fill(['user_id' => null]);
             $slot->save();

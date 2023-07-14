@@ -250,8 +250,8 @@ class AuthController extends Controller
             'clinic_district_id'      => 'required',
             'clinic_village_id'       => 'required',
             'clinic_address'          => 'required',
-            'clinic_rt'               => 'required',
-            'clinic_rw'               => 'required',
+            'clinic_rt'               => 'required|max:3',
+            'clinic_rw'               => 'required|max:3',
             'clinic_postal_code'      => 'required',
 
             'nik'                     => 'required',
@@ -265,8 +265,8 @@ class AuthController extends Controller
             'owner_district_id'       => 'required',
             'owner_village_id'        => 'required',
             'owner_address'           => 'required',
-            'owner_rt'                => 'required',
-            'owner_rw'                => 'required',
+            'owner_rt'                => 'required|max:3',
+            'owner_rw'                => 'required|max:3',
             'owner_postal_code'       => 'required',
         ]);
         if($validator->fails()){
