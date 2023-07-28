@@ -88,7 +88,7 @@ export default function Login() {
                         className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="email"
                       >
-                        Email or phone
+                        Email atau nomor telepon
                       </label>
                       <input
                         value={credential}
@@ -105,7 +105,7 @@ export default function Login() {
                         className="block text-zinc-500 text-xs font-bold mb-2"
                         htmlFor="password"
                       >
-                        Password
+                        Kata sandi
                       </label>
                       <input
                         value={pwd}
@@ -134,7 +134,7 @@ export default function Login() {
                         className="text-slate-500"
                       >
                         <small className="text-zinc-500 font-bold text-xs">
-                          Forgot password?
+                          Lupa kata sandi?
                         </small>
                       </Link>
                     </div>
@@ -152,7 +152,7 @@ export default function Login() {
                           className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           onClick={handleLogin}
                         >
-                          Login
+                          Masuk
                         </button>
                       )}
                     </div>
@@ -167,15 +167,15 @@ export default function Login() {
                     className="text-gray-400"
                   >
                     <small>
-                      <i className="fas fa-arrow-left mr-2"></i> Back to landing
-                      page
+                      <i className="fas fa-arrow-left mr-2"></i>
+                      Kembali ke halaman utama
                     </small>
                   </Link>
                 </div>
                 <div className="w-1/2 text-right">
                   <Link href="/auth/register" className="text-gray-400">
                     <small>
-                      Create new account{" "}
+                      Buat akun baru{" "}
                       <i className="fas fa-arrow-right ml-2"></i>
                     </small>
                   </Link>

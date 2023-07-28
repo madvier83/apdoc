@@ -20,12 +20,12 @@ export default function ResetPassword() {
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                   <div className="cursor-progress mx-autos text-white text-sm text-center">
                     <h1 className="text-xl font-bold text-emerald-400">
-                      Registration success! <br /> Please check your email
+                      Pendaftaran berhasil! <br /> Cek email untuk konfirmasi
                     </h1>
                     <br />
                     <Link href={"/auth/login"}>
                       <span className="text-gray-400">
-                        <i className="fas fa-arrow-left"></i> back to login page
+                        <i className="fas fa-arrow-left"></i> kembali ke halaman login
                       </span>
                     </Link>
                   </div>

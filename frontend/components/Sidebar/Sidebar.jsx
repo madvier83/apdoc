@@ -344,7 +344,7 @@ export default function Sidebar() {
                     }`}
                   >
                     <i className={"fas fa-chart-line mr-2 text-sm "}></i>{" "}
-                    Dashboard
+                    Dasbor
                   </Link>
                 </li>
               </ul>
@@ -514,7 +514,7 @@ export default function Sidebar() {
                     href="/account"
                     className={"text-xs py-3 font-bold block  text-slate-500"}
                   >
-                    <i className={"fas fa-user mr-2 text-sm "}></i> Account
+                    <i className={"fas fa-user mr-2 text-sm "}></i> Akun
                   </Link>
                 </li>
 
@@ -549,7 +549,7 @@ export default function Sidebar() {
                         "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
                       }
                     >
-                      <i className={`fas fa-cogs mr-2 text-sm `}></i> Settings
+                      <i className={`fas fa-cogs mr-2 text-sm `}></i>Pengaturan
                     </button>
 
                     <ul
@@ -572,7 +572,7 @@ export default function Sidebar() {
                           }
                         >
                           <i className={`fas fa-scroll mr-2 text-sm`}></i>{" "}
-                          Recipient
+                          Struk
                         </Link>
                       </li>
                       <li
@@ -591,7 +591,7 @@ export default function Sidebar() {
                           }
                         >
                           <i className={`fas fa-envelope mr-2 text-sm`}></i>{" "}
-                          Notification
+                          Pemberitahuan
                         </Link>
                       </li>
                     </ul>
@@ -609,8 +609,7 @@ export default function Sidebar() {
                       "text-xs py-3 font-bold block  text-slate-500 cursor-pointer"
                     }
                   >
-                    <i className={"fas fa-lock mr-2 text-sm "}></i> Change
-                    Password
+                    <i className={"fas fa-lock mr-2 text-sm "}></i> Ubah kata sandi
                   </label>
                 </li>
                 <li
@@ -625,9 +624,9 @@ export default function Sidebar() {
                       DeleteAllCookies();
                       router.push("/auth/login");
                     }}
-                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                    className={"text-xs py-3 font-bold block  text-rose-400"}
                   >
-                    <i className={"fas fa-arrow-left mr-2 text-sm "}></i> Logout
+                    <i className={"fas fa-arrow-left mr-2 text-sm "}></i> Keluar
                   </button>
                 </li>
               </ul>
@@ -637,7 +636,7 @@ export default function Sidebar() {
       </nav>
 
       <ModalBox id="modalPwd">
-        <h3 className="font-bold text-lg mb-4 text-black">Change Password</h3>
+        <h3 className="font-bold text-lg mb-4 text-black">Ubah kata sandi</h3>
         <input type="hidden" autoComplete="off" />
         <div className="form-control w-full">
           <label className="label">
@@ -664,7 +663,7 @@ export default function Sidebar() {
             className="btn btn-primary rounded-md"
             onClick={sendChangePassword}
           >
-            Send Email
+            Kirim Email
           </button>
         </div>
       </ModalBox>

@@ -69,7 +69,7 @@ export default function ForgotPassword() {
                       <div className="text-center mt-8">
                         {!isLoading ? (
                           <button className="bg-emerald-600 text-white active:bg-emerald-700 active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded  hover:-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
-                            Send Email
+                            Kirim Email
                           </button>
                         ) : (
                           <div
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
                           href="/auth/login"
                           className=" text-white text-sm font-bold px-4 py-0 rounded w-full"
                         >
-                          Cancel
+                          Batalkan
                         </Link>
                       </div>
                     </form>

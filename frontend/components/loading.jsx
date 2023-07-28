@@ -17,14 +17,14 @@ export default function Loading({dataLoading, data, reload}) {
                 <td colSpan={99}>
                     <div className="flex w-full justify-center mt-48">
                     <div className="text-center">
-                        <h1 className="text-xl">No data found</h1>
-                        <small>Data is empty or try adjusting your filter</small>
+                        <h1 className="text-xl">Data tidak ditemukan</h1>
+                        <small>Data kosong atau coba sesuaikan filter Anda</small>
                         <br />
                         <div
                         className="mt-8 px-8 btn btn-success text-gray-800 normal-case"
                         onClick={() => reload()}
                         >
-                        Reload <i className="fas fa-refresh ml-3"></i>
+                        Memuat ulang <i className="fas fa-refresh ml-3"></i>
                         </div>
                     </div>
                     </div>

@@ -30,7 +30,7 @@ export default function Login() {
             <div className=" container mx-auto px-4 h-[60vh]">
             <div className="z-50 flex content-center flex-col items-center justify-center h-full">
                 <h1 className="text-white text-3xl font-bold mb-8 text-center">
-                Email verified <i className="fas fa-check"></i>
+                Email sudah diverifikasi <i className="fas fa-check"></i>
                 <p className="font-normal text-zinc-400 text-lg">({email})</p>
                 </h1>
                 <button

@@ -203,7 +203,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <DashboardLayout title="Dashboard" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Dasbor" clinic={clinic} setClinic={setClinic}>
         <div className="flex-col gap-4 mt-6">
           {/* <div className="flex gap-4">
             <div className="w-1/2 h-28 bg-white rounded-md p-8">
@@ -228,19 +228,19 @@ export default function Dashboard() {
                 <div className="relative w-full px-4 overflow-visible">
                   <h3 className={"font-bold text-xl mt-4"}>
                     {/* <i className="fas fa-filter mr-3"></i>  */}
-                    Overview
+                    Ringkasan
                   </h3>
                   <div className="flex">
                     <div className="dropdown">
                       <label tabIndex={0}>
                         <div className="mb-4 rounded-md text-sm mt-2 text-gray-400">
-                          Showing data from{" "}
+                          Menampilkan data dari{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.startDate).format(
                               "MMMM Do YYYY"
                             )}
                           </span>{" "}
-                          to{" "}
+                          sampai{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.endDate).format(
                               "MMMM Do YYYY"
@@ -269,19 +269,19 @@ export default function Dashboard() {
             <div className="pb-4 pt-4 block w-full">
               <div className="flex gap-4 px-8">
                 <div className="w-full flex flex-col py-2 border-2 border-white border-b-rose-400">
-                  <span className="text-sm text-gray-400">Gross Sales</span>
+                  <span className="text-sm text-gray-400">Laba kotor</span>
                   <span className="text-2xl font-bold pt-0">
                     RP. {numeral(summary.GrossSales).format("0,0")}
                   </span>
                 </div>
                 <div className="w-full flex flex-col py-2 border-2 border-white border-b-indigo-400">
-                  <span className="text-sm text-gray-400">Net Sales</span>
+                  <span className="text-sm text-gray-400">Laba bersih</span>
                   <span className="text-2xl font-bold pt-0">
                     RP. {numeral(summary.NetSales).format("0,0")}
                   </span>
                 </div>
                 <div className="w-full flex flex-col py-2 border-2 border-white border-b-slate-400">
-                  <span className="text-sm text-gray-400">Discounts</span>
+                  <span className="text-sm text-gray-400">Diskon</span>
                   <span className="text-2xl font-bold pt-0">
                     RP. {numeral(summary.Discounts).format("0,0")}
                   </span>

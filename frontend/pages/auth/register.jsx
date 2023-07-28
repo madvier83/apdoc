@@ -145,7 +145,7 @@ export default function Register() {
 
                     <div className="relative w-full mb-3">
                       <label className="block text-zinc-500 text-xs font-bold mb-2">
-                        Password
+                        Kata sandi
                       </label>
                       <input
                         name="password"
@@ -176,7 +176,7 @@ export default function Register() {
 
                     <div className="relative w-full mb-3">
                       <label className="block text-zinc-500 text-xs font-bold mb-2">
-                        Confirm Password
+                        Konfirmasi kata sandi
                       </label>
                       <input
                         name="matchPwd"
@@ -208,7 +208,7 @@ export default function Register() {
                           className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           onClick={handleRegister}
                         >
-                          Register
+                          Buat Akun
                         </button>
                       )}
                     </div>
@@ -220,8 +220,8 @@ export default function Register() {
                   {/* <Link href="/auth/register"> */}
                   <Link href="/auth/login" className="text-blueGray-200">
                     <small>
-                      Already Have An Account?{" "}
-                      <span className="text-emerald-200">Login</span>
+                      Sudah memiliki akun?{" "}
+                      <span className="text-emerald-200">Masuk</span>
                     </small>
                   </Link>
                   {/* </Link> */}

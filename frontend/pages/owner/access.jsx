@@ -198,43 +198,37 @@ export default function Access() {
             name: "position",
             route: "/dashboard/admin/position",
             access: false,
-            description:
-              "Create custom position for employees.",
+            description: "Create custom position for employees.",
           },
           {
             name: "employee",
             route: "/dashboard/admin/employee",
             access: false,
-            description:
-              "Handle recruitment and manage your employees.",
+            description: "Handle recruitment and manage your employees.",
           },
           {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
             access: false,
-            description:
-              "Manage category for payment method.",
+            description: "Manage category for payment method.",
           },
           {
             name: "payment",
             route: "/dashboard/admin/payment",
             access: false,
-            description:
-              "Customize your payment option for transaction.",
+            description: "Customize your payment option for transaction.",
           },
           {
             name: "category-outcome",
             route: "/dashboard/admin/category-outcome",
             access: false,
-            description:
-              "Manage category for outcomes.",
+            description: "Manage category for outcomes.",
           },
           {
             name: "outcome",
             route: "/dashboard/admin/outcome",
             access: false,
-            description:
-              "Organize your spendings and make informed descision.",
+            description: "Organize your spendings and make informed descision.",
           },
           {
             name: "promotion",
@@ -256,22 +250,19 @@ export default function Access() {
             name: "patient",
             route: "/dashboard/receptionist/patient",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage patient data and information.",
           },
           {
             name: "appointment",
             route: "/dashboard/receptionist/appointment",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Schedule and manage appointments for patients.",
           },
           {
             name: "queue",
             route: "/dashboard/receptionist/queue",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage patient queues and waiting lists.",
           },
         ],
       },
@@ -286,36 +277,31 @@ export default function Access() {
             name: "diagnose",
             route: "/dashboard/doctor/diagnose",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "View diagnoses data and medical examinations.",
           },
           {
             name: "category-service",
             route: "/dashboard/doctor/category-service",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage categories for medical services.",
           },
           {
             name: "service",
             route: "/dashboard/doctor/service",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage medical services and treatments.",
           },
           {
             name: "patient",
             route: "/dashboard/doctor/patient",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage patient records and medical history.",
           },
           {
             name: "queue",
             route: "/dashboard/doctor/queue",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Monitor and manage patient queues and waiting lists.",
           },
         ],
       },
@@ -330,43 +316,37 @@ export default function Access() {
             name: "category-item",
             route: "/dashboard/pharmacy/category-item",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage categories for pharmacy items.",
           },
           {
             name: "item",
             route: "/dashboard/pharmacy/item",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage pharmacy items and medicines.",
           },
           {
             name: "item-supply",
             route: "/dashboard/pharmacy/supply",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage supplies and restocking of pharmacy items.",
           },
           {
             name: "supplier",
             route: "/dashboard/pharmacy/supplier",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage pharmacy suppliers and vendors.",
           },
           {
             name: "purchase-order",
             route: "/dashboard/pharmacy/purchase-order",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage purchase orders for pharmacy items.",
           },
           {
             name: "stock-adjustment",
             route: "/dashboard/pharmacy/stock-adjustment",
             access: false,
-            description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+            description: "Manage stock adjustments and inventory control.",
           },
         ],
       },

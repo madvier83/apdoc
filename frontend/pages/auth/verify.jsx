@@ -276,7 +276,7 @@ export default function Register() {
                 <div className="w-full">
                   <div className="relative items-center">
                     <span className="text-2xl font-semibold p-0 flex-shrink text-white">
-                      Personal Information
+                      Data diri
                     </span>
                     <table className="mt-8 text-sm w-full z-50">
                       <tbody>
@@ -298,7 +298,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Name</td>
+                          <td className="py-2">Nama</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <input
@@ -313,7 +313,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Birth</td>
+                          <td className="py-2">Tempat/tgl lahir</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <div className="flex gap-2 items-center">
@@ -339,7 +339,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Gender</td>
+                          <td className="py-2">Jenis kelamin</td>
                           <td className=" "></td>
                           <td className="pl-4 capitalize">
                             <select
@@ -361,7 +361,7 @@ export default function Register() {
                           <td className="py-1 text-slate-200">~</td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Address</td>
+                          <td className="py-2">Alamat</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <input
@@ -403,7 +403,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Province</td>
+                          <td className="py-2">Provinsi</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <select
@@ -433,7 +433,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">City</td>
+                          <td className="py-2">Kabupaten/Kota</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <select
@@ -462,7 +462,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">District</td>
+                          <td className="py-2">Kecamatan</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <select
@@ -492,7 +492,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Village</td>
+                          <td className="py-2">Desa</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <select
@@ -521,7 +521,7 @@ export default function Register() {
                           </td>
                         </tr>
                         <tr className="text-gray-400 w-full">
-                          <td className="py-2">Postal Code</td>
+                          <td className="py-2">Kode Pos</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <input
@@ -540,7 +540,7 @@ export default function Register() {
                         </tr>
 
                         <tr className="text-gray-400 w-full">
-                          <td className="py-[9.1px]">Phone</td>
+                          <td className="py-[9.1px]">No telepon</td>
                           <td className=" "></td>
                           <td className="pl-4 ">
                             <div className="flex">
@@ -570,14 +570,14 @@ export default function Register() {
                 <div className="w-full">
                   <div className="relative flex items-center">
                     <span className="text-2xl font-semibold p-0 flex-shrink mr-4 text-white mt-16">
-                      Add Clinic
+                      Informasi Klinik
                     </span>
                   </div>
 
                   <table className="mt-8 text-sm w-full z-50">
                     <tbody>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2 w-1/4">Clinic Name</td>
+                        <td className="py-2 w-1/4">Nama klinik</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <input
@@ -592,7 +592,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Phone</td>
+                        <td className="py-[9.1px]">No telepon</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <div className="flex">
@@ -618,7 +618,7 @@ export default function Register() {
                         <td className="py-1 text-slate-200">~</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Address</td>
+                        <td className="py-2">Alamat</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <input
@@ -659,7 +659,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Province</td>
+                        <td className="py-2">Provinsi</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <select
@@ -689,7 +689,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">City</td>
+                        <td className="py-2">Kabupaten/Kota</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <select
@@ -718,7 +718,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">District</td>
+                        <td className="py-2">Kecamatan</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <select
@@ -748,7 +748,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Village</td>
+                        <td className="py-2">Desa</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <select
@@ -777,7 +777,7 @@ export default function Register() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Postal Code</td>
+                        <td className="py-2">Kode Pos</td>
                         <td className=" "></td>
                         <td className="pl-4 ">
                           <input
@@ -808,7 +808,7 @@ export default function Register() {
                     </div>
                   ) : (
                     <button className="bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150">
-                      Verify Account
+                      Verifikasi Akun
                     </button>
                   )}
                 </div>

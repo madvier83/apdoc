@@ -136,20 +136,20 @@ export default function Notification() {
 
   return (
     <>
-      <DashboardLayout title="Settings">
+      <DashboardLayout title="Pengaturan">
         <div className="w-full lg:w-8/12 mb-16 mt-8">
           <form onSubmit={(e) => updateSettings(e)}>
             <div className="relative flex flex-col min-w-0 break-words w-full min-h-[88vh] mb-6 shadow-lg rounded-md bg-gray-900 border-0">
               {/* Personal detail form */}
               <div className="rounded-t-md bg-gray-900 text-white mb-0 px-6 py-6">
                 <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
-                  <h6 className="text-xl font-bold">Email Notification</h6>
+                  <h6 className="text-xl font-bold">Pemberitahuan Email</h6>
 
                   <label
                     htmlFor="addMail"
                     className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 cursor-pointer`}
                   >
-                    Add Email
+                    Tambah Email
                     <i className={`fas fa-plus ml-2`}></i>
                   </label>
                 </div>
@@ -159,10 +159,12 @@ export default function Notification() {
                 <div className="flex flex-col mb-4 px-2 gap-4">
                   <div className="flex justify-between items-center text-white">
                     <div className="">
-                      <span className="font-semibold">Daily sales summary</span>
+                      <span className="font-semibold">
+                        Ringkasan penjualan harian
+                      </span>
                       <br />
-                      <span className="text-zinc-200 text-sm">
-                        Receive email about your sales
+                      <span className="text-zinc-400 text-sm">
+                        Terima email tentang penjualan Anda
                       </span>
                     </div>
                     <div
@@ -184,11 +186,13 @@ export default function Notification() {
                   </div>
                   <div className="flex justify-between items-center text-white">
                     <div className="">
-                      <span className="font-semibold">Inventory alerts</span>
+                      <span className="font-semibold">
+                        Peringatan inventaris
+                      </span>
                       <br />
-                      <span className="text-zinc-200 text-sm">
-                        Receive daily email of items that are low or out of
-                        stock
+                      <span className="text-zinc-400 text-sm">
+                        Terima email harian tentang item yang hampir habis atau
+                        sudah habis
                       </span>
                     </div>
                     <div

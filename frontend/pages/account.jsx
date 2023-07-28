@@ -574,7 +574,7 @@ export default function Account() {
   // console.log(userFormError);
   return (
     <>
-      <DashboardLayout title="Account">
+      <DashboardLayout title="Akun">
         <div className="flex flex-wrap mt-6">
           <div className="w-full mt-1">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-4 bg-gray-900 rounded-md border-0">
@@ -582,7 +582,7 @@ export default function Account() {
               <form onSubmit={(e) => updateUser(e)}>
                 <div className="rounded-md bg-gray-900 text-white mb-0 px-6 py-6">
                   <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
-                    <h6 className=" text-xl font-bold">Personal Information</h6>
+                    <h6 className=" text-xl font-bold">Data Diri</h6>
                     <div className="flex">
                       <div
                         className={`${
@@ -615,7 +615,7 @@ export default function Account() {
                         <button
                           className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                         >
-                          Save Changes
+                          Simpan Perubahan
                           <i className={`fas fa-save ml-2`}></i>
                         </button>
                       ) : (
@@ -641,12 +641,12 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Name</td>
+                        <td className="py-[9.1px]">Nama</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.name || "-"}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Birth</td>
+                        <td className="py-[9.1px]">Tempat/tgl lahir</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           {user?.birth_place +
@@ -656,7 +656,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Gender</td>
+                        <td className="py-[9.1px]">Jenis kelamin</td>
                         <td className="px-4 "></td>
                         <td className="px-4 capitalize">
                           {user?.gender || "-"}
@@ -666,7 +666,7 @@ export default function Account() {
                         <td className="py-1">~</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Address</td>
+                        <td className="py-[9.1px]">Alamat</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.address || "-"}</td>
                       </tr>
@@ -676,27 +676,27 @@ export default function Account() {
                         <td className="px-4 ">{user?.rt + " / " + user?.rw}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Village</td>
+                        <td className="py-[9.1px]">Desa</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.village?.name || "-"}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">District</td>
+                        <td className="py-[9.1px]">Kecamatan</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.district?.name || "-"}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">City</td>
+                        <td className="py-[9.1px]">Kabupaten/Kota</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.city?.name || "-"}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Province</td>
+                        <td className="py-[9.1px]">Provinsi</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.province?.name || "-"}</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Postal Code</td>
+                        <td className="py-[9.1px]">Kode pos</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">{user?.postal_code || "-"}</td>
                       </tr>
@@ -729,7 +729,7 @@ export default function Account() {
                                       </span>
                                     ) : (
                                       <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                        Verification Email Sent
+                                        Verifikasi email terkirim
                                       </span>
                                     )
                                   ) : (
@@ -737,13 +737,13 @@ export default function Account() {
                                       onClick={sendVerifyEmail}
                                       className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
                                     >
-                                      Verify now{" "}
+                                      Verifikasi sekarang{" "}
                                       <i className="fas fa-arrow-right"></i>
                                     </span>
                                   )
                                 ) : (
                                   <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                    Verified <i className="fas fa-check"></i>
+                                    Diverifikasi <i className="fas fa-check"></i>
                                   </span>
                                 )}
                               </>
@@ -752,7 +752,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-[9.1px]">Phone</td>
+                        <td className="py-[9.1px]">No telepon</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <div className="relative">
@@ -788,7 +788,7 @@ export default function Account() {
                                       </span>
                                     ) : (
                                       <span className="absolute top-[20%] opacity-70 right-2 text-sm font-bold bg-emerald-200 text-emerald-600 rounded ml-2 normal-case py-[2px] px-4 select-none">
-                                        Verification Email Sent
+                                        Kode OTP terkirim
                                       </span>
                                     )
                                   ) : (
@@ -796,13 +796,13 @@ export default function Account() {
                                       htmlFor="verifyPhoneModal"
                                       className="absolute top-[20%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
                                     >
-                                      Verify now{" "}
+                                      Verifikasi Sekarang{" "}
                                       <i className="fas fa-arrow-right"></i>
                                     </label>
                                   )
                                 ) : (
                                   <span className="absolute top-[20%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-not-allowed select-none">
-                                    Verified <i className="fas fa-check"></i>
+                                    Diverifikasi <i className="fas fa-check"></i>
                                   </span>
                                 )}
                               </>
@@ -842,7 +842,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Name</td>
+                        <td className="py-2">Nama</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <input
@@ -860,7 +860,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Birth</td>
+                        <td className="py-2">Tempat/tgl lahir</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <div className="flex gap-2 items-center">
@@ -892,7 +892,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Gender</td>
+                        <td className="py-2">Jenis kelamin</td>
                         <td className="px-4 "></td>
                         <td className="px-4 capitalize">
                           <select
@@ -917,7 +917,7 @@ export default function Account() {
                         <td className="py-1">~</td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Address</td>
+                        <td className="py-2">Alamat</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <input
@@ -967,7 +967,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Village</td>
+                        <td className="py-2">Desa</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <select
@@ -981,7 +981,7 @@ export default function Account() {
                               isEditUser ? "bg-slate-800" : "bg-zinc-100"
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           >
-                            <option className="">Select</option>
+                            <option className="">Kecamatan</option>
                             {villages?.map((obj) => {
                               return (
                                 <option
@@ -998,7 +998,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">District</td>
+                        <td className="py-2">Kecamatan</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <select
@@ -1030,7 +1030,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">City</td>
+                        <td className="py-2">Kabupaten/Kota</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <select
@@ -1061,7 +1061,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Province</td>
+                        <td className="py-2">Provinsi</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <select
@@ -1094,7 +1094,7 @@ export default function Account() {
                       </tr>
 
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Postal Code</td>
+                        <td className="py-2">Kode pos</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <input
@@ -1131,7 +1131,7 @@ export default function Account() {
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
-                        <td className="py-2">Phone</td>
+                        <td className="py-2">No telepon</td>
                         <td className="px-4 "></td>
                         <td className="px-4 ">
                           <div className="relative">
@@ -1581,7 +1581,7 @@ export default function Account() {
               {/* Personal detail form */}
               <div className="rounded-md bg-gray-900 text-white mb-0 px-6 py-6">
                 <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
-                  <h6 className=" text-xl font-bold">Clinics</h6>
+                  <h6 className=" text-xl font-bold">Klinik</h6>
                   <div className="flex">
                     <div
                       className={` text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 cursor-pointer`}
@@ -1596,7 +1596,7 @@ export default function Account() {
                       }}
                       className={`bg-indigo-500 active:bg-indigo-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                     >
-                      Add Clinic
+                      Tambah Klinik
                       <i className={`fas fa-plus ml-2`}></i>
                     </label>
                   </div>
@@ -2258,12 +2258,12 @@ export default function Account() {
         </ModalBox>
 
         <ModalBox id="verifyPhoneModal">
-          <h3 className="font-bold text-lg mb-4">Verify Phone Number</h3>
+          <h3 className="font-bold text-lg mb-4">Verifikasi nomor telepon</h3>
           <form onSubmit={verifyPhone} autoComplete="off">
             <div className="form-control w-full">
               <div className="relative">
                 <label className="label">
-                  <span className="label-text">Phone</span>
+                  <span className="label-text">No telepon</span>
                 </label>
                 <input
                   disabled
@@ -2289,14 +2289,14 @@ export default function Account() {
                         onClick={() => getOTP()}
                         className="absolute top-[58%] right-2 text-sm font-bold bg-emerald-300 text-emerald-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
                       >
-                        OTP Sent, Check Your Whatsapp
+                        OTP terkirim, Cek whatsapp kamu
                       </label>
                     ) : (
                       <label
                         onClick={() => getOTP()}
                         className="absolute top-[58%] right-2 text-sm font-bold bg-amber-300 text-amber-700 rounded ml-2 normal-case py-[2px] px-4 cursor-pointer"
                       >
-                        Send OTP
+                        Kirim OTP
                       </label>
                     )}
                   </>
@@ -2311,7 +2311,7 @@ export default function Account() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">OTP Code</span>
+                <span className="label-text">Kode OTP</span>
               </label>
               <input
                 type="text"

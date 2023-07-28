@@ -23,9 +23,9 @@ export default function ResetPassword() {
                     type="button"
                     disabled
                   >
-                    Please check your email,
+                    Cek email anda,
                     <Link href={"/auth/login"}>
-                      <span className="text-emerald-200"> back to login page</span>
+                      <span className="text-emerald-200"> kembali ke halaman login</span>
                     </Link>
                   </div>
                 </div>

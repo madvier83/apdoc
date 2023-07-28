@@ -172,7 +172,7 @@ export default function Settings() {
 
   return (
     <>
-      <DashboardLayout title="Settings" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Pengaturan" clinic={clinic} setClinic={setClinic}>
         <div className="flex flex-row mt-8 gap-4">
           <div className="w-full lg:w-8/12">
             <form onSubmit={(e) => updateSettings(e)}>
@@ -180,7 +180,7 @@ export default function Settings() {
                 {/* Personal detail form */}
                 <div className="rounded-t-md bg-gray-900 text-white mb-0 px-6 py-6">
                   <div className="text-center flex justify-between border-b-gray-700 border-dotted border-b-2 pb-4">
-                    <h6 className="text-xl font-bold">Recipient</h6>
+                    <h6 className="text-xl font-bold">Struk</h6>
                     <div className="flex">
                       <div
                         className={`${
@@ -208,7 +208,7 @@ export default function Settings() {
                         <button
                           className={`bg-emerald-500 active:bg-emerald-400 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150`}
                         >
-                          Save
+                          Simpan
                           <i className={`fas fa-save ml-2`}></i>
                         </button>
                       ) : (
@@ -280,7 +280,7 @@ export default function Settings() {
                             </tr>
                             <tr className="text-white">
                               <td className="py-[9.1px] font-semibold text-lg w-1/4">
-                                Name
+                                Nama
                               </td>
                               <td className="px-4 "></td>
                               <td className="px-4 text-lg tracking-wider">
@@ -288,7 +288,7 @@ export default function Settings() {
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Phone</td>
+                              <td className="py-[9.1px]">No telepon</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settingsForm?.phone || "-"}
@@ -298,7 +298,7 @@ export default function Settings() {
                               <td className="py-1 text-slate-300">~</td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Address</td>
+                              <td className="py-[9.1px]">Alamat</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settingsForm?.address || "-"}
@@ -312,35 +312,35 @@ export default function Settings() {
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Village</td>
+                              <td className="py-[9.1px]">Desa</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.village?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">District</td>
+                              <td className="py-[9.1px]">Kecamatan</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.district?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">City</td>
+                              <td className="py-[9.1px]">Kabupaten/Kota</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.city?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Province</td>
+                              <td className="py-[9.1px]">Provinsi</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.province?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Postal Code</td>
+                              <td className="py-[9.1px]">Kode pos</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settingsForm?.postal_code || "-"}
@@ -354,7 +354,7 @@ export default function Settings() {
                                   <ReactToPrint
                                     trigger={() => (
                                       <div className="btn outline-none w-full text-white mt-4">
-                                        Test print{" "}
+                                        Tes print{" "}
                                         <i className="fas fa-print ml-2"></i>
                                       </div>
                                     )}
@@ -409,7 +409,7 @@ export default function Settings() {
                             </tr>
                             <tr className="text-white">
                               <td className="py-[9.1px] font-semibold text-lg w-1/4">
-                                Name
+                                Nama
                               </td>
                               <td className="px-4 "></td>
                               <td className="px-4 text-lg tracking-wider">
@@ -430,7 +430,7 @@ export default function Settings() {
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Phone</td>
+                              <td className="py-[9.1px]">No telepon</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 <input
@@ -452,7 +452,7 @@ export default function Settings() {
                               <td className="py-1 text-slate-300">~</td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Address</td>
+                              <td className="py-[9.1px]">Alamat</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settingsForm?.address || "-"}
@@ -466,35 +466,35 @@ export default function Settings() {
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Village</td>
+                              <td className="py-[9.1px]">Desa</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.village?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">District</td>
+                              <td className="py-[9.1px]">Kecamatan</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.district?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">City</td>
+                              <td className="py-[9.1px]">Kabupaten/Kota</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.city?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Province</td>
+                              <td className="py-[9.1px]">Provinsi</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settings?.province?.name || "-"}
                               </td>
                             </tr>
                             <tr className="text-gray-400 w-full">
-                              <td className="py-[9.1px]">Postal Code</td>
+                              <td className="py-[9.1px]">Kode pos</td>
                               <td className="px-4 "></td>
                               <td className="px-4 ">
                                 {settingsForm?.postal_code || "-"}
@@ -508,7 +508,7 @@ export default function Settings() {
                                   <ReactToPrint
                                     trigger={() => (
                                       <div className="btn outline-none w-full text-white mt-4">
-                                        Test print{" "}
+                                        Tes Print{" "}
                                         <i className="fas fa-print ml-2"></i>
                                       </div>
                                     )}

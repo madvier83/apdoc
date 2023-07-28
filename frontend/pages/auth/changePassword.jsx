@@ -76,7 +76,7 @@ export default function ForgotPassword() {
                           className="block text-zinc-500 text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
-                          New Password
+                          Kata sandi baru
                         </label>
                         <input
                           type={showPwd ? "text" : "password"}
@@ -107,7 +107,7 @@ export default function ForgotPassword() {
                           className="block text-zinc-500 text-xs font-bold mb-2"
                           htmlFor="grid-password"
                         >
-                          Confirm Password
+                          Konfirmasi kata sandi
                         </label>
                         <input
                           type="password"
@@ -133,7 +133,7 @@ export default function ForgotPassword() {
                             className="bg-emerald-600 text-white active:bg-emerald-700 active:bg-blueGray-600 text-sm font-bold px-6 py-3 rounded  hover:-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                             onClick={changePassword}
                           >
-                            Change Password
+                            Ubah Kata Sandi
                           </button>
                         ) : (
                           <div
@@ -160,9 +160,9 @@ export default function ForgotPassword() {
                       type="button"
                       disabled
                     >
-                      Your password has been updated,
+                      Kata sandi sudah di perbarui,
                       <Link href={"/auth/login"}>
-                        <span className="text-emerald-200"> Login</span>
+                        <span className="text-emerald-200"> Masuk</span>
                       </Link>
                     </div>
                   )}
