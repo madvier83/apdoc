@@ -192,56 +192,56 @@ export default function Access() {
         route: "/dashboard/admin",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Total control hub. User management, system configurations, and service management.",
         submenu: [
           {
             name: "position",
             route: "/dashboard/admin/position",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Create custom position for employees.",
           },
           {
             name: "employee",
             route: "/dashboard/admin/employee",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Handle recruitment and manage your employees.",
           },
           {
             name: "category-payment",
             route: "/dashboard/admin/category-payment",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Manage category for payment method.",
           },
           {
             name: "payment",
             route: "/dashboard/admin/payment",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Customize your payment option for transaction.",
           },
           {
             name: "category-outcome",
             route: "/dashboard/admin/category-outcome",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Manage category for outcomes.",
           },
           {
             name: "outcome",
             route: "/dashboard/admin/outcome",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Organize your spendings and make informed descision.",
           },
           {
             name: "promotion",
             route: "/dashboard/admin/promotion",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Design and configure enticing discounts, and special deals to attract and engage customers.",
           },
         ],
       },
@@ -382,21 +382,21 @@ export default function Access() {
             route: "/dashboard/cashier/transaction",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Automate and manage exchanges, ensuring accuracy, security, and seamless processing of payments in transactions.",
           },
           {
             name: "transaction apoteker",
             route: "/dashboard/cashier/apoteker",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Record, dispense, and track medication transactions to ensure accurate dosage, and pharmacy compliance.",
           },
           {
             name: "history",
             route: "/dashboard/cashier/history",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "A chronological record of all previous transactions, providing financial history, purchases, and payments made.",
           },
         ],
       },
@@ -405,14 +405,14 @@ export default function Access() {
         route: "/dashboard/report",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Access detailed analysis of sales data, revenue, and trends. Gain valuable insights to optimize strategies and maximize growth.",
         submenu: [
           {
             name: "sales",
             route: "/dashboard/report/sales",
             access: false,
             description:
-              "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+              "Access detailed analysis of sales data, revenue, and trends. Gain valuable insights to optimize strategies and maximize growth.",
           },
         ],
       },
@@ -993,7 +993,7 @@ export default function Access() {
                         >
                           <div className="pl-4 py-2">
                             <h2 className="">{obj.name}</h2>
-                            <small className="text-right ml-auto mr-2 text-xs lowercase opacity-50">
+                            <small className="text-right ml-auto mr-2 text-xs opacity-50">
                               {obj.description}
                             </small>
                           </div>

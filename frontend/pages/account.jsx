@@ -230,6 +230,7 @@ export default function Account() {
 
   async function updateUser(e) {
     e.preventDefault();
+    setUserFormError(initialUserForm)
     try {
       const response = await axios.put(
         `employee/${user.employee_id}`,
@@ -570,7 +571,7 @@ export default function Account() {
   //   setIsGetUpdateAddress(false);
   // }
 
-  // console.log(userData);
+  // console.log(userFormError);
   return (
     <>
       <DashboardLayout title="Account">
@@ -837,6 +838,7 @@ export default function Account() {
                               isEditUser ? "bg-slate-800" : "bg-zinc-100"
                             } border-0 px-3 text-lg placeholder-blueGray-300 text-white rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400">{userFormError.nik}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -854,6 +856,7 @@ export default function Account() {
                               isEditUser ? "bg-slate-800" : "bg-zinc-100"
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400">{userFormError.name}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -885,6 +888,7 @@ export default function Account() {
                               } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
                             />
                           </div>
+                          <p className="text-rose-400">{userFormError.birth_date ? userFormError.birth_date : userFormError.birth_place}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -906,6 +910,7 @@ export default function Account() {
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                           </select>
+                          <p className="text-rose-400">{userFormError.gender}</p>
                         </td>
                       </tr>
                       <tr className="">
@@ -926,6 +931,7 @@ export default function Account() {
                               isEditUser ? "bg-slate-800" : "bg-zinc-100"
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400">{userFormError.address}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -957,6 +963,7 @@ export default function Account() {
                               } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-[48%] ease-linear transition-all duration-150`}
                             />
                           </div>
+                          <p className="text-rose-400">{userFormError.rt ? userFormError.rt : userFormError.rw}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -987,6 +994,7 @@ export default function Account() {
                               );
                             })}
                           </select>
+                          <p className="text-rose-400">{userFormError.village_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -1018,6 +1026,7 @@ export default function Account() {
                                 );
                               })}
                           </select>
+                          <p className="text-rose-400">{userFormError.district_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -1048,6 +1057,7 @@ export default function Account() {
                               );
                             })}
                           </select>
+                          <p className="text-rose-400">{userFormError.city_id}</p>
                         </td>
                       </tr>
                       <tr className="text-gray-400 w-full">
@@ -1079,6 +1089,7 @@ export default function Account() {
                                 );
                               })}
                           </select>
+                          <p className="text-rose-400">{userFormError.province_id}</p>
                         </td>
                       </tr>
 
@@ -1097,6 +1108,7 @@ export default function Account() {
                               isEditUser ? "bg-slate-800" : "bg-zinc-100"
                             } border-0 px-3 text-sm placeholder-blueGray-300 text-slate-300 rounded shadow w-full ease-linear transition-all duration-150`}
                           />
+                          <p className="text-rose-400">{userFormError.postal_code}</p>
                         </td>
                       </tr>
                       <tr className="">
@@ -1135,6 +1147,7 @@ export default function Account() {
                               <input
                                 type="text"
                                 name="phone"
+                                disabled
                                 onChange={(e) => handleUserForm(e)}
                                 className={`${
                                   isEditUser ? "bg-slate-800" : "bg-slate-900"
