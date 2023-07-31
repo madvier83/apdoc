@@ -95,7 +95,7 @@ export default function Register() {
               <div className="relative flex flex-col min-w-0 break-words w-full mb-6 -lg rounded-lg border-0">
                 <div className="rounded-t mb-0 px-6 py-6">
                   <div className="text-center mb-3">
-                    <h6 className="text-white text-4xl mt-4 font-bold">
+                    <h6 className="fredoka text-white text-4xl mt-4 font-bold">
                       APDOC
                     </h6>
                   </div>
@@ -115,7 +115,7 @@ export default function Register() {
                           registerFormError.email[0] ? "border-rose-500" : null
                         }`}
                         required
-                        placeholder="example@mail.com"
+                        placeholder=""
                       />
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
                         {registerFormError.email[0]}
@@ -157,7 +157,7 @@ export default function Register() {
                             ? "border-rose-500"
                             : null
                         }`}
-                        placeholder="min 8 characters"
+                        placeholder=""
                       />
                       <div
                         onClick={() => setShowPwd((prev) => !prev)}
@@ -188,7 +188,7 @@ export default function Register() {
                             ? "border-rose-500"
                             : null
                         }`}
-                        placeholder="min 8 characters"
+                        placeholder=""
                       />
                       <label className="block text-rose-500 text-xs mb-2 mt-2">
                         {registerFormError.matchPwd}
@@ -220,7 +220,7 @@ export default function Register() {
                   {/* <Link href="/auth/register"> */}
                   <Link href="/auth/login" className="text-blueGray-200">
                     <small>
-                      Sudah memiliki akun?{" "}
+                      Sudah punya akun?{" "}
                       <span className="text-emerald-200">Masuk</span>
                     </small>
                   </Link>

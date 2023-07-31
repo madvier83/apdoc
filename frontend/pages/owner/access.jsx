@@ -192,212 +192,214 @@ export default function Access() {
         route: "/dashboard/admin",
         access: false,
         description:
-          "Total control hub. User management, system configurations, and service management.",
+          "Kontrol penuh pusat. Manajemen pengguna, konfigurasi sistem, dan manajemen layanan.",
         submenu: [
           {
-            name: "position",
+            name: "jabatan",
             route: "/dashboard/admin/position",
             access: false,
-            description: "Create custom position for employees.",
+            description: "Buat posisi kustom untuk karyawan.",
           },
           {
-            name: "employee",
+            name: "karyawan",
             route: "/dashboard/admin/employee",
             access: false,
-            description: "Handle recruitment and manage your employees.",
+            description: "Mengelola rekrutmen dan karyawan Anda.",
           },
           {
-            name: "category-payment",
+            name: "kategori-pembayaran",
             route: "/dashboard/admin/category-payment",
             access: false,
-            description: "Manage category for payment method.",
+            description: "Mengelola kategori untuk metode pembayaran.",
           },
           {
-            name: "payment",
+            name: "pembayaran",
             route: "/dashboard/admin/payment",
             access: false,
-            description: "Customize your payment option for transaction.",
+            description: "Sesuaikan pilihan pembayaran untuk transaksi.",
           },
           {
-            name: "category-outcome",
+            name: "kategori-pengeluaran",
             route: "/dashboard/admin/category-outcome",
             access: false,
-            description: "Manage category for outcomes.",
+            description: "Mengelola kategori untuk pengeluaran.",
           },
           {
-            name: "outcome",
+            name: "pengeluaran",
             route: "/dashboard/admin/outcome",
             access: false,
-            description: "Organize your spendings and make informed descision.",
+            description: "Atur pengeluaran Anda dan buat keputusan berdasarkan informasi.",
           },
           {
-            name: "promotion",
+            name: "promosi",
             route: "/dashboard/admin/promotion",
             access: false,
             description:
-              "Design and configure enticing discounts, and special deals to attract and engage customers.",
+              "Desain dan konfigurasi diskon menarik, serta penawaran khusus untuk menarik dan melibatkan pelanggan.",
           },
         ],
       },
       {
-        name: "receptionist",
+        name: "resepsionis",
         route: "/dashboard/receptionist",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Penerimaan dan penjadwalan. Mengelola data dan janji temu pasien.",
         submenu: [
           {
-            name: "patient",
+            name: "pasien",
             route: "/dashboard/receptionist/patient",
             access: false,
-            description: "Manage patient data and information.",
+            description: "Mengelola data dan informasi pasien.",
           },
           {
-            name: "appointment",
+            name: "janji-temu",
             route: "/dashboard/receptionist/appointment",
             access: false,
-            description: "Schedule and manage appointments for patients.",
+            description: "Jadwalkan dan kelola janji temu pasien.",
           },
           {
-            name: "queue",
+            name: "antrian",
             route: "/dashboard/receptionist/queue",
             access: false,
-            description: "Manage patient queues and waiting lists.",
+            description: "Mengelola antrian pasien dan daftar tunggu.",
           },
         ],
       },
       {
-        name: "doctor",
+        name: "dokter",
         route: "/dashboard/doctor",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Dokter. Lihat data diagnosa, layanan medis, dan catatan pasien.",
         submenu: [
           {
-            name: "diagnose",
+            name: "diagnosa",
             route: "/dashboard/doctor/diagnose",
             access: false,
-            description: "View diagnoses data and medical examinations.",
+            description: "Lihat data diagnosa dan pemeriksaan medis.",
           },
           {
-            name: "category-service",
+            name: "kategori-layanan",
             route: "/dashboard/doctor/category-service",
             access: false,
-            description: "Manage categories for medical services.",
+            description: "Mengelola kategori untuk layanan medis.",
           },
           {
-            name: "service",
+            name: "layanan",
             route: "/dashboard/doctor/service",
             access: false,
-            description: "Manage medical services and treatments.",
+            description: "Mengelola layanan medis dan pengobatan.",
           },
           {
-            name: "patient",
+            name: "pasien",
             route: "/dashboard/doctor/patient",
             access: false,
-            description: "Manage patient records and medical history.",
+            description: "Mengelola catatan pasien dan riwayat medis.",
           },
           {
-            name: "queue",
+            name: "antrian",
             route: "/dashboard/doctor/queue",
             access: false,
-            description: "Monitor and manage patient queues and waiting lists.",
+            description: "Memantau dan mengelola antrian pasien dan daftar tunggu.",
           },
         ],
       },
       {
-        name: "pharmacy",
+        name: "apotek",
         route: "/dashboard/pharmacy",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Apotek. Mengelola persediaan obat, pemasok, dan pesanan pembelian.",
         submenu: [
           {
-            name: "category-item",
+            name: "kategori-item",
             route: "/dashboard/pharmacy/category-item",
             access: false,
-            description: "Manage categories for pharmacy items.",
+            description: "Mengelola kategori untuk barang farmasi.",
           },
           {
             name: "item",
             route: "/dashboard/pharmacy/item",
             access: false,
-            description: "Manage pharmacy items and medicines.",
+            description: "Mengelola barang farmasi dan obat-obatan.",
           },
           {
-            name: "item-supply",
+            name: "pasokan-item",
             route: "/dashboard/pharmacy/supply",
             access: false,
-            description: "Manage supplies and restocking of pharmacy items.",
+            description: "Mengelola persediaan dan pengisian ulang barang farmasi.",
           },
           {
-            name: "supplier",
+            name: "pemasok",
             route: "/dashboard/pharmacy/supplier",
             access: false,
-            description: "Manage pharmacy suppliers and vendors.",
+            description: "Mengelola pemasok dan vendor farmasi.",
           },
           {
-            name: "purchase-order",
+            name: "pesanan-pembelian",
             route: "/dashboard/pharmacy/purchase-order",
             access: false,
-            description: "Manage purchase orders for pharmacy items.",
+            description: "Mengelola pesanan pembelian untuk barang farmasi.",
           },
           {
-            name: "stock-adjustment",
+            name: "penyesuaian-stok",
             route: "/dashboard/pharmacy/stock-adjustment",
             access: false,
-            description: "Manage stock adjustments and inventory control.",
+            description: "Mengelola penyesuaian stok dan pengendalian inventaris.",
           },
         ],
       },
       {
-        name: "cashier",
+        name: "kasir",
         route: "/dashboard/cashier",
         access: false,
         description:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil voluptatibus nam eaque temporibus magni doloribus molestias.",
+          "Kasir. Mengelola transaksi, termasuk obat dan pembayaran.",
         submenu: [
           {
-            name: "transaction",
+            name: "transaksi",
             route: "/dashboard/cashier/transaction",
             access: false,
             description:
-              "Automate and manage exchanges, ensuring accuracy, security, and seamless processing of payments in transactions.",
+              "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
           },
           {
-            name: "transaction apoteker",
+            name: "transaksi-apoteker",
             route: "/dashboard/cashier/apoteker",
             access: false,
             description:
-              "Record, dispense, and track medication transactions to ensure accurate dosage, and pharmacy compliance.",
+              "Mencatat, mengeluarkan, dan melacak transaksi obat untuk memastikan dosis yang akurat dan kepatuhan farmasi.",
           },
           {
-            name: "history",
+            name: "riwayat",
             route: "/dashboard/cashier/history",
             access: false,
             description:
-              "A chronological record of all previous transactions, providing financial history, purchases, and payments made.",
+              "Catatan kronologis dari semua transaksi sebelumnya, menyediakan riwayat keuangan, pembelian, dan pembayaran yang telah dibuat.",
           },
         ],
       },
       {
-        name: "report",
+        name: "laporan",
         route: "/dashboard/report",
         access: false,
         description:
-          "Access detailed analysis of sales data, revenue, and trends. Gain valuable insights to optimize strategies and maximize growth.",
+          "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
         submenu: [
           {
-            name: "sales",
+            name: "penjualan",
             route: "/dashboard/report/sales",
             access: false,
             description:
-              "Access detailed analysis of sales data, revenue, and trends. Gain valuable insights to optimize strategies and maximize growth.",
+              "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
           },
         ],
       },
     ],
   };
+  
+  
 
   const [addForm, setAddForm] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -597,7 +599,7 @@ export default function Access() {
 
   return (
     <>
-      <DashboardLayout title="Access" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Akses User" clinic={clinic} setClinic={setClinic}>
         <div className="flex gap-4">
           <div
             className={
@@ -608,7 +610,7 @@ export default function Access() {
               <div className="flex flex-wrap items-center">
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                   <h3 className={"font-semibold text-lg "}>
-                    <i className="fas fa-filter mr-3"></i> Access Table
+                    <i className="fas fa-filter mr-3"></i> Akses User
                   </h3>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -973,7 +975,7 @@ export default function Access() {
                         >
                           <div className="pl-4 py-2">
                             <h2 className="">{obj.name}</h2>
-                            <small className="text-right ml-auto mr-2 text-xs opacity-50">
+                            <small className="normal-case text-right ml-auto mr-2 text-xs opacity-50">
                               {obj.description}
                             </small>
                           </div>

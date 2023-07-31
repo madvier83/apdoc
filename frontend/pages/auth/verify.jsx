@@ -267,7 +267,7 @@ export default function Register() {
         <div className="w-screen">
           <div className="rounded-t mb-0 px-6 py-6">
             <div className="text-center mb-3">
-              <h6 className="text-white text-4xl mt-4 font-bold">APDOC</h6>
+              <h6 className="fredoka text-white text-4xl mt-4 font-bold">APDOC</h6>
             </div>
           </div>
           <div className="flex items-center justify-center h-full">

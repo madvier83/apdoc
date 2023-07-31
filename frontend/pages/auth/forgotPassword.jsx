@@ -33,7 +33,7 @@ export default function ForgotPassword() {
               <div className="relative flex flex-col min-w-0 break-words w-full mb-6 -lg rounded-lg border-0">
                 <div className="rounded-t mb-0 px-6 py-6">
                   <div className="text-center mb-3">
-                    <h6 className="text-white text-4xl mt-4 font-bold">
+                    <h6 className="fredoka text-white text-4xl mt-4 font-bold">
                       APDOC
                     </h6>
                   </div>

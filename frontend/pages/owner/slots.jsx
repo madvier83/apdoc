@@ -73,11 +73,14 @@ export default function Slots() {
       return;
     }
     try {
-      const response = await axios.get(`/user-slots/${clinic && clinic}/clinic`, {
-        headers: {
-          Authorization: "Bearer" + token,
-        },
-      });
+      const response = await axios.get(
+        `/user-slots/${clinic && clinic}/clinic`,
+        {
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
       setUsers(response.data);
       setUsersLoading(false);
     } catch (err) {
@@ -103,7 +106,7 @@ export default function Slots() {
   }
 
   async function getEmployee() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -188,11 +191,11 @@ export default function Slots() {
   }
 
   useEffect(() => {
-    getUser()
-    getRole()
-    getEmployee()
-    setSearchEmployees("")
-    setSelectedEmployees({})
+    getUser();
+    getRole();
+    getEmployee();
+    setSearchEmployees("");
+    setSelectedEmployees({});
   }, [clinic]);
 
   useEffect(() => {
@@ -211,7 +214,7 @@ export default function Slots() {
   // console.log(roles)
   return (
     <>
-      <DashboardLayout title="User Slots" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Slot User" clinic={clinic} setClinic={setClinic}>
         <div className="flex gap-4">
           <div
             className={
@@ -222,7 +225,7 @@ export default function Slots() {
               <div className="flex flex-wrap items-center">
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                   <h3 className={"font-semibold text-lg "}>
-                    <i className="fas fa-filter mr-3"></i> User Slots Table
+                    <i className="fas fa-filter mr-3"></i> Slot User
                   </h3>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -307,7 +310,9 @@ export default function Slots() {
                           <span>{obj.user?.role?.name}</span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
-                          <span className={``}>{obj.user?.employee?.clinic?.name}</span>
+                          <span className={``}>
+                            {obj.user?.employee?.clinic?.name}
+                          </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-2">
                           <span className={``}>-</span>
@@ -357,7 +362,7 @@ export default function Slots() {
                                     role_id: obj.user.role_id,
                                     employee_id: obj.user.employee.id,
                                   });
-                                  setSelectedEmployees(obj.user.employee)
+                                  setSelectedEmployees(obj.user.employee);
                                 }}
                               >
                                 <i className="fas fa-cog"></i>
@@ -370,7 +375,7 @@ export default function Slots() {
                                 onClick={() => {
                                   setAddForm(initialForm);
                                   setAddForm({ ...initialForm, id: obj.id });
-                                  setSelectedEmployees({})
+                                  setSelectedEmployees({});
                                 }}
                               >
                                 <i className="fas fa-cog"></i>
@@ -584,6 +589,13 @@ export default function Slots() {
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Employee</span>
+                <a
+                  href="/dashboard/admin/employee"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add employee
+                </a>
               </label>
 
               <div className="dropdown w-full">
@@ -686,6 +698,13 @@ export default function Slots() {
 
               <label className="label">
                 <span className="label-text">Access</span>
+                <a
+                  href="/owner/access"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add Access
+                </a>
               </label>
               <select
                 name="role_id"

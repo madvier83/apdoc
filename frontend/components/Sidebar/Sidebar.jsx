@@ -58,147 +58,212 @@ export default function Sidebar() {
       name: "admin",
       route: "/dashboard/admin",
       access: true,
+      description:
+        "Kontrol penuh pusat. Manajemen pengguna, konfigurasi sistem, dan manajemen layanan.",
       submenu: [
         {
-          name: "position",
+          name: "jabatan",
           route: "/dashboard/admin/position",
           access: true,
+          description: "Buat posisi kustom untuk karyawan.",
         },
         {
-          name: "employee",
+          name: "karyawan",
           route: "/dashboard/admin/employee",
           access: true,
+          description: "Mengelola rekrutmen dan karyawan Anda.",
         },
         {
-          name: "category-payment",
+          name: "kategori-pembayaran",
           route: "/dashboard/admin/category-payment",
           access: true,
+          description: "Mengelola kategori untuk metode pembayaran.",
         },
-        { name: "payment", route: "/dashboard/admin/payment", access: true },
         {
-          name: "category-outcome",
+          name: "pembayaran",
+          route: "/dashboard/admin/payment",
+          access: true,
+          description: "Sesuaikan pilihan pembayaran untuk transaksi.",
+        },
+        {
+          name: "kategori-pengeluaran",
           route: "/dashboard/admin/category-outcome",
           access: true,
+          description: "Mengelola kategori untuk pengeluaran.",
         },
-        { name: "outcome", route: "/dashboard/admin/outcome", access: true },
         {
-          name: "promotion",
+          name: "pengeluaran",
+          route: "/dashboard/admin/outcome",
+          access: true,
+          description:
+            "Atur pengeluaran Anda dan buat keputusan berdasarkan informasi.",
+        },
+        {
+          name: "promosi",
           route: "/dashboard/admin/promotion",
           access: true,
+          description:
+            "Desain dan konfigurasi diskon menarik, serta penawaran khusus untuk menarik dan melibatkan pelanggan.",
         },
       ],
     },
     {
-      name: "receptionist",
+      name: "resepsionis",
       route: "/dashboard/receptionist",
       access: true,
+      description:
+        "Penerimaan dan penjadwalan. Mengelola data dan janji temu pasien.",
       submenu: [
         {
-          name: "patient",
+          name: "pasien",
           route: "/dashboard/receptionist/patient",
           access: true,
+          description: "Mengelola data dan informasi pasien.",
         },
         {
-          name: "appointment",
+          name: "janji-temu",
           route: "/dashboard/receptionist/appointment",
           access: true,
+          description: "Jadwalkan dan kelola janji temu pasien.",
         },
         {
-          name: "queue",
+          name: "antrian",
           route: "/dashboard/receptionist/queue",
           access: true,
+          description: "Mengelola antrian pasien dan daftar tunggu.",
         },
       ],
     },
     {
-      name: "doctor",
+      name: "dokter",
       route: "/dashboard/doctor",
       access: true,
+      description:
+        "Dokter. Lihat data diagnosa, layanan medis, dan catatan pasien.",
       submenu: [
         {
-          name: "diagnose",
+          name: "diagnosa",
           route: "/dashboard/doctor/diagnose",
           access: true,
+          description: "Lihat data diagnosa dan pemeriksaan medis.",
         },
         {
-          name: "category-service",
+          name: "kategori-layanan",
           route: "/dashboard/doctor/category-service",
           access: true,
+          description: "Mengelola kategori untuk layanan medis.",
         },
         {
-          name: "service",
+          name: "layanan",
           route: "/dashboard/doctor/service",
           access: true,
+          description: "Mengelola layanan medis dan pengobatan.",
         },
         {
-          name: "patient",
+          name: "pasien",
           route: "/dashboard/doctor/patient",
           access: true,
+          description: "Mengelola catatan pasien dan riwayat medis.",
         },
-        { name: "queue", route: "/dashboard/doctor/queue", access: true },
+        {
+          name: "antrian",
+          route: "/dashboard/doctor/queue",
+          access: true,
+          description:
+            "Memantau dan mengelola antrian pasien dan daftar tunggu.",
+        },
       ],
     },
     {
-      name: "pharmacy",
+      name: "apotek",
       route: "/dashboard/pharmacy",
       access: true,
+      description:
+        "Apotek. Mengelola persediaan obat, pemasok, dan pesanan pembelian.",
       submenu: [
         {
-          name: "category-item",
+          name: "kategori-item",
           route: "/dashboard/pharmacy/category-item",
           access: true,
+          description: "Mengelola kategori untuk barang farmasi.",
         },
-        { name: "item", route: "/dashboard/pharmacy/item", access: true },
         {
-          name: "item-supply",
+          name: "item",
+          route: "/dashboard/pharmacy/item",
+          access: true,
+          description: "Mengelola barang farmasi dan obat-obatan.",
+        },
+        {
+          name: "pasokan-item",
           route: "/dashboard/pharmacy/supply",
           access: true,
+          description:
+            "Mengelola persediaan dan pengisian ulang barang farmasi.",
         },
         {
-          name: "supplier",
+          name: "pemasok",
           route: "/dashboard/pharmacy/supplier",
           access: true,
+          description: "Mengelola pemasok dan vendor farmasi.",
         },
         {
-          name: "purchase-order",
+          name: "pesanan-pembelian",
           route: "/dashboard/pharmacy/purchase-order",
           access: true,
+          description: "Mengelola pesanan pembelian untuk barang farmasi.",
         },
         {
-          name: "stock-adjustment",
+          name: "penyesuaian-stok",
           route: "/dashboard/pharmacy/stock-adjustment",
           access: true,
+          description:
+            "Mengelola penyesuaian stok dan pengendalian inventaris.",
         },
       ],
     },
     {
-      name: "cashier",
+      name: "kasir",
       route: "/dashboard/cashier",
       access: true,
+      description: "Kasir. Mengelola transaksi, termasuk obat dan pembayaran.",
       submenu: [
         {
-          name: "transaction",
+          name: "transaksi",
           route: "/dashboard/cashier/transaction",
           access: true,
+          description:
+            "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
         },
         {
-          name: "transaction apoteker",
+          name: "transaksi-apoteker",
           route: "/dashboard/cashier/apoteker",
           access: true,
+          description:
+            "Mencatat, mengeluarkan, dan melacak transaksi obat untuk memastikan dosis yang akurat dan kepatuhan farmasi.",
         },
         {
-          name: "history",
+          name: "riwayat",
           route: "/dashboard/cashier/history",
           access: true,
+          description:
+            "Catatan kronologis dari semua transaksi sebelumnya, menyediakan riwayat keuangan, pembelian, dan pembayaran yang telah dibuat.",
         },
       ],
     },
     {
-      name: "report",
+      name: "laporan",
       route: "/dashboard/report",
       access: true,
+      description:
+        "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
       submenu: [
-        { name: "sales", route: "/dashboard/report/sales", access: true },
+        {
+          name: "penjualan",
+          route: "/dashboard/report/sales",
+          access: true,
+          description:
+            "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+        },
       ],
     },
   ];
@@ -239,13 +304,11 @@ export default function Sidebar() {
   const initialSidebar = {
     user: false,
     admin: false,
-    receptionist: false,
-    doctor: false,
-    pharmacy: false,
-    promotion: false,
-    cashier: false,
-    report: false,
-    settings: false,
+    resepsionis: false,
+    dokter: false,
+    apotek: false,
+    kasir: false,
+    laporan: false,
   };
   const [sidebar, setSidebar] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -286,7 +349,7 @@ export default function Sidebar() {
           {/* Brand */}
           <Link
             href="/dashboard"
-            className="md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
+            className="font-fredoka md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
             APDOC
           </Link>
@@ -343,8 +406,7 @@ export default function Sidebar() {
                       router.pathname == "/dashboard" && "text-emerald-500 "
                     }`}
                   >
-                    <i className={"fas fa-chart-line mr-2 text-sm "}></i>{" "}
-                    Dasbor
+                    <i className={"fas fa-chart-line mr-2 text-sm "}></i> Dasbor
                   </Link>
                 </li>
               </ul>
@@ -400,7 +462,7 @@ export default function Sidebar() {
                               : "fa-folder"
                           } mr-2 text-sm`}
                         ></i>{" "}
-                        User Access
+                        Akses User
                       </Link>
                     </li>
                     <li
@@ -424,7 +486,7 @@ export default function Sidebar() {
                               : "fa-folder"
                           } mr-2 text-sm`}
                         ></i>{" "}
-                        User Slots
+                        Slot User
                       </div>
                     </li>
                   </ul>
@@ -571,8 +633,7 @@ export default function Sidebar() {
                             "text-xs py-3 font-semibold block capitalize"
                           }
                         >
-                          <i className={`fas fa-scroll mr-2 text-sm`}></i>{" "}
-                          Struk
+                          <i className={`fas fa-scroll mr-2 text-sm`}></i> Struk
                         </Link>
                       </li>
                       <li
@@ -609,7 +670,8 @@ export default function Sidebar() {
                       "text-xs py-3 font-bold block  text-slate-500 cursor-pointer"
                     }
                   >
-                    <i className={"fas fa-lock mr-2 text-sm "}></i> Ubah kata sandi
+                    <i className={"fas fa-lock mr-2 text-sm "}></i> Ubah kata
+                    sandi
                   </label>
                 </li>
                 <li

@@ -47,6 +47,9 @@ export async function middleware(req) {
     if(pathname == "/dashboard") {
         return NextResponse.next()
     }
+    if(pathname == "/account") {
+        return NextResponse.next()
+    }
 
     if(pathname.startsWith("/auth")) {
         if (!jwt) {
@@ -69,7 +72,7 @@ export async function middleware(req) {
         }
     }
 
-    if(pathname.startsWith("/dashboard") || pathname === "/account" || pathname.startsWith("/settings")) {
+    if(pathname.startsWith("/dashboard") ||  pathname.startsWith("/settings")) {
         if (jwt == undefined) {
             url.pathname = "/auth/login"
             return NextResponse.redirect(url);

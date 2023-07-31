@@ -9,6 +9,7 @@ module.exports = {
     extend: {},
     fontFamily: {
       'mono': ['inconsolata'],
+      'fredoka' : ['Fredoka']
     }
   },
   daisyui: {

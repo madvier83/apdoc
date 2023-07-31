@@ -35,7 +35,7 @@ export default function AdminSidebar() {
           {/* Brand */}
           <Link
             href="/"
-            className="md:block text-4xl text-rose-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
+            className="fredoka md:block text-4xl text-rose-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
             APDOC
           </Link>
@@ -59,7 +59,7 @@ export default function AdminSidebar() {
                 <div className="w-6/12">
                   <Link
                     href="#pablo"
-                    className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
+                    className="fredoka md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm font-bold p-4 px-0"
                   >
                     APDOC
                   </Link>
@@ -94,16 +94,27 @@ export default function AdminSidebar() {
 
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 <li className="items-center">
-                  <button
-                    onClick={() => setAdminMenu((p) => !p)}
+                  <Link
+                    href="/admin/clients"
                     className={
                       "text-xs py-3 text-slate-500 font-bold block w-full text-left"
                     }
                   >
                     <i className={"fas fa-user mr-2 text-sm "}></i> Clients
-                  </button>
+                  </Link>
+                </li>
+                <li className="items-center">
+                  <Link
+                    href="/admin/diagnose"
+                    className={
+                      "text-xs py-3 text-slate-500 font-bold block w-full text-left"
+                    }
+                  >
+                    <i className={"fas fa-file-text mr-2 text-sm "}></i> Diagnoses
+                  </Link>
+                </li>
 
-                  {adminMenu && (
+                {/* {adminMenu && (
                     <ul className="md:flex-col md:min-w-full flex flex-col list-none ml-6 text-slate-400">
                       <li className="items-center">
                         <Link
@@ -129,10 +140,9 @@ export default function AdminSidebar() {
                         </Link>
                       </li>
                     </ul>
-                  )}
+                  )} */}
 
-                  {/* end submenu */}
-                </li>
+                {/* end submenu */}
 
                 <hr className="my-4 md:min-w-full" />
 
@@ -161,7 +171,7 @@ export default function AdminSidebar() {
                       DeleteAllCookies();
                       router.push("/auth/admin");
                     }}
-                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                    className={"text-xs py-3 font-bold block  text-rose-500"}
                   >
                     <i className={"fas fa-arrow-left mr-2 text-sm "}></i> Logout
                   </button>
