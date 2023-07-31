@@ -18,12 +18,12 @@ export default function Payment() {
   const tableRef = useRef();
   const exportModalRef = useRef();
 
-  const [clinic, setClinic] = useState()
+  const [clinic, setClinic] = useState();
 
   const [perpage, setPerpage] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState(true);
 
@@ -68,10 +68,10 @@ export default function Payment() {
   };
 
   async function getItem() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
-    setItemLoading(true)
+    setItemLoading(true);
     try {
       const response = await axios.get(
         `payments/${clinic && clinic + "/"}${perpage}${
@@ -80,7 +80,8 @@ export default function Payment() {
             search
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
@@ -92,13 +93,13 @@ export default function Payment() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
-      setItem({})
+      setItem({});
       setItemLoading(false);
     }
   }
 
   async function getCategory() {
-    if(!clinic){
+    if (!clinic) {
       return;
     }
     try {
@@ -109,7 +110,8 @@ export default function Payment() {
             searchCategory
               .split(" ")
               .join("%")
-              .replace(/[^a-zA-Z0-9]/, "").replace(".","")
+              .replace(/[^a-zA-Z0-9]/, "")
+              .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -136,7 +138,7 @@ export default function Payment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -159,7 +161,7 @@ export default function Payment() {
       setPutForm(initialItemForm);
       setPutFormError(initialItemForm);
     } catch (err) {
-      setPutFormError({message: ""});
+      setPutFormError({ message: "" });
       setPutFormError(err.response?.data);
     }
   }
@@ -177,7 +179,6 @@ export default function Payment() {
     }
   }
 
-  
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -196,7 +197,10 @@ export default function Payment() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -269,7 +273,7 @@ export default function Payment() {
   useEffect(() => {
     const getData = setTimeout(() => {
       getItem();
-      getCategory()
+      getCategory();
     }, 300);
 
     if (page > item?.last_page) {
@@ -278,13 +282,13 @@ export default function Payment() {
 
     return () => clearTimeout(getData);
   }, [page, perpage, search, clinic, sortBy, order]);
-  
-  useEffect(()=> {
-    setSearch("")
-    setSearchCategory("")
-    setPage(1)
-    setAddForm({clinic_id: clinic})
-  }, [clinic])
+
+  useEffect(() => {
+    setSearch("");
+    setSearchCategory("");
+    setPage(1);
+    setAddForm({ clinic_id: clinic });
+  }, [clinic]);
 
   useEffect(() => {
     tableRef.current.scroll({
@@ -301,7 +305,7 @@ export default function Payment() {
 
   return (
     <>
-      <DashboardLayout title="Payment" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Pembayaran" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -311,7 +315,7 @@ export default function Payment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Payment Table
+                  <i className="fas fa-filter mr-3"></i> Pembayaran
                 </h3>
               </div>
 
@@ -396,6 +400,7 @@ export default function Payment() {
                       }}
                     >
                       <p>Category</p>
+
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "category_payment_id" && "opacity-40"
@@ -415,59 +420,71 @@ export default function Payment() {
                 </tr>
               </thead>
               <tbody>
-                <Loading data={item} dataLoading={itemLoading} reload={getItem}></Loading>
-                {!itemLoading && item?.data?.map((obj, index) => {
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>{index + item.from}</span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>{obj.name || "-"}</span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        <span>{obj.category_payment?.name}</span>
-                      </td>
-                      {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                <Loading
+                  data={item}
+                  dataLoading={itemLoading}
+                  reload={getItem}
+                ></Loading>
+                {!itemLoading &&
+                  item?.data?.map((obj, index) => {
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + item.from}
+                          </span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {obj.name || "-"}
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          <span>{obj.category_payment?.name}</span>
+                        </td>
+                        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
                       <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.updated_at).fromNow()}
                       </td> */}
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                        <div className="tooltip tooltip-left" data-tip="Edit">
-                          <label
-                            className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            htmlFor="modal-put"
-                            onClick={() => {
-                              setPutForm(obj);
-                              setPutFormError("");
-                              setSelectedCategory(obj.category_payment);
-                            }}
+                          <div className="tooltip tooltip-left" data-tip="Edit">
+                            <label
+                              className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              type="button"
+                              htmlFor="modal-put"
+                              onClick={() => {
+                                setPutForm(obj);
+                                setPutFormError("");
+                                setSelectedCategory(obj.category_payment);
+                              }}
+                            >
+                              <i className="fas fa-pen-to-square"></i>
+                            </label>
+                          </div>
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Delete"
                           >
-                            <i className="fas fa-pen-to-square"></i>
-                          </label>
-                        </div>
-                        <div className="tooltip tooltip-left" data-tip="Delete">
-                          <label
-                            className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            htmlFor={obj.id}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </label>
-                        </div>
-                        <ModalDelete
-                          id={obj.id}
-                          callback={() => deleteItem(obj.id)}
-                          title={`Delete payment?`}
-                        ></ModalDelete>
-                      </td>
-                    </tr>
-                  );
-                })}
+                            <label
+                              className="bg-rose-400 text-white active:bg-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                              htmlFor={obj.id}
+                            >
+                              <i className="fas fa-trash"></i>
+                            </label>
+                          </div>
+                          <ModalDelete
+                            id={obj.id}
+                            callback={() => deleteItem(obj.id)}
+                            title={`Delete payment?`}
+                          ></ModalDelete>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -548,7 +565,9 @@ export default function Payment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Payment <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Payment <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -564,13 +583,20 @@ export default function Payment() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
+              <label className="label">
+                <span className="label-text-alt text-rose-300">
                   {addFormError.message || addFormError.name[0]}
-                  </span>
-                </label>
+                </span>
+              </label>
               <label className="label">
                 <span className="label-text">Category</span>
+                <a
+                  href="/dashboard/admin/category-payment"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add category
+                </a>
               </label>
               <div className="dropdown w-full">
                 {selectedCategory?.id && (
@@ -671,13 +697,20 @@ export default function Payment() {
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"
               />
-                <label className="label">
-                  <span className="label-text-alt text-rose-300">
+              <label className="label">
+                <span className="label-text-alt text-rose-300">
                   {putFormError.message || putFormError.name[0]}
-                  </span>
-                </label>
+                </span>
+              </label>
               <label className="label">
                 <span className="label-text">Category</span>
+                <a
+                  href="/dashboard/admin/category-payment"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add category
+                </a>
               </label>
 
               <div className="dropdown w-full">
@@ -764,13 +797,11 @@ export default function Payment() {
           </form>
         </ModalBox>
 
-        
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

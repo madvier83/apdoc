@@ -215,7 +215,7 @@ export default function Patients() {
 
   return (
     <>
-      <DashboardLayout title="Patient Records">
+      <DashboardLayout title="Catatan Pasien">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700"
@@ -250,7 +250,8 @@ export default function Patients() {
                         <a
                           href={`${
                             selectedPatient.phone
-                              ? `https://wa.me/` + selectedPatient.phone?.replace(/\D/g, "")
+                              ? `https://wa.me/` +
+                                selectedPatient.phone?.replace(/\D/g, "")
                               : ""
                           }`}
                           target="_blank"
@@ -272,15 +273,19 @@ export default function Patients() {
                     </span>
                     <div className="mt-4">
                       <small className="text-zinc-400">Address</small> <br />
-                      <span className="font-sm text-zinc-800 line-clamp-2">
-                        {selectedPatient?.address}
+                      <span className="font-sm text-zinc-800">
+                        {selectedPatient.address}, 
+                        
+                        <br />{selectedPatient.village?.name},{" "}
+                        {selectedPatient.city?.name}, {selectedPatient.district?.name},{" "}
+                        {selectedPatient.province?.name}
                       </span>
                     </div>
                   </div>
                   <div className="p-8 rounded-md bg-white w-2/3">
                     <div className="flex justify-between items-center">
                       <small className="text-2xl font-semibold">
-                        Height & weight
+                        Tinggi & berat badan
                       </small>{" "}
                       {isGrowth ? (
                         <div className="flex gap-1">

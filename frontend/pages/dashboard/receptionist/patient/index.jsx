@@ -32,8 +32,8 @@ export default function Patients() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("name");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(true);
@@ -441,7 +441,7 @@ export default function Patients() {
 
   return (
     <>
-      <DashboardLayout title="Patients" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Pasien" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -451,7 +451,7 @@ export default function Patients() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Patients Table
+                  <i className="fas fa-filter mr-3"></i> Pasien
                 </h3>
               </div>
               <div className="relative">

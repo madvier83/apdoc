@@ -16,12 +16,12 @@ import { GetCookieChunk } from "../../../services/CookieChunk";
 
 export default function Sales() {
   const token = GetCookieChunk("token_");
-  
+
   const [clinic, setClinic] = useState();
 
   const [chartData, setChartData] = useState([
     ["Date", "Gross Sales", "Net Sales"],
-    ["", 0, 0]
+    ["", 0, 0],
   ]);
   const [menu, setMenu] = useState(0);
   const [summary, setSummary] = useState([]);
@@ -88,9 +88,11 @@ export default function Sales() {
     }
     try {
       let response = await axios.get(
-        `/report-sales/summary/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/summary/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -114,9 +116,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/payment/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/payment/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -136,9 +140,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/service/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/service/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -158,9 +164,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/item/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/item/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -180,9 +188,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/category/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/category/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -202,9 +212,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/promotion/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/promotion/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -224,9 +236,11 @@ export default function Sales() {
     }
     try {
       const response = await axios.get(
-        `/report-sales/collected/${clinic && clinic + "/"}${moment(selectionRange.startDate).format(
+        `/report-sales/collected/${clinic && clinic + "/"}${moment(
+          selectionRange.startDate
+        ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
           "YYYY-MM-DD"
-        )}/${moment(selectionRange.endDate).format("YYYY-MM-DD")}`,
+        )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -247,7 +261,7 @@ export default function Sales() {
       getPayment();
       getService();
       getItem();
-      getCategory();
+      // getCategory();
       getPromotion();
       getCollected();
     }
@@ -255,152 +269,59 @@ export default function Sales() {
 
   return (
     <>
-      <DashboardLayout title="Sales" clinic={clinic} setClinic={setClinic}>
-        <div className="flex gap-4">
-          <div
-            className={
-              "relative flex flex-col min-w-0 break-words overflow-visible w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
-            }
-          >
-            <div className="rounded-t mb-0 px-4 pt-4 border-0 overflow-visible">
-              <div className="flex flex-wrap items-center overflow-visible">
-                <div className="relative w-full px-4 overflow-visible">
-                  <h3 className={"font-bold text-xl mt-4"}>
-                    {/* <i className="fas fa-filter mr-3"></i>  */}
-                    Hasil ringkasan
-                  </h3>
-                  <div className="flex">
-                    <div className="dropdown">
-                      <label tabIndex={0}>
-                        <div className="mb-4 rounded-md text-sm mt-2 text-gray-400">
-                          Menampilkan data dari{" "}
-                          <span className=" text-violet-500 opacity-95 font-semibold">
-                            {moment(selectionRange.startDate).format(
-                              "MMMM Do YYYY"
-                            )}
-                          </span>{" "}
-                          sampai{" "}
-                          <span className=" text-violet-500 opacity-95 font-semibold">
-                            {moment(selectionRange.endDate).format(
-                              "MMMM Do YYYY"
-                            )}
-                            <i className="fa-solid fa-calendar-week ml-2"></i>
-                          </span>
-                        </div>
-                      </label>
-                      <div
-                        tabIndex={0}
-                        className="dropdown-content shadow-md top-10 text-zinc-700"
-                      >
-                        <DateRangePicker
-                          className="rounded-md overflow-hidden p-0 m-0"
-                          ranges={[selectionRange]}
-                          onChange={handleSelect}
-                          direction="vertical"
-                          rangeColors={["#9333ea"]}
-                        />
-                      </div>
+      <DashboardLayout title="Penjualan" clinic={clinic} setClinic={setClinic}>
+        <div className="flex gap-4 mt-6">
+          <div className="bg-white min-h-[42vh] rounded-md w-full mb-">
+            <div className="ml-8 items-center justify-between gap-2">
+              <h3 className={"font-bold text-xl pt-6"}>Laporan penjualan</h3>
+              <div className="flex">
+                <div className="dropdown">
+                  <label tabIndex={0}>
+                    <div className="mb-4 rounded-md text-sm mt-2 text-gray-400">
+                      Menampilkan data dari{" "}
+                      <span className=" text-violet-500 opacity-95 font-semibold">
+                        {moment(selectionRange.startDate).format(
+                          "DD MMMM YYYY"
+                        )}
+                      </span>{" "}
+                      sampai{" "}
+                      <span className=" text-violet-500 opacity-95 font-semibold">
+                        {moment(selectionRange.endDate).format("DD MMMM YYYY")}
+                        <i className="fa-solid fa-calendar-week ml-2"></i>
+                      </span>
                     </div>
+                  </label>
+                  <div
+                    tabIndex={0}
+                    className="dropdown-content shadow-md top-10 text-zinc-700"
+                  >
+                    <DateRangePicker
+                      className="rounded-md overflow-hidden p-0 m-0"
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                      direction="vertical"
+                      rangeColors={["#9333ea"]}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="pb-4 pt-4 block w-full">
-              <div className="flex gap-4 px-8">
-                <div className="w-full flex flex-col py-2 border-2 border-white border-b-rose-400">
-                  <span className="text-sm text-gray-400">Laba kotor</span>
-                  <span className="text-2xl font-bold pt-0">
-                    RP. {numeral(summary.GrossSales).format("0,0")}
-                  </span>
-                </div>
-                <div className="w-full flex flex-col py-2 border-2 border-white border-b-indigo-400">
-                  <span className="text-sm text-gray-400">Laba bersih</span>
-                  <span className="text-2xl font-bold pt-0">
-                    RP. {numeral(summary.NetSales).format("0,0")}
-                  </span>
-                </div>
-                <div className="w-full flex flex-col py-2 border-2 border-white border-b-slate-400">
-                  <span className="text-sm text-gray-400">Diskon</span>
-                  <span className="text-2xl font-bold pt-0">
-                    RP. {numeral(summary.Discounts).format("0,0")}
-                  </span>
-                </div>
-              </div>
 
-              <div className="mt-0 pb-8 flex justify-center items-center">
-                <Chart
-                  className="w-full px-8"
-                  chartType="AreaChart"
-                  data={chartData}
-                  options={{
-                    legend: { position: "none", alignment: "center" },
-                    chartArea: { width: "100%", height: "80%" },
-                    // bar: { groupWidth: "60%" },
-                    annotations: {
-                      textStyle: {
-                        fontSize: 0,
-                        color: "black",
-                      },
-                    },
-                    vAxis: {
-                      gridlines: {
-                        color: "transparent",
-                      },
-                    },
-                    lineWidth: 2,
-                    // backgroundColor: { fill: "transparent" },
-                    pointSize: 8,
-                    pointShape: "diamond",
-                    // lineDashStyle: [14, 2, 7, 2],
-                    smoothline: true,
-                    colors: ["#f43f5e", "#6366f1"],
-                  }}
-                  width={"100%"}
-                  height={"320px"}
-                />
-              </div>
-            </div>
-            {/* <h1 className="ml-8 font-bold">Other</h1> */}
-            {/* <div className="flex gap-4 px-8 pb-8 opacity-80">
-              <div className="border-slate-300 border-b py-2 px-4 w-full">
-                <h1 className="text-xs">Refunds</h1>
-                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
-              </div>
-              <div className="border-slate-300 border-b py-2 px-4 w-full">
-                <h1 className="text-xs">Gratuify</h1>
-                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
-              </div>
-              <div className="border-slate-300 border-b py-2 px-4 w-full">
-                <h1 className="text-xs">Rounding</h1>
-                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
-              </div>
-              <div className="border-slate-300 border-b py-2 px-4 w-full">
-                <h1 className="text-xs">Tax</h1>
-                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
-              </div>
-            </div> */}
-          </div>
-        </div>
-        <div className="flex gap-4 mt-4 mb-16">
-          <div className="bg-white min-h-[72vh] rounded-md w-full pb-8 mb-96">
-            <div className="flex items-center justify-between gap-2">
-              <h3 className={"font-bold text-xl ml-8 pt-6"}>Laporan penjualan</h3>
-              <div className="mr-8 mt-8">
-                <select
-                  onChange={(e) => setMenu(e.target.value)}
-                  className="p-0 pl-4 focus:ring-0 focus:ring-offset-0 ring-transparent select-bordered border-slate-500 rounded-md font-semibold select-sm w-48"
-                >
-                  <option value={0}>Payment Methods</option>
-                  <option value={1}>Service Sales</option>
-                  <option value={2}>Item Sales</option>
-                  <option value={3}>Category Sales</option>
-                  <option value={4}>Promotion</option>
-                  <option value={5}>Collected By</option>
-                </select>
-              </div>
+            <div className="mr-8 mt-4 ml-8">
+              <select
+                onChange={(e) => setMenu(e.target.value)}
+                className="p-0 pl-4 focus:ring-0 focus:ring-offset-0 ring-transparent select-bordered border-slate-500 rounded-md font-semibold select-sm w-48"
+              >
+                <option value={0}>Payment Methods</option>
+                <option value={1}>Service Sales</option>
+                <option value={2}>Item Sales</option>
+                {/* <option value={3}>Category Sales</option> */}
+                <option value={4}>Promotion</option>
+                <option value={5}>Collected By</option>
+              </select>
             </div>
 
-            <div className="rounded-md px-8 overflow-hidden">
+            <div className="rounded-md px-8 overflow-hidden pb-8">
               {menu == 0 && (
                 <table className="items-center w-full bg-transparent border-collapse overflow-auto mt-4 px-4">
                   <thead>
@@ -831,6 +752,132 @@ export default function Sales() {
                 </table>
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="flex gap-4 pb-32">
+          <div
+            className={
+              "relative flex flex-col min-w-0 break-words overflow-visible w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
+            }
+          >
+            <div className="rounded-t mb-0 px-4 pt-4 border-0 overflow-visible">
+              <div className="flex flex-wrap items-center overflow-visible">
+                <div className="relative w-full px-4 overflow-visible">
+                  <h3 className={"font-bold text-xl mt-4"}>
+                    {/* <i className="fas fa-filter mr-3"></i>  */}
+                    Ringkasan
+                  </h3>
+                  <div className="flex">
+                    <div className="dropdown">
+                      <label tabIndex={0}>
+                        <div className="mb-4 rounded-md text-sm mt-2 text-gray-400">
+                          Menampilkan data dari{" "}
+                          <span className=" text-violet-500 opacity-95 font-semibold">
+                            {moment(selectionRange.startDate).format(
+                              "DD MMMM YYYY"
+                            )}
+                          </span>{" "}
+                          sampai{" "}
+                          <span className=" text-violet-500 opacity-95 font-semibold">
+                            {moment(selectionRange.endDate).format(
+                              "DD MMMM YYYY"
+                            )}
+                            <i className="fa-solid fa-calendar-week ml-2"></i>
+                          </span>
+                        </div>
+                      </label>
+                      <div
+                        tabIndex={0}
+                        className="dropdown-content shadow-md top-10 text-zinc-700"
+                      >
+                        <DateRangePicker
+                          className="rounded-md overflow-hidden p-0 m-0"
+                          ranges={[selectionRange]}
+                          onChange={handleSelect}
+                          direction="vertical"
+                          rangeColors={["#9333ea"]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pb-4 pt-4 block w-full">
+              <div className="flex gap-4 px-8">
+                <div className="w-full flex flex-col py-2 border-2 border-white border-b-rose-400">
+                  <span className="text-sm text-gray-400">Laba kotor</span>
+                  <span className="text-2xl font-bold pt-0">
+                    RP. {numeral(summary.GrossSales).format("0,0")}
+                  </span>
+                </div>
+                <div className="w-full flex flex-col py-2 border-2 border-white border-b-indigo-400">
+                  <span className="text-sm text-gray-400">Laba bersih</span>
+                  <span className="text-2xl font-bold pt-0">
+                    RP. {numeral(summary.NetSales).format("0,0")}
+                  </span>
+                </div>
+                <div className="w-full flex flex-col py-2 border-2 border-white border-b-slate-400">
+                  <span className="text-sm text-gray-400">Diskon</span>
+                  <span className="text-2xl font-bold pt-0">
+                    RP. {numeral(summary.Discounts).format("0,0")}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-0 pb-8 flex justify-center items-center">
+                <Chart
+                  className="w-full px-8"
+                  chartType="AreaChart"
+                  data={chartData}
+                  options={{
+                    legend: { position: "none", alignment: "center" },
+                    chartArea: { width: "100%", height: "80%" },
+                    // bar: { groupWidth: "60%" },
+                    annotations: {
+                      textStyle: {
+                        fontSize: 0,
+                        color: "black",
+                      },
+                    },
+                    vAxis: {
+                      gridlines: {
+                        color: "transparent",
+                      },
+                    },
+                    lineWidth: 2,
+                    // backgroundColor: { fill: "transparent" },
+                    pointSize: 8,
+                    pointShape: "diamond",
+                    // lineDashStyle: [14, 2, 7, 2],
+                    smoothline: true,
+                    colors: ["#f43f5e", "#6366f1"],
+                  }}
+                  width={"100%"}
+                  height={"320px"}
+                />
+              </div>
+            </div>
+            {/* <h1 className="ml-8 font-bold">Other</h1> */}
+            {/* <div className="flex gap-4 px-8 pb-8 opacity-80">
+              <div className="border-slate-300 border-b py-2 px-4 w-full">
+                <h1 className="text-xs">Refunds</h1>
+                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
+              </div>
+              <div className="border-slate-300 border-b py-2 px-4 w-full">
+                <h1 className="text-xs">Gratuify</h1>
+                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
+              </div>
+              <div className="border-slate-300 border-b py-2 px-4 w-full">
+                <h1 className="text-xs">Rounding</h1>
+                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
+              </div>
+              <div className="border-slate-300 border-b py-2 px-4 w-full">
+                <h1 className="text-xs">Tax</h1>
+                <h1 className="font-bold">RP. {numeral("0").format("0,0")}</h1>
+              </div>
+            </div> */}
           </div>
         </div>
       </DashboardLayout>

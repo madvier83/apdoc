@@ -108,7 +108,7 @@ export default function History() {
 
   return (
     <>
-      <DashboardLayout title="History" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Riwayat" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -118,7 +118,7 @@ export default function History() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> History Table
+                  <i className="fas fa-filter mr-3"></i> Riwayat
                 </h3>
               </div>
 

@@ -55,7 +55,7 @@ export default function Dashboard() {
   const [stock, setStock] = useState([]);
   const [stockLoading, setStockLoading] = useState(true);
   const [cookieCheck, setCookieCheck] = useState(false);
-  
+
   const [selectedItem, setSelectedItem] = useState({});
 
   const [perpage, setPerpage] = useState(10);
@@ -237,13 +237,13 @@ export default function Dashboard() {
                           Menampilkan data dari{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.startDate).format(
-                              "MMMM Do YYYY"
+                              "DD MMMM YYYY"
                             )}
                           </span>{" "}
                           sampai{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.endDate).format(
-                              "MMMM Do YYYY"
+                              "DD MMMM YYYY"
                             )}
                             <i className="fa-solid fa-calendar-week ml-2"></i>
                           </span>
@@ -344,7 +344,7 @@ export default function Dashboard() {
         </div>
         <div className="py-2"></div>
 
-        <div className="bg-white rounded-md">
+        {/* <div className="bg-white rounded-md">
           <div className="rounded-t mb-0 px-4 py-4 border-0">
             <div className="flex flex-wrap items-center my-3">
               <Link
@@ -386,16 +386,19 @@ export default function Dashboard() {
                   type="button"
                   href={`/dashboard/pharmacy/stock-adjustment`}
                   onClick={() => {
-                    setCookie("sidebar", JSON.stringify({
-                      user: false,
-                      admin: false,
-                      receptionist: false,
-                      doctor: false,
-                      pharmacy: true,
-                      promotion: false,
-                      cashier: false,
-                      report: false,
-                    }))
+                    setCookie(
+                      "sidebar",
+                      JSON.stringify({
+                        user: false,
+                        admin: false,
+                        receptionist: false,
+                        doctor: false,
+                        pharmacy: true,
+                        promotion: false,
+                        cashier: false,
+                        report: false,
+                      })
+                    );
                   }}
                 >
                   Stock Adjustment <i className="fas fa-cog ml-2"></i>
@@ -407,130 +410,116 @@ export default function Dashboard() {
             ref={tableRef}
             className="h-[72vh] w-full overflow-x-auto flex flex-col justify-between"
           >
-          <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-            <thead className="sticky top-0">
-              <tr>
-                <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  #
-                </th>
-                <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                  <div
-                    className={`flex items-center justify-between cursor-pointer`}
-                    onClick={() => {
-                      sortBy == "code" && setOrder((p) => !p);
-                      setSortBy("code");
-                    }}
-                  >
-                    <p>code</p>
-                    <i
-                      className={`fas fa-sort text-right px-2 ${
-                        sortBy != "code" && "opacity-40"
-                      }`}
-                    ></i>
-                  </div>
-                </th>
-                <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                  <div
-                    className={`flex items-center justify-between cursor-pointer`}
-                    onClick={() => {
-                      sortBy == "name" && setOrder((p) => !p);
-                      setSortBy("name");
-                    }}
-                  >
-                    <p>Item</p>
-                    <i
-                      className={`fas fa-sort text-right px-2 ${
-                        sortBy != "name" && "opacity-40"
-                      }`}
-                    ></i>
-                  </div>
-                </th>
-                <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                  <div
-                    className={`flex items-center justify-between cursor-pointer`}
-                    onClick={() => {
-                      sortBy == "stock" && setOrder((p) => !p);
-                      setSortBy("stock");
-                    }}
-                  >
-                    <p>Total Stock</p>
-                    {/* <i
-                      className={`fas fa-sort text-right px-2 ${
-                        sortBy != "stock" && "opacity-40"
-                      }`}
-                    ></i> */}
-                  </div>
-                </th>
-                <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                  <p>Actions</p>
-                </th>
-                {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Created At
-                </th>
-                <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                  Updated At
-                </th> */}
-                {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
-                </th> */}
-              </tr>
-            </thead>
-            <tbody>
-              <Loading
-                data={stock}
-                dataLoading={stockLoading}
-                reload={getStock}
-              ></Loading>
-              {!stockLoading &&
-                stock?.data?.map((obj, index) => {
-                  if (
-                    obj.item_supplys?.reduce(
-                      (totalStock, item) => totalStock + item.stock,
-                      0
-                    ) <= 0
-                  ) {
-                    return;
-                  }
-                  return (
-                    <tr key={obj.id} className="hover:bg-zinc-50">
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          {index + stock.from}
-                        </span>
-                      </th>
-                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                        <span className={"font-bold"}>{obj.code}</span>
-                      </th>
-                      <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                        <span className={"ml-3 font-bold"}>
-                          <Highlighter
-                            highlightClassName="bg-emerald-200"
-                            searchWords={[search]}
-                            autoEscape={true}
-                            textToHighlight={obj.name}
-                          ></Highlighter>
-                        </span>
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                        {obj.item_supplys?.reduce(
-                          (totalStock, item) => totalStock + item.stock,
-                          0
-                        )}
-                      </td>
-                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
-                        <label
-                          htmlFor={`modal-detail`}
-                          onClick={() => setSelectedItem(obj)}
-                          className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                        >
-                          <i className="fas fa-eye"></i>
-                        </label>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+            <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+              <thead className="sticky top-0">
+                <tr>
+                  <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                    #
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "code" && setOrder((p) => !p);
+                        setSortBy("code");
+                      }}
+                    >
+                      <p>code</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "code" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "name" && setOrder((p) => !p);
+                        setSortBy("name");
+                      }}
+                    >
+                      <p>Item</p>
+                      <i
+                        className={`fas fa-sort text-right px-2 ${
+                          sortBy != "name" && "opacity-40"
+                        }`}
+                      ></i>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                      onClick={() => {
+                        sortBy == "stock" && setOrder((p) => !p);
+                        setSortBy("stock");
+                      }}
+                    >
+                      <p>Total Stock</p>
+                    </div>
+                  </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <p>Actions</p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <Loading
+                  data={stock}
+                  dataLoading={stockLoading}
+                  reload={getStock}
+                ></Loading>
+                {!stockLoading &&
+                  stock?.data?.map((obj, index) => {
+                    if (
+                      obj.item_supplys?.reduce(
+                        (totalStock, item) => totalStock + item.stock,
+                        0
+                      ) <= 0
+                    ) {
+                      return;
+                    }
+                    return (
+                      <tr key={obj.id} className="hover:bg-zinc-50">
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            {index + stock.from}
+                          </span>
+                        </th>
+                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                          <span className={"font-bold"}>{obj.code}</span>
+                        </th>
+                        <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
+                          <span className={"ml-3 font-bold"}>
+                            <Highlighter
+                              highlightClassName="bg-emerald-200"
+                              searchWords={[search]}
+                              autoEscape={true}
+                              textToHighlight={obj.name}
+                            ></Highlighter>
+                          </span>
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                          {obj.item_supplys?.reduce(
+                            (totalStock, item) => totalStock + item.stock,
+                            0
+                          )}
+                        </td>
+                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
+                          <label
+                            htmlFor={`modal-detail`}
+                            onClick={() => setSelectedItem(obj)}
+                            className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </label>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
           </div>
           <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
             <small className="w-44 text-right truncate">
@@ -564,7 +553,6 @@ export default function Dashboard() {
                 max={stock.last_page}
                 onChange={(e) => setPage(e.target.value)}
               />
-              {/* <p className="font-bold w-8 text-center">{page}</p> */}
               <button
                 className="btn btn-xs btn-ghost hover:bg-slate-50 disabled:bg-gray-50"
                 disabled={page >= stock.last_page ? true : false}
@@ -603,125 +591,125 @@ export default function Dashboard() {
               </select>
             </div>
           </div>
-        </div>
+        </div> */}
+
         <div className="pb-4 pt-4 block w-full"></div>
         <div className="py-8"></div>
       </DashboardLayout>
 
-      
       <input type="checkbox" id="modal-detail" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box px-0 p-0 max-w-2xl">
-            <div
-              className={
-                "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
-              }
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
-                  <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
-                  {selectedItem.name || "Item"} Supply List
-                </h3>
-                <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                  <label
-                    className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    ref={detailModalRef}
-                    htmlFor="modal-detail"
-                  >
-                    <i className="fas fa-x"></i>
-                  </label>
-                </div>
+      <div className="modal">
+        <div className="modal-box px-0 p-0 max-w-2xl">
+          <div
+            className={
+              "relative flex flex-col min-w-0 break-words w-full min-h-fit rounded-md text-blueGray-700 bg-white"
+            }
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
+                <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
+                {selectedItem.name || "Item"} Supply List
+              </h3>
+              <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                <label
+                  className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button"
+                  ref={detailModalRef}
+                  htmlFor="modal-detail"
+                >
+                  <i className="fas fa-x"></i>
+                </label>
               </div>
-              <form onSubmit={() => {}} autoComplete="off">
-                <input type="hidden" autoComplete="off" />
-                <div className="form-control w-full">
-                  <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-                    <thead className="sticky top-0">
-                      <tr>
-                        <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          #
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Stock</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Manufacturing</p>
-                          </div>
-                        </th>
-                        <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
-                          <div
-                            className={`flex items-center justify-between cursor-pointer`}
-                          >
-                            <p>Expired</p>
-                          </div>
-                        </th>
-                        {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+            </div>
+            <form onSubmit={() => {}} autoComplete="off">
+              <input type="hidden" autoComplete="off" />
+              <div className="form-control w-full">
+                <table className="items-center w-full bg-transparent border-collapse overflow-auto">
+                  <thead className="sticky top-0">
+                    <tr>
+                      <th className="pr-6 pl-9 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
+                        #
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Stock</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Manufacturing</p>
+                        </div>
+                      </th>
+                      <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                        <div
+                          className={`flex items-center justify-between cursor-pointer`}
+                        >
+                          <p>Expired</p>
+                        </div>
+                      </th>
+                      {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                           <p>Actions</p>
                         </th> */}
-                      </tr>
-                    </thead>
-                    <tbody className="">
-                      {selectedItem.item_supplys?.map((obj, index) => {
-                        return (
-                          <tr key={obj.id} className="hover:bg-zinc-50">
-                            <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
-                              <span className={"ml-3 font-bold"}>
-                                {index + stock.from}
-                              </span>
-                            </th>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {obj.stock}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {moment(obj.manufacturing).format("DD MMM YYYY")}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
-                              {moment(obj.expired).format("DD MMM YYYY")}{" "}
-                              <span
-                                className={`font-semibold ${
-                                  moment(obj.expired).format() <
-                                    moment().subtract(-7, "d").format() &&
-                                  "text-rose-400 animate-pulse"
-                                }`}
-                              >
-                                {" "}
-                                - Expired {moment(obj.expired).fromNow()}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                    </tr>
+                  </thead>
+                  <tbody className="">
+                    {selectedItem.item_supplys?.map((obj, index) => {
+                      return (
+                        <tr key={obj.id} className="hover:bg-zinc-50">
+                          <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4 text-left">
+                            <span className={"ml-3 font-bold"}>
+                              {index + stock.from}
+                            </span>
+                          </th>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {obj.stock}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {moment(obj.manufacturing).format("DD MMM YYYY")}
+                          </td>
+                          <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                            {moment(obj.expired).format("DD MMM YYYY")}{" "}
+                            <span
+                              className={`font-semibold ${
+                                moment(obj.expired).format() <
+                                  moment().subtract(-7, "d").format() &&
+                                "text-rose-400 animate-pulse"
+                              }`}
+                            >
+                              {" "}
+                              - Expired {moment(obj.expired).fromNow()}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
 
-                      <tr className="bg-gray-100">
-                        <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3 text-left">
-                          <span className={"ml-3 font-bold"}>
-                            {/* {index + stock.from} */}
-                          </span>
-                        </th>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-bold">
-                          {selectedItem.item_supplys?.reduce(
-                            (totalStock, item) => totalStock + item.stock,
-                            0
-                          )}
-                        </td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                        <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </form>
-            </div>
+                    <tr className="bg-gray-100">
+                      <th className="border-t-0 pl-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3 text-left">
+                        <span className={"ml-3 font-bold"}>
+                          {/* {index + stock.from} */}
+                        </span>
+                      </th>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 font-bold">
+                        {selectedItem.item_supplys?.reduce(
+                          (totalStock, item) => totalStock + item.stock,
+                          0
+                        )}
+                      </td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                      <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
     </>
   );
 }

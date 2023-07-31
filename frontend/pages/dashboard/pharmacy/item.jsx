@@ -273,8 +273,8 @@ export default function Item() {
       );
       setPutVariantForm(initialVariantForm);
       setPutVariantFormError(initialVariantForm);
-      setPutVariantFormError(initialVariantForm)
-      
+      setPutVariantFormError(initialVariantForm);
+
       getItem();
       putVariantModalRef.current.click();
     } catch (err) {
@@ -479,7 +479,7 @@ export default function Item() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Item Table
+                  <i className="fas fa-filter mr-3"></i> Item
                 </h3>
               </div>
               <div className="relative">
@@ -666,6 +666,13 @@ export default function Item() {
                       ></i>
                     </div>
                   </th>
+                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                    <div
+                      className={`flex items-center justify-between cursor-pointer`}
+                    >
+                      <p>Variant</p>
+                    </div>
+                  </th>
                   {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                     Created At
                   </th>
@@ -734,6 +741,32 @@ export default function Item() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span>{obj.distributor}</span>
                         </td>
+                        <td
+                          className={`${
+                            !obj.item_variants?.length &&
+                            "text-rose-500 animate-pulse font-normal"
+                          } border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2`}
+                        >
+                          <span className="font-bold mr-4">{obj.item_variants?.length || "0"}</span>
+
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Variant"
+                          >
+                            <label
+                              htmlFor={`modal-detail`}
+                              onClick={() => {
+                                setSelectedItem(obj);
+                                setItemVariant(obj.item_variants);
+                              }}
+                              className={`${
+                                !obj.item_variants?.length && "animate-pulse"
+                              }  bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`}
+                            >
+                              Add <i className="fas fa-folder-plus ml-1"></i>
+                            </label>
+                          </div>
+                        </td>
                         {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                         {moment(obj.created_at).format("DD MMM YYYY")}
                       </td>
@@ -743,7 +776,7 @@ export default function Item() {
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           {/* <i className="fas fa-circle text-orange-500 mr-2"></i>{" "}
                         Active */}
-                          <div
+                          {/* <div
                             className="tooltip tooltip-left"
                             data-tip="Add Variant"
                           >
@@ -758,29 +791,14 @@ export default function Item() {
                                     clinic_id: prev.clinic_id,
                                   };
                                 });
-                                setItemVariant(obj.item_variants)
-                                setSelectedItem(obj)
+                                setItemVariant(obj.item_variants);
+                                setSelectedItem(obj);
                                 setAddVariantForm({ item_id: obj.id });
                               }}
                             >
                               <i className="fas fa-folder-plus"></i>
                             </label>
-                          </div>
-                          <div
-                            className="tooltip tooltip-left"
-                            data-tip="Details"
-                          >
-                            <label
-                              htmlFor={`modal-detail`}
-                              onClick={() => {
-                                setSelectedItem(obj);
-                                setItemVariant(obj.item_variants);
-                              }}
-                              className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            >
-                              <i className="fas fa-eye"></i>
-                            </label>
-                          </div>
+                          </div> */}
                           <div className="tooltip tooltip-left" data-tip="Edit">
                             <label
                               className="bg-emerald-400 text-white active:bg-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -895,8 +913,10 @@ export default function Item() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Item 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Item
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -965,6 +985,13 @@ export default function Item() {
               )}
               <label className="label">
                 <span className="label-text">Category</span>
+                <a
+                  href="/dashboard/pharmacy/category-item"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add category
+                </a>
               </label>
 
               <div className="dropdown w-full">
@@ -1573,8 +1600,10 @@ export default function Item() {
         </ModalBox>
 
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Items Table Config 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Items Table Config
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

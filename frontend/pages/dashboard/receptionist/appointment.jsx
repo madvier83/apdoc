@@ -24,7 +24,7 @@ export default function Appointment() {
   const [search, setSearch] = useState("");
   const [searchPatients, setSearchPatients] = useState("");
   const [page, setPage] = useState(1);
-  
+
   const [sortBy, setSortBy] = useState("patient_id");
   const [order, setOrder] = useState(true);
 
@@ -71,7 +71,7 @@ export default function Appointment() {
     if (!clinic) {
       return;
     }
-    setItemLoading(true)
+    setItemLoading(true);
     try {
       const response = await axios.get(
         `appointments/${clinic && clinic + "/"}${perpage}${
@@ -94,7 +94,7 @@ export default function Appointment() {
       setItemLoading(false);
     } catch (err) {
       console.error(err);
-      setItem({})
+      setItem({});
       setItemLoading(false);
     }
   }
@@ -143,7 +143,7 @@ export default function Appointment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
       setSelectedPatient({});
     } catch (err) {
@@ -223,11 +223,7 @@ export default function Appointment() {
   // console.log(item)
   return (
     <>
-      <DashboardLayout
-        title="Appointment"
-        clinic={clinic}
-        setClinic={setClinic}
-      >
+      <DashboardLayout title="Janji Temu" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -237,7 +233,7 @@ export default function Appointment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Appointment Table
+                  <i className="fas fa-filter mr-3"></i> Janji Temu
                 </h3>
               </div>
 
@@ -547,14 +543,23 @@ export default function Appointment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Appointment 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Appointment
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <div className="dropdown">
                 <label className="label">
                   <span className="label-text">Patient</span>
+                  <a
+                    href="/dashboard/receptionist/patient"
+                    target="_blank"
+                    className="label-text text-blue-400 text-xs font-semibold"
+                  >
+                    <i className="fas fa-info-circle"></i> Add patient
+                  </a>
                 </label>
                 {selectedPatient?.id && (
                   <div className="p-0 overflow-hidden mb-1">

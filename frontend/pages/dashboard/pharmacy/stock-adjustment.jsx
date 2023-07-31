@@ -160,7 +160,7 @@ export default function StockAdjustment() {
       addModalRef.current.click();
       getItem();
       setAddForm(initialItemForm);
-      setAddForm({clinic_id: clinic});
+      setAddForm({ clinic_id: clinic });
       setAddFormError(initialItemForm);
     } catch (err) {
       setAddFormError(initialItemForm);
@@ -204,7 +204,6 @@ export default function StockAdjustment() {
     }
   }
 
-  
   async function downloadTable() {
     if (!clinic) {
       return;
@@ -223,7 +222,10 @@ export default function StockAdjustment() {
 
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`);
+          link.setAttribute(
+            "download",
+            `Patients_${clinic}_${moment().format("YYYY-MM-DD")}.xlsx`
+          );
           document.body.appendChild(link);
 
           link.click();
@@ -334,7 +336,7 @@ export default function StockAdjustment() {
   return (
     <>
       <DashboardLayout
-        title="Stock Adjustment"
+        title="Penyesuaian Stok"
         clinic={clinic}
         setClinic={setClinic}
       >
@@ -347,7 +349,7 @@ export default function StockAdjustment() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Stock Adjustment Table
+                  <i className="fas fa-filter mr-3"></i> Penyesuaian stok
                 </h3>
               </div>
 
@@ -517,7 +519,11 @@ export default function StockAdjustment() {
                               highlightClassName="bg-emerald-200"
                               searchWords={[search]}
                               autoEscape={true}
-                              textToHighlight={obj.item_supply?.item_variant?.variant + " " + obj.item_supply?.item_variant?.unit}
+                              textToHighlight={
+                                obj.item_supply?.item_variant?.variant +
+                                " " +
+                                obj.item_supply?.item_variant?.unit
+                              }
                             ></Highlighter>
                           </span>
                         </td>
@@ -632,13 +638,22 @@ export default function StockAdjustment() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Stock Adjustment 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Stock Adjustment
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Item</span>
+                <a
+                  href="/dashboard/pharmacy/item"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Item
+                </a>
               </label>
 
               <div className="dropdown w-full">
@@ -710,11 +725,22 @@ export default function StockAdjustment() {
                 </label>
               )}
               <label className="label">
-                  <span className="label-text">Item Variant</span>
+                <span className="label-text">Item Variant</span>
+                <a
+                  href="/dashboard/pharmacy/item"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Item variant
+                </a>
               </label>
               <select
                 name="item_supply_id"
-                onChange={(e) => setSelectedVariant(selectedCategory?.item_variants[e.target.value])}
+                onChange={(e) =>
+                  setSelectedVariant(
+                    selectedCategory?.item_variants[e.target.value]
+                  )
+                }
                 required
                 className="input input-bordered without-ring input-primary border-slate-300 w-full"
               >
@@ -736,6 +762,13 @@ export default function StockAdjustment() {
               )}
               <label className="label">
                 <span className="label-text">Item Supply</span>
+                <a
+                  href="/dashboard/pharmacy/supply"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Item supply
+                </a>
               </label>
               <select
                 name="item_supply_id"
@@ -813,13 +846,12 @@ export default function StockAdjustment() {
             </div>
           </form>
         </ModalBox>
-        
+
         <ModalBox id="modal-export">
           <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
-              
               <label className="label">
                 <span className="label-text">Export</span>
               </label>

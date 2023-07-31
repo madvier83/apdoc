@@ -446,7 +446,7 @@ export default function Employee() {
 
   return (
     <>
-      <DashboardLayout title="Employees" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="Karyawan" clinic={clinic} setClinic={setClinic}>
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -456,7 +456,7 @@ export default function Employee() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Employees Table
+                  <i className="fas fa-filter mr-3"></i> Karyawan
                 </h3>
               </div>
 
@@ -1138,6 +1138,13 @@ export default function Employee() {
 
               <label className="label">
                 <span className="label-text">Position</span>
+                <a
+                  href="/dashboard/admin/position"
+                  target="_blank"
+                  className="label-text text-blue-400 text-xs font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Add position
+                </a>
               </label>
 
               <div className="dropdown w-full">
@@ -1210,6 +1217,7 @@ export default function Employee() {
                 </label>
               )}
             </div>
+
             <div className="modal-action rounded-sm">
               <label
                 htmlFor="modal-add"

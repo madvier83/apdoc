@@ -165,7 +165,7 @@ export default function Diagnose() {
 
   return (
     <>
-      <DashboardLayout title="Diagnose">
+      <DashboardLayout title="Diagnosa">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -175,7 +175,7 @@ export default function Diagnose() {
             <div className="flex">
               <div className="relative w-full px-4">
                 <h3 className={"font-semibold text-lg truncate"}>
-                  <i className="fas fa-filter mr-3"></i> Diagnose Table
+                  <i className="fas fa-filter mr-3"></i> Diagnosa
                 </h3>
               </div>
 

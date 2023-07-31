@@ -44,6 +44,7 @@
   select {
     @apply ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 !important;
   }
+
 }
 
 @layer utilities {
@@ -54,7 +55,6 @@
 
 .fredoka {
   font-family: "Fredoka", sans-serif;
-  letter-spacing: 2px;
 }
 .modal-box {
   border-radius: 4px !important;

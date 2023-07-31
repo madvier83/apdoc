@@ -621,7 +621,7 @@ export default function Transaction() {
   return (
     <>
       <DashboardLayout
-        title="Transaction"
+        title="Transaksi"
         clinic={clinic}
         setClinic={setClinic}
       >
@@ -645,17 +645,17 @@ export default function Transaction() {
                       <div className="">
                         <label className="label px-0 pt-0">
                           <span className="label-text text-white pl-1">
-                            Patients
+                            Pasien
                           </span>
                           <span className="label-text ml-auto flex items-center text-white">
                             {queues?.length > 0 ? (
                               <div className="opacity-80">
                                 <div className="badge badge-error font-semibold animate-pulse">
-                                  {queues?.length} in queue
+                                  {queues?.length} dalam antrian
                                 </div>
                               </div>
                             ) : (
-                              <div className="opacity-20 mr-1">Empty</div>
+                              <div className="opacity-20 mr-1">Kosong</div>
                             )}
                             <i
                               className={`fas fa-refresh mx-1 ${
@@ -699,7 +699,7 @@ export default function Transaction() {
                     <div className="">
                       <label className="label px-0">
                         <span className="label-text text-white pl-1 mt-3">
-                          Promotions
+                          Promosi
                         </span>
                         <span className="label-text opacity-50 ml-auto text-white">
                           {/* {items?.length} Items */}
@@ -714,7 +714,7 @@ export default function Transaction() {
                         >
                           <div className="collapse-title font-semibold capitalize text-sm group-focus:text-rose-400 text-zinc-300 flex items-center gap-4">
                             <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                            <p>Promotions</p>
+                            <p>Promosi</p>
                           </div>
                           <div className="collapse-content font-normal capitalize">
                             {promotions?.data?.map((obj) => {
@@ -740,7 +740,7 @@ export default function Transaction() {
                       <div className="">
                         <label className="label px-0">
                           <span className="label-text text-white pl-1 mt-4">
-                            Items
+                            Item
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
                             {/* {items?.length} Items */}
@@ -1335,7 +1335,7 @@ export default function Transaction() {
                       htmlFor="checkoutModal"
                       className="btn btn-primary w-full"
                     >
-                      Select Payment
+                      Pilih Pembayaran
                     </label>
                   </div>
                 </div>

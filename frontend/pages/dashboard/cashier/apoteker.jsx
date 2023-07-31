@@ -223,7 +223,9 @@ export default function Transaction() {
     }
     try {
       const response = await axios.get(
-        `category-items/${clinic && clinic + "/"}${9999999}?page=${1}`,
+        `category-items/${
+          clinic && clinic + "/"
+        }${9999999}?page=${1}&sortBy=${"name"}&order=${"asc"}`,
         {
           headers: {
             Authorization: "Bearer" + token,
@@ -618,7 +620,11 @@ export default function Transaction() {
 
   return (
     <>
-      <DashboardLayout title="Apoteker" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout
+        title="Transaksi Apoteker"
+        clinic={clinic}
+        setClinic={setClinic}
+      >
         <div className="mt-6">
           <div
             className={`relative max-w-7xl min-w-0 md:min-w-[720px] rounded-md`}
@@ -687,7 +693,7 @@ export default function Transaction() {
                     <div className="">
                       <label className="label px-0">
                         <span className="label-text text-white pl-1 mt-0  ">
-                          Promotions
+                          Promosi
                         </span>
                         <span className="label-text opacity-50 ml-auto text-white">
                           {/* {items?.length} Items */}
@@ -702,7 +708,7 @@ export default function Transaction() {
                         >
                           <div className="collapse-title font-semibold capitalize text-sm group-focus:text-rose-400 text-zinc-300 flex items-center gap-4">
                             <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                            <p>Promotions</p>
+                            <p>Promosi</p>
                           </div>
                           <div className="collapse-content font-normal capitalize">
                             {promotions?.data?.map((obj) => {
@@ -728,7 +734,7 @@ export default function Transaction() {
                       <div className="">
                         <label className="label px-0">
                           <span className="label-text text-white pl-1 mt-4">
-                            Items
+                            Item
                           </span>
                           <span className="label-text opacity-50 ml-auto text-white">
                             {/* {items?.length} Items */}
@@ -1127,16 +1133,16 @@ export default function Transaction() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 items-end">
+                  <div className={`flex gap-2 items-end`}>
                     {/* <button className="btn btn-success bg-success text-white w-1/2">
                       Contact{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </button> */}
                     <label
                       htmlFor="checkoutModal"
-                      className="btn btn-primary w-full"
+                      className={`${!cart.array.length && "btn-disabled bg-gray-600 opacity-50 cursor-not-allowed"} btn btn-primary w-full`}
                     >
-                      Select Payment
+                      Pilih Pembayaran
                     </label>
                   </div>
                 </div>
@@ -1168,10 +1174,9 @@ export default function Transaction() {
                     <React.Fragment>
                       <div className="font-bold text-xl">{settings.name}</div>
                       <div className="text-xs text-center mt-1 uppercase">
-                        {settings.address}, RT {settings?.rt}, RW{" "}
-                        {settings?.rw}, {settings.district?.name},{" "}
-                        {settings.city?.name}, {settings.village?.name},{" "}
-                        {settings.postal_code}
+                        {settings.address}, RT {settings?.rt}, RW {settings?.rw}
+                        , {settings.district?.name}, {settings.city?.name},{" "}
+                        {settings.village?.name}, {settings.postal_code}
                       </div>
                       <div className="text-xs mt-1">
                         <i className="fa-brands fa-whatsapp mr-1"></i>
@@ -1188,10 +1193,10 @@ export default function Transaction() {
                     <small>Receipt Number</small>
                     <small>{code}</small>
                   </div>
-                  <div className="flex w-full justify-between items-center">
+                  {/* <div className="flex w-full justify-between items-center">
                     <small>Customer</small>
                     <small>{selectedQueue.patient?.name}</small>
-                  </div>
+                  </div> */}
                   <div className="flex w-full justify-between items-center">
                     <small>Served by</small>
                     <small>John Doe</small>

@@ -321,7 +321,7 @@ export default function ItemSupply() {
   return (
     <>
       <DashboardLayout
-        title="Item Supply"
+        title="Pasokan item"
         clinic={clinic}
         setClinic={setClinic}
       >
@@ -334,7 +334,7 @@ export default function ItemSupply() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Item Supply Table
+                  <i className="fas fa-filter mr-3"></i> Pasokan item
                 </h3>
               </div>
 
@@ -363,6 +363,13 @@ export default function ItemSupply() {
               </div>
 
               <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                <a
+                  href="/dashboard/pharmacy/purchase-order"
+                  target="_blank"
+                  className="label-text text-blue-400 text-sm font-semibold"
+                >
+                  <i className="fas fa-info-circle"></i> Pesanan Pembelian
+                </a>
                 {/* <label
                   className="bg-zinc-500 text-white active:bg-zinc-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -569,7 +576,12 @@ export default function ItemSupply() {
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-4">
                             <label
                               htmlFor={`modal-detail`}
-                              onClick={() => setSelectedItem({...variant, name: obj.name || ""})}
+                              onClick={() =>
+                                setSelectedItem({
+                                  ...variant,
+                                  name: obj.name || "",
+                                })
+                              }
                               className="bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                             >
                               <i className="fas fa-eye"></i>
@@ -669,7 +681,11 @@ export default function ItemSupply() {
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-lg mb-4 px-8 pt-5">
                   <i className="fa-solid fa-boxes-stacked mr-3"></i>{" "}
-                  {selectedItem.name + " - " + selectedItem.variant + " " + selectedItem.unit || "Item"} 
+                  {selectedItem.name +
+                    " - " +
+                    selectedItem.variant +
+                    " " +
+                    selectedItem.unit || "Item"}
                 </h3>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
                   <label
@@ -773,8 +789,10 @@ export default function ItemSupply() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Item Supply 
-            <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">
+            Add Item Supply
+            <SelectedClinicBadge></SelectedClinicBadge>
+          </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

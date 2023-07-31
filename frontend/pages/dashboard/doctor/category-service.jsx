@@ -263,7 +263,7 @@ export default function CategoryService() {
   return (
     <>
       <DashboardLayout
-        title="Category Service"
+        title="Kategori layanan"
         clinic={clinic}
         setClinic={setClinic}
       >
@@ -276,7 +276,7 @@ export default function CategoryService() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Service Table
+                  <i className="fas fa-filter mr-3"></i> Kategori layanan
                 </h3>
               </div>
 

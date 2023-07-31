@@ -261,7 +261,7 @@ export default function CategoryOutcome() {
   return (
     <>
       <DashboardLayout
-        title="Category Outcome"
+        title="Kategori Pengeluaran"
         clinic={clinic}
         setClinic={setClinic}
       >
@@ -274,7 +274,7 @@ export default function CategoryOutcome() {
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 className={"font-semibold text-lg "}>
-                  <i className="fas fa-filter mr-3"></i> Category Outcome Table
+                  <i className="fas fa-filter mr-3"></i> Kategori Pengeluaran
                 </h3>
               </div>
 

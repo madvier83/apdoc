@@ -598,7 +598,7 @@ export default function Patients() {
   console.log(selectedItems);
   return (
     <>
-      <DashboardLayout title="Patient Records">
+      <DashboardLayout title="Catatan Pasien">
         <div
           className={
             "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700"
@@ -656,15 +656,18 @@ export default function Patients() {
                     </span>
                     <div className="mt-4">
                       <small className="text-zinc-400">Address</small> <br />
-                      <span className="font-sm text-zinc-800 line-clamp-2">
-                        {selectedPatient?.address}
+                      <span className="font-sm text-zinc-800">
+                        {selectedPatient?.address?.substring},
+                        <br />{selectedPatient?.village?.name},{" "}
+                        {selectedPatient?.city?.name}, {selectedPatient?.district?.name},{" "}
+                        {selectedPatient?.province?.name}
                       </span>
                     </div>
                   </div>
                   <div className="p-8 rounded-md bg-white w-2/3">
                     <div className="flex justify-between items-center">
                       <small className="text-2xl font-semibold">
-                        Height & weight
+                        Tinggi & berat badan
                       </small>{" "}
                       {isGrowth ? (
                         <div className="flex gap-1">
@@ -849,13 +852,13 @@ export default function Patients() {
                       >
                         Add record <i className="fas fa-add"></i>
                       </label>
-                      <button
+                      {/* <button
                         className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                         type="button"
                         onClick={() => router.back()}
                       >
                         Back <i className="fas fa-arrow-left"></i>
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   {recordLoading && (
@@ -909,7 +912,12 @@ export default function Patients() {
                                             (e) => e.diagnose
                                           );
                                         let items = obj.record_items?.map(
-                                          (e) => {return {...e.item_variant.item, ...e.item_variant}}
+                                          (e) => {
+                                            return {
+                                              ...e.item_variant.item,
+                                              ...e.item_variant,
+                                            };
+                                          }
                                         );
                                         let services = obj.record_services?.map(
                                           (e) => e.service
