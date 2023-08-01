@@ -625,7 +625,7 @@ export default function Access() {
                       });
                     }}
                   >
-                    Add <i className="fas fa-add"></i>
+                    tambah <i className="fas fa-add"></i>
                   </label>
                 </div>
               </div>
@@ -651,7 +651,7 @@ export default function Access() {
                       Updated At
                     </th> */}
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Actions
+                      Aksi
                     </th>
                   </tr>
                 </thead>
@@ -750,7 +750,7 @@ export default function Access() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteRole(obj.id)}
-                            title={`Delete role?`}
+                            title={`Hapus role?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -1005,7 +1005,7 @@ export default function Access() {
             >
               Cancel
             </label>
-            <button className="btn btn-primary rounded-md">Add</button>
+            <button className="btn btn-primary rounded-md">Tambah</button>
           </div>
         </form>
       </ModalBox>

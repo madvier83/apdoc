@@ -137,7 +137,7 @@ export default function Clients() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -242,7 +242,7 @@ export default function Clients() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {clients.from}-{clients.to} of {clients.total}
+                Hasil {clients.from}-{clients.to} dari {clients.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -293,7 +293,7 @@ export default function Clients() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"

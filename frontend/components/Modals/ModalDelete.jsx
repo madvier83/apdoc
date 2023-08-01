@@ -16,9 +16,9 @@ export default function ModalDelete({title, id, callback}) {
                 <input type="hidden" autoComplete="off" />
                 <div className="modal-action rounded-sm flex items-center justify-center mb-8">
                     <label htmlFor={id} ref={cancelRef} className="btn btn-ghost rounded-md w-2/5 bg-blue-100">
-                    Cancel
+                    Batalkan
                     </label>
-                    <button className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Delete</button>
+                    <button className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Hapus</button>
                 </div>
             </div>
         </ModalBox>

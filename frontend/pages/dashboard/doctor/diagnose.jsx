@@ -209,7 +209,7 @@ export default function Diagnose() {
                   type="button"
                   htmlFor="modal-add"
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label> */}
               </div>
             </div>
@@ -233,7 +233,7 @@ export default function Diagnose() {
                         setSortBy("code");
                       }}
                     >
-                      <p>Code</p>
+                      <p>Kode</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "code" && "opacity-40"
@@ -249,7 +249,7 @@ export default function Diagnose() {
                         setSortBy("Description");
                       }}
                     >
-                      <p>Description</p>
+                      <p>Deskripsi</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "Description" && "opacity-40"
@@ -264,7 +264,7 @@ export default function Diagnose() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-slate-100 text-gray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -358,7 +358,7 @@ export default function Diagnose() {
                         {/* <ModalDelete
                           id={obj.id}
                           callback={() => deleteDiagnosis(obj.id)}
-                          title={`Delete diagnosis?`}
+                          title={`Hapus diagnosis?`}
                         ></ModalDelete> */}
                       </td>
                     </tr>
@@ -370,7 +370,7 @@ export default function Diagnose() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {diagnosis.from}-{diagnosis.to} of {diagnosis.total}
+                Hasil {diagnosis.from}-{diagnosis.to} dari {diagnosis.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -421,7 +421,7 @@ export default function Diagnose() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -492,9 +492,9 @@ export default function Diagnose() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -548,7 +548,7 @@ export default function Diagnose() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update

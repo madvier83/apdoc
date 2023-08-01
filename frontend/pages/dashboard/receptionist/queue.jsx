@@ -582,7 +582,7 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Delete queue ${obj.queue_number}?`}
+                              title={`Hapus queue ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
@@ -1018,14 +1018,14 @@ export default function Queue() {
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >
-                      Contact{" "}
+                      Kontak{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </a>
                     <Link
                       href={`/dashboard/receptionist/patient/${selectedQueue.patient?.id}`}
                       className={`btn btn-primary w-1/2`}
                     >
-                      Records <i className="fas fa-heart-pulse ml-2"></i>
+                      Catatan <i className="fas fa-heart-pulse ml-2"></i>
                     </Link>
                     {/* <Link
                       href={"/dashboard/transaction"}
@@ -1046,7 +1046,7 @@ export default function Queue() {
                       onClick={addService}
                       className="btn btn-primary w-1/2"
                     >
-                      Add <i className="fas fa-plus ml-2"></i>
+                      tambah <i className="fas fa-plus ml-2"></i>
                     </button>
                   </div>
                 )}
@@ -1071,7 +1071,7 @@ export default function Queue() {
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <span>Empty</span>
+                    <span>Kosong</span>
                   </div>
                 </div>
               </div>
@@ -1169,7 +1169,7 @@ export default function Queue() {
                           setSortBy("birth_date");
                         }}
                       >
-                        <p>Birth</p>
+                        <p>Lahir</p>
                         <i
                           className={`fas fa-sort text-right px-2 ${
                             sortBy != "birth_date" && "opacity-40"
@@ -1185,7 +1185,7 @@ export default function Queue() {
                           setSortBy("address");
                         }}
                       >
-                        <p>Address</p>
+                        <p>Alamat</p>
                         <i
                           className={`fas fa-sort text-right px-2 ${
                             sortBy != "address" && "opacity-40"
@@ -1201,7 +1201,7 @@ export default function Queue() {
                           setSortBy("phone");
                         }}
                       >
-                        <p>Phone</p>
+                        <p>Telepon</p>
                         <i
                           className={`fas fa-sort text-right px-2 ${
                             sortBy != "phone" && "opacity-40"
@@ -1216,7 +1216,7 @@ export default function Queue() {
                       Updated At
                     </th> */}
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Actions
+                      Aksi
                     </th>
                   </tr>
                 </thead>
@@ -1315,7 +1315,7 @@ export default function Queue() {
             <div className="flex">
               <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
                 <small className="w-44 text-right truncate">
-                  Results {patients.from}-{patients.to} of {patients.total}
+                  Results {patients.from}-{patients.to} dari {patients.total}
                 </small>
                 <div className="flex text-xs justify-center items-center">
                   <button
@@ -1366,7 +1366,7 @@ export default function Queue() {
                   </button>
                 </div>
                 <div className="flex items-center text-xs w-44">
-                  <p className="truncate">Number of rows</p>
+                  <p className="truncate">Jumlah baris</p>
                   <select
                     className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                     name="perpage"

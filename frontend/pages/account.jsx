@@ -1665,7 +1665,7 @@ export default function Account() {
                             <ModalDelete
                               id={`clinic_${obj.id}`}
                               callback={() => deleteClinic(obj.id)}
-                              title={`Delete clinic ${obj.name}?`}
+                              title={`Hapus clinic ${obj.name}?`}
                             ></ModalDelete>
                           </div>
                         </div>
@@ -1960,7 +1960,7 @@ export default function Account() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-indigo-400 rounded-md">
                 Add
@@ -2248,7 +2248,7 @@ export default function Account() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-emerald-400 rounded-md">
                 Update

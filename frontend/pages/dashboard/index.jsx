@@ -424,7 +424,7 @@ export default function Dashboard() {
                         setSortBy("code");
                       }}
                     >
-                      <p>code</p>
+                      <p>Kode</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "code" && "opacity-40"
@@ -523,7 +523,7 @@ export default function Dashboard() {
           </div>
           <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
             <small className="w-44 text-right truncate">
-              Results {stock.from}-{stock.to} of {stock.total}
+              Results {stock.from}-{stock.to} dari {stock.total}
             </small>
             <div className="flex text-xs justify-center items-center">
               <button
@@ -573,7 +573,7 @@ export default function Dashboard() {
               </button>
             </div>
             <div className="flex items-center text-xs w-44">
-              <p className="truncate">Number of rows</p>
+              <p className="truncate">Jumlah baris</p>
               <select
                 className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                 name="perpage"

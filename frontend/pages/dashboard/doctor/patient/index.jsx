@@ -146,7 +146,7 @@ export default function Patients() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Name</p>
+                      <p>Nama</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -178,7 +178,7 @@ export default function Patients() {
                         setSortBy("address");
                       }}
                     >
-                      <p>Address</p>
+                      <p>Alamat</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "address" && "opacity-40"
@@ -194,7 +194,7 @@ export default function Patients() {
                         setSortBy("phone");
                       }}
                     >
-                      <p>Phone</p>
+                      <p>Telepon</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "phone" && "opacity-40"
@@ -209,7 +209,7 @@ export default function Patients() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -314,7 +314,7 @@ export default function Patients() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {patients.from}-{patients.to} of {patients.total}
+                Hasil {patients.from}-{patients.to} dari {patients.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -365,7 +365,7 @@ export default function Patients() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"

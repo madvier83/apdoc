@@ -24,7 +24,7 @@ export default function User() {
                   type="button"
                   htmlFor="my-modal-6"
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>

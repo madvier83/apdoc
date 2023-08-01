@@ -531,7 +531,7 @@ export default function PurchaseOrder() {
                     setSelectedItems([]);
                   }}
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -555,7 +555,7 @@ export default function PurchaseOrder() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Name</p>
+                      <p>Nama</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -571,7 +571,7 @@ export default function PurchaseOrder() {
                         setSortBy("note");
                       }}
                     >
-                      <p>Note</p>
+                      <p>Catatan</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "note" && "opacity-40"
@@ -587,7 +587,7 @@ export default function PurchaseOrder() {
                         setSortBy("note");
                       }}
                     >
-                      <p>Items</p>
+                      <p>Item</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "note" && "opacity-40"
@@ -619,7 +619,7 @@ export default function PurchaseOrder() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -660,7 +660,7 @@ export default function PurchaseOrder() {
                         </td>
                         <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
                           <span className={"ml-3"}>
-                            {obj.purchase_order_items?.length} Items
+                            {obj.purchase_order_items?.length} Item
                           </span>
                         </td>
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
@@ -672,7 +672,7 @@ export default function PurchaseOrder() {
                             )}
                             {obj.is_finished == 1 && (
                               <button className="text-emerald-600 ml-auto bg-emerald-100 text-xs font-bold normal-case px-3 py-1 rounded-md w-full">
-                                Completed
+                                Selesai
                               </button>
                             )}
                           </span>
@@ -720,7 +720,7 @@ export default function PurchaseOrder() {
                               <ModalDelete
                                 id={obj.id}
                                 callback={() => deleteItem(obj.id)}
-                                title={`Delete purchase order?`}
+                                title={`Hapus purchase order?`}
                               ></ModalDelete>
                               <div
                                 className="tooltip tooltip-left"
@@ -772,7 +772,7 @@ export default function PurchaseOrder() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {item.from}-{item.to} of {item.total}
+                Hasil {item.from}-{item.to} dari {item.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -823,7 +823,7 @@ export default function PurchaseOrder() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -1022,13 +1022,13 @@ export default function PurchaseOrder() {
                     <thead>
                       <tr>
                         <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Code
+                          Kode
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Item
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Unit Cost
+                          Harga Unit
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Qty
@@ -1037,13 +1037,13 @@ export default function PurchaseOrder() {
                           Subtotal
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Manufacturing
+                          Manufaktur
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Expired
+                          Kedaluarsa
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Action
+                          Aksi
                         </th>
                       </tr>
                     </thead>
@@ -1069,6 +1069,7 @@ export default function PurchaseOrder() {
                                 onChange={(e) => {
                                   handleItemQty(obj, index, e);
                                 }}
+                                required
                                 className="input font-semibold w-20 input-bordered input-sm bg-white border-black mt-2"
                               />
                             </td>
@@ -1142,7 +1143,7 @@ export default function PurchaseOrder() {
                 >
                   Cancel
                 </label>
-                <button className="btn btn-primary rounded-md">Add</button>
+                <button className="btn btn-primary rounded-md">Tambah</button>
               </div>
             </form>
           </div>
@@ -1312,13 +1313,13 @@ export default function PurchaseOrder() {
                     <thead>
                       <tr>
                         <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Code
+                          Kode
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Item
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Unit Cost
+                          Harga Unit
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Qty
@@ -1327,13 +1328,13 @@ export default function PurchaseOrder() {
                           Subtotal
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Manufacturing
+                          Manufaktur
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Expired
+                          Kedaluarsa
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Action
+                          Aksi
                         </th>
                       </tr>
                     </thead>
@@ -1363,6 +1364,7 @@ export default function PurchaseOrder() {
                                 onChange={(e) => {
                                   handleItemQty(obj, index, e);
                                 }}
+                                required
                                 className="input font-semibold w-20 input-bordered input-sm bg-white border-black mt-2"
                               />
                             </td>
@@ -1551,7 +1553,7 @@ export default function PurchaseOrder() {
         <input type="checkbox" id="modal-fulfill" className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box max-w-6xl">
-            <h3 className="font-bold text-lg mb-4">Fulfill Purchase Order</h3>
+            <h3 className="font-bold text-lg mb-4">Memenuhi pesanan pembelian</h3>
             <form onSubmit={fulfillItem} autoComplete="off">
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
@@ -1657,13 +1659,13 @@ export default function PurchaseOrder() {
                     <thead>
                       <tr>
                         <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Code
+                          Kode
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Item
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Unit Cost
+                          Harga Unit
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Qty
@@ -1672,13 +1674,13 @@ export default function PurchaseOrder() {
                           Subtotal
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Manufacturing
+                          Manufaktur
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Expired
+                          Kedaluarsa
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Action
+                          Aksi
                         </th>
                       </tr>
                     </thead>
@@ -1708,6 +1710,7 @@ export default function PurchaseOrder() {
                                 onChange={(e) => {
                                   handleItemQty(obj, index, e);
                                 }}
+                                required
                                 className="input font-semibold w-20 input-bordered input-sm bg-white border-black mt-2"
                               />
                             </td>
@@ -1779,10 +1782,10 @@ export default function PurchaseOrder() {
                   ref={fulfillModalRef}
                   className="btn btn-ghost rounded-md"
                 >
-                  Cancel
+                  Batalkan
                 </label>
                 <button className="btn btn-success bg-amber-400 rounded-md">
-                  Fulfill Purchase Order
+                Memenuhi pesanan pembelian
                 </button>
               </div>
             </form>
@@ -1850,13 +1853,13 @@ export default function PurchaseOrder() {
                     <thead>
                       <tr>
                         <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Code
+                          Kode
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Item
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Unit Cost
+                          Harga Unit
                         </th>
                         <th className="align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                           Qty
@@ -1865,13 +1868,13 @@ export default function PurchaseOrder() {
                           Subtotal
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Manufacturing
+                          Manufaktur
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Expired
+                          Kedaluarsa
                         </th>
                         <th className="pl-2 pr-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                          Action
+                          Aksi
                         </th>
                       </tr>
                     </thead>
@@ -1901,6 +1904,7 @@ export default function PurchaseOrder() {
                                 onChange={(e) => {
                                   handleItemQty(obj, index, e);
                                 }}
+                                required
                                 disabled
                                 className="input font-semibold w-20 input-bordered input-sm mt-2"
                               />
@@ -2018,7 +2022,7 @@ export default function PurchaseOrder() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>

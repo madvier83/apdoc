@@ -691,7 +691,7 @@ export default function Patients() {
                             className="btn btn-xs btn-primary font-bold"
                             // onClick={() => setIsGrowth((prev) => !prev)}
                           >
-                            Add <i className="fas fa-plus ml-1"></i>
+                            tambah <i className="fas fa-plus ml-1"></i>
                           </label>
                         </div>
                       )}
@@ -789,7 +789,7 @@ export default function Patients() {
                                     <ModalDelete
                                       id={"growthDelete" + obj.id}
                                       callback={() => deleteGrowth(obj.id)}
-                                      title={`Delete item?`}
+                                      title={`Hapus item?`}
                                     ></ModalDelete>
                                   </td>
                                 </tr>
@@ -836,7 +836,7 @@ export default function Patients() {
                   <div className="flex items-center justify-between pb-4">
                     <div className="relative w-full px-4 max-w-full">
                       <h1 className="text-2xl font-semibold">
-                        <i className="fa-solid fa-heart-pulse mr-1"></i> Records
+                        <i className="fa-solid fa-heart-pulse mr-1"></i> Catatan
                       </h1>
                     </div>
                     <div className="relative w-full px-4 max-w-full text-right">
@@ -850,7 +850,7 @@ export default function Patients() {
                           setSelectedServices([]);
                         }}
                       >
-                        Add record <i className="fas fa-add"></i>
+                        Tambah catatan <i className="fas fa-add"></i>
                       </label>
                       {/* <button
                         className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -943,7 +943,7 @@ export default function Patients() {
                               <ModalDelete
                                 id={obj.id}
                                 callback={() => deleteRecord(obj.id)}
-                                title={`Delete Record ${moment(
+                                title={`Hapus Record ${moment(
                                   obj.created_at
                                 ).format("DD MMMM YYYY")}?`}
                               ></ModalDelete>
@@ -1082,7 +1082,7 @@ export default function Patients() {
                                                 callback={() =>
                                                   deleteFile(obj.id)
                                                 }
-                                                title={`Delete File?`}
+                                                title={`Hapus File?`}
                                               ></ModalDelete>
                                               <ModalBox
                                                 id={`filePreview` + obj.id}
@@ -1129,7 +1129,7 @@ export default function Patients() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4">Add Record</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah catatan</h3>
           <form onSubmit={(e) => addRecord(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1438,9 +1438,9 @@ export default function Patients() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -1497,9 +1497,9 @@ export default function Patients() {
                 ref={addGrowthModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -1537,9 +1537,9 @@ export default function Patients() {
                 ref={addFileModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -1872,7 +1872,7 @@ export default function Patients() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success text-black rounded-md">
                 Update
@@ -1933,7 +1933,7 @@ export default function Patients() {
                 ref={putGrowthModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success text-zinc-900 rounded-md">
                 Update

@@ -277,7 +277,7 @@ export default function Notification() {
                 ref={addMailRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-indigo-400 rounded-md">
                 Add

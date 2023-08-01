@@ -1135,7 +1135,7 @@ export default function Transaction() {
 
                   <div className={`flex gap-2 items-end`}>
                     {/* <button className="btn btn-success bg-success text-white w-1/2">
-                      Contact{" "}
+                      Kontak{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </button> */}
                     <label
@@ -1335,7 +1335,7 @@ export default function Transaction() {
           >
             Cancel
           </label>
-          {/* <button className="btn btn-primary rounded-md">Add</button> */}
+          {/* <button className="btn btn-primary rounded-md">Tambah</button> */}
         </div>
         {/* </form> */}
       </ModalBox>
@@ -1386,7 +1386,7 @@ export default function Transaction() {
           >
             Cancel
           </label>
-          {/* <button className="btn btn-primary rounded-md">Add</button> */}
+          {/* <button className="btn btn-primary rounded-md">Tambah</button> */}
         </div>
         {/* </form> */}
       </ModalBox>

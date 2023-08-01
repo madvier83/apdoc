@@ -317,7 +317,7 @@ export default function CategoryItem() {
                     setPutFormError({message : ""})
                   }}
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -341,7 +341,7 @@ export default function CategoryItem() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Name</p>
+                      <p>Nama</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -356,7 +356,7 @@ export default function CategoryItem() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -413,7 +413,7 @@ export default function CategoryItem() {
                         <ModalDelete
                           id={obj.id}
                           callback={() => deleteCategory(obj.id)}
-                          title={`Delete category item?`}
+                          title={`Hapus category item?`}
                         ></ModalDelete>
                       </td>
                     </tr>
@@ -426,7 +426,7 @@ export default function CategoryItem() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {category.from}-{category.to} of {category.total}
+                Hasil {category.from}-{category.to} dari {category.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -477,7 +477,7 @@ export default function CategoryItem() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -499,7 +499,7 @@ export default function CategoryItem() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Category Item 
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Category Item 
             <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
@@ -530,9 +530,9 @@ export default function CategoryItem() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -568,7 +568,7 @@ export default function CategoryItem() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update
@@ -618,7 +618,7 @@ export default function CategoryItem() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>

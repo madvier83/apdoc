@@ -368,7 +368,7 @@ export default function Service() {
                   type="button"
                   htmlFor="modal-add"
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -392,7 +392,7 @@ export default function Service() {
                         setSortBy("code");
                       }}
                     >
-                      <p>Code</p>
+                      <p>Kode</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "code" && "opacity-40"
@@ -408,7 +408,7 @@ export default function Service() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Service</p>
+                      <p>Layanan</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -424,7 +424,7 @@ export default function Service() {
                         setSortBy("category");
                       }}
                     >
-                      <p>Category</p>
+                      <p>Kategori</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "category" && "opacity-40"
@@ -440,7 +440,7 @@ export default function Service() {
                         setSortBy("price");
                       }}
                     >
-                      <p>Price</p>
+                      <p>Harga</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "price" && "opacity-40"
@@ -456,7 +456,7 @@ export default function Service() {
                         setSortBy("commission");
                       }}
                     >
-                      <p>Commission</p>
+                      <p>Komisi</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "commission" && "opacity-40"
@@ -471,7 +471,7 @@ export default function Service() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -557,7 +557,7 @@ export default function Service() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteService(obj.id)}
-                            title={`Delete service?`}
+                            title={`Hapus layanan?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -570,7 +570,7 @@ export default function Service() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {services.from}-{services.to} of {services.total}
+                Hasil {services.from}-{services.to} dari {services.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -621,7 +621,7 @@ export default function Service() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -644,7 +644,7 @@ export default function Service() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
-            Add Service
+            Tambah Service
             <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addService} autoComplete="off">
@@ -809,9 +809,9 @@ export default function Service() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -974,7 +974,7 @@ export default function Service() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update
@@ -1022,7 +1022,7 @@ export default function Service() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>

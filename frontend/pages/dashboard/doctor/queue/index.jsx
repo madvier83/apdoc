@@ -409,7 +409,7 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Delete queue ${obj.queue_number}?`}
+                              title={`Hapus queue ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
@@ -713,14 +713,14 @@ export default function Queue() {
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >
-                      Contact{" "}
+                      Kontak{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
                     </a>
                     <Link
                       href={`/dashboard/doctor/patient/${selectedQueue.patient?.id}`}
                       className={`btn btn-primary w-1/2`}
                     >
-                      Records <i className="fas fa-heart-pulse ml-2"></i>
+                      Catatan <i className="fas fa-heart-pulse ml-2"></i>
                     </Link>
                   </div>
                 ) : (
@@ -735,7 +735,7 @@ export default function Queue() {
                       onClick={addService}
                       className="btn btn-primary w-1/2"
                     >
-                      Add <i className="fas fa-plus ml-2"></i>
+                      tambah <i className="fas fa-plus ml-2"></i>
                     </button>
                   </div>
                 )}
@@ -760,7 +760,7 @@ export default function Queue() {
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <span>Empty</span>
+                    <span>Kosong</span>
                   </div>
                 </div>
               </div>

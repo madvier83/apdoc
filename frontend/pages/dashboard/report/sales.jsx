@@ -312,12 +312,12 @@ export default function Sales() {
                 onChange={(e) => setMenu(e.target.value)}
                 className="p-0 pl-4 focus:ring-0 focus:ring-offset-0 ring-transparent select-bordered border-slate-500 rounded-md font-semibold select-sm w-48"
               >
-                <option value={0}>Payment Methods</option>
-                <option value={1}>Service Sales</option>
-                <option value={2}>Item Sales</option>
+                <option value={0}>Metode Pembayaran</option>
+                <option value={1}>Layanan</option>
+                <option value={2}>Penjualan Item</option>
                 {/* <option value={3}>Category Sales</option> */}
-                <option value={4}>Promotion</option>
-                <option value={5}>Collected By</option>
+                <option value={4}>Promosi</option>
+                <option value={5}>Dikumpulkan Oleh</option>
               </select>
             </div>
 

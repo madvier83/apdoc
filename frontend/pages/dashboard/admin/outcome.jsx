@@ -371,7 +371,7 @@ export default function Outcome() {
                     setSelectedCategory(null);
                   }}
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -395,7 +395,7 @@ export default function Outcome() {
                         setSortBy("category_outcome_id");
                       }}
                     >
-                      <p>Category</p>
+                      <p>Kategori</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "category_outcome_id" && "opacity-40"
@@ -411,7 +411,7 @@ export default function Outcome() {
                         setSortBy("note");
                       }}
                     >
-                      <p>Note</p>
+                      <p>Catatan</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "note" && "opacity-40"
@@ -442,7 +442,7 @@ export default function Outcome() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -506,7 +506,7 @@ export default function Outcome() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteItem(obj.id)}
-                            title={`Delete outcome?`}
+                            title={`Hapus outcome?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -519,7 +519,7 @@ export default function Outcome() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {item.from}-{item.to} of {item.total}
+                Hasil {item.from}-{item.to} dari {item.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -570,7 +570,7 @@ export default function Outcome() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -593,7 +593,7 @@ export default function Outcome() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
-            Add Outcome <SelectedClinicBadge></SelectedClinicBadge>
+            Tambah Outcome <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
@@ -721,9 +721,9 @@ export default function Outcome() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -859,7 +859,7 @@ export default function Outcome() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update
@@ -907,7 +907,7 @@ export default function Outcome() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>

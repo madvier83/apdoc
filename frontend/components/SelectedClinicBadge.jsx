@@ -7,7 +7,7 @@ export default function SelectedClinicBadge() {
     return (
         <>
         <small className={`${!clinicInfo?.name && "hidden"} font-semibold bg-emerald-300 rounded-md px-2`}>
-            Clinic: {clinicInfo?.name || ""}
+            Klinik: {clinicInfo?.name || ""}
         </small>
         </>
     );

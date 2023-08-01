@@ -310,7 +310,7 @@ export default function Promotion() {
                   type="button"
                   htmlFor="modal-add"
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function Promotion() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Name</p>
+                      <p>Nama</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -350,7 +350,7 @@ export default function Promotion() {
                         setSortBy("discount");
                       }}
                     >
-                      <p>Discount</p>
+                      <p>Diskon</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "discount" && "opacity-40"
@@ -365,7 +365,7 @@ export default function Promotion() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -418,7 +418,7 @@ export default function Promotion() {
                         <ModalDelete
                           id={obj.id}
                           callback={() => deletePromotion(obj.id)}
-                          title={`Delete promotion?`}
+                          title={`Hapus promotion?`}
                         ></ModalDelete>
                       </td>
                     </tr>
@@ -431,7 +431,7 @@ export default function Promotion() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {promotion.from}-{promotion.to} of {promotion.total}
+                Hasil {promotion.from}-{promotion.to} dari {promotion.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -482,7 +482,7 @@ export default function Promotion() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -553,9 +553,9 @@ export default function Promotion() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -610,7 +610,7 @@ export default function Promotion() {
                 ref={putModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update
@@ -659,7 +659,7 @@ export default function Promotion() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>

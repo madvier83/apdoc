@@ -309,7 +309,7 @@ export default function Patients() {
                             className="btn btn-xs btn-primary font-bold"
                             // onClick={() => setIsGrowth((prev) => !prev)}
                           >
-                            Add <i className="fas fa-plus ml-1"></i>
+                            tambah <i className="fas fa-plus ml-1"></i>
                           </label>
                         </div>
                       )}
@@ -409,7 +409,7 @@ export default function Patients() {
                                     <ModalDelete
                                       id={"growthDelete" + obj.id}
                                       callback={() => deleteGrowth(obj.id)}
-                                      title={`Delete item?`}
+                                      title={`Hapus item?`}
                                     ></ModalDelete>
                                   </td>
                                 </tr>
@@ -506,9 +506,9 @@ export default function Patients() {
                 ref={addGrowthModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -563,7 +563,7 @@ export default function Patients() {
                 ref={putGrowthModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success text-zinc-900 rounded-md">
                 Update

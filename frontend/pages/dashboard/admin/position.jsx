@@ -293,7 +293,7 @@ export default function Position() {
                   type="button"
                   htmlFor="modal-add"
                 >
-                  Add <i className="fas fa-add"></i>
+                  tambah <i className="fas fa-add"></i>
                 </label>
               </div>
             </div>
@@ -317,7 +317,7 @@ export default function Position() {
                         setSortBy("name");
                       }}
                     >
-                      <p>Name</p>
+                      <p>Nama</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "name" && "opacity-40"
@@ -332,7 +332,7 @@ export default function Position() {
                     Updated At
                   </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                    Actions
+                    Aksi
                   </th>
                 </tr>
               </thead>
@@ -394,7 +394,7 @@ export default function Position() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deletePosition(obj.id)}
-                            title={`Delete position?`}
+                            title={`Hapus position?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -407,7 +407,7 @@ export default function Position() {
           <div className="flex">
             <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
               <small className="w-44 text-right truncate">
-                Results {positions.from}-{positions.to} of {positions.total}
+                Hasil {positions.from}-{positions.to} dari {positions.total}
               </small>
               <div className="flex text-xs justify-center items-center">
                 <button
@@ -458,7 +458,7 @@ export default function Position() {
                 </button>
               </div>
               <div className="flex items-center text-xs w-44">
-                <p className="truncate">Number of rows</p>
+                <p className="truncate">Jumlah baris</p>
                 <select
                   className="input text-xs input-sm py-0 input-bordered without-ring input-primary bg-gray-50 border-gray-50 w-14"
                   name="perpage"
@@ -485,7 +485,7 @@ export default function Position() {
         </label> */}
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Add Position <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Position <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addPosition}>
             <div className="form-control w-full">
               <label className="label">
@@ -512,9 +512,9 @@ export default function Position() {
                 ref={addModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
-              <button className="btn btn-primary rounded-md">Add</button>
+              <button className="btn btn-primary rounded-md">Tambah</button>
             </div>
           </form>
         </ModalBox>
@@ -554,7 +554,7 @@ export default function Position() {
                 ref={updateModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
               <button className="btn btn-success bg-success rounded-md">
                 Update
@@ -604,7 +604,7 @@ export default function Position() {
                 ref={exportModalRef}
                 className="btn btn-ghost rounded-md"
               >
-                Cancel
+                Batalkan
               </label>
             </div>
           </form>
