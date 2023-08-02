@@ -162,7 +162,7 @@ export default function Patients() {
                         setSortBy("birth_date");
                       }}
                     >
-                      <p>Birth</p>
+                      <p>Lahir</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "birth_date" && "opacity-40"

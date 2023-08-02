@@ -519,7 +519,7 @@ export default function Queue() {
                     <div className="relative">
                       <div className="absolute w-full">
                         <div className="">
-                          <small className="text-zinc-400">Date of birth</small>{" "}
+                          <small className="text-zinc-400">Lahir</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800">
                             {selectedQueue?.patient?.birth_place +
@@ -530,7 +530,7 @@ export default function Queue() {
                           </span>
                         </div>
                         <div className="mt-4">
-                          <small className="text-zinc-400">Address</small>{" "}
+                          <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
                               {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
@@ -542,7 +542,7 @@ export default function Queue() {
                           <div className="">
                             <div className="mt-4">
                               <small className="text-zinc-400">
-                                Appointment date
+                                Tanggal janti temu
                               </small>{" "}
                               <br />
                               <span className="font-sm text-zinc-800 line-clamp-2">
@@ -553,7 +553,7 @@ export default function Queue() {
                             </div>
                             <div className="mt-4">
                               <small className="text-zinc-400">
-                                Description
+                                Deskripsi
                               </small>{" "}
                               <br />
                               <span className="font-sm text-zinc-800 line-clamp-2">
@@ -564,7 +564,7 @@ export default function Queue() {
                         )}
                         <div className={`${!isRegular && "hidden"}`}>
                           <div className="mt-4">
-                            <small className="text-zinc-400">Services</small>{" "}
+                            <small className="text-zinc-400">Layanan</small>{" "}
                             <br />
                           </div>
                           <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[32vh]">

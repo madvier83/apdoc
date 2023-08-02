@@ -418,7 +418,7 @@ export default function Promotion() {
                         <ModalDelete
                           id={obj.id}
                           callback={() => deletePromotion(obj.id)}
-                          title={`Hapus promotion?`}
+                          title={`Hapus promosi?`}
                         ></ModalDelete>
                       </td>
                     </tr>
@@ -504,12 +504,12 @@ export default function Promotion() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4  flex justify-between">Add Promotion <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4  flex justify-between">Tambah promosi <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -528,7 +528,7 @@ export default function Promotion() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Discount (%)</span>
+                <span className="label-text">Diskon (%)</span>
               </label>
               <input
                 type="number"
@@ -561,12 +561,12 @@ export default function Promotion() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Promotion</h3>
+          <h3 className="font-bold text-lg mb-4">Edit promosi</h3>
           <form onSubmit={putPromotion} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -585,7 +585,7 @@ export default function Promotion() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Discount (%)</span>
+                <span className="label-text">Diskon (%)</span>
               </label>
               <input
                 type="number"
@@ -626,17 +626,17 @@ export default function Promotion() {
             <div className="form-control w-full">
               
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -650,7 +650,7 @@ export default function Promotion() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

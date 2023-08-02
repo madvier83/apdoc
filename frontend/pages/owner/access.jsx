@@ -816,11 +816,11 @@ export default function Access() {
       <ModalBox id="modal-put">
         <form onSubmit={putRole} autoComplete="off">
           <div className="overflow-y-scroll h-[75vh]" ref={putModalScrollRef}>
-            <h3 className="font-bold text-lg mb-4">Edit Role Access</h3>
+            <h3 className="font-bold text-lg mb-4">Edit role user</h3>
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Role</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -838,7 +838,7 @@ export default function Access() {
                 </label>
               )}
             </div>
-            <h1 className="mt-4 mb-2">Access</h1>
+            <h1 className="mt-4 mb-2">Akses</h1>
             {putForm.accesses?.map((menu) => {
               return (
                 <div className="mb-4" key={menu.route}>
@@ -902,10 +902,10 @@ export default function Access() {
               ref={putModalRef}
               className="btn btn-ghost rounded-md"
             >
-              Cancel
+              Batalkan
             </label>
             <button className="btn btn-success text-black rounded-md">
-              Save
+              Simpan
             </button>
           </div>
         </form>
@@ -915,13 +915,13 @@ export default function Access() {
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll h-[75vh]" ref={addModalScrollRef}>
             <h3 className="font-bold text-lg mb-4 flex justify-between">
-              Add Role Access
+              Tambah role user
               <SelectedClinicBadge></SelectedClinicBadge>
             </h3>
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Role</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -939,7 +939,7 @@ export default function Access() {
                 </label>
               )}
             </div>
-            <h1 className="mt-4 mb-2">Access</h1>
+            <h1 className="mt-4 mb-2">Akses</h1>
             {addForm?.accesses?.map((menu) => {
               return (
                 <div className="mb-4" key={menu.route}>
@@ -1003,7 +1003,7 @@ export default function Access() {
               ref={addModalRef}
               className="btn btn-ghost rounded-md"
             >
-              Cancel
+              Batalkan
             </label>
             <button className="btn btn-primary rounded-md">Tambah</button>
           </div>

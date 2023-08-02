@@ -39,9 +39,9 @@ export default function Patients() {
   const [growthChart, setGrowthChart] = useState([
     [
       "Patient",
-      "Height",
+      "Tinggi",
       { role: "annotation" },
-      "Weight",
+      "Berat",
       { role: "annotation" },
     ],
     ["", 0, "0", 0, "0"],
@@ -116,9 +116,9 @@ export default function Patients() {
       let chart = [
         [
           "Patient",
-          "Height",
+          "Tinggi",
           { role: "annotation" },
-          "Weight",
+          "Berat",
           { role: "annotation" },
         ],
       ];
@@ -245,7 +245,7 @@ export default function Patients() {
                     </small>
                     <div className="border-t border-dashed my-3"></div>
                     <div className="mb-4">
-                      <small className="text-zinc-400">Phone</small> <br />
+                      <small className="text-zinc-400">Telepon</small> <br />
                       <span className="font-sm text-zinc-800 line-clamp-2">
                         <a
                           href={`${
@@ -262,7 +262,7 @@ export default function Patients() {
                         </a>
                       </span>
                     </div>
-                    <small className="text-zinc-400">Date of birth</small>{" "}
+                    <small className="text-zinc-400">Lahir</small>{" "}
                     <br />
                     <span className="font-sm text-zinc-800">
                       {selectedPatient?.birth_place +
@@ -272,7 +272,7 @@ export default function Patients() {
                         )}
                     </span>
                     <div className="mt-4">
-                      <small className="text-zinc-400">Address</small> <br />
+                      <small className="text-zinc-400">Alamat</small> <br />
                       <span className="font-sm text-zinc-800">
                         {selectedPatient.address}, 
                         
@@ -324,10 +324,10 @@ export default function Patients() {
                                 #
                               </th>
                               <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                                Height (CM)
+                                Tinggi (CM)
                               </th>
                               <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                                Weight (KG)
+                                Berat (KG)
                               </th>
                               {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                                 Created At
@@ -336,7 +336,7 @@ export default function Patients() {
                                 Updated At
                               </th> */}
                               <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                                Actions
+                                Aksi
                               </th>
                             </tr>
                           </thead>
@@ -457,12 +457,12 @@ export default function Patients() {
         </div>
 
         <ModalBox id="modal-add-growth">
-          <h3 className="font-bold text-lg mb-4">Growth Record</h3>
+          <h3 className="font-bold text-lg mb-4">catatan pertumbuhan</h3>
           <form onSubmit={(e) => addGrowth(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Height (cm)</span>
+                <span className="label-text">Tinggi (cm)</span>
               </label>
               <input
                 type="number"
@@ -482,7 +482,7 @@ export default function Patients() {
             </div>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Weight (kg)</span>
+                <span className="label-text">Berat (kg)</span>
               </label>
               <input
                 type="number"
@@ -514,12 +514,12 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-put-growth">
-          <h3 className="font-bold text-lg mb-4">Update Growth Record</h3>
+          <h3 className="font-bold text-lg mb-4">Update catatan pertumbuhan</h3>
           <form onSubmit={(e) => putGrowth(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Height (cm)</span>
+                <span className="label-text">Tinggi (cm)</span>
               </label>
               <input
                 type="number"
@@ -539,7 +539,7 @@ export default function Patients() {
             </div>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Weight (kg)</span>
+                <span className="label-text">Berat (kg)</span>
               </label>
               <input
                 type="number"

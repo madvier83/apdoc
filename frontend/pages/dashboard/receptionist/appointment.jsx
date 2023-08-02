@@ -552,13 +552,13 @@ export default function Appointment() {
             <div className="form-control w-full">
               <div className="dropdown">
                 <label className="label">
-                  <span className="label-text">Patient</span>
+                  <span className="label-text">Pasien</span>
                   <a
                     href="/dashboard/receptionist/patient"
                     target="_blank"
                     className="label-text text-blue-400 text-xs font-semibold"
                   >
-                    <i className="fas fa-info-circle"></i> Add patient
+                    <i className="fas fa-info-circle"></i> Tambah pasien
                   </a>
                 </label>
                 {selectedPatient?.id && (
@@ -630,7 +630,7 @@ export default function Appointment() {
               )}
 
               <label className="label">
-                <span className="label-text">Description</span>
+                <span className="label-text">Deskripsi</span>
               </label>
               <textarea
                 type="text"
@@ -649,7 +649,7 @@ export default function Appointment() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Appointment date</span>
+                <span className="label-text">Tanggal & waktu</span>
               </label>
               <input
                 type="datetime-local"
@@ -687,7 +687,7 @@ export default function Appointment() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Patients</span>
+                <span className="label-text">Pasien</span>
               </label>
               <div className="p-0 overflow-hidden mb-1">
                 <div className="group font-semibold justify-start p-4 normal-case text-justify transition-all text-sm bg-slate-50 rounded-md cursor-pointer">
@@ -695,7 +695,7 @@ export default function Appointment() {
                 </div>
               </div>
               <label className="label">
-                <span className="label-text">Description</span>
+                <span className="label-text">Deskripsi</span>
               </label>
               <textarea
                 type="text"
@@ -714,7 +714,7 @@ export default function Appointment() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Appointment date</span>
+                <span className="label-text">Tanggal & waktu</span>
               </label>
               <input
                 type="datetime-local"

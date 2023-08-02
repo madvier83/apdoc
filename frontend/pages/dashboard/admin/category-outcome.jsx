@@ -410,7 +410,7 @@ export default function CategoryOutcome() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteCategory(obj.id)}
-                            title={`Hapus category payment?`}
+                            title={`Hapus kategori pengeluaran?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -496,12 +496,12 @@ export default function CategoryOutcome() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Category Outcome <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah kategori pengeluaran <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -532,12 +532,12 @@ export default function CategoryOutcome() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Outcome</h3>
+          <h3 className="font-bold text-lg mb-4">Edit kategori pengeluaran</h3>
           <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -576,17 +576,17 @@ export default function CategoryOutcome() {
             <div className="form-control w-full">
               
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -600,7 +600,7 @@ export default function CategoryOutcome() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

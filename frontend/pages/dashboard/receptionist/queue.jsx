@@ -44,8 +44,8 @@ export default function Queue() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("name");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [selectedService, setSelectedService] = useState();
   const [selectedEmployee, setSelectedEmployee] = useState();
@@ -582,7 +582,7 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Hapus queue ${obj.queue_number}?`}
+                              title={`Hapus antrian ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
@@ -717,7 +717,7 @@ export default function Queue() {
                     <div className="relative">
                       <div className="absolute w-full">
                         <div className="">
-                          <small className="text-zinc-400">Date of birth</small>{" "}
+                          <small className="text-zinc-400">Lahir</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800">
                             {selectedQueue?.patient?.birth_place +
@@ -728,7 +728,7 @@ export default function Queue() {
                           </span>
                         </div>
                         <div className="mt-4">
-                          <small className="text-zinc-400">Address</small>{" "}
+                          <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
                               {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
@@ -740,7 +740,7 @@ export default function Queue() {
                           <div className="">
                             <div className="mt-4">
                               <small className="text-zinc-400">
-                                Appointment date
+                                Tanggal janji temu
                               </small>{" "}
                               <br />
                               <span className="font-sm text-zinc-800 line-clamp-2">
@@ -751,7 +751,7 @@ export default function Queue() {
                             </div>
                             <div className="mt-4">
                               <small className="text-zinc-400">
-                                Description
+                                Deskripsi
                               </small>{" "}
                               <br />
                               <span className="font-sm text-zinc-800 line-clamp-2">
@@ -847,7 +847,7 @@ export default function Queue() {
                     <div className="w-auto">
                       <label className="label ml-0 pl-0">
                         <small className="label-text text-zinc-400 text-xs">
-                          Service
+                          Layanan
                         </small>
                       </label>
                       <div className="dropdown w-full">
@@ -883,7 +883,7 @@ export default function Queue() {
                               name="searchAdd"
                               value={searchService}
                               onChange={(e) => setSearchService(e.target.value)}
-                              placeholder="Search service ..."
+                              placeholder="Cari layanan ..."
                               className="input input-bordered border-slate-300 w-full"
                             />
                             <ul
@@ -927,7 +927,7 @@ export default function Queue() {
                     <div className="w-auto">
                       <label className="label ml-0 pl-0">
                         <small className="label-text text-gray-400 text-xs mt-2">
-                          Employee
+                          Karyawan
                         </small>
                       </label>
                       <div className="dropdown w-full">
@@ -959,7 +959,7 @@ export default function Queue() {
                               onChange={(e) =>
                                 setSearchEmployee(e.target.value)
                               }
-                              placeholder="Search employee ..."
+                              placeholder="Cari karyawan ..."
                               className="input input-bordered border-slate-300 w-full"
                             />
                             <ul
@@ -1040,7 +1040,7 @@ export default function Queue() {
                       onClick={() => setIsAddService(false)}
                       className="btn btn-error text-white w-1/2"
                     >
-                      Cancel <i className="fas fa-x ml-2 font-bold"></i>
+                      batalkan <i className="fas fa-x ml-2 font-bold"></i>
                     </button>
                     <button
                       onClick={addService}

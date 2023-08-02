@@ -327,13 +327,13 @@ export default function Sales() {
                   <thead>
                     <tr>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Name
+                        Nama
                       </th>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Category
+                        Kategori
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-center bg-blueGray-100 text-blueGray-600">
-                        Transaction
+                        Transaksi
                       </th>
                       <th className="pl-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
                         Total
@@ -392,19 +392,19 @@ export default function Sales() {
                   <thead>
                     <tr>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Name
+                        Nama
                       </th>
                       <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Transaction
+                        Transaksi
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 pl-4 bg-blueGray-100 text-blueGray-600">
-                        Gross Sales
+                        Laba kotor
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 pl-4 bg-blueGray-100 text-blueGray-600">
-                        Discount
+                        Diskon
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 pl-4 bg-blueGray-100 text-blueGray-600">
-                        Net Sales
+                        Laba bersih
                       </th>
                     </tr>
                   </thead>
@@ -470,22 +470,22 @@ export default function Sales() {
                   <thead>
                     <tr>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Name
+                        Nama
                       </th>
                       <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Category
+                        Kategori
                       </th>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Items Sold
+                        Item terjual
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Gross Sales
+                        Laba kotor
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Discount
+                        Diskon
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Net Sales
+                        Laba bersih
                       </th>
                     </tr>
                   </thead>
@@ -560,16 +560,16 @@ export default function Sales() {
                         Name
                       </th>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Items Sold
+                        Item terjual
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Gross Sales
+                        Laba kotor
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Discount
+                        Diskon
                       </th>
                       <th className="align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
-                        Net Sales
+                        Laba bersih
                       </th>
                     </tr>
                   </thead>
@@ -638,7 +638,7 @@ export default function Sales() {
                         Name
                       </th>
                       <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Discount
+                        Diskon
                       </th>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                         Qty
@@ -703,7 +703,7 @@ export default function Sales() {
                         Name
                       </th>
                       <th className="pl-4 align-left py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                        Transactions
+                        Transaksi
                       </th>
                       <th className="pl-4 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-right pr-6 bg-blueGray-100 text-blueGray-600">
                         Total

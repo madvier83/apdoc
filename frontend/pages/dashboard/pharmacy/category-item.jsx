@@ -505,7 +505,7 @@ export default function CategoryItem() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 required={true}
@@ -543,7 +543,7 @@ export default function CategoryItem() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 required={true}
@@ -585,17 +585,17 @@ export default function CategoryItem() {
             <div className="form-control w-full">
               
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -609,7 +609,7 @@ export default function CategoryItem() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

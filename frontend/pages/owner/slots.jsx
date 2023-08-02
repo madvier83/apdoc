@@ -253,22 +253,22 @@ export default function Slots() {
                       #
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Employee
+                      Karyawan
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Role
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Clinic
+                      Klinik
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Expiration Date
+                      Tanggal Kedaluarsa
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Slot Status
+                      Status
                     </th>
                     <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
-                      Employee Status
+                      Status Karyawan
                     </th>
                     {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-100 text-blueGray-600">
                       Created At
@@ -416,7 +416,7 @@ export default function Slots() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Employee</span>
+                <span className="label-text">Karyawan</span>
               </label>
 
               <div className="dropdown w-full">
@@ -508,7 +508,7 @@ export default function Slots() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Telepon</span>
               </label>
               <input
                 type="text"
@@ -527,7 +527,7 @@ export default function Slots() {
               )}
 
               <label className="label">
-                <span className="label-text">Access</span>
+                <span className="label-text">Role</span>
               </label>
               <select
                 name="role_id"
@@ -559,17 +559,17 @@ export default function Slots() {
               htmlFor={putForm.id}
               className="btn btn-error text-white rounded-md mr-auto px-8"
             >
-              Deactivate User
+              Nonaktifkan Slot
             </label>
             <label
               htmlFor="modal-put"
               ref={putModalRef}
               className="btn btn-ghost rounded-md"
             >
-              Cancel
+              Batalkan
             </label>
             <button className="btn btn-success text-black rounded-md">
-              Save
+              Simpan
             </button>
           </div>
         </form>
@@ -584,17 +584,17 @@ export default function Slots() {
       <ModalBox id="modal-add">
         <form onSubmit={addRole} autoComplete="off">
           <div className="overflow-y-scroll" ref={addModalScrollRef}>
-            <h3 className="font-bold text-lg mb-4">Assign Slot</h3>
+            <h3 className="font-bold text-lg mb-4">Tetapkan Slot</h3>
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Employee</span>
+                <span className="label-text">Karyawan</span>
                 <a
                   href="/dashboard/admin/employee"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Add employee
+                  <i className="fas fa-info-circle"></i> Tambah karyawan
                 </a>
               </label>
 
@@ -678,7 +678,7 @@ export default function Slots() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Telepon</span>
               </label>
               <input
                 type="text"
@@ -697,13 +697,13 @@ export default function Slots() {
               )}
 
               <label className="label">
-                <span className="label-text">Access</span>
+                <span className="label-text">Role</span>
                 <a
                   href="/owner/access"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Add Access
+                  <i className="fas fa-info-circle"></i> Tambah role
                 </a>
               </label>
               <select
@@ -737,10 +737,10 @@ export default function Slots() {
               ref={addModalRef}
               className="btn btn-ghost rounded-md"
             >
-              Cancel
+              Batalkan
             </label>
             <button className="btn btn-success text-black rounded-md">
-              Save
+              Simpan
             </button>
           </div>
         </form>

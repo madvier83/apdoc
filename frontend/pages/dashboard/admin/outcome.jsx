@@ -26,8 +26,8 @@ export default function Outcome() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const [sortBy, setSortBy] = useState("category_outcome_id");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [searchCategory, setSearchCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
@@ -506,7 +506,7 @@ export default function Outcome() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteItem(obj.id)}
-                            title={`Hapus outcome?`}
+                            title={`Hapus pengeluaran?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -593,19 +593,19 @@ export default function Outcome() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
-            Tambah Outcome <SelectedClinicBadge></SelectedClinicBadge>
+            Tambah pengeluaran <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <label className="label">
-              <span className="label-text">Category</span>
+              <span className="label-text">Kategori</span>
 
               <a
                 href="/dashboard/admin/category-outcome"
                 target="_blank"
                 className="label-text text-blue-400 text-xs font-semibold"
               >
-                <i className="fas fa-info-circle"></i> Add category
+                <i className="fas fa-info-circle"></i> Tambah kategori
               </a>
             </label>
             <div className="dropdown w-full">
@@ -635,7 +635,7 @@ export default function Outcome() {
                     name="searchAdd"
                     value={searchCategory}
                     onChange={(e) => setSearchCategory(e.target.value)}
-                    placeholder="Search category ..."
+                    placeholder="Cari kategori ..."
                     className="input input-bordered border-slate-300 w-full"
                   />
                   <ul
@@ -696,7 +696,7 @@ export default function Outcome() {
             )}
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Note</span>
+                <span className="label-text">Catatan</span>
               </label>
               <input
                 type="text"
@@ -729,19 +729,19 @@ export default function Outcome() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Outcome</h3>
+          <h3 className="font-bold text-lg mb-4">Edit pengeluaran</h3>
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Kategori</span>
 
                 <a
                   href="/dashboard/admin/category-outcome"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Add category
+                  <i className="fas fa-info-circle"></i> Tambah kategori
                 </a>
               </label>
 
@@ -772,7 +772,7 @@ export default function Outcome() {
                       name="searchAdd"
                       value={searchCategory}
                       onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search service ..."
+                      placeholder="Cari ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -833,7 +833,7 @@ export default function Outcome() {
               )}
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Note</span>
+                  <span className="label-text">Catatan</span>
                 </label>
                 <input
                   type="text"
@@ -874,17 +874,17 @@ export default function Outcome() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -898,7 +898,7 @@ export default function Outcome() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

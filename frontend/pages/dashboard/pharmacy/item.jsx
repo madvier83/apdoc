@@ -965,7 +965,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -984,13 +984,13 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Kategori</span>
                 <a
                   href="/dashboard/pharmacy/category-item"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Add category
+                  <i className="fas fa-info-circle"></i> Tambah kategori
                 </a>
               </label>
 
@@ -1296,7 +1296,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -1315,7 +1315,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Kategori</span>
               </label>
 
               <div className="dropdown w-full">
@@ -1608,17 +1608,17 @@ export default function Item() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -1632,7 +1632,7 @@ export default function Item() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

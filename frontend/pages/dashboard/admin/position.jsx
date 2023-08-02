@@ -394,7 +394,7 @@ export default function Position() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deletePosition(obj.id)}
-                            title={`Hapus position?`}
+                            title={`Hapus jabatan?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -485,11 +485,11 @@ export default function Position() {
         </label> */}
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Position <SelectedClinicBadge></SelectedClinicBadge></h3>
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah jabatan <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addPosition}>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -520,11 +520,11 @@ export default function Position() {
         </ModalBox>
 
         <ModalBox id="modal-update">
-          <h3 className="font-bold text-lg mb-4">Update Position</h3>
+          <h3 className="font-bold text-lg mb-4">Update jabatan</h3>
           <form onSubmit={(e) => putPosition(e, updatePosition.id)}>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Position name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -565,23 +565,23 @@ export default function Position() {
 
         
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Patients Table Config</h3>
+          <h3 className="font-bold text-lg mb-4">Konfigurasi</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -595,7 +595,7 @@ export default function Position() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

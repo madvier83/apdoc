@@ -30,7 +30,7 @@ export default function Employee() {
   const [page, setPage] = useState(1);
 
   const [sortBy, setSortBy] = useState("created_at");
-  const [order, setOrder] = useState(true);
+  const [order, setOrder] = useState(false);
 
   const [searchPosition, setSearchPosition] = useState("");
   const [selectedPositions, setSelectedPositions] = useState({});
@@ -545,7 +545,7 @@ export default function Employee() {
                         setSortBy("position_id");
                       }}
                     >
-                      <p>Position</p>
+                      <p>Jabatan</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "position_id" && "opacity-40"
@@ -686,7 +686,7 @@ export default function Employee() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteEmployee(obj.id)}
-                            title={`Hapus employee?`}
+                            title={`Hapus karyawan?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -797,7 +797,7 @@ export default function Employee() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 required
@@ -817,7 +817,7 @@ export default function Employee() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Telepon</span>
               </label>
               <input
                 required
@@ -839,7 +839,7 @@ export default function Employee() {
               <div className="flex gap-4 w-full">
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text">Birth Place</span>
+                    <span className="label-text">Tempat Lahir</span>
                   </label>
                   <input
                     type="text"
@@ -859,7 +859,7 @@ export default function Employee() {
                 </div>
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text">Birth Date</span>
+                    <span className="label-text">Tanggal Lahir</span>
                   </label>
                   <input
                     type="date"
@@ -904,7 +904,7 @@ export default function Employee() {
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
-                <span className="label-text">Address</span>
+                <span className="label-text">Alamat</span>
               </label>
               <textarea
                 type="text"
@@ -926,7 +926,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Province</span>
+                    <span className="label-text">Provinsi</span>
                   </label>
                   <select
                     type="text"
@@ -959,7 +959,7 @@ export default function Employee() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">City</span>
+                    <span className="label-text">Kabupaten/Kota</span>
                   </label>
                   <select
                     type="text"
@@ -995,7 +995,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">District</span>
+                    <span className="label-text">Kecamatan</span>
                   </label>
                   <select
                     type="text"
@@ -1028,7 +1028,7 @@ export default function Employee() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Village</span>
+                    <span className="label-text">Desa</span>
                   </label>
                   <select
                     type="text"
@@ -1068,7 +1068,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Postal Code</span>
+                    <span className="label-text">Kode Pos</span>
                   </label>
                   <input
                     type="number"
@@ -1137,13 +1137,13 @@ export default function Employee() {
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
-                <span className="label-text">Position</span>
+                <span className="label-text">Jabatan</span>
                 <a
                   href="/dashboard/admin/position"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Add position
+                  <i className="fas fa-info-circle"></i> Tambah jabatan
                 </a>
               </label>
 
@@ -1174,7 +1174,7 @@ export default function Employee() {
                       name="searchAdd"
                       value={searchPosition}
                       onChange={(e) => setSearchPosition(e.target.value)}
-                      placeholder="Search position ..."
+                      placeholder="Cari jabatan ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -1232,7 +1232,7 @@ export default function Employee() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Edit Employee</h3>
+          <h3 className="font-bold text-lg mb-4">Edit karyawan</h3>
           <form onSubmit={putEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1256,7 +1256,7 @@ export default function Employee() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 required
@@ -1276,7 +1276,7 @@ export default function Employee() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Telepon</span>
               </label>
               <input
                 required
@@ -1298,7 +1298,7 @@ export default function Employee() {
               <div className="flex gap-4 w-full">
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text">Birth Place</span>
+                    <span className="label-text">Tempat Lahir</span>
                   </label>
                   <input
                     type="text"
@@ -1318,7 +1318,7 @@ export default function Employee() {
                 </div>
                 <div className="w-full">
                   <label className="label">
-                    <span className="label-text">Birth Date</span>
+                    <span className="label-text">Tanggal Lahir</span>
                   </label>
                   <input
                     type="date"
@@ -1363,7 +1363,7 @@ export default function Employee() {
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
-                <span className="label-text">Address</span>
+                <span className="label-text">Alamat</span>
               </label>
               <textarea
                 type="text"
@@ -1385,7 +1385,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Province</span>
+                    <span className="label-text">Provinsi</span>
                   </label>
                   <select
                     type="text"
@@ -1418,7 +1418,7 @@ export default function Employee() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">City</span>
+                    <span className="label-text">Kabupaten/Kota</span>
                   </label>
                   <select
                     type="text"
@@ -1454,7 +1454,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">District</span>
+                    <span className="label-text">Kecamatan</span>
                   </label>
                   <select
                     type="text"
@@ -1487,7 +1487,7 @@ export default function Employee() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Village</span>
+                    <span className="label-text">Desa</span>
                   </label>
                   <select
                     type="text"
@@ -1525,7 +1525,7 @@ export default function Employee() {
               <div className="flex gap-4">
                 <div className="form-control w-full">
                   <label className="label">
-                    <span className="label-text">Postal Code</span>
+                    <span className="label-text">Kode Pos</span>
                   </label>
                   <input
                     type="number"
@@ -1593,7 +1593,7 @@ export default function Employee() {
               <div className="border-b border-zinc-300 mt-8 mb-4 border-dashed"></div>
 
               <label className="label">
-                <span className="label-text">Position</span>
+                <span className="label-text">Jabatan</span>
               </label>
 
               <div className="dropdown w-full">
@@ -1623,7 +1623,7 @@ export default function Employee() {
                       name="searchAdd"
                       value={searchPosition}
                       onChange={(e) => setSearchPosition(e.target.value)}
-                      placeholder="Search position ..."
+                      placeholder="Cari jabatan ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -1685,17 +1685,17 @@ export default function Employee() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Export</span>
+                <span className="label-text">Export template data</span>
               </label>
               <div
                 className="btn btn-ghost bg-zinc-200 normal-case"
                 onClick={() => downloadTable()}
               >
-                Download Current Template{" "}
+                Download template data{" "}
                 <i className="fas fa-download ml-2"></i>
               </div>
               <label className="label mt-4">
-                <span className="label-text">Import Template</span>
+                <span className="label-text">Import template data</span>
               </label>
 
               <input
@@ -1709,7 +1709,7 @@ export default function Employee() {
                 onClick={() => uploadTable()}
                 className="btn btn-success normal-case text-zinc-700 mt-2"
               >
-                Upload Template <i className="fas fa-upload ml-2"></i>
+                Import template data <i className="fas fa-upload ml-2"></i>
               </div>
             </div>
             <div className="modal-action rounded-sm">

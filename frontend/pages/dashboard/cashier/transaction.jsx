@@ -679,7 +679,7 @@ export default function Transaction() {
                               : "bg-slate-800"
                           } w-full`}
                         >
-                          <option value={dummyQueue.id}>Select patient</option>
+                          <option value={dummyQueue.id}>Pilih pasien</option>
                           {queues?.map((obj) => {
                             return (
                               <option key={obj?.id} value={obj?.id}>
@@ -1359,7 +1359,7 @@ export default function Transaction() {
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
-                      <span>Select patient</span>
+                      <span>Pilih pasien</span>
                     </div>
                   </div>
                 </div>

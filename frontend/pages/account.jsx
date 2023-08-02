@@ -1684,7 +1684,7 @@ export default function Account() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Nama</span>
               </label>
               <input
                 type="text"
@@ -1705,7 +1705,7 @@ export default function Account() {
             </div>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Phone</span>
+                <span className="label-text">Telepon</span>
               </label>
               <input
                 type="text"
@@ -1726,7 +1726,7 @@ export default function Account() {
             </div>
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Address</span>
+                <span className="label-text">Alamat</span>
               </label>
               <textarea
                 type="text"

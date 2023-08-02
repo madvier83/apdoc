@@ -467,7 +467,7 @@ export default function Diagnose() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Description</span>
+                <span className="label-text">Deskripsi</span>
               </label>
               <textarea
                 type="text"
@@ -523,7 +523,7 @@ export default function Diagnose() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Description</span>
+                <span className="label-text">Deskripsi</span>
               </label>
               <textarea
                 type="text"
