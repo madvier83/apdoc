@@ -337,7 +337,7 @@ export default function Service() {
                 <input
                   type="text"
                   name="search"
-                  placeholder="Search..."
+                  placeholder="Cari..."
                   maxLength={32}
                   value={search}
                   onChange={(e) => {

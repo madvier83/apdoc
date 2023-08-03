@@ -1103,7 +1103,7 @@ export default function Queue() {
                   <input
                     type="text"
                     name="search"
-                    placeholder="Search..."
+                    placeholder="Cari..."
                     maxLength={32}
                     value={search}
                     onChange={(e) => {
@@ -1315,7 +1315,7 @@ export default function Queue() {
             <div className="flex">
               <div className="flex w-full py-2 mt-1 rounded-b-md gap-8 justify-center bottom-0 items-center align-bottom select-none bg-gray-50">
                 <small className="w-44 text-right truncate">
-                  Results {patients.from}-{patients.to} dari {patients.total}
+                  Hasil {patients.from}-{patients.to} dari {patients.total}
                 </small>
                 <div className="flex text-xs justify-center items-center">
                   <button
