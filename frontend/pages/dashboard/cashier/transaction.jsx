@@ -9,8 +9,11 @@ import React, {
 import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
 import { getCookies } from "cookies-next";
-import moment from "moment";
 import { nanoid } from "nanoid";
+import moment from "moment";
+
+import "moment/locale/id";
+moment.locale("id");
 
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import ModalBox from "../../../components/Modals/ModalBox";
@@ -320,7 +323,7 @@ export default function Transaction() {
     let prevCart = cart.array;
     let newCart = [];
     prevCart.map((item) => {
-      if (item.id == selectedCart.id) {
+      if (item.item_variant_id == selectedCart.item_variant_id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -341,7 +344,7 @@ export default function Transaction() {
       discount: 0,
     };
     prevCart.map((item) => {
-      if (item.id == obj?.id) {
+      if (item.item_variant_id == obj?.item_variant_id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -620,11 +623,7 @@ export default function Transaction() {
 
   return (
     <>
-      <DashboardLayout
-        title="Transaksi"
-        clinic={clinic}
-        setClinic={setClinic}
-      >
+      <DashboardLayout title="Transaksi" clinic={clinic} setClinic={setClinic}>
         <div className="mt-6">
           <div
             className={`relative max-w-7xl min-w-0 md:min-w-[720px] rounded-md`}
@@ -754,7 +753,7 @@ export default function Transaction() {
                               type="text"
                               value={search}
                               onChange={(e) => setSearch(e.target.value)}
-                              placeholder="Search item ..."
+                              placeholder="Cari item ..."
                               className={`input py-4 h-full text-white ${
                                 search
                                   ? "border-none border-opacity-75 bg-amber-500 bg-opacity-10 text-amber-400 font-semibold"
@@ -983,7 +982,7 @@ export default function Transaction() {
                             className="overflow-y-scroll h-[48vh]"
                           >
                             <div className="mt-4">
-                              <small className="text-zinc-400">Services</small>{" "}
+                              <small className="text-zinc-400">Layanan</small>{" "}
                               <br />
                             </div>
                             <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden">
@@ -1124,8 +1123,9 @@ export default function Transaction() {
                                   >
                                     <tbody>
                                       {cart?.array?.map((obj) => {
+                                        // console.log(obj)
                                         return (
-                                          <React.Fragment key={obj?.id}>
+                                          <React.Fragment key={obj?.name}>
                                             <tr className="rounded-md transition-all duration-300">
                                               <td
                                                 className={`w-2/3 py-2 overflow-hidden`}
@@ -1444,7 +1444,7 @@ export default function Transaction() {
                   )}
                   {cart?.array?.map((obj) => {
                     return (
-                      <React.Fragment key={obj.id}>
+                      <React.Fragment key={obj?.name}>
                         <div className="flex gap-2 w-full justify-between items-center font-semibold">
                           <small>
                             {obj.name}{" "}
@@ -1509,7 +1509,7 @@ export default function Transaction() {
       </DashboardLayout>
 
       <ModalBox id="addPromotionModal">
-        <h3 className="font-bold text-lg mb-4">Add Promotion</h3>
+        <h3 className="font-bold text-lg mb-4">Tambah promosi</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <input type="hidden" autoComplete="off" />
         <div className="form-control w-full">
@@ -1520,7 +1520,7 @@ export default function Transaction() {
             >
               <div className="collapse-title font-semibold capitalize text-sm text-emerald-500 flex items-center gap-4">
                 <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                <p>Promotion</p>
+                <p>Promosi</p>
               </div>
               <div className="collapse-content font-normal capitalize">
                 {promotions?.data?.map((obj) => {
@@ -1528,7 +1528,10 @@ export default function Transaction() {
                     <div
                       className="btn btn-ghost normal-case flex justify-between cursor-pointer"
                       key={obj?.id}
-                      onClick={() => addCartPromotion(obj)}
+                      onClick={() => {
+                        // console.log(selectedCart)
+                        addCartPromotion(obj);
+                      }}
                     >
                       <span>{obj.name}</span>
                       <span>{obj.discount}%</span>
@@ -1558,7 +1561,7 @@ export default function Transaction() {
       </ModalBox>
 
       <ModalBox id="addServicePromotionModal">
-        <h3 className="font-bold text-lg mb-4">Add Service Promotion</h3>
+        <h3 className="font-bold text-lg mb-4">Tambah promosi layanan</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <input type="hidden" autoComplete="off" />
         <div className="form-control w-full">
@@ -1569,7 +1572,7 @@ export default function Transaction() {
             >
               <div className="collapse-title font-semibold capitalize text-sm text-emerald-500 flex items-center gap-4">
                 <i className="fas fa-caret-down group-focus:-rotate-180 duration-500"></i>
-                <p>Promotion</p>
+                <p>Promosi</p>
               </div>
               <div className="collapse-content font-normal capitalize">
                 {promotions?.data?.map((obj) => {
@@ -1609,7 +1612,7 @@ export default function Transaction() {
       </ModalBox>
 
       <ModalBox id="checkoutModal">
-        <h3 className="font-bold text-lg mb-8">Select Payment Method</h3>
+        <h3 className="font-bold text-lg mb-8">Pilih metode pembayaran</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <div className="card">
           <div className="card-body py-2">
@@ -1684,7 +1687,7 @@ export default function Transaction() {
                     transaction.payment >= total ? "block" : "hidden"
                   }`}
                 >
-                  Change {numeral(transaction.payment - total).format()}
+                  Kembalian {numeral(transaction.payment - total).format()}
                 </p>
               </div>
               <small className="text-zinc-400">Suggestion</small>

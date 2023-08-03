@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -594,7 +596,7 @@ export default function Item() {
                         setSortBy("buy_price");
                       }}
                     >
-                      <p>Buy Price</p>
+                      <p>Harga beli</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "buy_price" && "opacity-40"
@@ -610,7 +612,7 @@ export default function Item() {
                         setSortBy("sell_price");
                       }}
                     >
-                      <p>Sell Price</p>
+                      <p>Harga jual</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "sell_price" && "opacity-40"
@@ -763,7 +765,7 @@ export default function Item() {
                                 !obj.item_variants?.length && "animate-pulse"
                               }  bg-violet-500 text-white active:bg-violet-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`}
                             >
-                              tambah <i className="fas fa-folder-plus ml-1"></i>
+                              variant <i className="fas fa-folder-plus ml-1"></i>
                             </label>
                           </div>
                         </td>
@@ -778,7 +780,7 @@ export default function Item() {
                         Active */}
                           {/* <div
                             className="tooltip tooltip-left"
-                            data-tip="Add Variant"
+                            data-tip="Tambah variant"
                           >
                             <label
                               className="bg-indigo-400 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -946,7 +948,7 @@ export default function Item() {
               <p>{data}</p> */}
 
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Kode</span>
               </label>
               <input
                 type="text"
@@ -1082,7 +1084,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text">Harga beli</span>
               </label>
               <CurrencyInput
                 name="buy_price"
@@ -1102,7 +1104,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Sell Price</span>
+                <span className="label-text">Harga jual</span>
               </label>
               <CurrencyInput
                 name="sell_price"
@@ -1122,7 +1124,7 @@ export default function Item() {
                 </label>
               )} */}
               <label className="label">
-                <span className="label-text">Factory</span>
+                <span className="label-text">Pabrik</span>
               </label>
               <input
                 type="text"
@@ -1174,7 +1176,7 @@ export default function Item() {
         </ModalBox>
 
         <ModalBox id="modal-add-variant">
-          <h3 className="font-bold text-lg mb-4">Add Variant</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah variant</h3>
           <form onSubmit={addItemVariant} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1217,7 +1219,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text">Harga beli</span>
               </label>
               <CurrencyInput
                 name="buy_price"
@@ -1237,7 +1239,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Sell Price</span>
+                <span className="label-text">Harga jual</span>
               </label>
               <CurrencyInput
                 name="sell_price"
@@ -1277,7 +1279,7 @@ export default function Item() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Kode</span>
               </label>
               <input
                 type="text"
@@ -1406,7 +1408,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text">Harga beli</span>
               </label>
               <CurrencyInput
                 name="buy_price"
@@ -1426,7 +1428,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Sell Price</span>
+                <span className="label-text">Harga jual</span>
               </label>
               <CurrencyInput
                 name="sell_price"
@@ -1446,7 +1448,7 @@ export default function Item() {
                 </label>
               )} */}
               <label className="label">
-                <span className="label-text">Factory</span>
+                <span className="label-text">Pabrik</span>
               </label>
               <input
                 type="text"
@@ -1543,7 +1545,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Buy Price</span>
+                <span className="label-text">Harga beli</span>
               </label>
               <CurrencyInput
                 name="buy_price"
@@ -1563,7 +1565,7 @@ export default function Item() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Sell Price</span>
+                <span className="label-text">Harga jual</span>
               </label>
               <CurrencyInput
                 name="sell_price"
@@ -1681,8 +1683,8 @@ export default function Item() {
                       detailModalRef.current.click();
                     }}
                   >
-                    <i className="fas fa-folder-plus mr-2"></i>
-                    Add variant
+                    Tambah variant
+                    <i className="fas fa-plus ml-2"></i>
                   </label>
                   <label
                     className="bg-rose-400 text-white active:bg-rose-400 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -1719,14 +1721,14 @@ export default function Item() {
                         <div
                           className={`flex items-center justify-between cursor-pointer`}
                         >
-                          <p>Buy Price</p>
+                          <p>Harga beli</p>
                         </div>
                       </th>
                       <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                         <div
                           className={`flex items-center justify-between cursor-pointer`}
                         >
-                          <p>Sell Price</p>
+                          <p>Harga jual</p>
                         </div>
                       </th>
                       <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">

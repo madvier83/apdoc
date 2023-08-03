@@ -762,7 +762,7 @@ export default function Queue() {
                         )}
                         <div className={`${!isRegular && "hidden"}`}>
                           <div className="mt-4">
-                            <small className="text-zinc-400">Services</small>{" "}
+                            <small className="text-zinc-400">Layanan</small>{" "}
                             <br />
                           </div>
                           <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden h-[32vh]">

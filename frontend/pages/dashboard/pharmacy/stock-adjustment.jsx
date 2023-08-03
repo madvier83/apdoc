@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -447,7 +449,7 @@ export default function StockAdjustment() {
                         setSortBy("adjustment");
                       }}
                     >
-                      <p>Penyesuaian</p>
+                      <p>Setelah Penyesuaian</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "adjustment" && "opacity-40"
@@ -463,7 +465,7 @@ export default function StockAdjustment() {
                         setSortBy("difference");
                       }}
                     >
-                      <p>Sesudah</p>
+                      <p>Perbedaan</p>
                       <i
                         className={`fas fa-sort text-right px-2 ${
                           sortBy != "difference" && "opacity-40"
@@ -639,7 +641,7 @@ export default function StockAdjustment() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
-            Tambah Stock Adjustment
+            Tambah penyesuaian stok
             <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addItem} autoComplete="off">
@@ -683,7 +685,7 @@ export default function StockAdjustment() {
                       name="searchAdd"
                       value={searchCategory}
                       onChange={(e) => setSearchCategory(e.target.value)}
-                      placeholder="Search item ..."
+                      placeholder="Cari item ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -761,13 +763,13 @@ export default function StockAdjustment() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Item Supply</span>
+                <span className="label-text">Pasokan item</span>
                 <a
                   href="/dashboard/pharmacy/supply"
                   target="_blank"
                   className="label-text text-blue-400 text-xs font-semibold"
                 >
-                  <i className="fas fa-info-circle"></i> Item supply
+                  <i className="fas fa-info-circle"></i> Pasokan item
                 </a>
               </label>
               <select
@@ -796,7 +798,7 @@ export default function StockAdjustment() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Adjustment</span>
+                <span className="label-text">Stok</span>
               </label>
               <input
                 type="number"
@@ -815,7 +817,7 @@ export default function StockAdjustment() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Note</span>
+                <span className="label-text">Catatan</span>
               </label>
               <input
                 type="text"

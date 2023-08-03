@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../../api/axios";
 import AdminLayout from "../../../../layouts/AdminLayout";

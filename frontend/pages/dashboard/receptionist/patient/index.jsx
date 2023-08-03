@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
 import { useRouter } from "next/router";
 
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 import axios from "../../../api/axios";
 import Highlighter from "react-highlight-words";
 

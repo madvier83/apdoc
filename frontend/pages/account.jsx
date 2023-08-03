@@ -1,6 +1,8 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import ModalBox from "../components/Modals/ModalBox";

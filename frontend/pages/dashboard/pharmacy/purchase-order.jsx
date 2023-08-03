@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -848,20 +850,20 @@ export default function PurchaseOrder() {
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box max-w-6xl">
             <h3 className="font-bold text-lg mb-4 flex justify-between">
-              Add Purchase Order
+              Tambah pesanan pembelian
               <SelectedClinicBadge></SelectedClinicBadge>
             </h3>
             <form onSubmit={addItem} autoComplete="off">
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Supplier</span>
+                  <span className="label-text">Pemasok</span>
                   <a
                     href="/dashboard/pharmacy/supplier"
                     target="_blank"
                     className="label-text text-blue-400 text-xs font-semibold"
                   >
-                    <i className="fas fa-info-circle"></i> Add supplier
+                    <i className="fas fa-info-circle"></i> Tambah pemasok
                   </a>
                 </label>
 
@@ -892,7 +894,7 @@ export default function PurchaseOrder() {
                         name="searchAdd"
                         value={searchCategory}
                         onChange={(e) => setSearchCategory(e.target.value)}
-                        placeholder="Search supplier ..."
+                        placeholder="Cari pemasok ..."
                         className="input input-bordered border-slate-300 w-full"
                       />
                       <ul
@@ -935,7 +937,7 @@ export default function PurchaseOrder() {
                 )}
 
                 <label className="label">
-                  <span className="label-text">Note</span>
+                  <span className="label-text">Catatan</span>
                 </label>
                 <textarea
                   type="text"
@@ -962,7 +964,7 @@ export default function PurchaseOrder() {
                       target="_blank"
                       className="label-text text-blue-400 text-xs font-semibold"
                     >
-                      <i className="fas fa-info-circle"></i> Add item
+                      <i className="fas fa-info-circle"></i> Tambah item
                     </a>
                   </label>
                   <input
@@ -972,7 +974,7 @@ export default function PurchaseOrder() {
                     name="searchAdd"
                     value={searchItem}
                     onChange={(e) => setSearchItem(e.target.value)}
-                    placeholder="Add item ..."
+                    placeholder="Cari item ..."
                     className="input input-bordered input-md border-slate-300 w-full"
                   />
 
@@ -1097,14 +1099,21 @@ export default function PurchaseOrder() {
                               />
                             </td>
                             <td className="border-t-0 pr-6 align-left border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                              <div
+                              <label
+                                htmlFor={`item1_${obj.id}`}
                                 className="btn btn-sm bg-rose-400 border-none"
-                                onClick={() => {
-                                  addMultiItem(obj);
-                                }}
+                                // onClick={() => {
+                                //   addMultiItem(obj);
+                                // }}
                               >
                                 <i className="fas fa-trash"></i>
-                              </div>
+                              </label>
+                              
+                              <ModalDelete
+                                id={`item1_${obj.id}`}
+                                callback={() => addMultiItem(obj)}
+                                title={`Hapus item?`}
+                              ></ModalDelete>
                             </td>
                           </tr>
                         );
@@ -1156,14 +1165,14 @@ export default function PurchaseOrder() {
             <form onSubmit={putItem} autoComplete="off">
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Supplier</span>
+                <label className="label"> 
+                  <span className="label-text">Pemasok</span>
                   <a
                     href="/dashboard/pharmacy/supplier"
                     target="_blank"
                     className="label-text text-blue-400 text-xs font-semibold"
                   >
-                    <i className="fas fa-info-circle"></i> Add supplier
+                    <i className="fas fa-info-circle"></i> Tambah pemasok
                   </a>
                 </label>
 
@@ -1194,7 +1203,7 @@ export default function PurchaseOrder() {
                         name="searchAdd"
                         value={searchCategory}
                         onChange={(e) => setSearchCategory(e.target.value)}
-                        placeholder="Search supplier ..."
+                        placeholder="Cari pemasok ..."
                         className="input input-bordered border-slate-300 w-full"
                       />
                       <ul
@@ -1237,7 +1246,7 @@ export default function PurchaseOrder() {
                 )}
 
                 <label className="label">
-                  <span className="label-text">Note</span>
+                  <span className="label-text">Catatan</span>
                 </label>
                 <textarea
                   type="text"
@@ -1258,13 +1267,13 @@ export default function PurchaseOrder() {
 
                 <div className="dropdown mb-8">
                   <label className="label mt-4">
-                    <span className="label-text">Items</span>
+                    <span className="label-text">Item</span>
                     <a
                       href="/dashboard/pharmacy/item"
                       target="_blank"
                       className="label-text text-blue-400 text-xs font-semibold"
                     >
-                      <i className="fas fa-info-circle"></i> Add item
+                      <i className="fas fa-info-circle"></i> Tambah item
                     </a>
                   </label>
                   <input
@@ -1274,7 +1283,7 @@ export default function PurchaseOrder() {
                     name="searchAdd"
                     value={searchItem}
                     onChange={(e) => setSearchItem(e.target.value)}
-                    placeholder="Add item ..."
+                    placeholder="Cari item ..."
                     className="input input-bordered input-md border-slate-300 w-full"
                   />
 
@@ -1392,14 +1401,21 @@ export default function PurchaseOrder() {
                               />
                             </td>
                             <td className="border-t-0 pr-6 align-left border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                              <div
+                              <label
+                                htmlFor={`item2_${obj.id}`}
                                 className="btn btn-sm bg-rose-400 border-none"
-                                onClick={() => {
-                                  addMultiItem(obj);
-                                }}
+                                // onClick={() => {
+                                //   addMultiItem(obj);
+                                // }}
                               >
                                 <i className="fas fa-trash"></i>
-                              </div>
+                              </label>
+                              
+                              <ModalDelete
+                                id={`item2_${obj.id}`}
+                                callback={() => addMultiItem(obj)}
+                                title={`Hapus item?`}
+                              ></ModalDelete>
                             </td>
                           </tr>
                         );
@@ -1558,7 +1574,7 @@ export default function PurchaseOrder() {
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Supplier</span>
+                  <span className="label-text">Pemasok</span>
                 </label>
 
                 <div className="dropdown w-full">
@@ -1583,7 +1599,7 @@ export default function PurchaseOrder() {
                 )}
 
                 <label className="label">
-                  <span className="label-text">Note</span>
+                  <span className="label-text">Catatan</span>
                 </label>
                 <textarea
                   type="text"
@@ -1604,13 +1620,13 @@ export default function PurchaseOrder() {
 
                 <div className="dropdown mb-8">
                   <label className="label mt-4">
-                    <span className="label-text">Items</span>
+                    <span className="label-text">Item</span>
                     <a
                       href="/dashboard/pharmacy/item"
                       target="_blank"
                       className="label-text text-blue-400 text-xs font-semibold"
                     >
-                      <i className="fas fa-info-circle"></i> Add item
+                      <i className="fas fa-info-circle"></i> Tambah item
                     </a>
                   </label>
                   <input
@@ -1620,7 +1636,7 @@ export default function PurchaseOrder() {
                     name="searchAdd"
                     value={searchItem}
                     onChange={(e) => setSearchItem(e.target.value)}
-                    placeholder="Add item ..."
+                    placeholder="Cari item ..."
                     className="input input-bordered input-md border-slate-300 w-full"
                   />
 
@@ -1738,14 +1754,21 @@ export default function PurchaseOrder() {
                               />
                             </td>
                             <td className="border-t-0 pr-6 align-left border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
-                              <div
+                              <label
+                                htmlFor={`item3_${obj.id}`}
                                 className="btn btn-sm bg-rose-400 border-none"
-                                onClick={() => {
-                                  addMultiItem(obj);
-                                }}
+                                // onClick={() => {
+                                //   addMultiItem(obj);
+                                // }}
                               >
                                 <i className="fas fa-trash"></i>
-                              </div>
+                              </label>
+                              
+                              <ModalDelete
+                                id={`item3_${obj.id}`}
+                                callback={() => addMultiItem(obj)}
+                                title={`Hapus item?`}
+                              ></ModalDelete>
                             </td>
                           </tr>
                         );
@@ -1800,7 +1823,7 @@ export default function PurchaseOrder() {
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Supplier</span>
+                  <span className="label-text">Pemasok</span>
                 </label>
 
                 <div className="dropdown w-full">
@@ -1825,7 +1848,7 @@ export default function PurchaseOrder() {
                 )}
 
                 <label className="label">
-                  <span className="label-text">Note</span>
+                  <span className="label-text">Catatan</span>
                 </label>
                 <textarea
                   type="text"
@@ -1846,7 +1869,7 @@ export default function PurchaseOrder() {
 
                 <div className="dropdown mb-8">
                   <label className="label mt-4">
-                    <span className="label-text">Items</span>
+                    <span className="label-text">Item</span>
                   </label>
 
                   <table className="items-center w-full bg-transparent border-collapse overflow-auto mt-4 px-4">

@@ -37,7 +37,7 @@ export default function Login() {
                 className="z-50 w-80 bg-emerald-600 text-white active:bg-emerald-700 text-sm font-bold px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 onClick={() => router.push("/dashboard/account")}
                 >
-                Confirm
+                Konfirmasi
                 </button>
             </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 import numeral from "numeral";
 
 import axios from "../../api/axios";
@@ -644,14 +646,14 @@ export default function Service() {
 
         <ModalBox id="modal-add">
           <h3 className="font-bold text-lg mb-4 flex justify-between">
-            Tambah Service
+            Tambah layanan
             <SelectedClinicBadge></SelectedClinicBadge>
           </h3>
           <form onSubmit={addService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Kode</span>
               </label>
               <input
                 type="text"
@@ -693,7 +695,7 @@ export default function Service() {
                         target="_blank"
                         className="label-text text-blue-400 text-xs font-semibold"
                       >
-                        <i className="fas fa-info-circle"></i> Tambah kategori service
+                        <i className="fas fa-info-circle"></i> Tambah kategori layanan
                       </a>
               </label>
               <div className="dropdown w-full">
@@ -765,7 +767,7 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Harga</span>
               </label>
               <CurrencyInput
                 name="price"
@@ -783,7 +785,7 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Commission</span>
+                <span className="label-text">Komisi</span>
               </label>
               <CurrencyInput
                 name="commission"
@@ -817,12 +819,12 @@ export default function Service() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Service</h3>
+          <h3 className="font-bold text-lg mb-4">Update layanan</h3>
           <form onSubmit={putService} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Code</span>
+                <span className="label-text">Kode</span>
               </label>
               <input
                 type="text"
@@ -930,7 +932,7 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Harga</span>
               </label>
               <CurrencyInput
                 name="price"
@@ -948,7 +950,7 @@ export default function Service() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Commission</span>
+                <span className="label-text">Komisi</span>
               </label>
               <CurrencyInput
                 name="commission"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -21,8 +23,8 @@ export default function History() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   
-  const [sortBy, setSortBy] = useState("patient_id");
-  const [order, setOrder] = useState(true);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [order, setOrder] = useState(false);
 
   const [item, setItem] = useState([]);
   const [itemLoading, setItemLoading] = useState(true);
@@ -299,7 +301,7 @@ export default function History() {
                             }`}
                           ></i>{" "}
                           <span className={"font-bold"}>
-                            {obj.patient?.name || "NPC"}
+                            {obj.patient?.name || "Apoteker"}
                           </span>
                         </td>
                         <td className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2 text-left">
@@ -491,7 +493,7 @@ export default function History() {
               }`}
             >
               <div className="">
-                <div className="flex items-center">
+                <div className={`${selectedQueue?.patient?.name ? "block":"hidden"} flex items-center`}>
                   <div className="w-full">
                     <h2 className="card-title text-base lg:text-2xl text-zinc-900 truncate">
                       {selectedQueue?.patient?.name}
@@ -513,8 +515,8 @@ export default function History() {
                         // {...queuesEvents}
                         className="overflow-y-scroll h-full mb-4"
                       >
-                        <div className="mt-4">
-                          <small className="text-zinc-400">Services</small>{" "}
+                        <div className={`${selectedQueue?.patient?.name ? "block":"hidden"} mt-4`}>
+                          <small className="text-zinc-400">Layanan</small>{" "}
                           <br />
                         </div>
                         <div className="flex flex-col mt-1 gap-1 rounded-md overflow-hidden">

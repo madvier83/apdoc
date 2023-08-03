@@ -5,7 +5,7 @@ export default function ModalDelete({title, id, callback}) {
     const cancelRef = useRef()
     async function closeAfterCallback() {
         await callback();
-        cancelRef.current.click()
+        cancelRef.current?.click()
     }
     return (
         <>
@@ -18,7 +18,7 @@ export default function ModalDelete({title, id, callback}) {
                     <label htmlFor={id} ref={cancelRef} className="btn btn-ghost rounded-md w-2/5 bg-blue-100">
                     Batalkan
                     </label>
-                    <button className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Hapus</button>
+                    <div className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Hapus</div>
                 </div>
             </div>
         </ModalBox>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../api/axios";
 import DashboardLayout from "../../layouts/DashboardLayout";
@@ -446,7 +448,7 @@ export default function Slots() {
                       name="searchAdd"
                       value={searchEmployees}
                       onChange={(e) => setSearchEmployees(e.target.value)}
-                      placeholder="Search employee ..."
+                      placeholder="Cari karyawan ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul
@@ -625,7 +627,7 @@ export default function Slots() {
                       name="searchAdd"
                       value={searchEmployees}
                       onChange={(e) => setSearchEmployees(e.target.value)}
-                      placeholder="Search employee ..."
+                      placeholder="Cari karyawan ..."
                       className="input input-bordered border-slate-300 w-full"
                     />
                     <ul

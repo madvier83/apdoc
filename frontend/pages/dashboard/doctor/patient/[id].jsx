@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../../api/axios";
 import DashboardLayout from "../../../../layouts/DashboardLayout";
@@ -645,8 +647,7 @@ export default function Patients() {
                         </a>
                       </span>
                     </div>
-                    <small className="text-zinc-400">Lahir</small>{" "}
-                    <br />
+                    <small className="text-zinc-400">Lahir</small> <br />
                     <span className="font-sm text-zinc-800">
                       {selectedPatient?.birth_place +
                         ", " +
@@ -657,9 +658,11 @@ export default function Patients() {
                     <div className="mt-4">
                       <small className="text-zinc-400">Alamat</small> <br />
                       <span className="font-sm text-zinc-800">
-                        {selectedPatient?.address?.substring},
-                        <br />{selectedPatient?.village?.name},{" "}
-                        {selectedPatient?.city?.name}, {selectedPatient?.district?.name},{" "}
+                        {selectedPatient?.address},
+                        <br />
+                        {selectedPatient?.village?.name},{" "}
+                        {selectedPatient?.city?.name},{" "}
+                        {selectedPatient?.district?.name},{" "}
                         {selectedPatient?.province?.name}
                       </span>
                     </div>
@@ -950,27 +953,27 @@ export default function Patients() {
                               <table className="">
                                 <tbody>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Complaint</td>
+                                    <td className="w-24">Komplain</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.complaint}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Inspection</td>
+                                    <td className="w-24">Inspeksi</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.inspection}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Description</td>
+                                    <td className="w-24">Deskripsi</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.description}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Therapy</td>
+                                    <td className="w-24">Terapi</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">{obj.therapy}</td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Diagnoses</td>
+                                    <td className="w-24">Diagnosa</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_diagnoses?.length > 0 && (
@@ -992,7 +995,7 @@ export default function Patients() {
                                   </tr>
 
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Services</td>
+                                    <td className="w-24">Layanan</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_services?.length > 0 && (
@@ -1014,7 +1017,7 @@ export default function Patients() {
                                   </tr>
 
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24">Items</td>
+                                    <td className="w-24">Item</td>
                                     <td className="w-4">:</td>
                                     <td className="py-2">
                                       {obj.record_items?.length > 0 && (
@@ -1041,7 +1044,7 @@ export default function Patients() {
                                     </td>
                                   </tr>
                                   <tr className="text-sm text-zinc-500 align-text-top">
-                                    <td className="w-24 align-top">Files</td>
+                                    <td className="w-24 align-top">File</td>
                                     <td className="w-4 align-top">:</td>
                                     <td className="py-2 flex gap-2">
                                       {obj.record_files?.length > 0 &&
@@ -1134,7 +1137,7 @@ export default function Patients() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Complaint</span>
+                <span className="label-text">Komplain</span>
               </label>
               <textarea
                 type="text"
@@ -1153,7 +1156,7 @@ export default function Patients() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Inspeciton</span>
+                <span className="label-text">Inspeksi</span>
               </label>
               <textarea
                 type="text"
@@ -1191,7 +1194,7 @@ export default function Patients() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Therapy</span>
+                <span className="label-text">Terapi</span>
               </label>
               <textarea
                 type="text"
@@ -1284,7 +1287,7 @@ export default function Patients() {
 
               <div className="dropdown">
                 <label className="label mt-4">
-                  <span className="label-text">Services</span>
+                  <span className="label-text">Layanan</span>
                 </label>
                 <input
                   tabIndex={0}
@@ -1354,7 +1357,7 @@ export default function Patients() {
               </div>
               <div className="dropdown">
                 <label className="label mt-4">
-                  <span className="label-text">Items</span>
+                  <span className="label-text">Item</span>
                 </label>
                 <input
                   tabIndex={0}
@@ -1446,12 +1449,12 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-add-growth">
-          <h3 className="font-bold text-lg mb-4">Growth Record</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah catatan pertumbuhan</h3>
           <form onSubmit={(e) => addGrowth(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label mt-4">
-                <span className="label-text">Height (cm)</span>
+                <span className="label-text">Tinggi (cm)</span>
               </label>
               <input
                 type="number"
@@ -1505,7 +1508,7 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-add-files">
-          <h3 className="font-bold text-lg mb-4">Add Files</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah file</h3>
           <form onSubmit={(e) => addFile(e, putForm.id)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1550,7 +1553,7 @@ export default function Patients() {
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Complaint</span>
+                <span className="label-text">Komplain</span>
               </label>
               <textarea
                 type="text"
@@ -1569,7 +1572,7 @@ export default function Patients() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Inspeciton</span>
+                <span className="label-text">Inspeksi</span>
               </label>
               <textarea
                 type="text"
@@ -1607,7 +1610,7 @@ export default function Patients() {
                 </label>
               )}
               <label className="label">
-                <span className="label-text">Therapy</span>
+                <span className="label-text">Terapi</span>
               </label>
               <textarea
                 type="text"
@@ -1700,7 +1703,7 @@ export default function Patients() {
 
               <div className="dropdown">
                 <label className="label mt-4">
-                  <span className="label-text">Services</span>
+                  <span className="label-text">Layanan</span>
                 </label>
                 <input
                   tabIndex={0}
@@ -1770,7 +1773,7 @@ export default function Patients() {
               </div>
               <div className="dropdown">
                 <label className="label mt-4">
-                  <span className="label-text">Items</span>
+                  <span className="label-text">Item</span>
                 </label>
                 <input
                   tabIndex={0}
@@ -1882,7 +1885,7 @@ export default function Patients() {
         </ModalBox>
 
         <ModalBox id="modal-put-growth">
-          <h3 className="font-bold text-lg mb-4">Update Growth Record</h3>
+          <h3 className="font-bold text-lg mb-4">Update catatan pertumbuhan</h3>
           <form onSubmit={(e) => putGrowth(e)} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

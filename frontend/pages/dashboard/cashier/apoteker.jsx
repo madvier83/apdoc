@@ -10,6 +10,9 @@ import { Expo, gsap } from "gsap";
 import { useDraggable } from "react-use-draggable-scroll";
 import { getCookies } from "cookies-next";
 import moment from "moment";
+import "moment/locale/id";
+moment.locale("id");
+
 import { nanoid } from "nanoid";
 
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -320,7 +323,7 @@ export default function Transaction() {
     let prevCart = cart.array;
     let newCart = [];
     prevCart.map((item) => {
-      if (item.id == selectedCart.id) {
+      if (item.item_variant_id == selectedCart.item_variant_id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -341,7 +344,7 @@ export default function Transaction() {
       discount: 0,
     };
     prevCart.map((item) => {
-      if (item.id == obj?.id) {
+      if (item.item_variant_id == obj?.item_variant_id) {
         newCart.push(newSelectedCart);
       } else {
         newCart.push(item);
@@ -748,7 +751,7 @@ export default function Transaction() {
                               type="text"
                               value={search}
                               onChange={(e) => setSearch(e.target.value)}
-                              placeholder="Search item ..."
+                              placeholder="Cari item ..."
                               className={`input py-4 h-full text-white ${
                                 search
                                   ? "border-none border-opacity-75 bg-amber-500 bg-opacity-10 text-amber-400 font-semibold"
@@ -1392,7 +1395,7 @@ export default function Transaction() {
       </ModalBox>
 
       <ModalBox id="checkoutModal">
-        <h3 className="font-bold text-lg mb-8">Select Payment Method</h3>
+        <h3 className="font-bold text-lg mb-8">Pilih metode pembayaran</h3>
         {/* <form onSubmit={() => {}} autoComplete="off"> */}
         <div className="card">
           <div className="card-body py-2">
@@ -1467,7 +1470,7 @@ export default function Transaction() {
                     transaction.payment >= total ? "block" : "hidden"
                   }`}
                 >
-                  Change {numeral(transaction.payment - total).format()}
+                  Kembalian {numeral(transaction.payment - total).format()}
                 </p>
               </div>
               <small className="text-zinc-400">Suggestion</small>

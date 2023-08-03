@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { getCookies } from "cookies-next";
-import moment from "moment/moment";
+import moment from "moment/moment"; 
+import "moment/locale/id";
+moment.locale("id");
 
 import axios from "../../api/axios";
 import DashboardLayout from "../../../layouts/DashboardLayout";
@@ -543,7 +545,7 @@ export default function Supplier() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteItem(obj.id)}
-                            title={`Hapus item?`}
+                            title={`Hapus pemasok?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -629,7 +631,7 @@ export default function Supplier() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Supplier 
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah pemasok 
             <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
@@ -725,7 +727,7 @@ export default function Supplier() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Supplier</h3>
+          <h3 className="font-bold text-lg mb-4">Update pemasok</h3>
           <form onSubmit={putItem} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
