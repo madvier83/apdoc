@@ -249,7 +249,7 @@ export default function Notification() {
         <div className="py-8"></div>
 
         <ModalBox id="addMail">
-          <h3 className="font-bold text-lg mb-4">Add Mail</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah email</h3>
           <form onSubmit={addMails} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -280,7 +280,7 @@ export default function Notification() {
                 Batalkan
               </label>
               <button className="btn btn-success bg-indigo-400 rounded-md">
-                Add
+                Tambah
               </button>
             </div>
           </form>

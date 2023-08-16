@@ -290,7 +290,7 @@ export default function Queue() {
 
   return (
     <>
-      <DashboardLayout title="Antrian" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic}>
         <div className="mt-6">
           <div
             className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
@@ -462,7 +462,7 @@ export default function Queue() {
                         <div className="card-body py-4">
                           <div className="flex items-center text-zinc-400">
                             <div className="mx-auto">
-                              <span className="font-semibold">Tidak ada antrian</span>
+                              <span className="font-semibold">Tidak ada antrean</span>
                               {/* <i className="fas fa-plus ml-2"></i> */}
                             </div>
                           </div>

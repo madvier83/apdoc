@@ -470,7 +470,7 @@ export default function Queue() {
 
   return (
     <>
-      <DashboardLayout title="Antrian" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic}>
         <div className="mt-6">
           <div
             className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
@@ -483,7 +483,7 @@ export default function Queue() {
                     !isRegular && "opacity-30"
                   }`}
                 >
-                  Antrian <i className="fa-regular fa-user ml-2"></i>
+                  antrean <i className="fa-regular fa-user ml-2"></i>
                 </span>
                 <span
                   onClick={() => setIsRegular(false)}
@@ -582,7 +582,7 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Hapus antrian ${obj.queue_number}?`}
+                              title={`Hapus antrean ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
@@ -627,7 +627,7 @@ export default function Queue() {
                                     }
                                     className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 ml-auto rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                   >
-                                    Tambah ke antrian{" "}
+                                    Tambah ke antrean{" "}
                                     <i className="fas fa-add ml-2"></i>
                                   </button>
                                 )}
@@ -661,7 +661,7 @@ export default function Queue() {
                       <div className="card-body py-4">
                         <div className="flex items-center text-zinc-400">
                           <div className="mx-auto">
-                            <span className="font-semibold">Tambah ke antrian</span>
+                            <span className="font-semibold">Tambah ke antrean</span>
                             <i className="fas fa-plus ml-2"></i>
                           </div>
                         </div>
@@ -1301,7 +1301,7 @@ export default function Queue() {
                                 }}
                                 className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                               >
-                                Tambah ke antrian <i className="fas fa-add ml-2"></i>
+                                Tambah ke antrean <i className="fas fa-add ml-2"></i>
                               </button>
                             )}
                           </td>

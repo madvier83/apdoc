@@ -1378,7 +1378,7 @@ export default function Account() {
                           </div>
                           <div className="form-control w-full">
                             <label className="capitalize text-gray-400 text-xs font-bold mb-2 flex items-center justify-between">
-                              <span className="mt-2 ">Postal Code</span>
+                              <span className="mt-2 ">Kode Pos</span>
                             </label>
                             <select
                               type="number"
@@ -1681,7 +1681,7 @@ export default function Account() {
         </div>
 
         <ModalBox id="addClinic">
-          <h3 className="font-bold text-lg mb-4">Add Clinic</h3>
+          <h3 className="font-bold text-lg mb-4">Tambah klinik</h3>
           <form onSubmit={addClinic} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -1892,7 +1892,7 @@ export default function Account() {
             <div className="flex gap-4">
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Postal Code</span>
+                  <span className="label-text">Kode Pos</span>
                 </label>
                 <input
                   type="number"
@@ -1965,14 +1965,14 @@ export default function Account() {
                 Batalkan
               </label>
               <button className="btn btn-success bg-indigo-400 rounded-md">
-                Add
+                Tambah
               </button>
             </div>
           </form>
         </ModalBox>
 
         <ModalBox id="updateClinicModal">
-          <h3 className="font-bold text-lg mb-4">Update Clinic</h3>
+          <h3 className="font-bold text-lg mb-4">Update klinik</h3>
           <form onSubmit={putClinic} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -2179,7 +2179,7 @@ export default function Account() {
             <div className="flex gap-4">
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Postal Code</span>
+                  <span className="label-text">Kode Pos</span>
                 </label>
                 <input
                   type="number"

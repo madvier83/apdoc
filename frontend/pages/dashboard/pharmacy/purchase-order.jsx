@@ -726,7 +726,7 @@ export default function PurchaseOrder() {
                               ></ModalDelete>
                               <div
                                 className="tooltip tooltip-left"
-                                data-tip="Fulfill puchase order"
+                                data-tip="Memenuhi pesanan pembelian"
                               >
                                 <label
                                   className="bg-amber-400 text-white active:bg-amber-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -1161,7 +1161,7 @@ export default function PurchaseOrder() {
         <input type="checkbox" id="modal-put" className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box max-w-6xl">
-            <h3 className="font-bold text-lg mb-4">Update Purchase Order</h3>
+            <h3 className="font-bold text-lg mb-4">Update pesanan pembelian</h3>
             <form onSubmit={putItem} autoComplete="off">
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">
@@ -1818,7 +1818,7 @@ export default function PurchaseOrder() {
         <input type="checkbox" id="modal-details" className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box max-w-6xl">
-            <h3 className="font-bold text-lg mb-4">Purchase Order</h3>
+            <h3 className="font-bold text-lg mb-4">Pesanan pembelian</h3>
             <form autoComplete="off">
               <input type="hidden" autoComplete="off" />
               <div className="form-control w-full">

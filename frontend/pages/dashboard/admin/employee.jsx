@@ -774,7 +774,7 @@ export default function Employee() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Employee 
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Karyawan 
             <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addEmployee} autoComplete="off">
             <input type="hidden" autoComplete="off" />

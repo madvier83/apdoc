@@ -10,7 +10,7 @@ export default function LandingLayout({children}) {
     return (
         <>
             <Head>
-                <title>APDOC | Landing</title>
+                <title>APDOC | Clinic System</title>
             </Head>
 
             <Navbar transparent />

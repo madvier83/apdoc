@@ -650,7 +650,7 @@ export default function Transaction() {
                             {queues?.length > 0 ? (
                               <div className="opacity-80">
                                 <div className="badge badge-error font-semibold animate-pulse">
-                                  {queues?.length} dalam antrian
+                                  {queues?.length} dalam antrean
                                 </div>
                               </div>
                             ) : (
@@ -1018,7 +1018,7 @@ export default function Transaction() {
                                                 <div className="div flex justify-between items-center">
                                                   <div
                                                     className="tooltip tooltip-left"
-                                                    data-tip="Add Discount"
+                                                    data-tip="Tambah Promosi"
                                                   >
                                                     {obj.discount <= 0 && (
                                                       <label
@@ -1072,7 +1072,7 @@ export default function Transaction() {
                                                 >
                                                   <div
                                                     className="tooltip tooltip-left"
-                                                    data-tip="Remove Discount"
+                                                    data-tip="Hapus diskon"
                                                   >
                                                     <button
                                                       className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-rose-400 hover:bg-zinc-100"
@@ -1221,7 +1221,7 @@ export default function Transaction() {
                                                 <div className="div flex justify-between items-center">
                                                   <div
                                                     className="tooltip tooltip-left"
-                                                    data-tip="Add Discount"
+                                                    data-tip="Tambah Promosi"
                                                   >
                                                     {obj.discount <= 0 && (
                                                       <label
@@ -1271,7 +1271,7 @@ export default function Transaction() {
                                                 >
                                                   <div
                                                     className="tooltip tooltip-left"
-                                                    data-tip="Remove Discount"
+                                                    data-tip="Hapus diskon"
                                                   >
                                                     <button
                                                       className="btn btn-ghost opacity-0 group-hover:opacity-100 btn-sm text-rose-400 hover:bg-zinc-100"
@@ -1690,7 +1690,7 @@ export default function Transaction() {
                   Kembalian {numeral(transaction.payment - total).format()}
                 </p>
               </div>
-              <small className="text-zinc-400">Suggestion</small>
+              <small className="text-zinc-400">Rekomendasi</small>
               <div className="grid grid-flow-col gap-2 col-span-3 mt-1 mb-2">
                 <div
                   className={`btn btn-ghost bg-slate-100 text-left rounded-md cursor-pointer`}

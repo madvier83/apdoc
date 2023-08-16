@@ -416,7 +416,7 @@ export default function CategoryService() {
                           <ModalDelete
                             id={obj.id}
                             callback={() => deleteCategory(obj.id)}
-                            title={`Hapus category service?`}
+                            title={`Hapus kategori layanan?`}
                           ></ModalDelete>
                         </td>
                       </tr>
@@ -502,7 +502,7 @@ export default function CategoryService() {
         </div>
 
         <ModalBox id="modal-add">
-          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah Category Service 
+          <h3 className="font-bold text-lg mb-4 flex justify-between">Tambah kategori layanan 
             <SelectedClinicBadge></SelectedClinicBadge></h3>
           <form onSubmit={addCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
@@ -539,7 +539,7 @@ export default function CategoryService() {
         </ModalBox>
 
         <ModalBox id="modal-put">
-          <h3 className="font-bold text-lg mb-4">Update Category Service</h3>
+          <h3 className="font-bold text-lg mb-4">Update kategori layanan</h3>
           <form onSubmit={putCategory} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">
@@ -577,7 +577,7 @@ export default function CategoryService() {
         </ModalBox>
         
         <ModalBox id="modal-export">
-          <h3 className="font-bold text-lg mb-4">Category Service Table Config</h3>
+          <h3 className="font-bold text-lg mb-4">kategori layanan Table Config</h3>
           <form onSubmit={() => {}} autoComplete="off">
             <input type="hidden" autoComplete="off" />
             <div className="form-control w-full">

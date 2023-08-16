@@ -127,10 +127,10 @@ export default function Sidebar() {
           description: "Jadwalkan dan kelola janji temu pasien.",
         },
         {
-          name: "antrian",
+          name: "antrean",
           route: "/dashboard/receptionist/queue",
           access: true,
-          description: "Mengelola antrian pasien dan daftar tunggu.",
+          description: "Mengelola antrean pasien dan daftar tunggu.",
         },
       ],
     },
@@ -166,11 +166,11 @@ export default function Sidebar() {
           description: "Mengelola catatan pasien dan riwayat medis.",
         },
         {
-          name: "antrian",
+          name: "antrean",
           route: "/dashboard/doctor/queue",
           access: true,
           description:
-            "Memantau dan mengelola antrian pasien dan daftar tunggu.",
+            "Memantau dan mengelola antrean pasien dan daftar tunggu.",
         },
       ],
     },
@@ -413,86 +413,6 @@ export default function Sidebar() {
 
               <hr className="my-4 md:min-w-full" />
 
-              {user?.role_id == 2 && (
-                <li
-                  // key={index}
-                  className={`items-center list-none ${
-                    router.pathname == "/" && "text-emerald-500 "
-                  }`}
-                >
-                  <button
-                    onClick={() =>
-                      setSidebar({ ...initialSidebar, user: !sidebar.user })
-                    }
-                    className={
-                      "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
-                    }
-                  >
-                    <i
-                      className={`fas ${
-                        sidebar.user ? "fa-folder-open" : "fa-folder"
-                      }  mr-2 text-sm `}
-                    ></i>{" "}
-                    User
-                  </button>
-
-                  <ul
-                    className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
-                      sidebar.user == true ? "block" : "hidden"
-                    }`}
-                  >
-                    <li
-                      // key={index}
-                      className={`items-center list-none ${
-                        router.pathname.startsWith("/owner/access") &&
-                        "text-emerald-500"
-                      }`}
-                    >
-                      <Link
-                        scroll={false}
-                        href={"/owner/access"}
-                        className={
-                          "text-xs py-3 font-semibold block capitalize"
-                        }
-                      >
-                        <i
-                          className={`fa-regular ${
-                            router.pathname.startsWith("/owner/access")
-                              ? "fa-folder-open"
-                              : "fa-folder"
-                          } mr-2 text-sm`}
-                        ></i>{" "}
-                        Akses User
-                      </Link>
-                    </li>
-                    <li
-                      // key={index}
-                      className={`items-center list-none ${
-                        router.pathname.startsWith("/owner/slots") &&
-                        "text-emerald-500"
-                      }`}
-                    >
-                      <div
-                        // scroll={false}
-                        onClick={() => router.push("/owner/slots")}
-                        className={
-                          "text-xs py-3 font-semibold block capitalize cursor-pointer"
-                        }
-                      >
-                        <i
-                          className={`fa-regular ${
-                            router.pathname.startsWith("/owner/slots")
-                              ? "fa-folder-open"
-                              : "fa-folder"
-                          } mr-2 text-sm`}
-                        ></i>{" "}
-                        Slot User
-                      </div>
-                    </li>
-                  </ul>
-                </li>
-              )}
-
               <ul className="md:flex-col md:min-w-full flex flex-col list-none">
                 {accesses?.map((menu, index) => {
                   if (menu.access) {
@@ -579,6 +499,86 @@ export default function Sidebar() {
                     <i className={"fas fa-user mr-2 text-sm "}></i> Akun
                   </Link>
                 </li>
+
+                {user?.role_id == 2 && (
+                  <li
+                    // key={index}
+                    className={`items-center list-none ${
+                      router.pathname == "/" && "text-emerald-500 "
+                    }`}
+                  >
+                    <button
+                      onClick={() =>
+                        setSidebar({ ...initialSidebar, user: !sidebar.user })
+                      }
+                      className={
+                        "text-xs py-3 text-slate-500 font-bold block w-full text-left capitalize"
+                      }
+                    >
+                      <i
+                        className={`fas ${
+                          sidebar.user ? "fa-user-plus" : "fa-user-plus"
+                        }  mr-1 text-sm `}
+                      ></i>{" "}
+                      User
+                    </button>
+
+                    <ul
+                      className={`md:flex-col md:min-w-full list-none ml-6 text-slate-400 ${
+                        sidebar.user == true ? "block" : "hidden"
+                      }`}
+                    >
+                      <li
+                        // key={index}
+                        className={`items-center list-none ${
+                          router.pathname.startsWith("/owner/access") &&
+                          "text-emerald-500"
+                        }`}
+                      >
+                        <Link
+                          scroll={false}
+                          href={"/owner/access"}
+                          className={
+                            "text-xs py-3 font-semibold block capitalize"
+                          }
+                        >
+                          <i
+                            className={`fas ${
+                              router.pathname.startsWith("/owner/access")
+                                ? "fa-fingerprint"
+                                : "fa-fingerprint"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Akses User
+                        </Link>
+                      </li>
+                      <li
+                        // key={index}
+                        className={`items-center list-none ${
+                          router.pathname.startsWith("/owner/slots") &&
+                          "text-emerald-500"
+                        }`}
+                      >
+                        <div
+                          // scroll={false}
+                          onClick={() => router.push("/owner/slots")}
+                          className={
+                            "text-xs py-3 font-semibold block capitalize cursor-pointer"
+                          }
+                        >
+                          <i
+                            className={`fas ${
+                              router.pathname.startsWith("/owner/slots")
+                                ? "fa-address-book"
+                                : "fa-address-book"
+                            } mr-2 text-sm`}
+                          ></i>{" "}
+                          Slot User
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                )}
 
                 {/* <li
                   className={`items-center ${

@@ -713,21 +713,21 @@ export default function ItemSupply() {
                           <div
                             className={`flex items-center justify-between cursor-pointer`}
                           >
-                            <p>Stock</p>
+                            <p>Stok</p>
                           </div>
                         </th>
                         <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                           <div
                             className={`flex items-center justify-between cursor-pointer`}
                           >
-                            <p>Manufacturing</p>
+                            <p>Manufaktur</p>
                           </div>
                         </th>
                         <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                           <div
                             className={`flex items-center justify-between cursor-pointer`}
                           >
-                            <p>Expired</p>
+                            <p>Kedaluarsa</p>
                           </div>
                         </th>
                         {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
