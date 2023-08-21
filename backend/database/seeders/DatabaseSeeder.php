@@ -93,7 +93,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Setting::create([
-			'logo'        => null,
+            'logo'        => null,
             'name'        => 'Cursor ID',
             'phone'       => '6282376932441',
             'province_id' => 12,
@@ -105,10 +105,10 @@ class DatabaseSeeder extends Seeder
             'rw'          => "03",
             'postal_code' => "40261",
             'clinic_id'   => $clinic->id
-		]);
+        ]);
 
         // free slot
-        for($i=0; $i<10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             UserSlot::create([
                 'clinic_id' => $clinic->id
             ]);
@@ -132,7 +132,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Setting::create([
-			'logo'        => null,
+            'logo'        => null,
             'name'        => 'Umanis Klinik',
             'phone'       => '6282376932441',
             'province_id' => 12,
@@ -144,10 +144,10 @@ class DatabaseSeeder extends Seeder
             'rw'          => "03",
             'postal_code' => "40228",
             'clinic_id'   => $clinic->id
-		]);
+        ]);
 
         // free slot
-        for($i=0; $i<10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             UserSlot::create([
                 'clinic_id' => $clinic->id
             ]);
@@ -189,7 +189,220 @@ class DatabaseSeeder extends Seeder
 
         Access::create([
             'role_id'  => 2,
-            'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":true,"submenu":[{"name":"position","route":"/dashboard/admin/position","access":true},{"name":"employee","route":"/dashboard/admin/employee","access":true},{"name":"category-payment","route":"/dashboard/admin/category-payment","access":true},{"name":"payment","route":"/dashboard/admin/payment","access":true},{"name":"category-outcome","route":"/dashboard/admin/category-outcome","access":true},{"name":"outcome","route":"/dashboard/admin/outcome","access":true},{"name":"promotion","route":"/dashboard/admin/promotion","access":true}]},{"name":"receptionist","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"patient","route":"/dashboard/receptionist/patient","access":true},{"name":"appointment","route":"/dashboard/receptionist/appointment","access":true},{"name":"queue","route":"/dashboard/receptionist/queue","access":true}]},{"name":"doctor","route":"/dashboard/doctor","access":true,"submenu":[{"name":"diagnose","route":"/dashboard/doctor/diagnose","access":true},{"name":"category-service","route":"/dashboard/doctor/category-service","access":true},{"name":"service","route":"/dashboard/doctor/service","access":true},{"name":"patient","route":"/dashboard/doctor/patient","access":true},{"name":"queue","route":"/dashboard/doctor/queue","access":true}]},{"name":"pharmacy","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"category-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"item-supply","route":"/dashboard/pharmacy/supply","access":true},{"name":"supplier","route":"/dashboard/pharmacy/supplier","access":true},{"name":"purchase-order","route":"/dashboard/pharmacy/purchase-order","access":true},{"name":"stock-adjustment","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"cashier","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaction","route":"/dashboard/cashier/transaction","access":true},{"name":"history","route":"/dashboard/cashier/history","access":true}]},{"name":"report","route":"/dashboard/report","access":true,"submenu":[{"name":"sales","route":"/dashboard/report/sales","access":true}]}]',
+            'accesses' => '[
+                {
+                  name: "admin",
+                  route: "/dashboard/admin",
+                  access: true,
+                  description:
+                    "Kontrol penuh pusat. Manajemen pengguna, konfigurasi sistem, dan manajemen layanan.",
+                  submenu: [
+                    {
+                      name: "jabatan",
+                      route: "/dashboard/admin/position",
+                      access: true,
+                      description: "Buat jabatan kustom untuk karyawan.",
+                    },
+                    {
+                      name: "karyawan",
+                      route: "/dashboard/admin/employee",
+                      access: true,
+                      description: "Mengelola rekrutmen dan karyawan Anda.",
+                    },
+                    {
+                      name: "kategori-pembayaran",
+                      route: "/dashboard/admin/category-payment",
+                      access: true,
+                      description: "Mengelola kategori untuk metode pembayaran.",
+                    },
+                    {
+                      name: "pembayaran",
+                      route: "/dashboard/admin/payment",
+                      access: true,
+                      description: "Sesuaikan pilihan pembayaran untuk transaksi.",
+                    },
+                    {
+                      name: "kategori-pengeluaran",
+                      route: "/dashboard/admin/category-outcome",
+                      access: true,
+                      description: "Mengelola kategori untuk pengeluaran.",
+                    },
+                    {
+                      name: "pengeluaran",
+                      route: "/dashboard/admin/outcome",
+                      access: true,
+                      description:
+                        "Atur pengeluaran Anda dan buat keputusan berdasarkan informasi.",
+                    },
+                    {
+                      name: "promosi",
+                      route: "/dashboard/admin/promotion",
+                      access: true,
+                      description:
+                        "Desain dan konfigurasi diskon menarik, serta penawaran khusus untuk menarik dan melibatkan pelanggan.",
+                    },
+                  ],
+                },
+                {
+                  name: "resepsionis",
+                  route: "/dashboard/receptionist",
+                  access: true,
+                  description:
+                    "Penerimaan dan penjadwalan. Mengelola data dan janji temu pasien.",
+                  submenu: [
+                    {
+                      name: "pasien",
+                      route: "/dashboard/receptionist/patient",
+                      access: true,
+                      description: "Mengelola data dan informasi pasien.",
+                    },
+                    {
+                      name: "janji-temu",
+                      route: "/dashboard/receptionist/appointment",
+                      access: true,
+                      description: "Jadwalkan dan kelola janji temu pasien.",
+                    },
+                    {
+                      name: "antrean",
+                      route: "/dashboard/receptionist/queue",
+                      access: true,
+                      description: "Mengelola antrean pasien dan daftar tunggu.",
+                    },
+                  ],
+                },
+                {
+                  name: "dokter",
+                  route: "/dashboard/doctor",
+                  access: true,
+                  description:
+                    "Dokter. Lihat data diagnosa, layanan medis, dan catatan pasien.",
+                  submenu: [
+                    {
+                      name: "diagnosa",
+                      route: "/dashboard/doctor/diagnose",
+                      access: true,
+                      description: "Lihat data diagnosa dan pemeriksaan medis.",
+                    },
+                    {
+                      name: "kategori-layanan",
+                      route: "/dashboard/doctor/category-service",
+                      access: true,
+                      description: "Mengelola kategori untuk layanan medis.",
+                    },
+                    {
+                      name: "layanan",
+                      route: "/dashboard/doctor/service",
+                      access: true,
+                      description: "Mengelola layanan medis dan pengobatan.",
+                    },
+                    {
+                      name: "pasien",
+                      route: "/dashboard/doctor/patient",
+                      access: true,
+                      description: "Mengelola catatan pasien dan riwayat medis.",
+                    },
+                    {
+                      name: "antrean",
+                      route: "/dashboard/doctor/queue",
+                      access: true,
+                      description:
+                        "Memantau dan mengelola antrean pasien dan daftar tunggu.",
+                    },
+                  ],
+                },
+                {
+                  name: "apotek",
+                  route: "/dashboard/pharmacy",
+                  access: true,
+                  description:
+                    "Apotek. Mengelola persediaan obat, pemasok, dan pesanan pembelian.",
+                  submenu: [
+                    {
+                      name: "kategori-item",
+                      route: "/dashboard/pharmacy/category-item",
+                      access: true,
+                      description: "Mengelola kategori untuk barang farmasi.",
+                    },
+                    {
+                      name: "item",
+                      route: "/dashboard/pharmacy/item",
+                      access: true,
+                      description: "Mengelola barang farmasi dan obat-obatan.",
+                    },
+                    {
+                      name: "pasokan-item",
+                      route: "/dashboard/pharmacy/supply",
+                      access: true,
+                      description:
+                        "Mengelola persediaan dan pengisian ulang barang farmasi.",
+                    },
+                    {
+                      name: "pemasok",
+                      route: "/dashboard/pharmacy/supplier",
+                      access: true,
+                      description: "Mengelola pemasok dan vendor farmasi.",
+                    },
+                    {
+                      name: "pesanan-pembelian",
+                      route: "/dashboard/pharmacy/purchase-order",
+                      access: true,
+                      description: "Mengelola pesanan pembelian untuk barang farmasi.",
+                    },
+                    {
+                      name: "penyesuaian-stok",
+                      route: "/dashboard/pharmacy/stock-adjustment",
+                      access: true,
+                      description:
+                        "Mengelola penyesuaian stok dan pengendalian inventaris.",
+                    },
+                  ],
+                },
+                {
+                  name: "kasir",
+                  route: "/dashboard/cashier",
+                  access: true,
+                  description: "Kasir. Mengelola transaksi, termasuk obat dan pembayaran.",
+                  submenu: [
+                    {
+                      name: "transaksi",
+                      route: "/dashboard/cashier/transaction",
+                      access: true,
+                      description:
+                        "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
+                    },
+                    {
+                      name: "transaksi-apoteker",
+                      route: "/dashboard/cashier/apoteker",
+                      access: true,
+                      description:
+                        "Mencatat, mengeluarkan, dan melacak transaksi obat untuk memastikan dosis yang akurat dan kepatuhan farmasi.",
+                    },
+                    {
+                      name: "riwayat",
+                      route: "/dashboard/cashier/history",
+                      access: true,
+                      description:
+                        "Catatan kronologis dari semua transaksi sebelumnya, menyediakan riwayat keuangan, pembelian, dan pembayaran yang telah dibuat.",
+                    },
+                  ],
+                },
+                {
+                  name: "laporan",
+                  route: "/dashboard/report",
+                  access: true,
+                  description:
+                    "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+                  submenu: [
+                    {
+                      name: "penjualan",
+                      route: "/dashboard/report/sales",
+                      access: true,
+                      description:
+                        "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+                    },
+                  ],
+                },
+              ]',
             'clinic_id'   => $clinic->id
         ]);
 

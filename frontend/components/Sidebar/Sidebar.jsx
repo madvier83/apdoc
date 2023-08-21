@@ -65,7 +65,7 @@ export default function Sidebar() {
           name: "jabatan",
           route: "/dashboard/admin/position",
           access: true,
-          description: "Buat posisi kustom untuk karyawan.",
+          description: "Buat jabatan kustom untuk karyawan.",
         },
         {
           name: "karyawan",

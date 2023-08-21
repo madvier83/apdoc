@@ -200,7 +200,7 @@ export default function Access() {
             name: "jabatan",
             route: "/dashboard/admin/position",
             access: false,
-            description: "Buat posisi kustom untuk karyawan.",
+            description: "Buat jabatan kustom untuk karyawan.",
           },
           {
             name: "karyawan",
