@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 export default function Footer() {
+  const router = useRouter();
+
   return (
     <>
       <footer className="relative bg-emerald-200 pt-16 pb-6">
@@ -51,20 +54,20 @@ export default function Footer() {
                   </span>
                   <ul className="list-unstyled">
                     <li>
-                      <Link
-                        className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
-                        href="https://www.creative-tim.com/presentation?ref=nnjs-footer"
+                      <div
+                        className="cursor-pointer text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
+                        onClick={() => router.push("/auth/register")}
                       >
                         Daftar
-                      </Link>
+                      </div>
                     </li>
                     <li>
-                      <Link
-                        className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
-                        href="https://blog.creative-tim.com?ref=nnjs-footer"
+                      <div
+                        className="cursor-pointer text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
+                        onClick={() => router.push("/auth/login")}
                       >
                         Masuk
-                      </Link>
+                      </div>
                     </li>
                   </ul>
                 </div>
