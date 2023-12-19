@@ -73,13 +73,12 @@ export default function Navbar({ title, clinic, setClinic }) {
         <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap">
           {/* Brand */}
           <div className="flex w-full justify-between items-center">
-            <Link
+            <div
               className="text-white text-lg uppercase hidden lg:inline-block font-semibold ml-3 mr-8"
-              href="#pablo"
               onClick={(e) => e.preventDefault()}
             >
               {title}
-            </Link>
+            </div>
             {/* <div className="flex items-center mx-auto rounded-md text-slate-200 bg-slate-900 pl-4 py-1">
               <i className="fas fa-hospital"> </i>
               <div className="">

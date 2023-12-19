@@ -35,7 +35,7 @@ export default function AdminSidebar() {
           {/* Brand */}
           <Link
             href="/"
-            className="fredoka md:block text-4xl text-rose-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
+            className="fredoka lowercase tracking-wider md:block text-4xl text-rose-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
             APDOC
           </Link>

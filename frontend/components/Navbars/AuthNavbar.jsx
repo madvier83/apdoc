@@ -24,7 +24,7 @@ export default function Navbar(props) {
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <Link
-              className="fredoka tracking-wider text-emerald-400 px-3 py-4 lg:py-2 flex items-center text-4xl uppercase font-bold"
+              className="fredoka tracking-wider text-emerald-400 px-3 py-4 lg:py-2 flex items-center text-4xl lowercase font-bold"
               href="/"
             >
               {/* <i className="far fa-file-alt text-lg leading-lg mr-2" />{" "} */}
@@ -61,7 +61,7 @@ export default function Navbar(props) {
               {/* <li className="flex items-center">
                 <PagesDropdown />
               </li> */}
-              <li className="flex items-center">
+              {/* <li className="flex items-center">
                 <Link href="#">Beranda</Link>
               </li>
               <li className="flex items-center">
@@ -72,7 +72,7 @@ export default function Navbar(props) {
               </li>
               <li className="flex items-center">
                 <Link href="#">Lainnya</Link>
-              </li>
+              </li> */}
             </ul>
 
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto mt-4 mb-4 lg:mt-0 gap-4 lg:gap-0">

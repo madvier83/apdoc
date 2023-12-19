@@ -349,7 +349,7 @@ export default function Sidebar() {
           {/* Brand */}
           <Link
             href="/dashboard"
-            className="font-fredoka md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
+            className="font-fredoka lowercase tracking-wider md:block text-4xl text-emerald-500 text-center md:pb-2 mr-0 inline-block whitespace-nowrap font-bold lg:pt-4"
           >
             APDOC
           </Link>

@@ -42,19 +42,20 @@ export default function Index() {
                 </div>
 
                 <div className="lg:w-1/2 px-8 lg:px-0 lg:ml-16 mt-8 lg:mt-0">
-                  <h1 className="text-white font-semibold text-2xl lg:text-5xl">
-                    Solusi Terbaik untuk Manajemen Klinik Anda!
+                  <h1 className="text-white font-semibold text-2xl lg:text-5xl capitalize">
+                    Solusi terbaik untuk mencatat rekam medis elektronik anda
                   </h1>
                   <p className="mt-8 text-lg text-blueGray-400">
                     APDOC Clinic System hadir untuk membantu Anda mengoptimalkan
                     efisiensi dan pengelolaan klinik Anda.
                   </p>
-                  <div
-                    onClick={() => router.push("/auth/register")}
+                  <a
+                    href={`https://wa.me/6287722388857`}
+                    target="_blank"
                     className="btn bg-emerald-400 text-black mt-8 font-bold"
                   >
-                    Coba Sekarang
-                  </div>
+                    Hubungi Kami
+                  </a>
                 </div>
               </div>
             </div>
