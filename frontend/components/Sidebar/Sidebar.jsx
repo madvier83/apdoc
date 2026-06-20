@@ -266,6 +266,22 @@ export default function Sidebar() {
         },
       ],
     },
+    // {
+    //   name: "Prediksi Antrean",
+    //   route: "/dashboard/receptionist",
+    //   access: true,
+    //   description:
+    //     "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+    //   submenu: [
+    //     {
+    //       name: "Prediksi Antrean",
+    //       route: "/dashboard/receptionist/queue_prediction",
+    //       access: true,
+    //       description:
+    //         "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+    //     },
+    //   ],
+    // },
   ];
 
   const token = GetCookieChunk("token_");
@@ -406,7 +422,7 @@ export default function Sidebar() {
                       router.pathname == "/dashboard" && "text-emerald-500 "
                     }`}
                   >
-                    <i className={"fas fa-chart-line mr-2 text-sm "}></i> Dasbor
+                    <i className={"fas fa-chart-line mr-2 text-sm "}></i> Dashboard
                   </Link>
                 </li>
               </ul>
@@ -484,6 +500,33 @@ export default function Sidebar() {
                     );
                   }
                 })}
+
+                <hr className="my-4 md:min-w-full" />
+
+                {/* <li
+                  className={`items-center ${
+                    router.pathname == "/" && "text-emerald-500 "
+                  }`}
+                >
+                  <Link
+                          href={"/dashboard/receptionist/queue_prediction"}
+                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                  >
+                    <i className={"fas fa-clock mr-2 text-sm "}></i> Prediksi Antrean
+                  </Link>
+                </li> */}
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" && "text-emerald-500 "
+                  }`}
+                >
+                  <Link
+                          href={"/dashboard/cashier/history_prediction"}
+                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                  >
+                    <i className={"fas fa-history mr-2 text-sm "}></i> History & Prediksi Antrean
+                  </Link>
+                </li>
 
                 <hr className="my-4 md:min-w-full" />
 

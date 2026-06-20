@@ -14,7 +14,32 @@ class QueueController extends Controller
     {
         try {
             $queue = Queue::whereDate('created_at', Carbon::today())->where('status_id', 1)->with(['patient.province', 'patient.city', 'patient.district', 'patient.village', 'queueDetails', 'queueDetails.employee.province', 'queueDetails.employee.city', 'queueDetails.employee.district', 'queueDetails.employee.village', 'queueDetails.service'])->where('clinic_id', $clinic)->get();
-    
+
+            return response()->json($queue);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+        }
+    }
+    public function indexPrediction($clinic)
+    {
+        try {
+            $queue = Queue::with([
+                'patient.province',
+                'patient.city',
+                'patient.district',
+                'patient.village',
+                'queueDetails',
+                'queueDetails.employee.province',
+                'queueDetails.employee.city',
+                'queueDetails.employee.district',
+                'queueDetails.employee.village',
+                'queueDetails.service'
+            ])
+                ->where('clinic_id', $clinic)
+                ->orderByRaw('DATE(created_at) desc')
+                ->orderBy('queue_number', 'desc')
+                ->get();
+
             return response()->json($queue);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -39,7 +64,7 @@ class QueueController extends Controller
 
             $data = [
                 'patient_id'    => $patient,
-                'queue_number'  => 'A'.$queue_number,
+                'queue_number'  => 'A' . $queue_number,
                 'status_id'     => 1
             ];
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
@@ -67,19 +92,19 @@ class QueueController extends Controller
 
         try {
             $queue_number = Queue::whereDate('created_at', Carbon::today())->get()->count() + 1;
-    
+
             $data = [
                 'patient_id'    => $appoint->patient_id,
-                'queue_number'  => 'B'.$queue_number,
+                'queue_number'  => 'B' . $queue_number,
                 'status_id'     => 1
             ];
             $data['clinic_id'] = $request->clinic_id ?? auth()->user()->employee->clinic_id;
-    
+
             $queue = Queue::create($data);
-    
+
             $appoint->fill(['status_id' => 2]);
             $appoint->save();
-    
+
             return response()->json($queue);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -96,21 +121,21 @@ class QueueController extends Controller
 
         try {
             $appointment = Appointment::where('patient_id', $queue->patient_id)->where('status_id', 2)->first();
-    
+
             $data = [
                 'status_id' => $status
             ];
-    
+
             $queue->fill($data);
             $queue->save();
-    
+
             $codeQueue = $queue->queue_number[0];
-    
-            if($status == 3 && $codeQueue == 'B') {
+
+            if ($status == 3 && $codeQueue == 'B') {
                 $appointment->fill(['status_id' => 1]);
                 $appointment->save();
             }
-    
+
             return response()->json($queue);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);

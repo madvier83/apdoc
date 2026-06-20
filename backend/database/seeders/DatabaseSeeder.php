@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             CitiesSeeder::class,
             DistrictsSeeder::class,
             VillagesSeeder::class,
+            QueueSeeder::class,
         ]);
 
         $clinic = Clinic::create([
@@ -75,10 +76,10 @@ class DatabaseSeeder extends Seeder
             'employee_id'       => $employee->id
         ]);
 
-        // Klinik ke-1 Ngafee
+        // Klinik ke-1
 
         $clinic = Clinic::create([
-            'name'        => 'Ngafee',
+            'name'        => 'Klinik Umanis',
             'phone'       => '628995754988',
             'province_id' => 12,
             'city_id'     => 181,
@@ -117,13 +118,13 @@ class DatabaseSeeder extends Seeder
         // Klinik ke-2 Umanis
 
         $clinic = Clinic::create([
-            'name'        => 'ZStore',
+            'name'        => 'Klinik CursorID',
             'phone'       => '628995754988',
             'province_id' => 12,
             'city_id'     => 164,
             'district_id' => 2116,
             'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
+            'address'     => "Jl. Pasir Impun No.8, Pasir Impun, Kec. Mandalajati, Kota Bandung, Jawa Barat 40195, Indonesia",
             'rt'          => "03",
             'rw'          => "03",
             'postal_code' => "40228",
@@ -154,11 +155,11 @@ class DatabaseSeeder extends Seeder
         }
 
         $employee = Employee::create([
-            'nik'         => '21110533',
+            'nik'         => '21110336',
             'name'        => 'M Advie Rifaldy',
             'position_id' => 1,
             'birth_place' => 'Bandung',
-            'birth_date'  => '2002-07-09',
+            'birth_date'  => '2003-10-08',
             'gender'      => 'male',
             'phone'       => '+6282376932445',
             'province_id' => 12,
@@ -195,13 +196,13 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
         // Clinic::factory(10)->create();
-        Employee::factory(100)->create();
-        Position::factory(100)->create();
-        Diagnose::factory(100)->create();
-        CategoryService::factory(50)->create();
-        Service::factory(100)->create();
-        Patient::factory(100)->create();
-        CategoryItem::factory(50)->create();
-        Item::factory(100)->create();
+        Employee::factory(5)->create();
+        Position::factory(5)->create();
+        Diagnose::factory(5)->create();
+        CategoryService::factory(5)->create();
+        Service::factory(5)->create();
+        Patient::factory(10)->create();
+        CategoryItem::factory(5)->create();
+        Item::factory(10)->create();
     }
 }

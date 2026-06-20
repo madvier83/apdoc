@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useReducer } from "react";
 import { deleteCookie, getCookie, getCookies, setCookie } from "cookies-next";
-import moment from "moment/moment"; 
+import moment from "moment/moment";
 import "moment/locale/id";
 moment.locale("id");
 import numeral from "numeral";
@@ -25,7 +25,7 @@ export default function Sales() {
     ["Date", "Gross Sales", "Net Sales"],
     ["", 0, 0],
   ]);
-  const [menu, setMenu] = useState(0);
+  const [menu, setMenu] = useState(1);
   const [summary, setSummary] = useState([]);
   const [summaryLoading, setSummaryLoading] = useState(true);
   const [payment, setPayment] = useState([]);
@@ -63,7 +63,7 @@ export default function Sales() {
           ...range,
           startDate: new Date(range.startDate),
           endDate: new Date(range.endDate),
-        })
+        }),
       );
       setCookieCheck(true);
     } catch (e) {
@@ -91,15 +91,15 @@ export default function Sales() {
     try {
       let response = await axios.get(
         `/report-sales/summary/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response)
       let newChart = [["Patient", "Gross Sales", "Net Sales"]];
@@ -119,15 +119,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/payment/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setPayment(response.data);
@@ -143,15 +143,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/service/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setService(response.data);
@@ -167,15 +167,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/item/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setItem(response.data);
@@ -191,15 +191,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/category/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setCategory(response.data);
@@ -215,15 +215,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/promotion/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setPromotion(response.data);
@@ -239,15 +239,15 @@ export default function Sales() {
     try {
       const response = await axios.get(
         `/report-sales/collected/${clinic && clinic + "/"}${moment(
-          selectionRange.startDate
+          selectionRange.startDate,
         ).format("YYYY-MM-DD")}/${moment(selectionRange.endDate).format(
-          "YYYY-MM-DD"
+          "YYYY-MM-DD",
         )}`,
         {
           headers: {
             Authorization: "Bearer" + token,
           },
-        }
+        },
       );
       // console.log(response);
       setCollected(response.data);
@@ -283,7 +283,7 @@ export default function Sales() {
                       Menampilkan data dari{" "}
                       <span className=" text-violet-500 opacity-95 font-semibold">
                         {moment(selectionRange.startDate).format(
-                          "DD MMMM YYYY"
+                          "DD MMMM YYYY",
                         )}
                       </span>{" "}
                       sampai{" "}
@@ -777,13 +777,13 @@ export default function Sales() {
                           Menampilkan data dari{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.startDate).format(
-                              "DD MMMM YYYY"
+                              "DD MMMM YYYY",
                             )}
                           </span>{" "}
                           sampai{" "}
                           <span className=" text-violet-500 opacity-95 font-semibold">
                             {moment(selectionRange.endDate).format(
-                              "DD MMMM YYYY"
+                              "DD MMMM YYYY",
                             )}
                             <i className="fa-solid fa-calendar-week ml-2"></i>
                           </span>
