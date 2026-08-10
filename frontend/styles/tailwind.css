@@ -17,6 +17,10 @@ Use a better box model (opinionated).
   box-sizing: border-box;
 }
 
+nextjs-portal {
+  display: none !important;
+}
+
 /**
 Use a more readable tab size (opinionated).
 */

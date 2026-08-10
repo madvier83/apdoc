@@ -16,7 +16,7 @@ export default function DashboardLayout({ title, children, headerStats, clinic, 
             <title>{`APDOC | ${title || ""}`}</title>
         </Head>
         <Sidebar />
-        <div className="relative md:ml-64 bg-gray-800 min-h-screen">
+        <div className="relative md:ml-64 bg-gray-800 min-h-screen" >
             <DashboardNavbar title={title} clinic={clinic} setClinic={setClinic}/>
             {/* Header */}
             <HeaderStats headerStats={headerStats}/>

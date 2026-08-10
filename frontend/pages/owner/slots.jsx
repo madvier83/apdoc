@@ -38,6 +38,7 @@ export default function Slots() {
   const initialForm = {
     id: "",
     email: "",
+    password: "",
     phone: "",
     role_id: "",
     clinic_id: clinic,
@@ -136,7 +137,7 @@ export default function Slots() {
   }
 
   async function addRole(e) {
-    // console.log(addForm);
+    console.log(addForm);
     e.preventDefault();
     try {
       const response = await axios.post(`/user-slot/${addForm.id}`, addForm, {
@@ -668,6 +669,17 @@ export default function Slots() {
                 type="text"
                 name="email"
                 value={addForm.email}
+                onChange={(e) => handleAddInput(e)}
+                placeholder=""
+                className="input input-bordered input-primary border-slate-300 w-full"
+              />
+              <label className="label">
+                <span className="label-text">Password</span>
+              </label>
+              <input
+                type="text"
+                name="password"
+                value={addForm.password}
                 onChange={(e) => handleAddInput(e)}
                 placeholder=""
                 className="input input-bordered input-primary border-slate-300 w-full"

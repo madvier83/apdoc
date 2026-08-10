@@ -104,7 +104,7 @@ export default function History() {
   return (
     <>
       <DashboardLayout title="Riwayat Antrean" clinic={clinic} setClinic={setClinic}>
-        <div className="flex gap-4">
+        <div className="flex gap-4 pb-64">
           <div className="mt-6 min-h-fit w-[60vw] bg-blue">
             <PrediksiWaktuTunggu
               listAntrean={item}
@@ -141,17 +141,13 @@ export default function History() {
                   ></Loading>
                   {!itemLoading &&
                     (() => {
-                      // Variabel pembantu untuk melacak tanggal baris sebelumnya
                       let lastDate = null;
 
-                      return item?.map((obj, index) => {
-                        // Ambil tanggal dalam format tertentu untuk perbandingan (misal: "20 Juni 2026")
+                      return item?.slice().reverse().map((obj, index) => {
                         const currentDate = moment(obj.created_at).format("DD MMMM YYYY");
 
-                        // Cek apakah tanggal saat ini berbeda dengan tanggal sebelumnya
                         const showDivider = currentDate !== lastDate;
 
-                        // Perbarui tanggal terakhir dengan tanggal saat ini
                         lastDate = currentDate;
 
                         return (

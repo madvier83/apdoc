@@ -20,6 +20,7 @@ import Highlighter from "react-highlight-words";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
 import SelectedClinicBadge from "../../../components/SelectedClinicBadge";
+import ModalBox from "../../../components/Modals/ModalBox";
 
 export default function Queue() {
   // Drag to scroll ref
@@ -97,14 +98,13 @@ export default function Queue() {
     setPatientsLoading(true);
     try {
       const response = await axios.get(
-        `/patients/${clinic && clinic + "/"}${perpage}${
-          search &&
-          "/" +
-            search
-              .split(" ")
-              .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".", "")
+        `/patients/${clinic && clinic + "/"}${perpage}${search &&
+        "/" +
+        search
+          .split(" ")
+          .join("%")
+          .replace(/[^a-zA-Z0-9]/, "")
+          .replace(".", "")
         }?page=${page}&sortBy=${sortBy}&order=${order ? "asc" : "desc"}`,
         {
           headers: {
@@ -144,28 +144,7 @@ export default function Queue() {
       console.error(err);
     }
   }
-  async function addToQueueAppointment(id) {
-    try {
-      const response = await axios.post(
-        `queue/${id}/appointment`,
-        {
-          clinic_id: clinic,
-        },
-        {
-          headers: {
-            Authorization: "Bearer" + token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setIsRegular(true);
-      // getQueues();
-      // getAppointment()
-      // getPatients();
-    } catch (err) {
-      console.error(err);
-    }
-  }
+
 
   async function cancelQueue(id) {
     try {
@@ -181,7 +160,25 @@ export default function Queue() {
       );
       // console.log(response);
       getQueues();
-      getAppointment();
+      getPatients();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async function panggilQueue(id) {
+    try {
+      const response = await axios.put(
+        `queue/${id}/2`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response);
+      getQueues();
       getPatients();
     } catch (err) {
       console.error(err);
@@ -201,7 +198,7 @@ export default function Queue() {
           Authorization: "Bearer" + token,
         },
       });
-      // console.log(response.data);
+      console.log(response.data);
       setQueues(response.data);
 
       if (isRegular) {
@@ -223,36 +220,6 @@ export default function Queue() {
     }
   }
 
-  const [appointment, setAppointment] = useState();
-  const [appointmentLoading, setAppointmentLoading] = useState(true);
-  async function getAppointment() {
-    if (!clinic) {
-      return;
-    }
-    try {
-      const response = await axios.get(
-        `appointments/${clinic && clinic + "/"}${999999}?page=${1}`,
-        {
-          headers: {
-            Authorization: "Bearer" + token,
-          },
-        }
-      );
-      setAppointment(response.data.data);
-      setAppointmentLoading(false);
-
-      if (!isRegular) {
-        if (response.data?.data?.length > 0) {
-          setSelectedQueue(response.data.data[0]);
-        } else {
-          setSelectedQueue(dummy);
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const [services, setServices] = useState();
   async function getServices() {
     if (!clinic) {
@@ -260,14 +227,13 @@ export default function Queue() {
     }
     try {
       const response = await axios.get(
-        `services/${clinic && clinic + "/"}${perpage}${
-          searchService &&
-          "/" +
-            searchService
-              .split(" ")
-              .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".", "")
+        `services/${clinic && clinic + "/"}${perpage}${searchService &&
+        "/" +
+        searchService
+          .split(" ")
+          .join("%")
+          .replace(/[^a-zA-Z0-9]/, "")
+          .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -289,14 +255,13 @@ export default function Queue() {
     }
     try {
       const response = await axios.get(
-        `employees/${clinic && clinic + "/"}${perpage}${
-          searchEmployee &&
-          "/" +
-            searchEmployee
-              .split(" ")
-              .join("%")
-              .replace(/[^a-zA-Z0-9]/, "")
-              .replace(".", "")
+        `employees/${clinic && clinic + "/"}${perpage}${searchEmployee &&
+        "/" +
+        searchEmployee
+          .split(" ")
+          .join("%")
+          .replace(/[^a-zA-Z0-9]/, "")
+          .replace(".", "")
         }?page=${page}`,
         {
           headers: {
@@ -407,11 +372,7 @@ export default function Queue() {
 
   useEffect(() => {
     setIsAddService(false);
-    if (!isRegular && appointment?.length > 0) {
-      setSelectedQueue(appointment[0]);
-    } else {
-      setSelectedQueue(dummy);
-    }
+    setSelectedQueue(dummy);
     if (isRegular && queues?.length > 0) {
       setSelectedQueue(queues[0]);
     }
@@ -421,7 +382,6 @@ export default function Queue() {
     getQueues();
     getServices();
     getEmployees();
-    getAppointment();
   }, [isRegular]);
 
   useEffect(() => {
@@ -443,7 +403,6 @@ export default function Queue() {
     setPage(1);
     setIsAddService(false);
     getQueues();
-    getAppointment();
   }, [clinic]);
 
   useEffect(() => {
@@ -467,57 +426,253 @@ export default function Queue() {
   }, [patients]);
 
   // console.log(queues);
+  // State untuk jam berjalan
+  const [currentTime, setCurrentTime] = useState("");
+
+  // 1. Efek untuk menjalankan jam real-time setiap detik
+  useEffect(() => {
+    // Set awal agar tidak kosong saat pertama render
+    setCurrentTime(moment().format("HH:mm:ss"));
+
+    const timer = setInterval(() => {
+      setCurrentTime(moment().format("HH:mm:ss"));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // 2. Efek untuk Auto-Refresh getQueues() setiap 5 detik
+  useEffect(() => {
+    if (!clinic) return;
+
+    const intervalQueue = setInterval(() => {
+      getQueues();
+    }, 5000);
+
+    return () => clearInterval(intervalQueue);
+  }, [clinic, isRegular]); // Bergantung pada clinic dan jenis tab yang aktif
 
   return (
     <>
       <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic}>
+        <div className="w-full mt-8" suppressHydrationWarning>
+          <div className="card min-h-[90vh] rounded-md bg-base-100 shadow-md">
+            <div className="card-body">
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-semibold text-zinc-800">
+                    Antrean Pasien
+                  </h2>
+                  <p className="mt-2 text-zinc-400">
+                    Daftar pasien yang sedang berada dalam antrean
+                  </p>
+                </div>
+
+                {/* Tampilan Jam Berjalan (Abu-abu, dengan margin bawah & indikator loading) */}
+                <div className="text-right flex items-center gap-3">
+                  <div>
+                    <span className="text-2xl font-bold text-zinc-600 bg-zinc-100 px-4 py-2 rounded-lg border border-zinc-200 shadow-inner block mb-2">
+                      {currentTime}
+                    </span>
+                    <p className="text-xs text-zinc-400">
+                      {moment().format("dddd, DD MMMM YYYY")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-200 mb-4"></div>
+
+              {/* Queue List */}
+              <div className="overflow-y-auto max-h-[85vh] pr-1">
+                {isRegular && queues?.length > 0 ? (
+                  queues?.map((obj) => {
+                    const isSelected = obj.id === selectedQueue?.id;
+
+                    const startTime = obj.created_at
+                      ? moment(obj.created_at).format("HH:mm")
+                      : "-";
+
+                    const predictionMinutes =
+                      Number(obj.prediction_time) || 0;
+
+                    const estimatedTime = obj.created_at
+                      ? moment(obj.created_at).add(
+                        predictionMinutes,
+                        "minutes"
+                      )
+                      : null;
+
+                    const remainingMinutes = estimatedTime
+                      ? Math.max(0, estimatedTime.diff(moment(), "minutes"))
+                      : 0;
+
+                    return (
+                      <div
+                        key={obj.id}
+                        onClick={() => setSelectedQueue(obj)}
+                        className={`cursor-pointer rounded-xl border-2 mb-4 transition-all duration-200 ${isSelected
+                          ? "bg-white border-emerald-500 shadow-md"
+                          : "bg-white border-slate-200 hover:border-emerald-300 shadow-sm"
+                          }`}
+                      >
+                        <div className="p-6">
+                          <div className="flex items-center justify-between gap-6">
+
+                            {/* Queue Number - Dibuat Jauh Lebih Besar */}
+                            <div className="flex-shrink-0">
+                              <div
+                                className={`w-24 h-24 rounded-2xl flex items-center justify-center shadow-inner ${isSelected
+                                  ? "bg-emerald-600"
+                                  : "bg-slate-800"
+                                  }`}
+                              >
+                                <span className="text-3xl lg:text-4xl font-extrabold tracking-wider text-white">
+                                  {obj.queue_number}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Patient Info - Diperbesar Ukurannya */}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-xl lg:text-2xl font-bold text-zinc-900 truncate">
+                                {obj.patient?.name}
+                              </h3>
+
+                              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-base lg:text-lg text-zinc-600">
+                                <div className="flex items-center">
+                                  <span>
+                                    Mulai antre:{" "}
+                                    <strong className="text-gray-500 font-semibold">
+                                      {startTime}
+                                    </strong>
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center">
+                                  <span>
+                                    Estimasi:{" "}
+                                    <strong className="text-blue-600 font-semibold">
+                                      {predictionMinutes} menit
+                                    </strong>
+                                  </span>
+                                </div>
+
+                                {estimatedTime && (
+                                  <div className="flex items-center">
+                                    <span>
+                                      Perkiraan dilayani:{" "}
+                                      <strong className="text-emerald-600 font-semibold">
+                                        {estimatedTime.format("HH:mm")}
+                                      </strong>
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Status Badge - Dibuat Lebih Besar & Jelas */}
+                            <div className="flex-shrink-0">
+                              {obj.status_id === 1 && (
+                                <div className="flex items-center flex-col">
+                                  <span className="inline-flex items-center rounded-full bg-amber-100 px-4 py-1.5 text-sm lg:text-base font-bold text-amber-800">
+                                    <span className="w-3 h-3 rounded-full bg-amber-500 mr-2.5 animate-pulse"></span>
+                                    Menunggu
+                                  </span>
+
+                                  {estimatedTime && (
+                                    <div className="flex items-center mt-2">
+                                      <span className="text-lg font-medium text-slate-600">
+                                        ± {remainingMinutes} menit lagi
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {obj.status_id === 2 && (
+                                <span className="inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm lg:text-base font-bold text-emerald-800">
+                                  <span className="w-3 h-3 rounded-full bg-emerald-500 mr-2.5 animate-pulse"></span>
+                                  Sedang Dilayani
+                                </span>
+                              )}
+
+                              {obj.status_id === 3 && (
+                                <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1.5 text-sm lg:text-base font-bold text-blue-800">
+                                  <span className="w-3 h-3 rounded-full bg-blue-500 mr-2.5"></span>
+                                  Selesai
+                                </span>
+                              )}
+
+                              {obj.status_id === 4 && (
+                                <span className="inline-flex items-center rounded-full bg-rose-100 px-4 py-1.5 text-sm lg:text-base font-bold text-rose-800">
+                                  <span className="w-3 h-3 rounded-full bg-rose-500 mr-2.5"></span>
+                                  Dibatalkan
+                                </span>
+                              )}
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  /* Empty State */
+                  <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
+                    <i className="fas fa-users text-4xl mb-4"></i>
+
+                    <p className="font-semibold text-lg">
+                      Belum ada antrean
+                    </p>
+
+                    <p className="text-sm mt-1">
+                      Belum terdapat pasien dalam antrean hari ini.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {queuesLoading && (
+                <span className="flex items-center text-xs text-zinc-400 gap-1">
+                  <i className="fas fa-spinner animate-spin"></i>
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="mt-6">
           <div
-            className={`relative flex flex-col md:flex-row gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
+            className={`relative flex flex-col md:flex-row w-1/2 pb-32 gap-4 max-w-7xl min-w-0 md:min-w-[720px]`}
           >
-            <div className="w-1/2">
+            <div className="w-full">
               <div className="tabs bg-gray-900 rounded-t-md">
                 <span
                   onClick={() => setIsRegular(true)}
-                  className={`relative text-sm pt-6 rounded-t-md pl-7 pr-4 bg-gray-900 text-white cursor-pointer ${
-                    !isRegular && "opacity-30"
-                  }`}
+                  className={`relative text-sm pt-6 rounded-t-md pl-7 pr-4 bg-gray-900 text-white cursor-pointer ${!isRegular && "opacity-30"
+                    }`}
                 >
-                  antrean <i className="fa-regular fa-user ml-2"></i>
-                </span>
-                <span
-                  onClick={() => setIsRegular(false)}
-                  className={`relative text-sm pt-6 rounded-t-md px-4 bg-gray-900 text-white  cursor-pointer ${
-                    isRegular && "opacity-30"
-                  }`}
-                >
-                  Janji temu{" "}
-                  <i className="fa-regular fa-calendar-check ml-2"></i>
-                  {/* {queues?.length > 0 && (
-                    <div className="badge badge-error font-bold absolute z-10 -top-2 -right-2">
-                      {queues.length}
-                    </div>
-                  )} */}
+                  Antrean <i className="fa-regular fa-user ml-2"></i>
                 </span>
                 <span
                   onClick={() => {
                     getQueues();
-                    getAppointment();
                   }}
                   className={`relative text-sm pt-6 ml-auto rounded-t-md px-6 bg-gray-900 text-white cursor-pointer`}
                 >
                   <i
-                    className={`fas fa-refresh mx-1 ${
-                      queuesLoading && "animate-spin opacity-50"
-                    }`}
+                    className={`fas fa-refresh mx-1 ${queuesLoading && "animate-spin opacity-50"
+                      }`}
                   ></i>
                 </span>
               </div>
               <div ref={listRef} className="" style={{ display: "block" }}>
                 <div
-                  className={`h-[81.6vh] min-h-fit md:w-full bg-gray-900 px-6 pt-3 rounded-b-md rounded-r-md ${
-                    !isRegular && "rounded-l-md"
-                  }`}
+                  className={`h-[81.6vh] min-h-fit md:w-full bg-gray-900 px-6 pt-3 rounded-b-md rounded-r-md ${!isRegular && "rounded-l-md"
+                    }`}
                 >
                   <div
                     ref={servicesRef}
@@ -531,26 +686,23 @@ export default function Queue() {
                             <div
                               key={obj.id}
                               onClick={() => setSelectedQueue(obj)}
-                              className={`card mt-4 cursor-pointer overflow-hidden ${
-                                obj.id == selectedQueue.id
-                                  ? "bg-indigo-900 text-white bg-opacity-40"
-                                  : "bg-slate-800 text-gray-400"
-                              } bg-opacity-70 rounded-md shadow-md mb-4`}
+                              className={`card mt-4 cursor-pointer overflow-hidden ${obj.id == selectedQueue.id
+                                ? "bg-indigo-900 text-white bg-opacity-40"
+                                : "bg-slate-800 text-gray-400"
+                                } bg-opacity-70 rounded-md shadow-md mb-4`}
                             >
                               <div
-                                className={`card-body py-0 px-0 group ${
-                                  obj.id == selectedQueue.id
-                                    ? "opacity-100"
-                                    : "opacity-60"
-                                }`}
+                                className={`card-body py-0 px-0 group ${obj.id == selectedQueue.id
+                                  ? "opacity-100"
+                                  : "opacity-60"
+                                  }`}
                               >
                                 <div className={`flex items-center `}>
                                   <div
-                                    className={`${
-                                      obj.id == selectedQueue.id
-                                        ? "bg-indigo-900 font-bold text-2xl w-24"
-                                        : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
-                                    } h-24 transition-all flex items-center justify-center mr-4 ease-out`}
+                                    className={`${obj.id == selectedQueue.id
+                                      ? "bg-indigo-900 font-bold text-2xl w-24"
+                                      : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
+                                      } h-24 transition-all flex items-center justify-center mr-4 ease-out`}
                                   >
                                     <h1 className="mb-1">{obj.queue_number}</h1>
                                     {/* <h1 className="mb-1">A199</h1> */}
@@ -563,21 +715,32 @@ export default function Queue() {
                                       NIK: {obj.patient?.nik} |{" "} {obj.status_id}
                                       {obj.status_id == 1 && "Mengantre"}
                                       {obj.status_id == 2 && "Dipanggil"}
-                                      {obj.status_id == 3 && "Selesai Diperiksa"} | {" "}
-                                      {obj.status_id == 4 && "Selesai Pembayaran"} | {" "}
+                                      {obj.status_id == 3 && "Selesai Diperiksa"}
+                                      {obj.status_id == 4 && "Selesai Pembayaran"}
                                       {obj.status_id == 9 && "Cancel"} | {" "}
                                       {obj.prediction_time}
                                     </small>
                                   </div>
+
+
                                   <label
-                                    className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-rose-500 bg-indigo-900 bg-opacity-10 cursor-pointer ${
-                                      obj.id == selectedQueue.id
-                                        ? "w-16 px-3 text-lg"
-                                        : "w-12 px-3 opacity-60 text-lg"
-                                    } ease-out`}
+                                    className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-green-500 bg-emerald-900 bg-opacity-60 cursor-pointer ${obj.id == selectedQueue.id
+                                      ? "w-16 px-3 text-lg"
+                                      : "w-16 px-3 opacity-60 text-lg"
+                                      } ease-out`}
+                                    htmlFor={obj.queue_number + "call"}
+                                    onClick={() => { panggilQueue(obj.id) }}
+                                  >
+                                    <i className="fas fa-phone px-4"></i>
+                                  </label>
+                                  <label
+                                    className={`ml-2 flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-rose-500 bg-rose-900 bg-opacity-60 cursor-pointer ${obj.id == selectedQueue.id
+                                      ? "w-16 px-3 text-lg"
+                                      : "w-16 px-3 opacity-60 text-lg"
+                                      } ease-out`}
                                     htmlFor={obj.queue_number}
                                   >
-                                    <i className="fas fa-trash px-4"></i>
+                                    <i className="fas fa-x px-4"></i>
                                   </label>
                                 </div>
                               </div>
@@ -585,81 +748,18 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Hapus antrean ${obj.queue_number}?`}
+                              title={`Selesaikan antrean ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
                       })}
 
-                    {!isRegular &&
-                      appointment?.map((obj) => {
-                        return (
-                          <div
-                            key={obj.id}
-                            onClick={() => setSelectedQueue(obj)}
-                            className={`card cursor-pointer overflow-hidden mt-4 ${
-                              obj.id == selectedQueue.id
-                                ? "bg-indigo-900 bg-opacity-50"
-                                : "bg-slate-800"
-                            } bg-opacity-70 rounded-md shadow-md mb-4`}
-                          >
-                            <div className="card-body h-24 py-5 px-6">
-                              <div className="flex items-center">
-                                <div className="">
-                                  <h2 className="card-title text-base lg:text-lg text-primary-content">
-                                    {obj.patient?.name}
-                                  </h2>
-                                  <small className="text-zinc-400">
-                                    {moment(obj.appointment_date).format(
-                                      "DD MMM YYYY, h:mm A"
-                                    )}
-                                  </small>
-                                </div>
-                                <div
-                                  className={`ml-auto ${
-                                    obj.id == selectedQueue.id
-                                      ? "block"
-                                      : "hidden"
-                                  }`}
-                                ></div>
-                                {obj.status_id == 1 && (
-                                  <button
-                                    // htmlFor="addQueueModal"
-                                    onClick={() =>
-                                      addToQueueAppointment(obj.id)
-                                    }
-                                    className="btn btn-xs btn-primary text-xs font-bold uppercase px-3 py-1 ml-auto rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                  >
-                                    Tambah ke antrean{" "}
-                                    <i className="fas fa-add ml-2"></i>
-                                  </button>
-                                )}
-                                {obj.status_id == 2 && (
-                                  <button className="btn btn-xs btn-disabled ml-auto bg-slate-100 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                                    In Queue
-                                  </button>
-                                )}
-                                {obj.status_id == 3 && (
-                                  <button className="btn btn-xs btn-disabled ml-auto bg-emerald-100 text-emerald-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                                    Completed
-                                  </button>
-                                )}
-                                {obj.status_id == 4 && (
-                                  <button className="btn btn-xs btn-disabled ml-auto bg-rose-100 text-rose-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
-                                    Cancelled
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+
                     <label
                       htmlFor="addQueueModal"
                       onClick={getPatients}
-                      className={`card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4 ${
-                        !isRegular && "hidden"
-                      }`}
+                      className={`card select-none cursor-pointer rounded-md bg-slate-800 shadow-md mb-4 ${!isRegular && "hidden"
+                        }`}
                     >
                       <div className="card-body py-4">
                         <div className="flex items-center text-zinc-400">
@@ -670,33 +770,16 @@ export default function Queue() {
                         </div>
                       </div>
                     </label>
-                    {appointment?.length <= 0 && (
-                      <label
-                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
-                          isRegular && "hidden"
-                        }`}
-                      >
-                        <div className="card-body p-4">
-                          <div className="flex items-center text-zinc-400">
-                            <div className="mx-auto">
-                              <span className="font-semibold">
-                                Tidak ada janji temu
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </label>
-                    )}
+
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="card min-h-[74vh] rounded-md md:w-1/2 bg-base-100 shadow-md">
+            <div className="hidden card min-h-[74vh] rounded-md md:w-0 bg-base-100 shadow-md">
               <div
-                className={`card-body justify-between ${
-                  selectedQueue.id ? "" : "hidden"
-                }`}
+                className={`card-body justify-between ${selectedQueue.id ? "" : "hidden"
+                  }`}
               >
                 <div className="">
                   <div className="flex items-center mb-4">
@@ -734,35 +817,12 @@ export default function Queue() {
                           <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
-                              {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
-                              {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
-                              {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
+                            {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
+                            {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
+                            {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
                           </span>
                         </div>
-                        {!isRegular && (
-                          <div className="">
-                            <div className="mt-4">
-                              <small className="text-zinc-400">
-                                Tanggal janji temu
-                              </small>{" "}
-                              <br />
-                              <span className="font-sm text-zinc-800 line-clamp-2">
-                                {moment(selectedQueue?.appointment_date).format(
-                                  "DD MMM YYYY, h:mm A"
-                                )}
-                              </span>
-                            </div>
-                            <div className="mt-4">
-                              <small className="text-zinc-400">
-                                Deskripsi
-                              </small>{" "}
-                              <br />
-                              <span className="font-sm text-zinc-800 line-clamp-2">
-                                {selectedQueue?.description}
-                              </span>
-                            </div>
-                          </div>
-                        )}
+
                         <div className={`${!isRegular && "hidden"}`}>
                           <div className="mt-4">
                             <small className="text-zinc-400">Layanan</small>{" "}
@@ -785,10 +845,9 @@ export default function Queue() {
                                     >
                                       <ul>
                                         <li
-                                          className={`max-w-36 overflow-hidden ${
-                                            obj.is_cancelled &&
+                                          className={`max-w-36 overflow-hidden ${obj.is_cancelled &&
                                             "line-through text-rose-400"
-                                          }`}
+                                            }`}
                                         >
                                           <i className="fa-solid fa-kit-medical mr-2"></i>
                                           <span className="truncate">
@@ -796,10 +855,9 @@ export default function Queue() {
                                           </span>
                                         </li>
                                         <li
-                                          className={`max-w-36 overflow-hidden text-zinc-400 ${
-                                            obj.is_cancelled &&
+                                          className={`max-w-36 overflow-hidden text-zinc-400 ${obj.is_cancelled &&
                                             "line-through text-rose-400"
-                                          }`}
+                                            }`}
                                         >
                                           <i className="fas fa-user-doctor mr-2"></i>
                                           <span className="text-sm normal-case truncate">
@@ -1008,22 +1066,20 @@ export default function Queue() {
 
                 {!isAddService ? (
                   <div
-                    className={`flex gap-2 mt-6 items-end  ${
-                      !isRegular && "hidden"
-                    }`}
-                  >
-                    <a
-                      href={`${
-                        selectedQueue.phone
-                          ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
-                          : ""
+                    className={`flex gap-2 mt-6 items-end  ${!isRegular && "hidden"
                       }`}
+                  >
+                    {/* <a
+                      href={`${selectedQueue.phone
+                        ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                        : ""
+                        }`}
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >
                       Kontak{" "}
                       <i className="fa-brands fa-whatsapp ml-2 font-bold"></i>
-                    </a>
+                    </a> */}
                     <Link
                       href={`/dashboard/receptionist/patient/${selectedQueue.patient?.id}`}
                       className={`btn btn-primary w-1/2`}
@@ -1055,9 +1111,8 @@ export default function Queue() {
                 )}
               </div>
               <div
-                className={`card-body justify-between ${
-                  selectedQueue.id ? "hidden" : ""
-                }`}
+                className={`card-body justify-between ${selectedQueue.id ? "hidden" : ""
+                  }`}
               >
                 <div className="alert btn-primary rounded-md">
                   <div>
@@ -1120,9 +1175,8 @@ export default function Queue() {
                       setSearch("");
                       setPage(1);
                     }}
-                    className={`fas ${
-                      !search ? "fa-search" : "fa-x"
-                    } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
+                    className={`fas ${!search ? "fa-search" : "fa-x"
+                      } absolute text-slate-400 right-0 pr-4 cursor-pointer top-[6px] text-xs`}
                   ></i>
                 </div>
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
@@ -1158,9 +1212,8 @@ export default function Queue() {
                       >
                         <p>Name</p>
                         <i
-                          className={`fas fa-sort text-right px-2 ${
-                            sortBy != "name" && "opacity-40"
-                          }`}
+                          className={`fas fa-sort text-right px-2 ${sortBy != "name" && "opacity-40"
+                            }`}
                         ></i>
                       </div>
                     </th>
@@ -1174,9 +1227,8 @@ export default function Queue() {
                       >
                         <p>Lahir</p>
                         <i
-                          className={`fas fa-sort text-right px-2 ${
-                            sortBy != "birth_date" && "opacity-40"
-                          }`}
+                          className={`fas fa-sort text-right px-2 ${sortBy != "birth_date" && "opacity-40"
+                            }`}
                         ></i>
                       </div>
                     </th>
@@ -1190,9 +1242,8 @@ export default function Queue() {
                       >
                         <p>Alamat</p>
                         <i
-                          className={`fas fa-sort text-right px-2 ${
-                            sortBy != "address" && "opacity-40"
-                          }`}
+                          className={`fas fa-sort text-right px-2 ${sortBy != "address" && "opacity-40"
+                            }`}
                         ></i>
                       </div>
                     </th>
@@ -1206,9 +1257,8 @@ export default function Queue() {
                       >
                         <p>Telepon</p>
                         <i
-                          className={`fas fa-sort text-right px-2 ${
-                            sortBy != "phone" && "opacity-40"
-                          }`}
+                          className={`fas fa-sort text-right px-2 ${sortBy != "phone" && "opacity-40"
+                            }`}
                         ></i>
                       </div>
                     </th>
@@ -1240,11 +1290,10 @@ export default function Queue() {
                           </th>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                             <i
-                              className={`text-md mr-2 ${
-                                obj.gender == "male"
-                                  ? "text-blue-400 fas fa-mars"
-                                  : "text-pink-400 fas fa-venus"
-                              }`}
+                              className={`text-md mr-2 ${obj.gender == "male"
+                                ? "text-blue-400 fas fa-mars"
+                                : "text-pink-400 fas fa-venus"
+                                }`}
                             ></i>{" "}
                             <span className={"font-bold"}>
                               <Highlighter
@@ -1271,12 +1320,11 @@ export default function Queue() {
                           </td>
                           <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap py-3">
                             <a
-                              href={`${
-                                obj.phone
-                                  ? `https://wa.me/` +
-                                    obj.phone?.replace(/\D/g, "")
-                                  : ""
-                              }`}
+                              href={`${obj.phone
+                                ? `https://wa.me/` +
+                                obj.phone?.replace(/\D/g, "")
+                                : ""
+                                }`}
                               target="_blank"
                               className={""}
                             >

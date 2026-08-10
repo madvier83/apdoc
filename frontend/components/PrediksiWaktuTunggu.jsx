@@ -1,4 +1,5 @@
 import React from 'react';
+import { GrafikRegresiLinear } from "./GrafikRegresiLinear.jsx"
 
 export default function PrediksiWaktuTunggu({ listAntrean }) {
 
@@ -82,7 +83,7 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
 
     return (
         <div className="max-w-xl mx-auto space-y-4 font-sans antialiased text-slate-800">
-            
+
             {/* CARD UTAMA: DAFTAR PREDIKSI */}
             <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
                 <div className="bg-slate-100 px-5 py-4 flex justify-between items-center">
@@ -146,84 +147,85 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
             </div>
 
             {/* CARD LOG & KALKULASI RUMUS */}
-           <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
-    <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Kalkulasi Regresi</span>
-        <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-medium">
-            Sampel data: n = {debug.n}
-        </span>
-    </div>
-    
-    <div className="p-5 space-y-5 text-xs">
-        {/* Ringkasan Nilai Variabel Dasar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-lg">
-            <div>∑X  = <span className="text-slate-900 font-bold">{debug.jumlahX}</span></div>
-            <div>∑Y  = <span className="text-slate-900 font-bold">{debug.jumlahY}</span></div>
-            <div>∑XY = <span className="text-slate-900 font-bold">{debug.jumlahXY}</span></div>
-            <div>∑X² = <span className="text-slate-900 font-bold">{debug.jumlahX2}</span></div>
-        </div>
-
-        {/* Breakdown Rumus Matematika */}
-        <div className="space-y-4 border-t border-slate-100 pt-4 text-slate-700">
-            {/* Kalkulasi Nilai B */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-3 border-b border-dashed border-slate-100">
-                <span className="font-bold text-slate-500 sm:w-24">Mencari b :</span>
-                <div className="flex items-center gap-2 overflow-x-auto py-1">
-                    <div className="text-center text-[11px]">
-                        <div className="border-b border-slate-400 px-1">(n × ∑XY) - (∑X × ∑Y)</div>
-                        <div className="px-1">(n × ∑X²) - (∑X)²</div>
-                    </div>
-                    <span className="text-slate-400">→</span>
-                    <div className="text-center font-semibold text-slate-600 text-[11px]">
-                        <div className="border-b border-slate-400 px-1">({debug.n} × {debug.jumlahXY}) - ({debug.jumlahX} × {debug.jumlahY})</div>
-                        <div className="px-1">({debug.n} × {debug.jumlahX2}) - ({debug.jumlahX})²</div>
-                    </div>
-                    <span className="text-slate-400">=</span>
-                    <span className="text font-bold px-2 py-1 rounded text-[11px]">
-                        {b.toFixed(5)}
+            <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Kalkulasi Regresi</span>
+                    <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-medium">
+                        Sampel data: n = {debug.n}
                     </span>
                 </div>
-            </div>
 
-            {/* Kalkulasi Nilai A */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-2">
-                <span className="font-bold text-slate-500 sm:w-24">Mencari a :</span>
-                <div className="flex items-center gap-2 overflow-x-auto py-1">
-                    <div className="text-center text-[11px]">
-                        <div className="border-b border-slate-400 px-1">∑Y - (b × ∑X)</div>
-                        <div className="px-1">n</div>
+                <div className="p-5 space-y-5 text-xs">
+                    {/* Ringkasan Nilai Variabel Dasar */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-lg">
+                        <div>∑X  = <span className="text-slate-900 font-bold">{debug.jumlahX}</span></div>
+                        <div>∑Y  = <span className="text-slate-900 font-bold">{debug.jumlahY}</span></div>
+                        <div>∑XY = <span className="text-slate-900 font-bold">{debug.jumlahXY}</span></div>
+                        <div>∑X² = <span className="text-slate-900 font-bold">{debug.jumlahX2}</span></div>
                     </div>
-                    <span className="text-slate-400">→</span>
-                    <div className="text-center font-semibold text-slate-600 text-[11px]">
-                        <div className="border-b border-slate-400 px-1">{debug.jumlahY} - ({b.toFixed(2)} × {debug.jumlahX})</div>
-                        <div className="px-1">{debug.n || 1}</div>
+
+                    {/* Breakdown Rumus Matematika */}
+                    <div className="space-y-4 border-t border-slate-100 pt-4 text-slate-700">
+                        {/* Kalkulasi Nilai B */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-3 border-b border-dashed border-slate-100">
+                            <span className="font-bold text-slate-500 sm:w-24">Mencari b :</span>
+                            <div className="flex items-center gap-2 overflow-x-auto py-1">
+                                <div className="text-center text-[11px]">
+                                    <div className="border-b border-slate-400 px-1">(n × ∑XY) - (∑X × ∑Y)</div>
+                                    <div className="px-1">(n × ∑X²) - (∑X)²</div>
+                                </div>
+                                <span className="text-slate-400">→</span>
+                                <div className="text-center font-semibold text-slate-600 text-[11px]">
+                                    <div className="border-b border-slate-400 px-1">({debug.n} × {debug.jumlahXY}) - ({debug.jumlahX} × {debug.jumlahY})</div>
+                                    <div className="px-1">({debug.n} × {debug.jumlahX2}) - ({debug.jumlahX})²</div>
+                                </div>
+                                <span className="text-slate-400">=</span>
+                                <span className="text font-bold px-2 py-1 rounded text-[11px]">
+                                    {b.toFixed(5)}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Kalkulasi Nilai A */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-2">
+                            <span className="font-bold text-slate-500 sm:w-24">Mencari a :</span>
+                            <div className="flex items-center gap-2 overflow-x-auto py-1">
+                                <div className="text-center text-[11px]">
+                                    <div className="border-b border-slate-400 px-1">∑Y - (b × ∑X)</div>
+                                    <div className="px-1">n</div>
+                                </div>
+                                <span className="text-slate-400">→</span>
+                                <div className="text-center font-semibold text-slate-600 text-[11px]">
+                                    <div className="border-b border-slate-400 px-1">{debug.jumlahY} - ({b.toFixed(2)} × {debug.jumlahX})</div>
+                                    <div className="px-1">{debug.n || 1}</div>
+                                </div>
+                                <span className="text-slate-400">=</span>
+                                <span className=" font-bold px-2 py-1 rounded text-[11px]">
+                                    {a.toFixed(5)}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <span className="text-slate-400">=</span>
-                    <span className=" font-bold px-2 py-1 rounded text-[11px]">
-                        {a.toFixed(5)}
-                    </span>
+
+                    {/* Hasil Persamaan Regresi Penuh (Dipindah ke Bawah) */}
+                    <div className="border-t-2 border-slate-100 pt-4 bg-slate-50/50 -mx-5 -mb-5 p-5 flex flex-col items-center gap-2">
+                        <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Persamaan Regresi Linear Penuh:</span>
+                        <div className="items-start sm:items-center gap-3">
+                            <div className="px-3 py-2 rounded-md text-sm font-bold tracking-wide w-full sm:w-auto text-center">
+                                Y = a + bX
+                            </div>
+                            <div className="px-4 py-2 rounded-md text-sm font-bold tracking-wide w-full sm:w-auto text-center">
+                                Y = {a.toFixed(2)} + ({b.toFixed(2)} × X)
+                            </div>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-1 italic">
+                            Y = Estimasi Waktu Tunggu (Menit), X = Nomor Urut Antrean Berjalan.
+                        </p>
+                    </div>
+
                 </div>
             </div>
-        </div>
-
-        {/* Hasil Persamaan Regresi Penuh (Dipindah ke Bawah) */}
-        <div className="border-t-2 border-slate-100 pt-4 bg-slate-50/50 -mx-5 -mb-5 p-5 flex flex-col items-center gap-2">
-            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Persamaan Regresi Linear Penuh:</span>
-            <div className="items-start sm:items-center gap-3">
-                <div className="px-3 py-2 rounded-md text-sm font-bold tracking-wide w-full sm:w-auto text-center">
-                    Y = a + bX
-                </div>
-                <div className="px-4 py-2 rounded-md text-sm font-bold tracking-wide w-full sm:w-auto text-center">
-                    Y = {a.toFixed(2)} + ({b.toFixed(2)} × X)
-                </div>
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1 italic">
-                Y = Estimasi Waktu Tunggu (Menit), X = Nomor Urut Antrean Berjalan.
-            </p>
-        </div>
-    </div>
-</div>
-
+            <GrafikRegresiLinear listAntrean={listAntrean} />
         </div>
     );
 }

@@ -15,7 +15,7 @@ class UserSlotController extends Controller
     {
         try {
             $user = UserSlot::with(['user.employee.clinic', 'user.role'])->where('clinic_id', auth()->user()->employee->clinic_id)->get();
-    
+
             return response()->json($user);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -26,7 +26,7 @@ class UserSlotController extends Controller
     {
         try {
             $user = UserSlot::with(['user.employee.clinic', 'user.role'])->where('clinic_id', $id)->get();
-    
+
             return response()->json($user);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -37,7 +37,7 @@ class UserSlotController extends Controller
     {
         try {
             $user = UserSlot::with(['user.employee.clinic', 'user.role'])->find($id);
-    
+
             return response()->json($user);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -66,12 +66,13 @@ class UserSlotController extends Controller
             Employee::where('id', $request->employee_id)->update([
                 'clinic_id'   => $request->clinic_id
             ]);
-    
+
             $data = [
                 'name'              => $employee->name,
                 'email'             => $request->email,
                 'role_id'           => $request->role_id,
                 'phone'             => $request->phone,
+                'password'          => app('hash')->make($request->password),
                 'otp_verification'  => '123456',
                 'created_at_otp'    => Carbon::now(),
                 'expired_otp'       => Carbon::now(),
@@ -80,11 +81,11 @@ class UserSlotController extends Controller
                 'is_verified'       => 1,
                 'employee_id'       => $request->employee_id
             ];
-    
+
             $user = User::create($data);
 
             UserSlot::where('id', $id)->update(['user_id' => $user->id]);
-    
+
             return response()->json($user);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -105,10 +106,9 @@ class UserSlotController extends Controller
             return response()->json(['message' => 'User not found!'], 404);
         }
 
-        if($slot->user->employee_id != $request->employee_id)
-        {
+        if ($slot->user->employee_id != $request->employee_id) {
             $employee = Employee::find($request->employee_id);
-    
+
             if ($employee) {
                 return response()->json(['message' => 'Employee already registered!'], 404);
             }
@@ -125,9 +125,9 @@ class UserSlotController extends Controller
             $data = $request->all();
             $user->fill($data);
             $user->save();
-    
+
             Employee::where('id', $user->employee_id)->update(['clinic_id' => $request->clinic_id]);
-    
+
             return response()->json(UserSlot::with(['user', 'user.employee'])->find($id));
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -141,7 +141,7 @@ class UserSlotController extends Controller
                 'apdoc_id' => auth()->user()->apdoc_id,
                 'status'    => 'purchased'
             ]);
-    
+
             return response()->json($user);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
@@ -161,7 +161,7 @@ class UserSlotController extends Controller
             User::where('id', $slot->user_id)->delete();
             $slot->fill(['user_id' => null]);
             $slot->save();
-            
+
             return response()->json(['message' => 'User deleted successfully!']);
         } catch (Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);

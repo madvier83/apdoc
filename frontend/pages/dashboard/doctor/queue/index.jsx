@@ -168,7 +168,7 @@ export default function Queue() {
   const [appointment, setAppointment] = useState();
   const [appointmentLoading, setAppointmentLoading] = useState(true);
   async function getAppointment() {
-    if(!clinic) {
+    if (!clinic) {
       return;
     }
     try {
@@ -288,6 +288,46 @@ export default function Queue() {
     getAppointment();
   }, [clinic]);
 
+
+  async function cancelQueue(id) {
+    try {
+      const response = await axios.put(
+        `queue/${id}/3`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response);
+      getQueues();
+      getPatients();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async function panggilQueue(id) {
+    try {
+      const response = await axios.put(
+        `queue/${id}/2`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer" + token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response);
+      getQueues();
+      getPatients();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic}>
@@ -299,9 +339,8 @@ export default function Queue() {
               <div className="tabs bg-gray-900 rounded-md">
                 <span
                   onClick={() => setIsRegular(true)}
-                  className={`relative text-sm pt-6 rounded-t-md pl-7 pr-4 bg-gray-900 text-white cursor-pointer ${
-                    !isRegular && "opacity-30"
-                  }`}
+                  className={`relative text-sm pt-6 rounded-t-md pl-7 pr-4 bg-gray-900 text-white cursor-pointer ${!isRegular && "opacity-30"
+                    }`}
                 >
                   Reguler <i className="fa-regular fa-user ml-2"></i>
                   {/* {queues?.length > 0 && (
@@ -315,9 +354,8 @@ export default function Queue() {
                 </span>
                 <span
                   onClick={() => setIsRegular(false)}
-                  className={`relative text-sm pt-6 rounded-t-md px-4 bg-gray-900 text-white  cursor-pointer ${
-                    isRegular && "opacity-30"
-                  }`}
+                  className={`relative text-sm pt-6 rounded-t-md px-4 bg-gray-900 text-white  cursor-pointer ${isRegular && "opacity-30"
+                    }`}
                 >
                   Janji temu{" "}
                   <i className="fa-regular fa-calendar-check ml-2"></i>
@@ -335,17 +373,15 @@ export default function Queue() {
                   className={`relative text-sm pt-6 ml-auto rounded-t-md px-6 bg-gray-900 text-white cursor-pointer`}
                 >
                   <i
-                    className={`fas fa-refresh mx-1 ${
-                      queuesLoading && "animate-spin opacity-50"
-                    }`}
+                    className={`fas fa-refresh mx-1 ${queuesLoading && "animate-spin opacity-50"
+                      }`}
                   ></i>
                 </span>
               </div>
               <div ref={listRef} className="" style={{ display: "block" }}>
                 <div
-                  className={`h-[81.6vh] min-h-fit md:w-full bg-gray-900 px-6 pt-3 rounded-b-md rounded-r-md ${
-                    !isRegular && "rounded-l-md"
-                  }`}
+                  className={`h-[81.6vh] min-h-fit md:w-full bg-gray-900 px-6 pt-3 rounded-b-md rounded-r-md ${!isRegular && "rounded-l-md"
+                    }`}
                 >
                   <div
                     ref={servicesRef}
@@ -359,26 +395,23 @@ export default function Queue() {
                             <div
                               key={obj.id}
                               onClick={() => setSelectedQueue(obj)}
-                              className={`card mt-4 cursor-pointer overflow-hidden ${
-                                obj.id == selectedQueue.id
-                                  ? "bg-indigo-900 text-white bg-opacity-40"
-                                  : "bg-slate-800 text-gray-400"
-                              } bg-opacity-70 rounded-md shadow-md mb-4`}
+                              className={`card mt-4 cursor-pointer overflow-hidden ${obj.id == selectedQueue.id
+                                ? "bg-indigo-900 text-white bg-opacity-40"
+                                : "bg-slate-800 text-gray-400"
+                                } bg-opacity-70 rounded-md shadow-md mb-4`}
                             >
                               <div
-                                className={`card-body py-0 px-0 group ${
-                                  obj.id == selectedQueue.id
-                                    ? "opacity-100"
-                                    : "opacity-60"
-                                }`}
+                                className={`card-body py-0 px-0 group ${obj.id == selectedQueue.id
+                                  ? "opacity-100"
+                                  : "opacity-60"
+                                  }`}
                               >
                                 <div className={`flex items-center `}>
                                   <div
-                                    className={`${
-                                      obj.id == selectedQueue.id
-                                        ? "bg-indigo-900 font-bold text-2xl w-24"
-                                        : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
-                                    } h-24 transition-all duration-200 flex items-center justify-center mr-4 ease-out`}
+                                    className={`${obj.id == selectedQueue.id
+                                      ? "bg-indigo-900 font-bold text-2xl w-24"
+                                      : "bg-indigo-900 bg-opacity-50 font-bold text-2xl w-[4.8rem]"
+                                      } h-24 transition-all duration-200 flex items-center justify-center mr-4 ease-out`}
                                   >
                                     <h1 className="mb-1">{obj.queue_number}</h1>
                                   </div>
@@ -388,12 +421,17 @@ export default function Queue() {
                                     </h2>
                                     <small className="text-zinc-400">
                                       NIK: {obj.patient?.nik} |{" "}
-                                      {obj.status_id == 1 && "Active"}
-                                      {obj.status_id == 2 && "Done"}
-                                      {obj.status_id == 3 && "Canceled"}
+                                      <small className="text-zinc-400"> {obj.status_id}
+                                        {obj.status_id == 1 && "Mengantre"}
+                                        {obj.status_id == 2 && "Dipanggil"}
+                                        {obj.status_id == 3 && "Selesai Diperiksa"}
+                                        {obj.status_id == 4 && "Selesai Pembayaran"}
+                                        {obj.status_id == 9 && "Cancel"} | {" "}
+                                        {obj.prediction_time} Menit
+                                      </small>
                                     </small>
-                                  </div>
-                                  {/* <label
+
+                                    {/* <label
                                     className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 bg-indigo-900 bg-opacity-10 cursor-pointer duration-500 ${
                                       obj.id == selectedQueue.id
                                         ? "w-16 text-lg"
@@ -403,6 +441,27 @@ export default function Queue() {
                                   >
                                     <i className="fas fa-trash px-4"></i>
                                   </label> */}
+                                  </div>
+
+                                  <label
+                                    className={`ml-auto flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-green-500 bg-emerald-900 bg-opacity-60 cursor-pointer ${obj.id == selectedQueue.id
+                                      ? "w-16 px-3 text-lg"
+                                      : "w-16 px-3 opacity-60 text-lg"
+                                      } ease-out`}
+                                    htmlFor={obj.queue_number + "call"}
+                                    onClick={() => { panggilQueue(obj.id) }}
+                                  >
+                                    <i className="fas fa-phone px-4"></i>
+                                  </label>
+                                  <label
+                                    className={`ml-2 flex h-24 items-center transition-all justify-center border-none text-gray-500 hover:text-rose-500 bg-rose-900 bg-opacity-60 cursor-pointer ${obj.id == selectedQueue.id
+                                      ? "w-16 px-3 text-lg"
+                                      : "w-16 px-3 opacity-60 text-lg"
+                                      } ease-out`}
+                                    htmlFor={obj.queue_number}
+                                  >
+                                    <i className="fas fa-x px-4"></i>
+                                  </label>
                                 </div>
                               </div>
                             </div>
@@ -421,11 +480,10 @@ export default function Queue() {
                           <div
                             key={obj.id}
                             onClick={() => setSelectedQueue(obj)}
-                            className={`card cursor-pointer overflow-hidden mt-4 ${
-                              obj.id == selectedQueue.id
-                                ? "bg-indigo-900 bg-opacity-50"
-                                : "bg-slate-800"
-                            } bg-opacity-70 rounded-md shadow-md mb-4`}
+                            className={`card cursor-pointer overflow-hidden mt-4 ${obj.id == selectedQueue.id
+                              ? "bg-indigo-900 bg-opacity-50"
+                              : "bg-slate-800"
+                              } bg-opacity-70 rounded-md shadow-md mb-4`}
                           >
                             <div className="card-body h-24 py-5">
                               <div className="flex items-center">
@@ -440,11 +498,10 @@ export default function Queue() {
                                   </small>
                                 </div>
                                 <div
-                                  className={`ml-auto ${
-                                    obj.id == selectedQueue.id
-                                      ? "block"
-                                      : "hidden"
-                                  }`}
+                                  className={`ml-auto ${obj.id == selectedQueue.id
+                                    ? "block"
+                                    : "hidden"
+                                    }`}
                                 ></div>
                               </div>
                             </div>
@@ -455,9 +512,8 @@ export default function Queue() {
                       <label
                         // htmlFor="addQueueModal"
                         // onClick={getPatients}
-                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
-                          !isRegular && "hidden"
-                        }`}
+                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${!isRegular && "hidden"
+                          }`}
                       >
                         <div className="card-body py-4">
                           <div className="flex items-center text-zinc-400">
@@ -471,9 +527,8 @@ export default function Queue() {
                     )}
                     {appointment?.length <= 0 && (
                       <label
-                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${
-                          isRegular && "hidden"
-                        }`}
+                        className={`card select-none rounded-md bg-slate-800 shadow-md mb-4 ${isRegular && "hidden"
+                          }`}
                       >
                         <div className="card-body p-4">
                           <div className="flex items-center text-zinc-400">
@@ -493,9 +548,8 @@ export default function Queue() {
 
             <div className="card min-h-[74vh] rounded-md md:w-1/2 bg-base-100 shadow-md">
               <div
-                className={`card-body justify-between ${
-                  selectedQueue.id ? "" : "hidden"
-                }`}
+                className={`card-body justify-between ${selectedQueue.id ? "" : "hidden"
+                  }`}
               >
                 <div className="">
                   <div className="flex items-center mb-4">
@@ -533,9 +587,9 @@ export default function Queue() {
                           <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
-                              {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
-                              {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
-                              {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
+                            {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
+                            {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
+                            {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
                           </span>
                         </div>
                         {!isRegular && (
@@ -584,10 +638,9 @@ export default function Queue() {
                                     >
                                       <ul>
                                         <li
-                                          className={`max-w-36 overflow-hidden ${
-                                            obj.is_cancelled &&
+                                          className={`max-w-36 overflow-hidden ${obj.is_cancelled &&
                                             "line-through text-rose-400"
-                                          }`}
+                                            }`}
                                         >
                                           <i className="fa-solid fa-kit-medical mr-2"></i>
                                           <span className="truncate">
@@ -595,10 +648,9 @@ export default function Queue() {
                                           </span>
                                         </li>
                                         <li
-                                          className={`max-w-36 overflow-hidden text-zinc-400 ${
-                                            obj.is_cancelled &&
+                                          className={`max-w-36 overflow-hidden text-zinc-400 ${obj.is_cancelled &&
                                             "line-through text-rose-400"
-                                          }`}
+                                            }`}
                                         >
                                           <i className="fas fa-user-doctor mr-2"></i>
                                           <span className="text-sm normal-case truncate">
@@ -700,16 +752,14 @@ export default function Queue() {
 
                 {!isAddService ? (
                   <div
-                    className={`flex gap-2 mt-6 items-end  ${
-                      !isRegular && "hidden"
-                    }`}
+                    className={`flex gap-2 mt-6 items-end  ${!isRegular && "hidden"
+                      }`}
                   >
                     <a
-                      href={`${
-                        selectedQueue.phone
-                          ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
-                          : ""
-                      }`}
+                      href={`${selectedQueue.phone
+                        ? `https://wa.me/` + obj.phone?.replace(/\D/g, "")
+                        : ""
+                        }`}
                       target="_blank"
                       className="btn btn-success bg-success text-white w-1/2"
                     >
@@ -741,9 +791,8 @@ export default function Queue() {
                 )}
               </div>
               <div
-                className={`card-body justify-between ${
-                  selectedQueue.id ? "hidden" : ""
-                }`}
+                className={`card-body justify-between ${selectedQueue.id ? "hidden" : ""
+                  }`}
               >
                 <div className="alert btn-primary rounded-md">
                   <div>

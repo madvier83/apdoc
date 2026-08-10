@@ -515,7 +515,7 @@ export default function Sidebar() {
                     <i className={"fas fa-clock mr-2 text-sm "}></i> Prediksi Antrean
                   </Link>
                 </li> */}
-                <li
+                {/* <li
                   className={`items-center ${
                     router.pathname == "/" && "text-emerald-500 "
                   }`}
@@ -526,9 +526,22 @@ export default function Sidebar() {
                   >
                     <i className={"fas fa-history mr-2 text-sm "}></i> History & Prediksi Antrean
                   </Link>
-                </li>
+                </li> */}
 
-                <hr className="my-4 md:min-w-full" />
+                {/* <hr className="my-4 md:min-w-full" /> */}
+
+                <li
+                  className={`items-center ${
+                    router.pathname == "/" && "text-emerald-500 "
+                  }`}
+                >
+                  <Link
+                          href={"/dashboard/cashier/queue_display"}
+                    className={"text-xs py-3 font-bold block  text-slate-500"}
+                  >
+                    <i className={"fas fa-history mr-2 text-sm "}></i> Display Antrean
+                  </Link>
+                </li>
 
                 <li
                   className={`items-center ${

@@ -18,7 +18,7 @@ export default function ModalDelete({title, id, callback}) {
                     <label htmlFor={id} ref={cancelRef} className="btn btn-ghost rounded-md w-2/5 bg-blue-100">
                     Batalkan
                     </label>
-                    <div className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Hapus</div>
+                    <div className="btn btn-danger rounded-md w-2/5" onClick={closeAfterCallback}>Ya</div>
                 </div>
             </div>
         </ModalBox>

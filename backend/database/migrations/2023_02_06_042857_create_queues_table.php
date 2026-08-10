@@ -17,6 +17,8 @@ class CreateQueuesTable extends Migration
             $table->id();
             $table->foreignId('patient_id');
             $table->string('queue_number');
+            $table->string('prediction_time')->nullable();
+            $table->string('actual_time')->nullable();
             $table->foreignId('status_id')->default(1)->nullable();
             $table->foreignId('clinic_id')->nullable();
             $table->timestamps();
