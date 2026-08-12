@@ -1,118 +1,436 @@
+import React, { useMemo } from "react";
 import {
-    ScatterChart, Scatter, LineChart, Line,
-    ComposedChart, XAxis, YAxis, CartesianGrid,
-    Tooltip, ResponsiveContainer, ReferenceLine, Legend
-} from 'recharts';
+    ResponsiveContainer,
+    ScatterChart,
+    Scatter,
+    LineChart,
+    Line,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+} from "recharts";
 
-export function GrafikRegresiLinear({ listAntrean }) {
-    const dataSelesai = (listAntrean || [])
-        .filter(item => item.status_id === 3 && item.updated_at)
-        .map((item, index) => {
-            const durasi = Math.max(1, (new Date(item.updated_at) - new Date(item.created_at)) / (1000 * 60));
-            return { x: index + 1, y: parseFloat(durasi.toFixed(2)) };
+const GrafikRegresiLinear = ({ data = [] }) => {
+    const regression = useMemo(() => {
+        const validData = data
+            .map((item) => ({
+                x: Number(item.queue_position),
+                y: Number(item.actual_time),
+            }))
+            .filter(
+                (item) =>
+                    Number.isFinite(item.x) &&
+                    Number.isFinite(item.y)
+            );
+
+        if (validData.length < 2) {
+            return {
+                a: 0,
+                b: 0,
+                mae: 0,
+                rmse: 0,
+                r2: 0,
+                data: [],
+                line: [],
+            };
+        }
+
+        const n = validData.length;
+
+        const meanX =
+            validData.reduce((sum, item) => sum + item.x, 0) / n;
+
+        const meanY =
+            validData.reduce((sum, item) => sum + item.y, 0) / n;
+
+        const numerator = validData.reduce(
+            (sum, item) =>
+                sum + (item.x - meanX) * (item.y - meanY),
+            0
+        );
+
+        const denominator = validData.reduce(
+            (sum, item) =>
+                sum + Math.pow(item.x - meanX, 2),
+            0
+        );
+
+        const b = denominator === 0 ? 0 : numerator / denominator;
+        const a = meanY - b * meanX;
+
+        const predictions = validData.map((item) => ({
+            ...item,
+            predicted: a + b * item.x,
+        }));
+
+        const mae =
+            predictions.reduce(
+                (sum, item) =>
+                    sum + Math.abs(item.y - item.predicted),
+                0
+            ) / n;
+
+        const rmse = Math.sqrt(
+            predictions.reduce(
+                (sum, item) =>
+                    sum + Math.pow(item.y - item.predicted, 2),
+                0
+            ) / n
+        );
+
+        const ssRes = predictions.reduce(
+            (sum, item) =>
+                sum + Math.pow(item.y - item.predicted, 2),
+            0
+        );
+
+        const ssTot = validData.reduce(
+            (sum, item) =>
+                sum + Math.pow(item.y - meanY, 2),
+            0
+        );
+
+        const r2 =
+            ssTot === 0
+                ? 0
+                : 1 - ssRes / ssTot;
+
+        const maxX = Math.max(...validData.map((item) => item.x));
+
+        const line = Array.from(
+            { length: maxX + 1 },
+            (_, index) => ({
+                queue_position: index,
+                predicted: a + b * index,
+            })
+        );
+
+        return {
+            a,
+            b,
+            mae,
+            rmse,
+            r2,
+            data: predictions,
+            line,
+        };
+    }, [data]);
+
+    const queueDistribution = useMemo(() => {
+        const distribution = {};
+
+        data.forEach((item) => {
+            const position = Number(item.queue_position);
+
+            if (!Number.isFinite(position)) {
+                return;
+            }
+
+            distribution[position] =
+                (distribution[position] || 0) + 1;
         });
 
-    if (dataSelesai.length === 0) return null;
+        return Object.keys(distribution)
+            .map(Number)
+            .sort((a, b) => a - b)
+            .map((position) => ({
+                queue_position: position,
+                total: distribution[position],
+            }));
+    }, [data]);
 
-    const n = dataSelesai.length;
-    let sx = 0, sy = 0, sxy = 0, sx2 = 0;
-    dataSelesai.forEach(p => { sx += p.x; sy += p.y; sxy += p.x * p.y; sx2 += p.x * p.x; });
-    const bDen = (n * sx2) - (sx * sx);
-    const b = bDen !== 0 ? ((n * sxy) - (sx * sy)) / bDen : sy / n;
-    const a = (sy - b * sx) / n;
+    const comparisonData = useMemo(() => {
+        return data
+            .map((item, index) => ({
+                id: item.id ?? index + 1,
+                queue_number: item.queue_number,
+                prediction: Number(item.prediction_time),
+                actual: Number(item.actual_time),
+            }))
+            .filter(
+                (item) =>
+                    Number.isFinite(item.prediction) &&
+                    Number.isFinite(item.actual)
+            )
+            .slice(-30);
+    }, [data]);
 
-    const regresiLine = Array.from({ length: n }, (_, i) => ({
-        x: i + 1,
-        yRegresi: parseFloat((a + b * (i + 1)).toFixed(2))
-    }));
-
-    const combined = dataSelesai.map((p, i) => ({
-        x: p.x,
-        yNyata: p.y,
-        yRegresi: regresiLine[i].yRegresi
-    }));
-
-    const CustomTooltip = ({ active, payload }) => {
-        if (!active || !payload?.length) return null;
-        const d = payload[0]?.payload;
-        return (
-            <div className="bg-white border border-slate-200 rounded-md shadow-sm px-3 py-2 text-xs text-slate-700">
-                <p className="font-semibold mb-1">Urutan ke-{d.x}</p>
-                {d.yNyata != null && <p className="text-blue-600">Data nyata: <strong>{d.yNyata} menit</strong></p>}
-                <p className="text-orange-500">Prediksi: <strong>{d.yRegresi} menit</strong></p>
-            </div>
-        );
-    };
+    const format = (value) => Number(value).toFixed(2);
 
     return (
-        <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
-            <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex justify-between items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
-                    Visualisasi Regresi Linear
-                </span>
-                <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-medium">
-                    Y = {a.toFixed(2)} + ({b.toFixed(2)} × X)
-                </span>
-            </div>
-
-            <div className="p-5">
-                {/* Legend manual */}
-                <div className="flex gap-4 mb-4 text-xs text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
-                        Data nyata
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                        <span className="w-4 h-0.5 bg-orange-400 inline-block" />
-                        Garis regresi
-                    </span>
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+                <div className="rounded-xl bg-blue-50 p-5">
+                    <p className="text-sm text-blue-600">
+                        Intercept (a)
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-blue-700">
+                        {format(regression.a)}
+                        <span className="ml-1 text-sm font-medium">
+                            menit
+                        </span>
+                    </p>
                 </div>
 
-                <ResponsiveContainer width="100%" height={280}>
-                    <ComposedChart data={combined} margin={{ top: 8, right: 16, bottom: 24, left: 8 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(136,135,128,0.2)" />
-                        <XAxis
-                            dataKey="x"
-                            type="number"
-                            domain={[0.5, n + 0.5]}
-                            tickCount={n}
-                            label={{ value: 'Nomor Urut Antrean (X)', position: 'insideBottom', offset: -16, fontSize: 11, fill: '#888780' }}
-                            tick={{ fontSize: 11, fill: '#888780' }}
-                            allowDecimals={false}
-                        />
-                        <YAxis
-                            label={{ value: 'Durasi (menit)', angle: -90, position: 'insideLeft', offset: 12, fontSize: 11, fill: '#888780' }}
-                            tick={{ fontSize: 11, fill: '#888780' }}
-                            width={48}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
+                <div className="rounded-xl bg-orange-50 p-5">
+                    <p className="text-sm text-orange-600">
+                        Slope (b)
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-orange-700">
+                        {format(regression.b)}
+                        <span className="ml-1 text-sm font-medium">
+                            menit/pasien
+                        </span>
+                    </p>
+                </div>
 
-                        {/* Garis regresi */}
-                        <Line
-                            type="linear"
-                            dataKey="yRegresi"
-                            stroke="#f97316"
-                            strokeWidth={2}
-                            strokeDasharray="5 3"
-                            dot={false}
-                            activeDot={false}
-                            legendType="none"
-                        />
+                <div className="rounded-xl bg-green-50 p-5">
+                    <p className="text-sm text-green-600">
+                        MAE
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-green-700">
+                        {format(regression.mae)}
+                        <span className="ml-1 text-sm font-medium">
+                            menit
+                        </span>
+                    </p>
+                </div>
 
-                        {/* Titik data nyata */}
-                        <Scatter
-                            dataKey="yNyata"
-                            fill="#378ADD"
-                            r={5}
-                            legendType="none"
-                        />
-                    </ComposedChart>
-                </ResponsiveContainer>
+                <div className="rounded-xl bg-purple-50 p-5">
+                    <p className="text-sm text-purple-600">
+                        RMSE
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-purple-700">
+                        {format(regression.rmse)}
+                        <span className="ml-1 text-sm font-medium">
+                            menit
+                        </span>
+                    </p>
+                </div>
 
-                <p className="text-center text-[10px] text-slate-400 italic mt-1">
-                    X = Nomor urut antrean selesai &nbsp;|&nbsp; Y = Durasi layanan (menit)
-                </p>
+                <div className="rounded-xl bg-emerald-50 p-5">
+                    <p className="text-sm text-emerald-600">
+                        R²
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-emerald-700">
+                        {format(regression.r2)}
+                    </p>
+                </div>
+            </div>
+
+            <div className="rounded-xl border bg-white p-5 shadow-sm">
+                <div className="mb-5">
+                    <h3 className="text-lg font-semibold">
+                        Regresi Linear Queue Position terhadap Waktu Tunggu
+                    </h3>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                        X = jumlah pasien di depan dalam antrean |
+                        Y = waktu tunggu aktual pasien
+                    </p>
+                </div>
+
+                <div className="h-[430px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <ScatterChart
+                            margin={{
+                                top: 10,
+                                right: 30,
+                                left: 10,
+                                bottom: 25,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+
+                            <XAxis
+                                type="number"
+                                dataKey="x"
+                                name="Queue Position"
+                                domain={[0, "dataMax + 1"]}
+                                label={{
+                                    value: "Queue Position",
+                                    position: "insideBottom",
+                                    offset: -15,
+                                }}
+                            />
+
+                            <YAxis
+                                type="number"
+                                dataKey="y"
+                                name="Actual Time"
+                                label={{
+                                    value: "Waktu Tunggu Aktual (menit)",
+                                    angle: -90,
+                                    position: "insideLeft",
+                                }}
+                            />
+
+                            <Tooltip
+                                formatter={(value, name) => [
+                                    `${format(value)} menit`,
+                                    name === "y"
+                                        ? "Actual Time"
+                                        : "Prediksi",
+                                ]}
+                                labelFormatter={(value) =>
+                                    `Queue Position: ${value}`
+                                }
+                            />
+
+                            <Legend />
+
+                            <Scatter
+                                name="Data Aktual"
+                                data={regression.data}
+                                dataKey="y"
+                            />
+
+                            <Line
+                                name="Regresi Linear"
+                                type="monotone"
+                                data={regression.line}
+                                dataKey="predicted"
+                                strokeWidth={2.5}
+                                dot={false}
+                            />
+                        </ScatterChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="mt-4 rounded-lg bg-gray-50 p-4 text-center">
+                    <p className="text-sm text-gray-500">
+                        Persamaan Regresi Linear
+                    </p>
+
+                    <p className="mt-1 text-xl font-semibold">
+                        Y = {format(regression.a)} + (
+                        {format(regression.b)} × X)
+                    </p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="rounded-xl border bg-white p-5 shadow-sm">
+                    <div className="mb-5">
+                        <h3 className="text-lg font-semibold">
+                            Distribusi Queue Position
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                            Jumlah pasien berdasarkan posisi dalam antrean
+                        </p>
+                    </div>
+
+                    <div className="h-[350px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={queueDistribution}
+                                margin={{
+                                    top: 10,
+                                    right: 20,
+                                    left: 0,
+                                    bottom: 10,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+
+                                <XAxis
+                                    dataKey="queue_position"
+                                    label={{
+                                        value: "Queue Position",
+                                        position: "insideBottom",
+                                        offset: -5,
+                                    }}
+                                />
+
+                                <YAxis
+                                    allowDecimals={false}
+                                    label={{
+                                        value: "Jumlah Pasien",
+                                        angle: -90,
+                                        position: "insideLeft",
+                                    }}
+                                />
+
+                                <Tooltip />
+
+                                <Bar
+                                    dataKey="total"
+                                    name="Jumlah Pasien"
+                                    radius={[5, 5, 0, 0]}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                <div className="rounded-xl border bg-white p-5 shadow-sm">
+                    <div className="mb-5">
+                        <h3 className="text-lg font-semibold">
+                            Prediksi vs Aktual
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                            Perbandingan waktu tunggu prediksi dan aktual
+                        </p>
+                    </div>
+
+                    <div className="h-[350px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart
+                                data={comparisonData}
+                                margin={{
+                                    top: 10,
+                                    right: 20,
+                                    left: 0,
+                                    bottom: 10,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+
+                                <XAxis
+                                    dataKey="queue_number"
+                                    interval="preserveStartEnd"
+                                />
+
+                                <YAxis
+                                    label={{
+                                        value: "Waktu (menit)",
+                                        angle: -90,
+                                        position: "insideLeft",
+                                    }}
+                                />
+
+                                <Tooltip />
+
+                                <Legend />
+
+                                <Line
+                                    type="monotone"
+                                    dataKey="prediction"
+                                    name="Prediksi"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
+
+                                <Line
+                                    type="monotone"
+                                    dataKey="actual"
+                                    name="Aktual"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
             </div>
         </div>
     );
-}
+};
+
+export default GrafikRegresiLinear;

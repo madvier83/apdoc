@@ -41,71 +41,72 @@ class DatabaseSeeder extends Seeder
             DistrictsSeeder::class,
             VillagesSeeder::class,
             QueueSeeder::class,
+            RegressionTestingSeeder::class,
         ]);
 
         $clinic = Clinic::create([
-            'name'        => null,
-            'phone'       => null,
-            'apdoc_id'    => time() . 'AP1',
-            'status'      => 'active'
+            'name' => null,
+            'phone' => null,
+            'apdoc_id' => time() . 'AP1',
+            'status' => 'active'
         ]);
 
         $employee = Employee::create([
-            'nik'         => null,
-            'name'        => 'Administrator',
+            'nik' => null,
+            'name' => 'Administrator',
             'birth_place' => null,
-            'birth_date'  => null,
-            'gender'      => null,
-            'phone'       => null,
+            'birth_date' => null,
+            'gender' => null,
+            'phone' => null,
             'position_id' => null,
-            'clinic_id'   => $clinic->id
+            'clinic_id' => $clinic->id
         ]);
 
         User::create([
-            'email'             => 'cursor.id',
-            'password'          => app('hash')->make('Cursor123'),
-            'role_id'           => 1,
-            'phone'             => '+6289518223591',
-            'otp_verification'  => '750587',
-            'created_at_otp'    => Carbon::now(),
-            'expired_otp'       => Carbon::now(),
+            'email' => 'cursor.id',
+            'password' => app('hash')->make('Cursor123'),
+            'role_id' => 1,
+            'phone' => '+6289518223591',
+            'otp_verification' => '750587',
+            'created_at_otp' => Carbon::now(),
+            'expired_otp' => Carbon::now(),
             'email_verified_at' => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
-            'is_verified'       => 1,
-            'apdoc_id'          => $clinic->apdoc_id,
-            'employee_id'       => $employee->id
+            'is_verified' => 1,
+            'apdoc_id' => $clinic->apdoc_id,
+            'employee_id' => $employee->id
         ]);
 
         // Klinik ke-1
 
         $clinic = Clinic::create([
-            'name'        => 'Klinik Umanis',
-            'phone'       => '628995754988',
+            'name' => 'Klinik Umanis',
+            'phone' => '628995754988',
             'province_id' => 12,
-            'city_id'     => 181,
+            'city_id' => 181,
             'district_id' => 2557,
-            'village_id'  => 31432,
-            'address'     => "Jl. Dalem Kaum No. 112",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 31432,
+            'address' => "Jl. Dalem Kaum No. 112",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40261",
-            'apdoc_id'    => time() . 'AP2',
-            'status'      => 'active'
+            'apdoc_id' => time() . 'AP2',
+            'status' => 'active'
         ]);
 
         Setting::create([
-            'logo'        => null,
-            'name'        => 'Cursor ID',
-            'phone'       => '6282376932441',
+            'logo' => null,
+            'name' => 'Cursor ID',
+            'phone' => '6282376932441',
             'province_id' => 12,
-            'city_id'     => 181,
+            'city_id' => 181,
             'district_id' => 2557,
-            'village_id'  => 31432,
-            'address'     => "Jl. Dalem Kaum No. 112",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 31432,
+            'address' => "Jl. Dalem Kaum No. 112",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40261",
-            'clinic_id'   => $clinic->id
+            'clinic_id' => $clinic->id
         ]);
 
         // free slot
@@ -118,33 +119,33 @@ class DatabaseSeeder extends Seeder
         // Klinik ke-2 Umanis
 
         $clinic = Clinic::create([
-            'name'        => 'Klinik CursorID',
-            'phone'       => '628995754988',
+            'name' => 'Klinik CursorID',
+            'phone' => '628995754988',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Pasir Impun No.8, Pasir Impun, Kec. Mandalajati, Kota Bandung, Jawa Barat 40195, Indonesia",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Pasir Impun No.8, Pasir Impun, Kec. Mandalajati, Kota Bandung, Jawa Barat 40195, Indonesia",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'apdoc_id'    => $clinic->apdoc_id,
-            'status'      => 'active'
+            'apdoc_id' => $clinic->apdoc_id,
+            'status' => 'active'
         ]);
 
         Setting::create([
-            'logo'        => null,
-            'name'        => 'Umanis Klinik',
-            'phone'       => '6282376932441',
+            'logo' => null,
+            'name' => 'Umanis Klinik',
+            'phone' => '6282376932441',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Kopo Sayati Gg. Narsani",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'clinic_id'   => $clinic->id
+            'clinic_id' => $clinic->id
         ]);
 
         // free slot
@@ -155,105 +156,119 @@ class DatabaseSeeder extends Seeder
         }
 
         $employee = Employee::create([
-            'nik'         => '21110336',
-            'name'        => 'M Advie Rifaldy',
+            'nik' => '21110336',
+            'name' => 'M Advie Rifaldy',
             'position_id' => 1,
             'birth_place' => 'Bandung',
-            'birth_date'  => '2003-10-08',
-            'gender'      => 'female',
-            'phone'       => '+6282376932445',
+            'birth_date' => '2003-10-08',
+            'gender' => 'female',
+            'phone' => '+6282376932445',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Kopo Sayati Gg. Narsani",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'clinic_id'   => 2
+            'clinic_id' => 2
         ]);
         $employee2 = Employee::create([
-            'nik'         => '1234123412341234',
-            'name'        => 'Dr. Titiek Indah W',
+            'nik' => '1234123412341234',
+            'name' => 'Dr. Titiek Indah W',
             'position_id' => 2,
             'birth_place' => 'Bandung',
-            'birth_date'  => '2003-10-08',
-            'gender'      => 'male',
-            'phone'       => '+6282376932446',
+            'birth_date' => '2003-10-08',
+            'gender' => 'male',
+            'phone' => '+6282376932446',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Kopo Sayati Gg. Narsani",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'clinic_id'   => 2
+            'clinic_id' => 2
         ]);
         $employee3 = Employee::create([
-            'nik'         => '1234123412341235',
-            'name'        => 'Drg. Rina Dianti',
+            'nik' => '1234123412341235',
+            'name' => 'Drg. Rina Dianti',
             'position_id' => 2,
             'birth_place' => 'Bandung',
-            'birth_date'  => '2003-10-08',
-            'gender'      => 'female',
-            'phone'       => '+6282376932447',
+            'birth_date' => '2003-10-08',
+            'gender' => 'female',
+            'phone' => '+6282376932447',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Kopo Sayati Gg. Narsani",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'clinic_id'   => 2
+            'clinic_id' => 2
         ]);
         $employee4 = Employee::create([
-            'nik'         => '1234123412341236',
-            'name'        => 'Staff. xyz',
+            'nik' => '1234123412341236',
+            'name' => 'Staff. xyz',
             'position_id' => 2,
             'birth_place' => 'Bandung',
-            'birth_date'  => '2003-10-08',
-            'gender'      => 'male',
-            'phone'       => '+6282376932448',
+            'birth_date' => '2003-10-08',
+            'gender' => 'male',
+            'phone' => '+6282376932448',
             'province_id' => 12,
-            'city_id'     => 164,
+            'city_id' => 164,
             'district_id' => 2116,
-            'village_id'  => 27017,
-            'address'     => "Jl. Kopo Sayati Gg. Narsani",
-            'rt'          => "03",
-            'rw'          => "03",
+            'village_id' => 27017,
+            'address' => "Jl. Kopo Sayati Gg. Narsani",
+            'rt' => "03",
+            'rw' => "03",
             'postal_code' => "40228",
-            'clinic_id'   => 2
+            'clinic_id' => 2
         ]);
 
         User::create([
-            'email'             => 'admin@gmail.com',
-            'password'          => app('hash')->make('admin123'),
-            'role_id'           => 2,
-            'phone'             => '+6282376932445',
-            'otp_verification'  => '750587',
-            'created_at_otp'    => Carbon::now(),
-            'expired_otp'       => Carbon::now(),
+            'email' => 'admin@gmail.com',
+            'password' => app('hash')->make('admin123'),
+            'role_id' => 2,
+            'phone' => '+6282376932445',
+            'otp_verification' => '750587',
+            'created_at_otp' => Carbon::now(),
+            'expired_otp' => Carbon::now(),
             'email_verified_at' => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
-            'is_verified'       => 1,
-            'apdoc_id'          => $clinic->apdoc_id,
-            'employee_id'       => $employee->id
+            'is_verified' => 1,
+            'apdoc_id' => $clinic->apdoc_id,
+            'employee_id' => $employee->id
         ]);
         User::create([
-            'email'             => 'doctorA@gmail.com',
-            'password'          => app('hash')->make('admin123'),
-            'role_id'           => 3,
-            'phone'             => '+6282376932446',
-            'otp_verification'  => '750587',
-            'created_at_otp'    => Carbon::now(),
-            'expired_otp'       => Carbon::now(),
+            'email' => 'doctor@gmail.com',
+            'password' => app('hash')->make('admin123'),
+            'role_id' => 3,
+            'phone' => '+6282376932446',
+            'otp_verification' => '750587',
+            'created_at_otp' => Carbon::now(),
+            'expired_otp' => Carbon::now(),
             'email_verified_at' => Carbon::now(),
             'phone_verified_at' => Carbon::now(),
-            'is_verified'       => 1,
-            'apdoc_id'          => $clinic->apdoc_id,
-            'employee_id'       => $employee2->id
+            'is_verified' => 1,
+            'apdoc_id' => $clinic->apdoc_id,
+            'employee_id' => $employee2->id
+        ]);
+        User::create([
+            'email' => 'staff@gmail.com',
+            'password' => app('hash')->make('admin123'),
+            'role_id' => 4,
+            'phone' => '+6282376932447',
+            'otp_verification' => '750587',
+            'created_at_otp' => Carbon::now(),
+            'expired_otp' => Carbon::now(),
+            'email_verified_at' => Carbon::now(),
+            'phone_verified_at' => Carbon::now(),
+            'is_verified' => 1,
+            'apdoc_id' => $clinic->apdoc_id,
+            'employee_id' => $employee2->id
         ]);
         // User::create([
         //     'email'             => 'doctorB@gmail.com',
@@ -285,19 +300,19 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         Access::create([
-            'role_id'  => 2,
-            'clinic_id'   => 2,
+            'role_id' => 2,
+            'clinic_id' => 2,
             'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":true,"submenu":[{"name":"jabatan","route":"/dashboard/admin/position","access":true},{"name":"karyawan","route":"/dashboard/admin/employee","access":true},{"name":"kategori-pembayaran","route":"/dashboard/admin/category-payment","access":true},{"name":"pembayaran","route":"/dashboard/admin/payment","access":true},{"name":"kategori-pengeluaran","route":"/dashboard/admin/category-outcome","access":true},{"name":"pengeluaran","route":"/dashboard/admin/outcome","access":true},{"name":"promosi","route":"/dashboard/admin/promotion","access":true}]},{"name":"resepsionis","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"pasien","route":"/dashboard/receptionist/patient","access":true},{"name":"janji-temu","route":"/dashboard/receptionist/appointment","access":true},{"name":"antrean","route":"/dashboard/receptionist/queue","access":true}]},{"name":"dokter","route":"/dashboard/doctor","access":true,"submenu":[{"name":"diagnosa","route":"/dashboard/doctor/diagnose","access":true},{"name":"kategori-layanan","route":"/dashboard/doctor/category-service","access":true},{"name":"layanan","route":"/dashboard/doctor/service","access":true},{"name":"pasien","route":"/dashboard/doctor/patient","access":true},{"name":"antrean","route":"/dashboard/doctor/queue","access":true}]},{"name":"apotek","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"kategori-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"pasokan-item","route":"/dashboard/pharmacy/supply","access":true},{"name":"pemasok","route":"/dashboard/pharmacy/supplier","access":true},{"name":"pesanan-pembelian","route":"/dashboard/pharmacy/purchase-order","access":true},{"name":"penyesuaian-stok","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"kasir","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaksi","route":"/dashboard/cashier/transaction","access":true},{"name":"transaksi-apoteker","route":"/dashboard/cashier/apoteker","access":true},{"name":"riwayat","route":"/dashboard/cashier/history","access":true}]},{"name":"laporan","route":"/dashboard/report","access":true,"submenu":[{"name":"penjualan","route":"/dashboard/report/sales","access":true}]}]',
         ]);
         Access::create([
-            'role_id'  => 3,
-            'clinic_id'   => 2,
+            'role_id' => 3,
+            'clinic_id' => 2,
             'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":false,"submenu":[{"name":"jabatan","route":"/dashboard/admin/position","access":true},{"name":"karyawan","route":"/dashboard/admin/employee","access":true},{"name":"kategori-pembayaran","route":"/dashboard/admin/category-payment","access":true},{"name":"pembayaran","route":"/dashboard/admin/payment","access":true},{"name":"kategori-pengeluaran","route":"/dashboard/admin/category-outcome","access":true},{"name":"pengeluaran","route":"/dashboard/admin/outcome","access":true},{"name":"promosi","route":"/dashboard/admin/promotion","access":true}]},{"name":"resepsionis","route":"/dashboard/receptionist","access":false,"submenu":[{"name":"pasien","route":"/dashboard/receptionist/patient","access":true},{"name":"janji-temu","route":"/dashboard/receptionist/appointment","access":true},{"name":"antrean","route":"/dashboard/receptionist/queue","access":true}]},{"name":"dokter","route":"/dashboard/doctor","access":true,"submenu":[{"name":"diagnosa","route":"/dashboard/doctor/diagnose","access":true},{"name":"kategori-layanan","route":"/dashboard/doctor/category-service","access":true},{"name":"layanan","route":"/dashboard/doctor/service","access":true},{"name":"pasien","route":"/dashboard/doctor/patient","access":true},{"name":"antrean","route":"/dashboard/doctor/queue","access":true}]},{"name":"apotek","route":"/dashboard/pharmacy","access":false,"submenu":[{"name":"kategori-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"pasokan-item","route":"/dashboard/pharmacy/supply","access":true},{"name":"pemasok","route":"/dashboard/pharmacy/supplier","access":true},{"name":"pesanan-pembelian","route":"/dashboard/pharmacy/purchase-order","access":true},{"name":"penyesuaian-stok","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"kasir","route":"/dashboard/cashier","access":false,"submenu":[{"name":"transaksi","route":"/dashboard/cashier/transaction","access":true},{"name":"transaksi-apoteker","route":"/dashboard/cashier/apoteker","access":true},{"name":"riwayat","route":"/dashboard/cashier/history","access":true}]},{"name":"laporan","route":"/dashboard/report","access":false,"submenu":[{"name":"penjualan","route":"/dashboard/report/sales","access":true}]}]',
         ]);
         Access::create([
-            'role_id'  => 4,
-            'clinic_id'   => 2,
-            'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":true,"submenu":[{"name":"jabatan","route":"/dashboard/admin/position","access":true},{"name":"karyawan","route":"/dashboard/admin/employee","access":true},{"name":"kategori-pembayaran","route":"/dashboard/admin/category-payment","access":true},{"name":"pembayaran","route":"/dashboard/admin/payment","access":true},{"name":"kategori-pengeluaran","route":"/dashboard/admin/category-outcome","access":true},{"name":"pengeluaran","route":"/dashboard/admin/outcome","access":true},{"name":"promosi","route":"/dashboard/admin/promotion","access":true}]},{"name":"resepsionis","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"pasien","route":"/dashboard/receptionist/patient","access":true},{"name":"janji-temu","route":"/dashboard/receptionist/appointment","access":true},{"name":"antrean","route":"/dashboard/receptionist/queue","access":true}]},{"name":"dokter","route":"/dashboard/doctor","access":true,"submenu":[{"name":"diagnosa","route":"/dashboard/doctor/diagnose","access":true},{"name":"kategori-layanan","route":"/dashboard/doctor/category-service","access":true},{"name":"layanan","route":"/dashboard/doctor/service","access":true},{"name":"pasien","route":"/dashboard/doctor/patient","access":true},{"name":"antrean","route":"/dashboard/doctor/queue","access":true}]},{"name":"apotek","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"kategori-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"pasokan-item","route":"/dashboard/pharmacy/supply","access":true},{"name":"pemasok","route":"/dashboard/pharmacy/supplier","access":true},{"name":"pesanan-pembelian","route":"/dashboard/pharmacy/purchase-order","access":true},{"name":"penyesuaian-stok","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"kasir","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaksi","route":"/dashboard/cashier/transaction","access":true},{"name":"transaksi-apoteker","route":"/dashboard/cashier/apoteker","access":true},{"name":"riwayat","route":"/dashboard/cashier/history","access":true}]},{"name":"laporan","route":"/dashboard/report","access":true,"submenu":[{"name":"penjualan","route":"/dashboard/report/sales","access":true}]}]',
+            'role_id' => 4,
+            'clinic_id' => 2,
+            'accesses' => '[{"name":"admin","route":"/dashboard/admin","access":false,"submenu":[{"name":"jabatan","route":"/dashboard/admin/position","access":true},{"name":"karyawan","route":"/dashboard/admin/employee","access":true},{"name":"kategori-pembayaran","route":"/dashboard/admin/category-payment","access":true},{"name":"pembayaran","route":"/dashboard/admin/payment","access":true},{"name":"kategori-pengeluaran","route":"/dashboard/admin/category-outcome","access":true},{"name":"pengeluaran","route":"/dashboard/admin/outcome","access":true},{"name":"promosi","route":"/dashboard/admin/promotion","access":true}]},{"name":"resepsionis","route":"/dashboard/receptionist","access":true,"submenu":[{"name":"pasien","route":"/dashboard/receptionist/patient","access":true},{"name":"janji-temu","route":"/dashboard/receptionist/appointment","access":true},{"name":"antrean","route":"/dashboard/receptionist/queue","access":true}]},{"name":"dokter","route":"/dashboard/doctor","access":false,"submenu":[{"name":"diagnosa","route":"/dashboard/doctor/diagnose","access":true},{"name":"kategori-layanan","route":"/dashboard/doctor/category-service","access":true},{"name":"layanan","route":"/dashboard/doctor/service","access":true},{"name":"pasien","route":"/dashboard/doctor/patient","access":true},{"name":"antrean","route":"/dashboard/doctor/queue","access":true}]},{"name":"apotek","route":"/dashboard/pharmacy","access":true,"submenu":[{"name":"kategori-item","route":"/dashboard/pharmacy/category-item","access":true},{"name":"item","route":"/dashboard/pharmacy/item","access":true},{"name":"pasokan-item","route":"/dashboard/pharmacy/supply","access":true},{"name":"pemasok","route":"/dashboard/pharmacy/supplier","access":true},{"name":"pesanan-pembelian","route":"/dashboard/pharmacy/purchase-order","access":true},{"name":"penyesuaian-stok","route":"/dashboard/pharmacy/stock-adjustment","access":true}]},{"name":"kasir","route":"/dashboard/cashier","access":true,"submenu":[{"name":"transaksi","route":"/dashboard/cashier/transaction","access":true},{"name":"transaksi-apoteker","route":"/dashboard/cashier/apoteker","access":true},{"name":"riwayat","route":"/dashboard/cashier/history","access":true}]},{"name":"laporan","route":"/dashboard/report","access":true,"submenu":[{"name":"penjualan","route":"/dashboard/report/sales","access":true}]}]',
         ]);
 
         // User::factory(10)->create();

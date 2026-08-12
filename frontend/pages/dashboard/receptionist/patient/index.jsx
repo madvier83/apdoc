@@ -541,7 +541,7 @@ export default function Patients() {
                       ></i>
                     </div>
                   </th>
-                  <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
+                  {/* <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                     <div
                       className="flex items-center justify-between cursor-pointer"
                       onClick={() => {
@@ -557,7 +557,7 @@ export default function Patients() {
                         }`}
                       ></i>
                     </div>
-                  </th>
+                  </th> */}
                   <th className="px-6 align-middle py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold bg-blueGray-100 text-blueGray-600">
                     <div
                       className="flex items-center justify-between cursor-pointer"
@@ -624,11 +624,12 @@ export default function Patients() {
                             {/* {obj.birth_place} */}
                           </span>
                         </td>
-                        <td className="border-t-0 max-w-xs overflow-hidden px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
+                        {/* <td className="border-t-0 max-w-xs overflow-hidden px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <span className="">
+                            XXXX
                             {obj.address?.substring(0, 50)}{" "}, {obj.village?.name}, {obj.city?.name}, {obj.district?.name}, {obj.province?.name}
                           </span>
-                        </td>
+                        </td> */}
                         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                           <a
                             href={`${

@@ -214,8 +214,8 @@ class TransactionController extends Controller
             }
 
             Transaction::where('id', $transaction->id)->update(['discount' => $totalDiscount, 'total' => $totalPayment]);
-            Queue::where('patient_id', $request->patient_id)->update(['status_id' => 3]);
-            Appointment::where('patient_id', $request->patient_id)->where('status_id', 2)->update(['status_id' => 3]);
+            Queue::where('patient_id', $request->patient_id)->update(['status_id' => 4]);
+            Appointment::where('patient_id', $request->patient_id)->where('status_id', 2)->update(['status_id' => 4]);
 
             return response()->json(Transaction::find($transaction->id));
         } catch (Throwable $e) {

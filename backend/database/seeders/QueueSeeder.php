@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Queue;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -10,79 +11,31 @@ class QueueSeeder extends Seeder
 {
     public function run(): void
     {
-        $startDate = Carbon::create(2026, 6, 1);
-        $endDate = Carbon::create(2026, 6, 20);
+        $file = database_path(
+            'seeders/data/dataset.csv'
+        );
 
-        $data = [];
+        $data = array_map('str_getcsv', file($file));
 
-        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+        // ambil header
+        $header = array_shift($data);
 
-            // Skip Sunday
-            if ($date->isSunday()) {
-                continue;
-            }
+        foreach ($data as $row) {
 
-            $totalPasienHariIni = rand(15, 30);
+            $queue = array_combine($header, $row);
 
-            $runningTime = $date->copy()->setTime(8, 0, 0);
-
-            for ($i = 1; $i <= $totalPasienHariIni; $i++) {
-
-                $queueNumber = 'A' . str_pad($i, 2, '0', STR_PAD_LEFT);
-
-                if ($i > 1) {
-                    $runningTime->addMinutes(rand(5, 15));
-                }
-
-                $createdAt = $runningTime->copy();
-
-                // Durasi pemeriksaan aktual
-                $basePemeriksaan = rand(10, 15);
-
-                // Efek bertambahnya durasi pelayanan berdasarkan antrean
-                $efekLelahDokter = $i * 0.5;
-
-                $durationOfService = $basePemeriksaan + $efekLelahDokter;
-
-                // Actual time dalam menit
-                $actualTime = round($durationOfService);
-
-                // Prediction time
-                // Estimasi berdasarkan nomor antrean
-                $predictionTime = max(
-                    1,
-                    round(($i - 1) * 12 + rand(-3, 3))
-                );
-
-                $updatedAt = $createdAt
-                    ->copy()
-                    ->addMinutes($actualTime);
-
-                // Stop if service starts after 17:00
-                if ($createdAt->hour >= 17) {
-                    break;
-                }
-
-                $data[] = [
-                    'clinic_id' => 2,
-                    'patient_id' => rand(1, 10),
-                    'queue_number' => $queueNumber,
-                    'status_id' => 4,
-
-                    // 'prediction_time' => $predictionTime,
-                    'prediction_time' => "",
-                    'actual_time' => $actualTime,
-
-                    'created_at' => $createdAt->toDateTimeString(),
-                    'updated_at' => $updatedAt->toDateTimeString(),
-                ];
-
-                $runningTime = $updatedAt->copy();
-            }
-        }
-
-        foreach (array_chunk($data, 100) as $chunk) {
-            DB::table('queues')->insert($chunk);
+            Queue::create([
+                'id' => $queue['id'],
+                'patient_id' => $queue['patient_id'],
+                'queue_position' => $queue['queue_position'],
+                'queue_number' => $queue['queue_number'],
+                'prediction_time' => null,
+                'actual_time' => $queue['actual_time'],
+                'status_id' => $queue['status_id'],
+                'clinic_id' => $queue['clinic_id'],
+                'created_at' => Carbon::yesterday(),
+                'updated_at' => Carbon::yesterday(),
+            ]);
         }
     }
 }

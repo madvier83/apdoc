@@ -33,9 +33,18 @@ $router->get('/v1/location/province/cities/{id}', 'AddressController@cities');
 $router->get('/v1/location/province/city/districts/{id}', 'AddressController@districts');
 $router->get('/v1/location/province/city/district/villages/{id}', 'AddressController@villages');
 
+$router->get(
+	'/v1/regression-test/model',
+	'RegressionTestController@regressionModel'
+);
+$router->get(
+	'/v1/regression-test/test',
+	'RegressionTestController@testRegression'
+);
+
 $router->group(['middleware' => 'auth'], function () use ($router) {
 	// Whatsapp Verification
-	$router->post('/v1/auth/send/otp','AuthController@send_otp');
+	$router->post('/v1/auth/send/otp', 'AuthController@send_otp');
 	$router->post('/v1/auth/phone/verification', 'AuthController@verification_otp');
 	$router->post('/v1/auth/logout', 'AuthController@logout');
 
@@ -67,7 +76,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/user-slot/{id}', 'UserSlotController@create');
 	$router->put('/v1/user-slot/{id}', 'UserSlotController@update');
 	$router->delete('/v1/user-slot/{id}', 'UserSlotController@destroy');
-	
+
 	$router->get('/v1/accesses/{clinic}', 'AccessController@index');
 	$router->get('/v1/access/{role}/role', 'AccessController@getByRole');
 	$router->post('/v1/access', 'AccessController@create');
@@ -160,25 +169,31 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/patient', 'PatientController@create');
 	$router->put('/v1/patient/{id}', 'PatientController@update');
 	$router->delete('/v1/patient/{id}', 'PatientController@destroy');
-	
+
 	$router->get('/v1/appointments/{clinic}/{perPage}', 'AppointmentController@index');
 	$router->get('/v1/appointments/{clinic}/{perPage}/{keyword}', 'AppointmentController@index');
 	$router->get('/v1/appointment/{id}', 'AppointmentController@show');
 	$router->put('/v1/appointment/{id}', 'AppointmentController@store');
 	$router->post('/v1/appointment', 'AppointmentController@store');
-	$router->delete('/v1/appointment/{id}','AppointmentController@destroy');
+	$router->delete('/v1/appointment/{id}', 'AppointmentController@destroy');
 
 	$router->get('/v1/queues/{clinic}', 'QueueController@index');
 	$router->get('/v1/queues-prediction/{clinic}', 'QueueController@indexPrediction');
+	$router->get('/v1/queues-finished/{clinic}', 'QueueController@finished');
 	$router->post('/v1/queue/{appointment}/appointment', 'QueueController@createFromAppointment');
 	$router->post('/v1/queue/{patient}', 'QueueController@create');
 	$router->put('/v1/queue/{id}/{status}', 'QueueController@update');
+	$router->get(
+		'/v1/queue/debug/regression/{clinicId}',
+		'QueueController@regressionDebug'
+	);
+
 
 	$router->get('/v1/queue-details', 'QueueDetailController@index');
 	$router->get('/v1/queue-detail', 'QueueDetailController@getByDoctor');
 	$router->post('/v1/queue-detail/{queue}/{employee}/{service}', 'QueueDetailController@create');
 	$router->put('/v1/queue-detail/{id}', 'QueueDetailController@update');
-	
+
 	// DOCTOR
 	$router->get('/v1/records/{clinic}/{perPage}', 'RecordController@index');
 	$router->get('/v1/records/{clinic}/{perPage}/{keyword}', 'RecordController@index');
@@ -222,7 +237,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->post('/v1/item-variant', 'ItemVariantController@create');
 	$router->put('/v1/item-variant/{id}', 'ItemVariantController@update');
 	$router->delete('/v1/item-variant/{id}', 'ItemVariantController@destroy');
-	
+
 	$router->get('/v1/item-supplys/{clinic}/{perPage}', 'ItemSupplyController@index');
 	$router->get('/v1/item-supplys/{clinic}/{perPage}/{keyword}', 'ItemSupplyController@index');
 	$router->get('/v1/item-supply/{item}', 'ItemSupplyController@show');
@@ -246,7 +261,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 	$router->put('/v1/purchase-order/{id}', 'PurchaseOrderController@update');
 	$router->put('/v1/purchase-order/{id}/finished', 'PurchaseOrderController@updateFinished');
 	$router->delete('/v1/purchase-order/{id}', 'PurchaseOrderController@destroy');
-	
+
 	// CASHIER	
 	$router->get('/v1/transactions/{clinic}/{perPage}', 'TransactionController@index');
 	$router->get('/v1/transactions/{clinic}/{perPage}/{keyword}', 'TransactionController@index');
@@ -271,15 +286,15 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 	$router->get('/v1/export/employee', 'ExcelController@exportEmployee');
 	$router->post('/v1/import/employee', 'ExcelController@importEmployee');
-	
+
 	$router->get('/v1/export/patient', 'ExcelController@exportPatient');
 	$router->post('/v1/import/patient', 'ExcelController@importPatient');
-	
+
 	$router->get('/v1/export/item', 'ExcelController@exportItem');
 	$router->post('/v1/import/item', 'ExcelController@importItem');
-	
+
 	$router->get('/v1/export/diagnose', 'ExcelController@exportDiagnose');
 	$router->post('/v1/import/diagnose', 'ExcelController@importDiagnose');
-	
+
 	// });
 });

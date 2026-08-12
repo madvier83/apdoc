@@ -12,6 +12,7 @@ import ModalDelete from "../../../components/Modals/ModalDelete";
 import Loading from "../../../components/loading";
 import { GetCookieChunk } from "../../../services/CookieChunk";
 import PrediksiWaktuTunggu from "../../../components/PrediksiWaktuTunggu";
+import GrafikRegresiLinear from "../../../components/GrafikRegresiLinear";
 
 export default function History() {
   const token = GetCookieChunk("token_");
@@ -92,6 +93,7 @@ export default function History() {
 
   useEffect(() => {
     setSearch("");
+    getRegressionDebug()
     setPage(1);
   }, [clinic]);
 
@@ -99,17 +101,43 @@ export default function History() {
     getItem();
   }, []);
 
+  async function getRegressionDebug() {
+    try {
+      console.log("getting")
+      // console.log(token)
+      const response = await axios.get(
+        `queue/debug/regression/2`,
+        {
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        }
+      );
+      console.log(response)
+      return response.data;
+
+    } catch (error) {
+
+      console.error(
+        "Error mengambil data regresi:",
+        error.response?.data || error.message
+      );
+
+      throw error;
+    }
+  };
+
   // console.log(item)
 
   return (
     <>
       <DashboardLayout title="Riwayat Antrean" clinic={clinic} setClinic={setClinic}>
-        <div className="flex gap-4 pb-64">
-          <div className="mt-6 min-h-fit w-[60vw] bg-blue">
+        <div className="flex gap-4 pb-28">
+          {/* <div className="mt-6 min-h-fit w-[60vw] bg-blue">
             <PrediksiWaktuTunggu
               listAntrean={item}
             />
-          </div>
+          </div> */}
           <div
             className={
               "relative flex flex-col min-w-0 break-words w-full mt-6 min-h-fit shadow-lg rounded-md text-blueGray-700 bg-white"
@@ -132,7 +160,7 @@ export default function History() {
               className="h-[75vh] w-full overflow-x-auto flex flex-col justify-between"
             >
               <table className="items-center w-full bg-transparent border-collapse overflow-auto">
-          
+
                 <tbody>
                   <Loading
                     data={item}
@@ -179,8 +207,8 @@ export default function History() {
                               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-2">
                                 <i
                                   className={`text-md mr-2 ${!obj.patient && "hidden"} ${obj.patient?.gender === "male"
-                                      ? "text-blue-400 fas fa-mars"
-                                      : "text-pink-400 fas fa-venus"
+                                    ? "text-blue-400 fas fa-mars"
+                                    : "text-pink-400 fas fa-venus"
                                     }`}
                                 ></i>{" "}
                                 <span className="font-bold">
@@ -207,7 +235,7 @@ export default function History() {
                                 </div>
                                 <div className="mt-1">
                                   <span className="font-medium text-zinc-500">Selesai:</span>{" "}
-                                  {obj.status_id === 3 ? (
+                                  {obj.status_id === 3 || obj.status_id == 4 ? (
                                     <span className="text-emerald-600 font-semibold">
                                       {moment(obj.updated_at).format("HH:mm")} WIB
                                     </span>
@@ -224,9 +252,7 @@ export default function History() {
                                   const updateStatus = moment(obj.updated_at);
                                   const durasiMenit = updateStatus.diff(masuk, "minutes");
 
-                                  if (obj.status_id !== 3 || durasiMenit < 0) {
-                                    return <span className="text-zinc-400 italic">Sedang mengantre...</span>;
-                                  }
+                                  <span className="text-zinc-400 italic">{ obj.status_id}</span>
 
                                   if (durasiMenit < 1) {
                                     return "Kurang dari 1 menit";
@@ -250,7 +276,10 @@ export default function History() {
 
             </div>
           </div>
+
         </div>
+        <GrafikRegresiLinear data={item} />
+        <div className="pb-64"></div>
       </DashboardLayout>
     </>
   );

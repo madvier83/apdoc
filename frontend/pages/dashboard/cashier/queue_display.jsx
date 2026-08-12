@@ -595,7 +595,7 @@ export default function Queue() {
                               {obj.status_id === 2 && (
                                 <span className="inline-flex items-center rounded-full bg-emerald-100 px-4 py-1.5 text-sm lg:text-base font-bold text-emerald-800">
                                   <span className="w-3 h-3 rounded-full bg-emerald-500 mr-2.5 animate-pulse"></span>
-                                  Sedang Dilayani
+                                  Dipanggil
                                 </span>
                               )}
 

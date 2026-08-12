@@ -135,7 +135,7 @@ export default function Transaction() {
     }
     setQueuesLoading(true);
     try {
-      const response = await axios.get(`queues/${clinic && clinic}`, {
+      const response = await axios.get(`queues-finished/${clinic && clinic}`, {
         headers: {
           Authorization: "Bearer" + token,
         },

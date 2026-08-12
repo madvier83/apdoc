@@ -85,7 +85,7 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
         <div className="max-w-xl mx-auto space-y-4 font-sans antialiased text-slate-800">
 
             {/* CARD UTAMA: DAFTAR PREDIKSI */}
-            <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
+            {/* <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
                 <div className="bg-slate-100 px-5 py-4 flex justify-between items-center">
                     <div>
                         <h3 className="font-semibold">Prediksi Waktu Tunggu</h3>
@@ -144,10 +144,10 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                 <div className="bg-slate-50 px-5 py-2.5 border-t border-slate-200 text-[10px] text-slate-400 italic text-center">
                     *Waktu diperbarui berkala berdasarkan durasi pasien sebelumnya.
                 </div>
-            </div>
+            </div> */}
 
             {/* CARD LOG & KALKULASI RUMUS */}
-            <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
+            {/* <div className="bg-white rounded-md shadow-sm border border-slate-200 overflow-hidden">
                 <div className="bg-slate-50 px-5 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Kalkulasi Regresi</span>
                     <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-medium">
@@ -156,7 +156,6 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                 </div>
 
                 <div className="p-5 space-y-5 text-xs">
-                    {/* Ringkasan Nilai Variabel Dasar */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-lg">
                         <div>∑X  = <span className="text-slate-900 font-bold">{debug.jumlahX}</span></div>
                         <div>∑Y  = <span className="text-slate-900 font-bold">{debug.jumlahY}</span></div>
@@ -164,9 +163,7 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                         <div>∑X² = <span className="text-slate-900 font-bold">{debug.jumlahX2}</span></div>
                     </div>
 
-                    {/* Breakdown Rumus Matematika */}
                     <div className="space-y-4 border-t border-slate-100 pt-4 text-slate-700">
-                        {/* Kalkulasi Nilai B */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-3 border-b border-dashed border-slate-100">
                             <span className="font-bold text-slate-500 sm:w-24">Mencari b :</span>
                             <div className="flex items-center gap-2 overflow-x-auto py-1">
@@ -186,7 +183,6 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                             </div>
                         </div>
 
-                        {/* Kalkulasi Nilai A */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 pb-2">
                             <span className="font-bold text-slate-500 sm:w-24">Mencari a :</span>
                             <div className="flex items-center gap-2 overflow-x-auto py-1">
@@ -207,7 +203,6 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                         </div>
                     </div>
 
-                    {/* Hasil Persamaan Regresi Penuh (Dipindah ke Bawah) */}
                     <div className="border-t-2 border-slate-100 pt-4 bg-slate-50/50 -mx-5 -mb-5 p-5 flex flex-col items-center gap-2">
                         <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Persamaan Regresi Linear Penuh:</span>
                         <div className="items-start sm:items-center gap-3">
@@ -224,8 +219,8 @@ export default function PrediksiWaktuTunggu({ listAntrean }) {
                     </div>
 
                 </div>
-            </div>
-            <GrafikRegresiLinear listAntrean={listAntrean} />
+            </div> */}
+            {/* <GrafikRegresiLinear listAntrean={listAntrean} /> */}
         </div>
     );
 }

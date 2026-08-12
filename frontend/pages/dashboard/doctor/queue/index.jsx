@@ -468,7 +468,7 @@ export default function Queue() {
                             <ModalDelete
                               id={obj.queue_number}
                               callback={() => cancelQueue(obj.id)}
-                              title={`Hapus queue ${obj.queue_number}?`}
+                              title={`Selesaikan antrean ${obj.queue_number}?`}
                             ></ModalDelete>
                           </React.Fragment>
                         );
@@ -587,9 +587,10 @@ export default function Queue() {
                           <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
                           <span className="font-sm text-zinc-800 line-clamp-2">
-                            {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
+                            XXXX
+                            {/* {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
                             {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
-                            {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
+                            {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name} */}
                           </span>
                         </div>
                         {!isRegular && (

@@ -7,6 +7,7 @@ use App\Models\Queue;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Throwable;
+use Illuminate\Support\Facades\Log;
 
 class QueueController extends Controller
 {
@@ -15,6 +16,35 @@ class QueueController extends Controller
         try {
             $queue = Queue::whereDate('created_at', Carbon::today())
                 ->whereIn('status_id', [1, 2])
+                ->with([
+                    'patient.province',
+                    'patient.city',
+                    'patient.district',
+                    'patient.village',
+                    'queueDetails',
+                    'queueDetails.employee.province',
+                    'queueDetails.employee.city',
+                    'queueDetails.employee.district',
+                    'queueDetails.employee.village',
+                    'queueDetails.service'
+                ])
+                ->where('clinic_id', $clinic)
+                ->get();
+
+            return response()->json($queue);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function finished($clinic)
+    {
+        try {
+            $queue = Queue::whereDate('created_at', Carbon::today())
+                ->whereIn('status_id', [3])
                 ->with([
                     'patient.province',
                     'patient.city',
@@ -112,6 +142,7 @@ class QueueController extends Controller
                 ->whereIn('status_id', [1, 2])
                 ->count();
 
+
             /*
              * Menghitung estimasi waktu tunggu.
              */
@@ -124,6 +155,7 @@ class QueueController extends Controller
                 'clinic_id' => $clinicId,
                 'patient_id' => $patient,
                 'queue_number' => 'A' . $queueNumber,
+                'queue_position' => $patientsAhead,
                 'status_id' => 1,
 
                 // Dalam satuan menit
@@ -246,26 +278,16 @@ class QueueController extends Controller
              */
             if ((int) $status == 2) {
 
-                $completedAt = Carbon::now();
+                $calledAt = Carbon::now();
 
-                /*
-                 * Menghitung waktu aktual dalam menit.
-                 *
-                 * created_at = waktu pasien masuk antrean
-                 * completedAt = waktu pelayanan selesai
-                 */
                 $actualTime = round(
                     Carbon::parse($queue->created_at)
-                        ->diffInSeconds($completedAt) / 60,
+                        ->diffInSeconds($calledAt) / 60,
                     2
                 );
 
                 $data['actual_time'] = $actualTime;
-
-                /*
-                 * updated_at otomatis menjadi waktu selesai.
-                 */
-                $data['updated_at'] = $completedAt;
+                $data['updated_at'] = $calledAt;
             }
 
             $queue->fill($data);
@@ -313,39 +335,27 @@ class QueueController extends Controller
             return 0;
         }
 
-        /*
-         * Mengambil data historis yang sudah selesai.
-         */
+        // Ambil data historis yang sudah selesai.
         $historicalData = Queue::where('clinic_id', $clinicId)
-            ->where('status_id', 3)
             ->whereNotNull('actual_time')
             ->orderBy('created_at')
             ->get();
 
-        /*
-         * Jika belum terdapat data historis,
-         * gunakan rata-rata 15 menit sebagai nilai awal.
-         */
+        // Gunakan estimasi default jika data belum cukup.
         if ($historicalData->count() < 2) {
             return $patientsAhead * 15;
         }
 
-        /*
-         * Membuat pasangan data:
-         *
-         * X = posisi antrean
-         * Y = actual_time
-         */
+        // X = posisi antrean, Y = waktu pelayanan aktual.
         $xValues = [];
         $yValues = [];
 
-        foreach ($historicalData as $index => $history) {
-            $xValues[] = $index + 1;
+        foreach ($historicalData as $history) {
+            $xValues[] = (float) $history->queue_position;
             $yValues[] = (float) $history->actual_time;
         }
 
         $n = count($xValues);
-
         $sumX = array_sum($xValues);
         $sumY = array_sum($yValues);
 
@@ -357,12 +367,7 @@ class QueueController extends Controller
             $sumX2 += $xValues[$i] * $xValues[$i];
         }
 
-        /*
-         * Rumus slope:
-         *
-         * b = (nΣXY - ΣXΣY)
-         *     / (nΣX² - (ΣX)²)
-         */
+        // Hitung slope regresi linear.
         $denominator = ($n * $sumX2) - ($sumX * $sumX);
 
         if ($denominator == 0) {
@@ -374,30 +379,17 @@ class QueueController extends Controller
             ($sumX * $sumY)
         ) / $denominator;
 
-        /*
-         * Rumus intercept:
-         *
-         * a = (ΣY - bΣX) / n
-         */
+        // Hitung intercept regresi linear.
         $a = ($sumY - ($b * $sumX)) / $n;
 
-        /*
-         * Menghitung estimasi durasi pelayanan
-         * untuk setiap pasien yang berada di depan.
-         */
+        // Jumlahkan estimasi waktu setiap posisi antrean.
         $prediction = 0;
 
         for ($i = 1; $i <= $patientsAhead; $i++) {
-
             $estimatedServiceTime = $a + ($b * $i);
 
-            /*
-             * Pastikan hasil tidak negatif.
-             */
-            $estimatedServiceTime = max(
-                1,
-                $estimatedServiceTime
-            );
+            // Hindari hasil prediksi kurang dari 1 menit.
+            $estimatedServiceTime = max(1, $estimatedServiceTime);
 
             $prediction += $estimatedServiceTime;
         }
@@ -405,8 +397,114 @@ class QueueController extends Controller
         return round($prediction, 2);
     }
 
+    public function regressionDebug($clinicId)
+    {
+        $historicalData = Queue::where('clinic_id', $clinicId)
+            ->whereNotNull('actual_time')
+            ->whereNotNull('queue_position')
+            ->orderBy('created_at')
+            ->get();
+
+
+        $xValues = [];
+        $yValues = [];
+
+
+        foreach ($historicalData as $history) {
+
+            $xValues[] = (float) $history->queue_position;
+            $yValues[] = (float) $history->actual_time;
+
+        }
+
+
+        $n = count($xValues);
+
+
+        if ($n < 2) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Data training kurang dari 2',
+                'jumlah_data' => $n
+            ]);
+
+        }
+
+
+        $sumX = array_sum($xValues);
+        $sumY = array_sum($yValues);
+
+        $sumXY = 0;
+        $sumX2 = 0;
+
+
+        for ($i = 0; $i < $n; $i++) {
+
+            $sumXY += $xValues[$i] * $yValues[$i];
+            $sumX2 += $xValues[$i] * $xValues[$i];
+
+        }
+
+
+        $denominator = ($n * $sumX2) - ($sumX * $sumX);
+
+
+        if ($denominator == 0) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menghitung regresi, queue_position tidak memiliki variasi',
+                'sample_x' => array_slice($xValues, 0, 20)
+            ]);
+
+        }
+
+
+        // slope
+        $b = (
+            ($n * $sumXY) - ($sumX * $sumY)
+        ) / $denominator;
+
+
+        // intercept
+        $a = (
+            $sumY - ($b * $sumX)
+        ) / $n;
+
+
+        return response()->json([
+
+            'status' => true,
+
+            'training' => [
+                'jumlah_data' => $n,
+                'sample_x_queue_position' => array_slice($xValues, 0, 20),
+                'sample_y_actual_time' => array_slice($yValues, 0, 20),
+            ],
+
+
+            'regresi_linear' => [
+
+                'intercept_a' => round($a, 4),
+
+                'slope_b' => round($b, 4),
+
+                'formula' =>
+                    'Y = ' .
+                    round($a, 2) .
+                    ' + (' .
+                    round($b, 2) .
+                    ' * X)'
+
+            ]
+
+        ]);
+    }
+
+
+
     public function destroy($id)
     {
-        //
     }
 }

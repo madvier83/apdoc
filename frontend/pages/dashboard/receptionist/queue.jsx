@@ -563,8 +563,8 @@ export default function Queue() {
                                       NIK: {obj.patient?.nik} |{" "} {obj.status_id}
                                       {obj.status_id == 1 && "Mengantre"}
                                       {obj.status_id == 2 && "Dipanggil"}
-                                      {obj.status_id == 3 && "Selesai Diperiksa"} | {" "}
-                                      {obj.status_id == 4 && "Selesai Pembayaran"} | {" "}
+                                      {obj.status_id == 3 && "Selesai Diperiksa"} 
+                                      {obj.status_id == 4 && "Selesai Pembayaran"} 
                                       {obj.status_id == 9 && "Cancel"} | {" "}
                                       {obj.prediction_time}
                                     </small>
@@ -733,11 +733,12 @@ export default function Queue() {
                         <div className="mt-4">
                           <small className="text-zinc-400">Alamat</small>{" "}
                           <br />
-                          <span className="font-sm text-zinc-800 line-clamp-2">
+                          XXXX
+                          {/* <span className="font-sm text-zinc-800 line-clamp-2">
                               {selectedQueue?.patient?.address?.substring(0, 50)} ,{" "}
                               {selectedQueue?.patient?.village?.name}, {selectedQueue?.patient?.city?.name},{" "}
                               {selectedQueue?.patient?.district?.name}, {selectedQueue?.patient?.province?.name}
-                          </span>
+                          </span> */}
                         </div>
                         {!isRegular && (
                           <div className="">
