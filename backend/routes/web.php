@@ -18,6 +18,10 @@ $router->get('/', function () use ($router) {
 	return 'Apdoc API v.1';
 });
 
+$router->get(
+	'/v1/regression-test/model',
+	'RegressionTestController@regressionModel'
+);
 // Email Verification
 $router->get('/v1/auth/email/verification', ['as' => 'email.verification', 'uses' => 'AuthController@verification_email']);
 $router->post('/v1/auth/email/send/forgot-password', ['as' => 'email.forgotpassword', 'uses' => 'AuthController@send_forgot_password']);
@@ -33,10 +37,6 @@ $router->get('/v1/location/province/cities/{id}', 'AddressController@cities');
 $router->get('/v1/location/province/city/districts/{id}', 'AddressController@districts');
 $router->get('/v1/location/province/city/district/villages/{id}', 'AddressController@villages');
 
-$router->get(
-	'/v1/regression-test/model',
-	'RegressionTestController@regressionModel'
-);
 $router->get(
 	'/v1/regression-test/test',
 	'RegressionTestController@testRegression'

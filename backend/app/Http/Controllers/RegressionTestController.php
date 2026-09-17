@@ -80,8 +80,10 @@ class RegressionTestController extends Controller
 
     public function testRegression()
     {
+        // Memanggil model Regresi Linear
         $model = $this->calculateRegressionModel();
 
+        // Validasi: jika error model gagal dihitung 
         if (!$model) {
             return response()->json([
                 'status' => 'error',
@@ -89,11 +91,13 @@ class RegressionTestController extends Controller
             ], 400);
         }
 
+        // Mengambil seluruh Testing Data dari database yang memiliki nilai aktual
         $testingData = RegressionTesting::whereNotNull('actual_time')
             ->whereNotNull('queue_position')
             ->orderBy('created_at', 'asc')
             ->get();
 
+        // Validasi: Cegah proses jika data testing kosong
         if ($testingData->count() == 0) {
             return response()->json([
                 'status' => 'error',
@@ -101,27 +105,31 @@ class RegressionTestController extends Controller
             ], 400);
         }
 
+        // Inisialisasi variabel penampung total error (MAE & RMSE)
         $absoluteError = 0;
         $squaredError = 0;
-
         $results = [];
 
+        // Menghitung nilai prediksi dan error per baris data testing
         foreach ($testingData as $data) {
 
-            $x = (float) $data->queue_position;
-            $actual = (float) $data->actual_time;
+            $x = (float) $data->queue_position; // Variabel X: Posisi Antrean
+            $actual = (float) $data->actual_time; // Variabel Y Aktual: Waktu Tunggu Nyata
 
-            $prediction = $model['intercept']
-                + ($model['slope'] * $x);
+            // Rumus Regresi Linear: Y' = a + (b * X)
+            $prediction = $model['intercept'] + ($model['slope'] * $x);
 
+            // Menghitung selisih (error) antara Nilai Aktual dan Hasil Prediksi
             $error = $actual - $prediction;
 
-            $absolute = abs($error);
-            $squared = pow($error, 2);
+            $absolute = abs($error);     // Absolute Error 
+            $squared = pow($error, 2);   // Squared Error 
 
+            // Akumulasi total error seluruh data
             $absoluteError += $absolute;
             $squaredError += $squared;
 
+            // Menyimpan rincian perhitungan per data antrean ke array hasil
             $results[] = [
                 'id' => $data->id,
                 'queue_number' => $data->queue_number,
@@ -133,15 +141,16 @@ class RegressionTestController extends Controller
             ];
         }
 
-        $n = $testingData->count();
+        $n = $testingData->count(); 
 
-        $mae = $absoluteError / $n;
+        $mae = $absoluteError / $n;          // Formula MAE  = Sum(|Actual - Pred|) / N
+        $rmse = sqrt($squaredError / $n);     // Formula RMSE = Sqrt( Sum(Error^2) / N )
 
-        $rmse = sqrt($squaredError / $n);
-
+        // retrurn
         return response()->json([
             'status' => 'success',
 
+            //  Training
             'training' => [
                 'data_count' => $model['data_count'],
                 'intercept' => $model['intercept'],

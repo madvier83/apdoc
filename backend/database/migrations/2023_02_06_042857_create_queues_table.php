@@ -15,14 +15,14 @@ class CreateQueuesTable extends Migration
     {
         Schema::create('queues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id');
-            $table->string('queue_number');
-            $table->string('queue_position')->default(1)->nullable();
-            $table->string('prediction_time')->nullable();
-            $table->string('actual_time')->nullable();
+            $table->string('queue_number', 8);
+            $table->string('queue_position', 8)->default(1)->nullable();
             $table->foreignId('status_id')->default(1)->nullable();
-            $table->foreignId('clinic_id')->nullable();
+            $table->string('prediction_time', 32)->nullable();
+            $table->string('actual_time', 32)->nullable();
+            $table->foreignId('patient_id');
             $table->timestamps();
+            $table->foreignId('clinic_id')->nullable();
         });
     }
 

@@ -15,14 +15,14 @@ class CreateServicesTable extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 64);
+            $table->integer('price');
+            $table->timestamps();
             $table->foreignId('category_service_id')->nullable();
             $table->string('code');
-            $table->string('name');
-            $table->integer('price');
             $table->integer('commission');
             $table->boolean('is_delete')->default(false);
             $table->foreignId('clinic_id')->nullable();
-            $table->timestamps();
         });
     }
 

@@ -450,11 +450,17 @@ export default function Queue() {
     }, 5000);
 
     return () => clearInterval(intervalQueue);
-  }, [clinic, isRegular]); // Bergantung pada clinic dan jenis tab yang aktif
+  }, [clinic, isRegular]);
+
+  const [isHideSidebar, setIsHideSidebar] = useState(false);
+  const toggleSidebar = () => {
+    setIsHideSidebar((prev) => !prev);
+  };
 
   return (
     <>
-      <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic}>
+      <DashboardLayout title="antrean" clinic={clinic} setClinic={setClinic} hideSidebar={isHideSidebar}>
+
         <div className="w-full mt-8" suppressHydrationWarning>
           <div className="card min-h-[90vh] rounded-md bg-base-100 shadow-md">
             <div className="card-body">
@@ -472,8 +478,28 @@ export default function Queue() {
 
                 {/* Tampilan Jam Berjalan (Abu-abu, dengan margin bawah & indikator loading) */}
                 <div className="text-right flex items-center gap-3">
+                  <button
+                    onClick={toggleSidebar}
+                    type="button"
+                    className="relative z-10 inline-flex items-center justify-center p-2 rounded-lg text-gray-100 hover:bg-gray-200 dark:text-gray-100 transition-colors cursor-pointer select-none"
+                    title={isHideSidebar ? "Buka Sidebar" : "Tutup Sidebar"}
+                  >
+                    <svg
+                      className="w-6 h-6 pointer-events-none"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                      />
+                    </svg>
+                  </button>
                   <div>
-                    <span className="text-2xl font-bold text-zinc-600 bg-zinc-100 px-4 py-2 rounded-lg border border-zinc-200 shadow-inner block mb-2">
+                    <span className="text-2xl font-bold text-zinc-600 bg-zinc-100 px-4 py-2 text-center rounded-lg border border-zinc-200 shadow-inner block mb-2">
                       {currentTime}
                     </span>
                     <p className="text-xs text-zinc-400">

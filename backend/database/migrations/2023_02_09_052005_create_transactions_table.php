@@ -15,16 +15,16 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code', 16);
             $table->foreignId('patient_id')->nullable();
-            $table->foreignId('payment_id')->nullable();
-            $table->integer('discount');
             $table->integer('total');
             $table->integer('payment');
-            $table->foreignId('employee_id')->nullable(); // cashier
+            $table->foreignId('employee_id')->nullable(); 
+            $table->timestamps();
+            $table->integer('discount');
+            $table->foreignId('payment_id')->nullable();
             $table->boolean('is_cancelled')->default(false);
             $table->foreignId('clinic_id')->nullable();
-            $table->timestamps();
         });
     }
 

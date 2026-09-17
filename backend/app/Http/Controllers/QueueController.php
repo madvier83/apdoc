@@ -127,9 +127,6 @@ class QueueController extends Controller
         }
 
         try {
-            /*
-             * Menghitung nomor antrean.
-             */
             $queueNumber = Queue::whereDate('created_at', Carbon::today())
                 ->where('clinic_id', $clinicId)
                 ->count() + 1;
@@ -158,10 +155,7 @@ class QueueController extends Controller
                 'queue_position' => $patientsAhead,
                 'status_id' => 1,
 
-                // Dalam satuan menit
                 'prediction_time' => $predictionTime,
-
-                // Belum selesai dilayani
                 'actual_time' => null,
             ];
 
@@ -331,22 +325,23 @@ class QueueController extends Controller
      */
     private function calculatePrediction($clinicId, $patientsAhead)
     {
+        // Validasi awal: Jika tidak ada antrean di depan, waktu tunggu adalah 0 menit
         if ($patientsAhead <= 0) {
             return 0;
         }
 
-        // Ambil data historis yang sudah selesai.
         $historicalData = Queue::where('clinic_id', $clinicId)
             ->whereNotNull('actual_time')
             ->orderBy('created_at')
             ->get();
 
-        // Gunakan estimasi default jika data belum cukup.
+        // Fallback: Jika data historis kurang dari 2, gunakan estimasi standar (20 menit/pasien)
         if ($historicalData->count() < 2) {
-            return $patientsAhead * 15;
+            return $patientsAhead * 20;
         }
 
-        // X = posisi antrean, Y = waktu pelayanan aktual.
+        // X = Nomor/Posisi urutan antrean
+        // Y = Waktu tunggu aktual (kumulatif) dalam menit
         $xValues = [];
         $yValues = [];
 
@@ -355,44 +350,37 @@ class QueueController extends Controller
             $yValues[] = (float) $history->actual_time;
         }
 
-        $n = count($xValues);
-        $sumX = array_sum($xValues);
-        $sumY = array_sum($yValues);
+        $n = count($xValues);       // Jumlah sampel data (N)
+        $sumX = array_sum($xValues); // Total penjumlahan X (∑X)
+        $sumY = array_sum($yValues); // Total penjumlahan Y (∑Y)
 
-        $sumXY = 0;
-        $sumX2 = 0;
+        $sumXY = 0; 
+        $sumX2 = 0; 
 
         for ($i = 0; $i < $n; $i++) {
             $sumXY += $xValues[$i] * $yValues[$i];
             $sumX2 += $xValues[$i] * $xValues[$i];
         }
 
-        // Hitung slope regresi linear.
+        // Rumus: N(∑X²) - (∑X)²
         $denominator = ($n * $sumX2) - ($sumX * $sumX);
 
+        // Mencegah error 'Division by Zero' jika penyebut bernilai 0
         if ($denominator == 0) {
-            return $patientsAhead * 15;
+            return $patientsAhead * 20;
         }
 
-        $b = (
-            ($n * $sumXY) -
-            ($sumX * $sumY)
-        ) / $denominator;
+        // Slope (b) = Rata-rata tambahan waktu tunggu per kenaikan 1 posisi antrean
+        $b = (($n * $sumXY) - ($sumX * $sumY)) / $denominator;
 
-        // Hitung intercept regresi linear.
+        // Intercept (a) = Estimasi waktu awal/base time (posisi X = 0)
         $a = ($sumY - ($b * $sumX)) / $n;
 
-        // Jumlahkan estimasi waktu setiap posisi antrean.
-        $prediction = 0;
+        // rumus dasar Regresi Linear: Y = a + bX
+        $prediction = $a + ($b * $patientsAhead);
 
-        for ($i = 1; $i <= $patientsAhead; $i++) {
-            $estimatedServiceTime = $a + ($b * $i);
-
-            // Hindari hasil prediksi kurang dari 1 menit.
-            $estimatedServiceTime = max(1, $estimatedServiceTime);
-
-            $prediction += $estimatedServiceTime;
-        }
+        // (safety boundary) agar nilai prediksi tidak bernilai negatif/0
+        $prediction = max(1, $prediction);
 
         return round($prediction, 2);
     }

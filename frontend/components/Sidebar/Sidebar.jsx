@@ -73,38 +73,38 @@ export default function Sidebar() {
           access: true,
           description: "Mengelola rekrutmen dan karyawan Anda.",
         },
-        {
-          name: "kategori-pembayaran",
-          route: "/dashboard/admin/category-payment",
-          access: true,
-          description: "Mengelola kategori untuk metode pembayaran.",
-        },
-        {
-          name: "pembayaran",
-          route: "/dashboard/admin/payment",
-          access: true,
-          description: "Sesuaikan pilihan pembayaran untuk transaksi.",
-        },
-        {
-          name: "kategori-pengeluaran",
-          route: "/dashboard/admin/category-outcome",
-          access: true,
-          description: "Mengelola kategori untuk pengeluaran.",
-        },
-        {
-          name: "pengeluaran",
-          route: "/dashboard/admin/outcome",
-          access: true,
-          description:
-            "Atur pengeluaran Anda dan buat keputusan berdasarkan informasi.",
-        },
-        {
-          name: "promosi",
-          route: "/dashboard/admin/promotion",
-          access: true,
-          description:
-            "Desain dan konfigurasi diskon menarik, serta penawaran khusus untuk menarik dan melibatkan pelanggan.",
-        },
+        // {
+        //   name: "kategori-pembayaran",
+        //   route: "/dashboard/admin/category-payment",
+        //   access: true,
+        //   description: "Mengelola kategori untuk metode pembayaran.",
+        // },
+        // {
+        //   name: "pembayaran",
+        //   route: "/dashboard/admin/payment",
+        //   access: true,
+        //   description: "Sesuaikan pilihan pembayaran untuk transaksi.",
+        // },
+        // {
+        //   name: "kategori-pengeluaran",
+        //   route: "/dashboard/admin/category-outcome",
+        //   access: true,
+        //   description: "Mengelola kategori untuk pengeluaran.",
+        // },
+        // {
+        //   name: "pengeluaran",
+        //   route: "/dashboard/admin/outcome",
+        //   access: true,
+        //   description:
+        //     "Atur pengeluaran Anda dan buat keputusan berdasarkan informasi.",
+        // },
+        // {
+        //   name: "promosi",
+        //   route: "/dashboard/admin/promotion",
+        //   access: true,
+        //   description:
+        //     "Desain dan konfigurasi diskon menarik, serta penawaran khusus untuk menarik dan melibatkan pelanggan.",
+        // },
       ],
     },
     {
@@ -120,17 +120,24 @@ export default function Sidebar() {
           access: true,
           description: "Mengelola data dan informasi pasien.",
         },
-        {
-          name: "janji-temu",
-          route: "/dashboard/receptionist/appointment",
-          access: true,
-          description: "Jadwalkan dan kelola janji temu pasien.",
-        },
+        // {
+        //   name: "janji-temu",
+        //   route: "/dashboard/receptionist/appointment",
+        //   access: true,
+        //   description: "Jadwalkan dan kelola janji temu pasien.",
+        // },
         {
           name: "antrean",
           route: "/dashboard/receptionist/queue",
           access: true,
           description: "Mengelola antrean pasien dan daftar tunggu.",
+        },
+        {
+          name: "transaksi",
+          route: "/dashboard/cashier/transaction",
+          access: true,
+          description:
+            "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
         },
       ],
     },
@@ -141,12 +148,12 @@ export default function Sidebar() {
       description:
         "Dokter. Lihat data diagnosa, layanan medis, dan catatan pasien.",
       submenu: [
-        {
-          name: "diagnosa",
-          route: "/dashboard/doctor/diagnose",
-          access: true,
-          description: "Lihat data diagnosa dan pemeriksaan medis.",
-        },
+        // {
+        //   name: "diagnosa",
+        //   route: "/dashboard/doctor/diagnose",
+        //   access: true,
+        //   description: "Lihat data diagnosa dan pemeriksaan medis.",
+        // },
         {
           name: "kategori-layanan",
           route: "/dashboard/doctor/category-service",
@@ -174,98 +181,98 @@ export default function Sidebar() {
         },
       ],
     },
-    {
-      name: "apotek",
-      route: "/dashboard/pharmacy",
-      access: true,
-      description:
-        "Apotek. Mengelola persediaan obat, pemasok, dan pesanan pembelian.",
-      submenu: [
-        {
-          name: "kategori-item",
-          route: "/dashboard/pharmacy/category-item",
-          access: true,
-          description: "Mengelola kategori untuk barang farmasi.",
-        },
-        {
-          name: "item",
-          route: "/dashboard/pharmacy/item",
-          access: true,
-          description: "Mengelola barang farmasi dan obat-obatan.",
-        },
-        {
-          name: "pasokan-item",
-          route: "/dashboard/pharmacy/supply",
-          access: true,
-          description:
-            "Mengelola persediaan dan pengisian ulang barang farmasi.",
-        },
-        {
-          name: "pemasok",
-          route: "/dashboard/pharmacy/supplier",
-          access: true,
-          description: "Mengelola pemasok dan vendor farmasi.",
-        },
-        {
-          name: "pesanan-pembelian",
-          route: "/dashboard/pharmacy/purchase-order",
-          access: true,
-          description: "Mengelola pesanan pembelian untuk barang farmasi.",
-        },
-        {
-          name: "penyesuaian-stok",
-          route: "/dashboard/pharmacy/stock-adjustment",
-          access: true,
-          description:
-            "Mengelola penyesuaian stok dan pengendalian inventaris.",
-        },
-      ],
-    },
-    {
-      name: "kasir",
-      route: "/dashboard/cashier",
-      access: true,
-      description: "Kasir. Mengelola transaksi, termasuk obat dan pembayaran.",
-      submenu: [
-        {
-          name: "transaksi",
-          route: "/dashboard/cashier/transaction",
-          access: true,
-          description:
-            "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
-        },
-        {
-          name: "transaksi-apoteker",
-          route: "/dashboard/cashier/apoteker",
-          access: true,
-          description:
-            "Mencatat, mengeluarkan, dan melacak transaksi obat untuk memastikan dosis yang akurat dan kepatuhan farmasi.",
-        },
-        {
-          name: "riwayat",
-          route: "/dashboard/cashier/history",
-          access: true,
-          description:
-            "Catatan kronologis dari semua transaksi sebelumnya, menyediakan riwayat keuangan, pembelian, dan pembayaran yang telah dibuat.",
-        },
-      ],
-    },
-    {
-      name: "laporan",
-      route: "/dashboard/report",
-      access: true,
-      description:
-        "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
-      submenu: [
-        {
-          name: "penjualan",
-          route: "/dashboard/report/sales",
-          access: true,
-          description:
-            "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
-        },
-      ],
-    },
+    // {
+    //   name: "apotek",
+    //   route: "/dashboard/pharmacy",
+    //   access: true,
+    //   description:
+    //     "Apotek. Mengelola persediaan obat, pemasok, dan pesanan pembelian.",
+    //   submenu: [
+    //     {
+    //       name: "kategori-item",
+    //       route: "/dashboard/pharmacy/category-item",
+    //       access: true,
+    //       description: "Mengelola kategori untuk barang farmasi.",
+    //     },
+    //     {
+    //       name: "item",
+    //       route: "/dashboard/pharmacy/item",
+    //       access: true,
+    //       description: "Mengelola barang farmasi dan obat-obatan.",
+    //     },
+    //     {
+    //       name: "pasokan-item",
+    //       route: "/dashboard/pharmacy/supply",
+    //       access: true,
+    //       description:
+    //         "Mengelola persediaan dan pengisian ulang barang farmasi.",
+    //     },
+    //     {
+    //       name: "pemasok",
+    //       route: "/dashboard/pharmacy/supplier",
+    //       access: true,
+    //       description: "Mengelola pemasok dan vendor farmasi.",
+    //     },
+    //     {
+    //       name: "pesanan-pembelian",
+    //       route: "/dashboard/pharmacy/purchase-order",
+    //       access: true,
+    //       description: "Mengelola pesanan pembelian untuk barang farmasi.",
+    //     },
+    //     {
+    //       name: "penyesuaian-stok",
+    //       route: "/dashboard/pharmacy/stock-adjustment",
+    //       access: true,
+    //       description:
+    //         "Mengelola penyesuaian stok dan pengendalian inventaris.",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "kasir",
+    //   route: "/dashboard/cashier",
+    //   access: true,
+    //   description: "Kasir. Mengelola transaksi, termasuk obat dan pembayaran.",
+    //   submenu: [
+    //     {
+    //       name: "transaksi",
+    //       route: "/dashboard/cashier/transaction",
+    //       access: true,
+    //       description:
+    //         "Mengotomatisasi dan mengelola pertukaran, memastikan akurasi, keamanan, dan pemrosesan pembayaran yang lancar dalam transaksi.",
+    //     },
+    //     // {
+    //     //   name: "transaksi-apoteker",
+    //     //   route: "/dashboard/cashier/apoteker",
+    //     //   access: true,
+    //     //   description:
+    //     //     "Mencatat, mengeluarkan, dan melacak transaksi obat untuk memastikan dosis yang akurat dan kepatuhan farmasi.",
+    //     // },
+    //     // {
+    //     //   name: "riwayat",
+    //     //   route: "/dashboard/cashier/history",
+    //     //   access: true,
+    //     //   description:
+    //     //     "Catatan kronologis dari semua transaksi sebelumnya, menyediakan riwayat keuangan, pembelian, dan pembayaran yang telah dibuat.",
+    //     // },
+    //   ],
+    // },
+    // {
+    //   name: "laporan",
+    //   route: "/dashboard/report",
+    //   access: true,
+    //   description:
+    //     "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+    //   submenu: [
+    //     {
+    //       name: "penjualan",
+    //       route: "/dashboard/report/sales",
+    //       access: true,
+    //       description:
+    //         "Akses analisis mendalam tentang data penjualan, pendapatan, dan tren. Dapatkan wawasan berharga untuk mengoptimalkan strategi dan pertumbuhan maksimal.",
+    //     },
+    //   ],
+    // },
     // {
     //   name: "Prediksi Antrean",
     //   route: "/dashboard/receptionist",
@@ -543,7 +550,7 @@ export default function Sidebar() {
                   </Link>
                 </li>
 
-                <li
+                {/* <li
                   className={`items-center ${
                     router.pathname == "/" && "text-emerald-500 "
                   }`}
@@ -554,9 +561,9 @@ export default function Sidebar() {
                   >
                     <i className={"fas fa-user mr-2 text-sm "}></i> Akun
                   </Link>
-                </li>
+                </li> */}
 
-                {user?.role_id == 2 && (
+                {/* {user?.role_id == 2 && (
                   <li
                     // key={index}
                     className={`items-center list-none ${
@@ -634,22 +641,9 @@ export default function Sidebar() {
                       </li>
                     </ul>
                   </li>
-                )}
+                )} */}
 
-                {/* <li
-                  className={`items-center ${
-                    router.pathname == "/" && "text-emerald-500 "
-                  }`}
-                >
-                  <Link
-                    href="/settings"
-                    className={"text-xs py-3 font-bold block  text-slate-500"}
-                  >
-                    <i className={"fas fa-gear mr-2 text-sm "}></i> Settings
-                  </Link>
-                </li> */}
-
-                {user?.role_id == 2 && (
+                {/* {user?.role_id == 2 && (
                   <li
                     // key={index}
                     className={`items-center list-none ${
@@ -713,9 +707,9 @@ export default function Sidebar() {
                       </li>
                     </ul>
                   </li>
-                )}
+                )} */}
 
-                <li
+                {/* <li
                   className={`items-center ${
                     router.pathname == "/" && "text-emerald-500 "
                   }`}
@@ -729,7 +723,7 @@ export default function Sidebar() {
                     <i className={"fas fa-lock mr-2 text-sm "}></i> Ubah kata
                     sandi
                   </label>
-                </li>
+                </li> */}
                 <li
                   className={`items-center ${
                     router.pathname == "/" && "text-emerald-500 "

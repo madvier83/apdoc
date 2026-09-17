@@ -329,8 +329,8 @@ class DatabaseSeeder extends Seeder
         ]);
         Diagnose::factory(5)->create();
         CategoryService::factory(5)->create();
-        Service::factory(5)->create();
-        Patient::factory(10)->create();
+        Service::factory(10)->create();
+        Patient::factory(40)->create();
         CategoryItem::factory(5)->create();
         Item::factory(10)->create();
     }
